@@ -52,7 +52,7 @@ class Input : public Object {
     size_t rank() const;
     size_t size() const;
 
-    void require() const;
+    void update() const;
 
     template <class T>
     T& at(size_t position);

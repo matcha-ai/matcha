@@ -25,11 +25,13 @@ Node* NodeSerializer::load(std::istream& is, const std::string& type, const std:
 }
 
 void NodeSerializer::save(std::ostream& os, Node* node) const {
+  /*
   if (node->polymorphicOuts()) {
     savePolymorphic(os, node);
   } else {
     saveNonPolymorphic(os, node);
   }
+  */
 }
 
 void NodeSerializer::addLoader(const NodeLoader* loader) {
@@ -37,6 +39,7 @@ void NodeSerializer::addLoader(const NodeLoader* loader) {
 }
 
 void NodeSerializer::savePolymorphic(std::ostream& os, Node* node) const {
+  /*
   auto loader = node->getLoader();
   if (loader == nullptr) throw std::runtime_error("Node Loader is null");
 
@@ -59,9 +62,11 @@ void NodeSerializer::savePolymorphic(std::ostream& os, Node* node) const {
   }
   os << "\n\n";
 
+  */
 }
 
 void NodeSerializer::saveNonPolymorphic(std::ostream& os, Node* node) const {
+  /*
   auto loader = node->getLoader();
   if (loader == nullptr) throw std::runtime_error("Node Loader is null");
 
@@ -78,6 +83,7 @@ void NodeSerializer::saveNonPolymorphic(std::ostream& os, Node* node) const {
   node->save(os);
 
   os << "\n}\n\n";
+  */
 
 }
 

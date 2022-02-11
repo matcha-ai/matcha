@@ -142,9 +142,9 @@ const Shape& Input::shape() const {
   return object()->shape();
 }
 
-void Input::require() const {
+void Input::update() const {
   if (isNull()) throw std::runtime_error("Ojbect is null");
-  object()->require();
+  object()->updateStatusChanged();
 }
 
 template <class T>

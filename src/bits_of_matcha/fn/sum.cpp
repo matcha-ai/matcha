@@ -11,7 +11,8 @@ namespace fn {
 
 Tensor sum(const Tensor& a) {
   auto* node = new engine::fn::Sum(a);
-  return Tensor::fromObject(node->out(0));
+  auto* out  = new engine::Tensor(node->out(0));
+  return Tensor::fromObject(out);
 }
 
 }
@@ -24,25 +25,15 @@ namespace fn {
 Sum::Sum(Tensor* a)
   : Fn{a}
 {
-  addOut(in(0)->dtype(), {});
-  computation_ = device::Cpu().createComputation(
-     "Sum",
-     {in(0)->buffer()}
-  );
-  computation_->prepare();
-  out(0)->setBuffer(computation_->target(0));
+  wrapComputation("Sum", {in(0)});
+  deduceStatus();
 }
 
 Sum::Sum(const matcha::Tensor& a)
   : Sum(deref(a))
 {}
 
-void Sum::eval(Tensor* target) {
-  if (!required()) return;
-  unrequire();
-  evalIns();
-  computation_->run();
-}
+/*
 
 const NodeLoader* Sum::getLoader() const {
   return loader();
@@ -58,6 +49,8 @@ const NodeLoader* Sum::loader() {
   };
   return &nl;
 };
+
+*/
 
 }
 }

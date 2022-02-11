@@ -30,14 +30,6 @@ class Subtract : public Fn {
   public:
     Subtract(Tensor* a, Tensor* b);
     Subtract(const matcha::Tensor& a, const matcha::Tensor& b);
-
-    void eval(Tensor* target) override;
-
-    static const NodeLoader* loader();
-    const NodeLoader* getLoader() const override;
-
-  private:
-    device::Computation* computation_;
 };
 
 

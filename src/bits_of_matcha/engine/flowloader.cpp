@@ -54,6 +54,7 @@ FlowLoader::FlowLoader(std::istream& is) {
         addTensor(name, new Tensor(dtype, shape));
       }
     } else {
+      /*
       Node* node = parseNode(type, is);
 
       if (node->polymorphicOuts()) {
@@ -69,6 +70,7 @@ FlowLoader::FlowLoader(std::istream& is) {
           addTensor(lvals[i], node->out(i));
         }
       }
+      */
     }
   }
 
@@ -187,7 +189,7 @@ bool FlowLoader::tryRedirect(std::istream& is) {
   Node* node = getNode(&lval[1]);
   for (auto& rval: rvals) {
     Tensor* tensor = getTensor(rval);
-    node->openOut(tensor);
+//    node->openOut(tensor);
   }
 
   return true;

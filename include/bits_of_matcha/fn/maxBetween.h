@@ -29,14 +29,6 @@ class MaxBetween : public Fn {
   public:
     MaxBetween(Tensor* a, Tensor* b);
     MaxBetween(const matcha::Tensor& a, const matcha::Tensor& b);
-
-    void eval(Tensor* target) override;
-
-    static const NodeLoader* loader();
-    const NodeLoader* getLoader() const override;
-
-  private:
-    device::Computation* computation_;
 };
 
 

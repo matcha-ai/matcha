@@ -45,6 +45,12 @@ void Object::reset(engine::Object* object) const {
   }
 }
 
+void Object::release() const {
+  if (isNull()) return;
+  this->object()->unbindRef(this, false);
+  object_ = nullptr;
+}
+
 const Object& Object::operator=(const Object& other) {
   reset(other.object());
   return *this;

@@ -11,7 +11,8 @@ namespace fn {
 
 Tensor maxIn(const Tensor& a) {
   auto* node = new engine::fn::MaxIn(a);
-  return Tensor::fromObject(node->out(0));
+  auto* out  = new engine::Tensor(node->out(0));
+  return Tensor::fromObject(out);
 }
 
 }
@@ -24,25 +25,15 @@ namespace fn {
 MaxIn::MaxIn(Tensor* a)
   : Fn{a}
 {
-  addOut(in(0)->dtype(), {});
-  computation_ = device::Cpu().createComputation(
-     "MaxIn",
-     {in(0)->buffer()}
-  );
-  computation_->prepare();
-  out(0)->setBuffer(computation_->target(0));
+  wrapComputation("MaxIn", {in(0)});
+  deduceStatus();
 }
 
 MaxIn::MaxIn(const matcha::Tensor& a)
   : MaxIn(deref(a))
 {}
 
-void MaxIn::eval(Tensor* target) {
-  if (!required()) return;
-  unrequire();
-  evalIns();
-  computation_->run();
-}
+/*
 
 const NodeLoader* MaxIn::getLoader() const {
   return loader();
@@ -58,6 +49,8 @@ const NodeLoader* MaxIn::loader() {
   };
   return &nl;
 };
+
+*/
 
 }
 }

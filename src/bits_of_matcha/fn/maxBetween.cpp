@@ -11,7 +11,8 @@ namespace fn {
 
 Tensor maxBetween(const Tensor& a, const Tensor& b) {
   auto* node = new engine::fn::MaxBetween(a, b);
-  return Tensor::fromObject(node->out(0));
+  auto* out  = new engine::Tensor(node->out(0));
+  return Tensor::fromObject(out);
 }
 
 }
@@ -25,51 +26,23 @@ MaxBetween::MaxBetween(Tensor* a, Tensor* b)
   : Fn{a, b}
 {
   if (in(0)->rank() == 0) {
-
-    addOut(in(1)->dtype(), in(1)->shape());
-    computation_ = device::Cpu().createComputation(
-       "MaxBetweenScalar0",
-       {in(0)->buffer(), in(1)->buffer()}
-    );
-    computation_->prepare();
-    out(0)->setBuffer(computation_->target(0));
-
+    wrapComputation("MaxBetweenScalar0", {in(0), in(1)});
   } else if (in(1)->rank() == 0) {
-
-    addOut(in(0)->dtype(), in(0)->shape());
-    computation_ = device::Cpu().createComputation(
-       "MaxBetweenScalar0",
-       {in(1)->buffer(), in(0)->buffer()}
-    );
-    computation_->prepare();
-    out(0)->setBuffer(computation_->target(0));
-
+    wrapComputation("MaxBetweenScalar0", {in(1), in(0)});
+  } else if (in(0)->shape() == in(1)->shape()) {
+    wrapComputation("MaxBetweenMatching", {in(0), in(1)});
   } else {
-
-    if (in(0)->shape() != in(1)->shape()) {
-      throw std::invalid_argument("shapeA != shapeB");
-    }
-
-    addOut(in(0)->dtype(), in(0)->shape());
-    computation_ = device::Cpu().createComputation(
-       "MaxBetweenMatching",
-       {in(0)->buffer(), in(1)->buffer()}
-    );
-    computation_->prepare();
-    out(0)->setBuffer(computation_->target(0));
+    throw std::invalid_argument("shapeA != shapeB");
   }
+
+  deduceStatus();
 }
 
 MaxBetween::MaxBetween(const matcha::Tensor& a, const matcha::Tensor& b)
   : MaxBetween(deref(a), deref(b))
 {}
 
-void MaxBetween::eval(Tensor* target) {
-  if (!required()) return;
-  unrequire();
-  evalIns();
-  computation_->run();
-}
+/*
 
 const NodeLoader* MaxBetween::getLoader() const {
   return loader();
@@ -85,6 +58,8 @@ const NodeLoader* MaxBetween::loader() {
   };
   return &nl;
 };
+
+*/
 
 }
 }

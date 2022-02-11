@@ -1,4 +1,4 @@
-#include "bits_of_matcha/fn/normal.h"
+#include "bits_of_matcha/rng/normal.h"
 #include "bits_of_matcha/engine/tensor.h"
 #include "bits_of_matcha/engine/input.h"
 #include "bits_of_matcha/engine/stream.h"
@@ -42,50 +42,11 @@ Normal::Normal(float m, float sd, uint64_t seed)
   , distribution_{m, sd}
 {}
 
-Input Normal::generateNext() const {
-  return Input(Dtype::Float, {});
-}
-
-void Normal::populateNext(Input* input) const {
-}
-
-Tensor* Normal::openOut() {
-  auto* tensor = new Tensor(Dtype::Float, {});
-  openOut(tensor);
-  return tensor;
-}
-
-bool Normal::polymorphicOuts() const {
-  return true;
-}
-
-bool Normal::openOut(Tensor* tensor) {
-  addOut(tensor);
-  auto buffer = device::Cpu().createBuffer(tensor->dtype(), tensor->shape());
-  buffer->prepare();
-  tensor->setBuffer(buffer);
-  return true;
-}
-
-bool Normal::closeOut(Tensor* tensor) {
-  removeOut(tensor);
-  return true;
-}
-
-void Normal::eval(Tensor* target) {
-  auto buffer = target->buffer();
-  auto begin = (float*)buffer->raw();
-  auto end   = begin + target->size() * target->dtype().size();
-  for (auto it = begin; it != end; it++) {
-    *it = distribution_(source_);
-  }
-}
-
-void Normal::reset() const {
+void Normal::reset() {
 
 }
 
-void Normal::shuffle() const {
+void Normal::shuffle() {
 
 }
 
@@ -96,6 +57,32 @@ bool Normal::eof() const {
 size_t Normal::size() const {
   return std::numeric_limits<size_t>::max();
 }
+
+Tensor* Normal::open() {
+  auto* out = new Tensor(Dtype::Float, {});
+  open(out);
+  return out;
+}
+
+void Normal::open(Tensor* tensor) {
+  beginOut(tensor);
+}
+
+void Normal::close(Out* out) {
+  outs_.erase(std::begin(outs_) + out->id());
+}
+
+void Normal::eval(Out* out) {
+  auto* buffer = out->buffer();
+  buffer->prepare();
+  auto* begin = (float*)buffer->raw();
+  auto* end   = begin + out->size();
+  for (auto it = begin; it != end; it++) {
+    *it = distribution_(source_);
+  }
+}
+
+/*
 
 const NodeLoader* Normal::getLoader() const {
   return loader();
@@ -135,6 +122,8 @@ void Normal::save(std::ostream& os) const {
   FlowSaver::assignment(os, "seed", ": ");
   FlowSaver::oneFloat(os, seed_);
 }
+
+*/
 
 }
 }

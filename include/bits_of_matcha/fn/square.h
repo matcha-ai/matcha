@@ -27,14 +27,6 @@ class Square : public Fn {
   public:
     Square(Tensor* a);
     Square(const matcha::Tensor& a);
-
-    void eval(Tensor* target) override;
-
-    static const NodeLoader* loader();
-    const NodeLoader* getLoader() const override;
-
-  private:
-    device::Computation* computation_;
 };
 
 

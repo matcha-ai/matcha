@@ -13,7 +13,8 @@ namespace fn {
 
 Tensor matmul(const Tensor& a, const Tensor& b) {
   auto* node = new engine::fn::Matmul(a, b);
-  return Tensor::fromObject(node->out(0));
+  auto* out  = new engine::Tensor(node->out(0));
+  return Tensor::fromObject(out);
 }
 
 }
@@ -44,25 +45,15 @@ Matmul::Matmul(Tensor* a, Tensor* b)
   unsigned rowsC = rowsA;
   unsigned colsC = colsB;
 
-  addOut(Dtype::Float, {rowsC, colsC});
-  computation_ = device::Cpu().createComputation(
-     "Matmul",
-     {in(0)->buffer(), in(1)->buffer()}
-  );
-  computation_->prepare();
-  out(0)->setBuffer(computation_->target(0));
+  wrapComputation("Matmul", {in(0), in(1)});
+  deduceStatus();
 }
 
 Matmul::Matmul(const matcha::Tensor& a, const matcha::Tensor& b)
   : Matmul(deref(a), deref(b))
 {}
 
-void Matmul::eval(Tensor* target) {
-  if (!required()) return;
-  unrequire();
-  evalIns();
-  computation_->run();
-}
+/*
 
 const NodeLoader* Matmul::loader() {
   static NodeLoader nl = {
@@ -80,6 +71,8 @@ const NodeLoader* Matmul::loader() {
 const NodeLoader* Matmul::getLoader() const {
   return loader();
 }
+
+*/
 
 }
 }

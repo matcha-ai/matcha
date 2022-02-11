@@ -35,6 +35,8 @@ namespace matcha {
 
 #include "bits_of_matcha/fn/equal.h"
 
-#include "bits_of_matcha/fn/normal.h"
-
+#include "bits_of_matcha/fn/batch.h"
+#include "bits_of_matcha/fn/map.h"
 #include "bits_of_matcha/fn/fold.h"
+
+#include "bits_of_matcha/rng/normal.h"

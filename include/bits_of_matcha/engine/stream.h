@@ -15,22 +15,27 @@ class Input;
 class Stream : public Node {
   public:
     Stream();
-    virtual Input generateNext() const = 0;
-    virtual void populateNext(Input* input) const = 0;
 
-    virtual void reset() const = 0;
-    virtual void shuffle() const = 0;
+    virtual void reset() = 0;
+    virtual void shuffle() = 0;
+
     virtual bool eof() const = 0;
-
     virtual size_t size() const = 0;
 
+    virtual Tensor* open() = 0;
+    virtual void open(Tensor* out) = 0;
+    virtual void close(Out* out) = 0;
+
   public:
-    void require() override;
-    void considerPruning() override;
+    void prune(Out* out = nullptr) override;
+
+  protected:
+    void beginOut(Tensor* out);
 
   protected:
     static Stream* deref(const matcha::Stream* stream);
     static Stream* deref(const matcha::Stream& stream);
+
 };
 
 

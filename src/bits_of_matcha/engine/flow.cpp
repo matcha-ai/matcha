@@ -54,9 +54,6 @@ matcha::Flow Flow::load(std::istream& is) {
   return matcha::Flow::fromObject(FlowLoader::load(is));
 }
 
-void Flow::considerPruning() {
-}
-
 void Flow::deduceIns() const {
   std::vector<Tensor*> buffer;
   std::set<Tensor*> tensors;
@@ -80,6 +77,7 @@ void Flow::deduceIns() const {
 }
 
 void Flow::deduceIns(Tensor* tensor, std::vector<Tensor*>& buffer, std::set<Tensor*>& visitedTensors, std::set<Node*>& visitedNodes) const {
+  /*
   if (visitedTensors.contains(tensor)) return;
   visitedTensors.insert(tensor);
 
@@ -92,9 +90,11 @@ void Flow::deduceIns(Tensor* tensor, std::vector<Tensor*>& buffer, std::set<Tens
 //    std::cout << "found Node: " << tensor << std::endl;
     deduceIns(tensor->in_, buffer, visitedTensors, visitedNodes);
   }
+  */
 }
 
 void Flow::deduceIns(Node* node, std::vector<Tensor*>& buffer, std::set<Tensor*>& visitedTensors, std::set<Node*>& visitedNodes) const {
+  /*
   if (visitedNodes.contains(node)) return;
   visitedNodes.insert(node);
 
@@ -102,6 +102,11 @@ void Flow::deduceIns(Node* node, std::vector<Tensor*>& buffer, std::set<Tensor*>
   for (auto& in: node->ins_) {
     deduceIns(in, buffer, visitedTensors, visitedNodes);
   }
+  */
+}
+
+void Flow::prune(Out* out) {
+
 }
 
 }

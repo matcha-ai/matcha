@@ -12,23 +12,26 @@
 namespace matcha {
 namespace engine {
 
-Input::Input(const Dtype& dtype, const Shape& shape)
-  : Node{}
-{
-  addOut(dtype, shape);
+Input::Input(const Dtype& dtype, const Shape& shape) {
+  out_ = createOut(dtype, shape);
   buffer_ = device::Cpu().createBuffer(dtype, shape);
   buffer_->prepare();
-  out(0)->setBuffer(buffer_);
+  out()->setBuffer(buffer_);
+
+  status_ = {
+    .data = true,
+    .update = false,
+    .ready = true,
+  };
 }
 
 Input::Input(const Dtype& dtype, const Shape& shape, const std::vector<std::byte>& buffer)
-  : Node{}
 {
   if (shape.size() * dtype.size() != buffer.size()) {
     throw std::invalid_argument("invalid buffer");
   }
 
-  addOut(dtype, shape);
+  out_ = createOut(dtype, shape);
   buffer_ = device::Cpu().createBuffer(dtype, shape);
   buffer_->prepare();
   std::copy(
@@ -36,12 +39,23 @@ Input::Input(const Dtype& dtype, const Shape& shape, const std::vector<std::byte
     (std::byte*)(buffer_->raw())
   );
 
-  out(0)->setBuffer(buffer_);
+  out()->setBuffer(buffer_);
+
+  status_ = {
+    .data   = true,
+    .update = false,
+    .ready  = true,
+  };
 }
 
 Input::Input(const Stream& stream)
-  : Input(stream.generateNext())
-{}
+{
+
+}
+
+Out* Input::out() {
+  return out_;
+}
 
 const Dtype& Input::dtype() const {
   return buffer_->dtype();
@@ -59,12 +73,14 @@ size_t Input::size() const {
   return shape().size();
 }
 
-void Input::eval(Tensor* target) {
-
+void Input::updateStatusChanged(In* in) {
+  out()->updateStatusChanged();
 }
 
-void Input::require() {
-
+void Input::prune(Out* link) {
+  if (referenced()) return;
+  if (out()->linked()) return;
+  delete this;
 }
 
 template <class T>
@@ -74,6 +90,8 @@ T& Input::at(size_t position) {
 }
 
 template float& Input::at(size_t);
+
+/*
 
 const NodeLoader* Input::getLoader() const {
   return loader();
@@ -125,6 +143,8 @@ void Input::save(std::ostream& os) const {
   std::vector<float> data(size());
   FlowSaver::flatFloats(os, (const float*)(buffer_->raw()), shape(), 1);
 }
+
+*/
 
 }
 }

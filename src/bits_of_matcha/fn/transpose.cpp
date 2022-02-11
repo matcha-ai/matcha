@@ -11,7 +11,8 @@ namespace fn {
 
 Tensor transpose(const Tensor& a) {
   auto* node = new engine::fn::Transpose(a);
-  return Tensor::fromObject(node->out(0));
+  auto* out  = new engine::Tensor(node->out(0));
+  return Tensor::fromObject(out);
 }
 
 }
@@ -37,25 +38,15 @@ Transpose::Transpose(Tensor* a)
 
   std::swap(axes[rank - 1], axes[rank - 2]);
 
-  addOut(in(0)->dtype(), Shape(axes));
-  computation_ = device::Cpu().createComputation(
-     "Transpose",
-     {in(0)->buffer()}
-  );
-  computation_->prepare();
-  out(0)->setBuffer(computation_->target(0));
+  wrapComputation("Transpose", {in(0)});
+  deduceStatus();
 }
 
 Transpose::Transpose(const matcha::Tensor& a)
   : Transpose(deref(a))
 {}
 
-void Transpose::eval(Tensor* target) {
-  if (!required()) return;
-  unrequire();
-  evalIns();
-  computation_->run();
-}
+/*
 
 const NodeLoader* Transpose::getLoader() const {
   return loader();
@@ -71,6 +62,8 @@ const NodeLoader* Transpose::loader() {
   };
   return &nl;
 };
+
+*/
 
 }
 }

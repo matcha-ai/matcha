@@ -11,7 +11,8 @@ namespace fn {
 
 Tensor divide(const Tensor& a, const Tensor& b) {
   auto* node = new engine::fn::Divide(a, b);
-  return Tensor::fromObject(node->out(0));
+  auto* out  = new engine::Tensor(node->out(0));
+  return Tensor::fromObject(out);
 }
 
 }
@@ -35,38 +36,24 @@ namespace fn {
 Divide::Divide(Tensor* a, Tensor* b)
   : Fn{a, b}
 {
-  std::string computationName;
   if (in(0)->rank() == 0) {
-    computationName = "DivideScalar0";
-    addOut(in(1)->dtype(), in(1)->shape());
+    wrapComputation("DivideScalar0", {in(0), in(1)});
   } else if (in(1)->rank() == 0) {
-    computationName = "DivideScalar1";
-    addOut(in(0)->dtype(), in(0)->shape());
+    wrapComputation("DivideScalar1", {in(0), in(1)});
   } else if (in(0)->shape() == in(1)->shape()) {
-    computationName = "DivideMatching";
-    addOut(in(0)->dtype(), in(0)->shape());
+    wrapComputation("DivideMatching", {in(0), in(1)});
   } else {
     throw std::invalid_argument("shapeA != shapeB");
   }
 
-  computation_ = device::Cpu().createComputation(
-     computationName,
-     {in(0)->buffer(), in(1)->buffer()}
-  );
-  computation_->prepare();
-  out(0)->setBuffer(computation_->target(0));
+  deduceStatus();
 }
 
 Divide::Divide(const matcha::Tensor& a, const matcha::Tensor& b)
   : Divide(deref(a), deref(b))
 {}
 
-void Divide::eval(Tensor* target) {
-  if (!required()) return;
-  unrequire();
-  evalIns();
-  computation_->run();
-}
+/*
 
 const NodeLoader* Divide::getLoader() const {
   return loader();
@@ -82,6 +69,8 @@ const NodeLoader* Divide::loader() {
   };
   return &nl;
 };
+
+*/
 
 }
 }

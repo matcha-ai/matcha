@@ -29,14 +29,6 @@ class Sum : public Fn {
   public:
     Sum(Tensor* a);
     Sum(const matcha::Tensor& a);
-
-    void eval(Tensor* target) override;
-
-    static const NodeLoader* loader();
-    const NodeLoader* getLoader() const override;
-
-  private:
-    device::Computation* computation_;
 };
 
 

@@ -25,25 +25,17 @@ class Normal : public Stream {
   public:
     Normal(float m, float sd, uint64_t seed);
 
-    Input generateNext() const override;
-    void populateNext(Input* input) const override;
+    void reset() override;
+    void shuffle() override;
 
-    Tensor* openOut() override;
-    bool openOut(Tensor* tensor) override;
-    bool closeOut(Tensor* tensor) override;
-    bool polymorphicOuts() const override;
-
-    void reset() const override;
-    void shuffle() const override;
     bool eof() const override;
-
     size_t size() const override;
 
-    static const NodeLoader* loader();
-    const NodeLoader* getLoader() const override;
-    void save(std::ostream& os) const override;
+    Tensor* open() override;
+    void open(Tensor* out) override;
+    void close(Out* out) override;
 
-    void eval(Tensor* target) override;
+    void eval(Out* out) override;
 
   private:
     float m_, sd_;

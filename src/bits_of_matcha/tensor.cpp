@@ -19,15 +19,15 @@ Tensor::Tensor(const Dtype& dtype, const Shape& shape)
 {}
 
 Tensor::Tensor(const Input& input)
-  : Object(input.object()->out(0))
+  : Object(new engine::Tensor(input.object()->out()))
 {}
 
 Tensor::Tensor(const Stream& stream)
-  : Object(stream.object()->openOut())
+  : Object(stream.object()->open())
 {}
 
 Tensor::Tensor(const Params& params)
-  : Object(params.object()->out(0))
+  : Object(new engine::Tensor(params.object()->out()))
 {}
 
 Tensor::Tensor(float scalar)
@@ -67,12 +67,12 @@ Tensor::Tensor(std::initializer_list<std::vector<std::vector<std::vector<float>>
 {}
 
 const Dtype& Tensor::dtype() const {
-  if (isNull()) throw std::runtime_error("object is null");
+  if (isNull()) throw std::runtime_error("Object is null");
   return object()->dtype();
 }
 
 const Shape& Tensor::shape() const {
-  if (isNull()) throw std::runtime_error("object is null");
+  if (isNull()) throw std::runtime_error("Object is null");
   return object()->shape();
 }
 
@@ -85,13 +85,22 @@ size_t Tensor::size() const {
 }
 
 void Tensor::use(const Device& device) const {
-  if (isNull()) throw std::runtime_error("object is null");
+  if (isNull()) throw std::runtime_error("Object is null");
 }
 
 void Tensor::update() const {
-  if (isNull()) throw std::runtime_error("object is null");
-  object()->require();
-  object()->eval();
+  if (isNull()) throw std::runtime_error("Object is null");
+  object()->updateStatusChanged();
+}
+
+void Tensor::subst(const Tensor& source) {
+  if (isNull() || source.isNull()) throw std::runtime_error("Object is null");
+  object()->subst(source.object()->out());
+}
+
+void Tensor::subst() {
+  if (isNull()) throw std::runtime_error("Object is null");
+  object()->subst();
 }
 
 Tensor Tensor::fromObject(engine::Tensor* object) {
@@ -107,9 +116,9 @@ engine::Tensor* Tensor::object() const {
 }
 
 std::ostream& operator<<(std::ostream& os, const Tensor& tensor) {
-  if (tensor.isNull()) throw std::invalid_argument("object is null");
+  if (tensor.isNull()) throw std::invalid_argument("Object is null");
 
-  if (tensor.object()->ready()) {
+  if (tensor.object()->status().data) {
     tensor.object()->eval();
     if (tensor.dtype() == Dtype::Float) {
       auto* data = reinterpret_cast<const float*>(tensor.object()->getData());

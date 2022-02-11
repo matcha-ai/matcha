@@ -21,6 +21,7 @@ class Object {
     virtual ~Object();
 
     void reset(engine::Object* object) const;
+    void release() const;
     engine::Object* object() const;
     bool isNull() const;
 
@@ -28,6 +29,8 @@ class Object {
 
   private:
     mutable engine::Object* object_;
+
+    friend class engine::Object;
 
 };
 

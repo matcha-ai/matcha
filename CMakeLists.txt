@@ -27,7 +27,10 @@ set(
   include/bits_of_matcha/engine/params.h
   include/bits_of_matcha/engine/stream.h
   include/bits_of_matcha/engine/input.h
+  include/bits_of_matcha/engine/status.h
   include/bits_of_matcha/engine/node.h
+  include/bits_of_matcha/engine/in.h
+  include/bits_of_matcha/engine/out.h
   include/bits_of_matcha/engine/fn.h
   include/bits_of_matcha/engine/nodeloader.h
   include/bits_of_matcha/engine/nodeserializer.h
@@ -57,9 +60,11 @@ set(
 
   include/bits_of_matcha/fn/sum.h
 
-  include/bits_of_matcha/fn/normal.h
-
+  include/bits_of_matcha/fn/batch.h
+  include/bits_of_matcha/fn/map.h
   include/bits_of_matcha/fn/fold.h
+
+  include/bits_of_matcha/rng/normal.h
 
 )
 
@@ -79,7 +84,10 @@ set(
   src/bits_of_matcha/engine/params.cpp
   src/bits_of_matcha/engine/stream.cpp
   src/bits_of_matcha/engine/input.cpp
+  src/bits_of_matcha/engine/status.cpp
   src/bits_of_matcha/engine/node.cpp
+  src/bits_of_matcha/engine/in.cpp
+  src/bits_of_matcha/engine/out.cpp
   src/bits_of_matcha/engine/fn.cpp
   src/bits_of_matcha/engine/nodeloader.cpp
   src/bits_of_matcha/engine/nodeserializer.cpp
@@ -109,14 +117,16 @@ set(
 
   src/bits_of_matcha/fn/sum.cpp
 
-  src/bits_of_matcha/fn/normal.cpp
-
+  src/bits_of_matcha/fn/batch.cpp
+  src/bits_of_matcha/fn/map.cpp
   src/bits_of_matcha/fn/fold.cpp
+
+  src/bits_of_matcha/rng/normal.cpp
 
 )
 
 find_package(matcha-device)
-find_package(matcha)
+#find_package(matcha)
 find_package(Threads)
 find_package(Boost REQUIRED COMPONENTS serialization)
 
@@ -163,7 +173,7 @@ target_include_directories(
 #)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC matcha-device)
-target_link_libraries(${PROJECT_NAME} PUBLIC matcha)
+#target_link_libraries(${PROJECT_NAME} PUBLIC matcha)
 target_link_libraries(${PROJECT_NAME} PRIVATE pthread)
 target_link_libraries(${PROJECT_NAME} PRIVATE Boost::serialization)
 target_link_libraries(main PUBLIC ${PROJECT_NAME})

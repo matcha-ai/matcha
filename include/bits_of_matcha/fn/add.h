@@ -5,6 +5,7 @@
 
 
 namespace matcha {
+
 class Tensor;
 class Stream;
 class Tuple;
@@ -32,14 +33,6 @@ class Add : public Fn {
   public:
     Add(Tensor* a, Tensor* b);
     Add(const matcha::Tensor& a, const matcha::Tensor& b);
-
-    void eval(Tensor* target) override;
-
-    static const NodeLoader* loader();
-    const NodeLoader* getLoader() const override;
-
-  private:
-    device::Computation* computation_;
 };
 
 

@@ -27,14 +27,6 @@ class Exp : public Fn {
   public:
     Exp(Tensor* a);
     Exp(const matcha::Tensor& a);
-
-    void eval(Tensor* target) override;
-
-    static const NodeLoader* loader();
-    const NodeLoader* getLoader() const override;
-
-  private:
-    device::Computation* computation_;
 };
 
 

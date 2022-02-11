@@ -27,14 +27,6 @@ class Transpose : public Fn {
   public:
     Transpose(Tensor* a);
     Transpose(const matcha::Tensor& a);
-
-    void eval(Tensor* target) override;
-
-    static const NodeLoader* loader();
-    const NodeLoader* getLoader() const override;
-
-  private:
-    device::Computation* computation_;
 };
 
 

@@ -13,15 +13,6 @@ class Inlet : public Node {
 
     const Dtype& dtype() const;
     const Shape& shape() const;
-
-    Tensor* openIn() override;
-    bool openIn(Tensor* tensor) override;
-
-    static const NodeLoader* loader();
-    const NodeLoader* getLoader() const override;
-    void save(std::ostream& os) const override;
-
-    bool polymorphicIns() const override;
 };
 
 

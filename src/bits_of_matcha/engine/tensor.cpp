@@ -14,23 +14,26 @@ namespace engine {
 Tensor::Tensor(const Dtype& dtype, const Shape& shape)
   : dtype_{dtype}
   , shape_{shape}
-  , in_{nullptr}
   , buffer_{nullptr}
   , cpuBuffer_{nullptr}
-  , required_{false}
-  , ready_{false}
+  , in_{nullptr}
+  , out_{createOut(dtype, shape)}
 {
   setBuffer(device::Cpu().createBuffer(dtype, shape));
+  status_ = {
+    .data   = false,
+    .update = false,
+    .ready  = false
+  };
 }
 
 Tensor::Tensor(Node* in, device::Buffer* buffer)
   : dtype_{buffer->dtype()}
   , shape_{buffer->shape()}
-  , in_{in}
   , buffer_{nullptr}
   , cpuBuffer_{nullptr}
-  , required_{false}
-  , ready_{in->ready()}
+  , in_{nullptr}
+  , out_{createOut(buffer->dtype(), buffer->shape())}
 {
   setBuffer(buffer);
 }
@@ -38,13 +41,32 @@ Tensor::Tensor(Node* in, device::Buffer* buffer)
 Tensor::Tensor(device::Buffer* buffer)
   : dtype_{buffer->dtype()}
   , shape_{buffer->shape()}
-  , in_{nullptr}
   , buffer_{nullptr}
   , cpuBuffer_{nullptr}
-  , required_{false}
-  , ready_{false}
+  , in_{nullptr}
+  , out_{createOut(buffer->dtype(), buffer->shape())}
 {
   setBuffer(buffer);
+}
+
+Tensor::Tensor(Out* source)
+  : dtype_{source->dtype()}
+  , shape_{source->shape()}
+  , in_{createIn(source)}
+  , out_{createOut(source->dtype(), source->shape())}
+  , buffer_{nullptr}
+  , cpuBuffer_{nullptr}
+{
+  setBuffer(source->buffer());
+  status_ = source->status();
+}
+
+In* Tensor::in() {
+  return in_;
+}
+
+Out* Tensor::out() {
+  return out_;
 }
 
 const Dtype& Tensor::dtype() const {
@@ -63,25 +85,75 @@ size_t Tensor::size() const {
   return shape().size();
 }
 
-void Tensor::require() {
-  if (required()) return;
-  required_ = true;
-  for (auto* out: outs_) out->require();
+void Tensor::dataStatusChanged(In* in) {
+  bool data = in->status().data;
+  if (status_.data == data) return;
+  status_.data = data;
+  out_->dataStatusChanged();
 }
 
-bool Tensor::required() const {
-  return required_;
+void Tensor::updateStatusChanged(In* in) {
+  if (status_.update) return;
+  status_.update = true;
+  out_->updateStatusChanged();
 }
 
-void Tensor::unrequire() const {
-  required_ = false;
+void Tensor::bufferChanged(In *in) {
+  setBuffer(in->buffer());
 }
 
-void Tensor::eval() {
-  if (!ready()) return;
-  if (!required()) return;
-  unrequire();
-  if (in_ != nullptr) in_->eval(this);
+void Tensor::eval(Out* target) {
+  if (!status_.data) throw std::runtime_error("data not available yet");
+  if (!status_.update) return;
+  status_.update = false;
+
+  if (in_ == nullptr) throw std::runtime_error("in is null");
+  in_->eval();
+
+  if (!status_.ready) {
+    status_.ready = true;
+  }
+}
+
+void Tensor::prune(Out* link) {
+  if (referenced()) return;
+  if (out_->linked()) return;
+
+  if (in_ != nullptr) {
+    delete in_;
+  }
+
+  delete this;
+}
+
+void Tensor::subst(Out* source) {
+  if (source->dtype() != dtype() || source->shape() != shape()) {
+    throw std::runtime_error("only tensors of matching form can be substituted");
+  }
+  if (in_ != nullptr) delete in_;
+  in_ = createIn(source);
+  setBuffer(in_->buffer());
+  status_ = in_->status();
+
+  out_->setBuffer(in_->buffer());
+  out_->dataStatusChanged();
+  out_->updateStatusChanged();
+}
+
+void Tensor::subst() {
+  if (in_ != nullptr) {
+    delete in_;
+    in_ = nullptr;
+  }
+  setBuffer(nullptr);
+
+  status_ = {
+    .data   = false,
+    .update = false,
+    .ready  = false
+  };
+
+  out_->dataStatusChanged();
 }
 
 device::Buffer* Tensor::buffer() {
@@ -93,23 +165,12 @@ const device::Buffer* Tensor::buffer() const {
 }
 
 void Tensor::setBuffer(device::Buffer *buffer) {
-  if (buffer_ != nullptr) {
-    delete buffer_;
+  if (cpuBuffer_ != nullptr) {
     delete cpuBuffer_;
+    cpuBuffer_ = nullptr;
   }
   buffer_ = buffer;
-  cpuBuffer_ = device::Cpu().createBuffer(buffer);
-  cpuBuffer_->prepare();
-  require();
-}
-
-bool Tensor::ready() const {
-  return ready_;
-}
-
-void Tensor::setReady(bool ready) const {
-  if (ready_ == ready) return;
-  ready_ = ready;
+  out_->setBuffer(buffer_);
 }
 
 bool Tensor::hasData() const {
@@ -119,52 +180,13 @@ bool Tensor::hasData() const {
 }
 
 const std::byte* Tensor::getData() const {
+  if (!status().data) throw std::runtime_error("data not available");
+  if (cpuBuffer_ == nullptr) {
+    cpuBuffer_ = device::Cpu().createBuffer(buffer());
+    cpuBuffer_->prepare();
+  }
   cpuBuffer_->update();
   return reinterpret_cast<std::byte*>(cpuBuffer_->raw());
-}
-
-void Tensor::considerPruning() {
-  if (referenced()) return;
-  if (!outs_.empty()) return;
-
-  if (in_ == nullptr) {
-    delete this;
-    return;
-  }
-
-  if (in_->closeOut(this)) {
-    delete this;
-  }
-  in_->considerPruning();
-}
-
-void Tensor::bindOut(Node* out) {
-  outs_.insert(out);
-}
-
-void Tensor::unbindOut(Node* out) {
-  outs_.erase(out);
-}
-
-void Tensor::bindIn(Node* in, unsigned edgeId) {
-  if (in_ != nullptr) throw std::runtime_error("Tensor: in is already bound");
-  in_ = in;
-  edgeId_ = edgeId;
-  setReady(in->ready());
-}
-
-void Tensor::unbindIn(Node* in) {
-  if (in_ != in) throw std::runtime_error("Tensor: in is not bound");
-  in_ = nullptr;
-  setReady(false);
-}
-
-unsigned Tensor::edgeId() const {
-  return edgeId_;
-}
-
-void Tensor::setEdgeId(unsigned int edgeId) const {
-  edgeId_ = edgeId;
 }
 
 

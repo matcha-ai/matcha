@@ -53,17 +53,18 @@ engine::Stream* Stream::object() const {
 
 matcha::Stream& operator>>(matcha::Stream& stream, matcha::Tensor& tensor) {
   if (stream.isNull() || tensor.isNull()) throw std::runtime_error("object is null");
-  stream.object()->openOut(tensor.object());
+  stream.object()->open(tensor.object());
   return stream;
 }
 
 matcha::Stream& operator>>(matcha::Stream& stream, matcha::Input& input) {
   if (stream.isNull() || input.isNull()) throw std::runtime_error("object is null");
-  stream.object()->populateNext(input.object());
+//  stream.object()->populateNext(input.object());
   return stream;
 }
 
 std::ostream& operator<<(std::ostream& os, const matcha::Stream& stream) {
-  os << stream.object()->getLoader()->type + " {/* ... */}" << std::endl;
+//  os << stream.object()->getLoader()->type + " {/* ... */}" << std::endl;
+  os << "Stream { name: " << stream.name() << " }" << std::endl;
   return os;
 }

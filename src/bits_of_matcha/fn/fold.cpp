@@ -10,23 +10,31 @@
 namespace matcha {
 namespace fn {
 
-Tensor fold(const Stream& stream, const Tensor& init, const std::function<Tensor (const Tensor& a, const Tensor& b)>& fn) {
+Tensor fold(Stream& stream, const Tensor& init, const std::function<Tensor (const Tensor& a, const Tensor& b)>& fn) {
   stream.reset();
 
-  Tensor iter(stream);
-  Params buff(iter.dtype(), iter.shape(), init);
-  Tensor action = fn(buff, iter);
+  Tensor output = init.rank() == 0
+      ? Tensor(stream)
+      : Tensor(init.dtype(), init.shape());
 
-  iter.rename("iter");
-  buff.rename("buff");
+//  if (init.rank() != 0) stream >> output;
+  output.subst();
+  stream >> output;
+
+  Params buffer(output.dtype(), output.shape(), init);
+  Tensor action = fn(buffer, output);
+
+  output.rename("output");
+  buffer.rename("buffer");
   action.rename("action");
 
+  int i = 0;
   while (stream) {
-    iter.update();
-    buff.update(action);
+    output.update();
+    buffer.update(action);
   }
 
-  return buff;
+  return buffer;
 }
 
 }

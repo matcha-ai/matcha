@@ -30,6 +30,7 @@ class Stream;
 class Params;
 class Input;
 class Node;
+class Status;
 
 
 class Flow : public Object {
@@ -46,7 +47,7 @@ class Flow : public Object {
     size_t outs() const;
 
   public:
-    void considerPruning() override;
+    void prune(Out* out) override;
 
   private:
     mutable Tuple outs_;

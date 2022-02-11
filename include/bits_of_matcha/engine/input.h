@@ -13,7 +13,7 @@ namespace engine {
 
 class Stream;
 
-class Input : public Node {
+class Input : public Object {
   public:
     Input(const Dtype& dtype, const Shape& shape);
     Input(const Dtype& dtype, const Shape& shape, const std::vector<std::byte>& content);
@@ -23,21 +23,20 @@ class Input : public Node {
     const Dtype& dtype() const;
     const Shape& shape() const;
 
+    Out* out();
+
     size_t rank() const;
     size_t size() const;
-
-    void eval(Tensor* target) override;
-    void require() override;
 
     template <class T>
     T& at(size_t position);
 
-    static const NodeLoader* loader();
-    const NodeLoader* getLoader() const override;
-    void save(std::ostream& os) const override;
+    void updateStatusChanged(In* in = nullptr) override;
+    void prune(Out* out = nullptr) override;
 
   private:
     device::Buffer* buffer_;
+    Out* out_;
 
 };
 

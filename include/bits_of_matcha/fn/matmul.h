@@ -24,14 +24,6 @@ class Matmul : public Fn {
   public:
     Matmul(Tensor* a, Tensor* b);
     Matmul(const matcha::Tensor& a, const matcha::Tensor& b);
-
-    void eval(Tensor* target) override;
-
-    static const NodeLoader* loader();
-    const NodeLoader* getLoader() const override;
-
-  private:
-    device::Computation* computation_;
 };
 
 }

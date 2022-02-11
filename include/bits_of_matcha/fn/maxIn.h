@@ -29,14 +29,6 @@ class MaxIn : public Fn {
   public:
     MaxIn(Tensor* a);
     MaxIn(const matcha::Tensor& a);
-
-    void eval(Tensor* target) override;
-
-    static const NodeLoader* loader();
-    const NodeLoader* getLoader() const override;
-
-  private:
-    device::Computation* computation_;
 };
 
 

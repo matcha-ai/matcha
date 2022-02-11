@@ -29,14 +29,6 @@ class MaxAlong : public Fn {
   public:
     MaxAlong(Tensor* a);
     MaxAlong(const matcha::Tensor& a);
-
-    void eval(Tensor* target) override;
-
-    static const NodeLoader* loader();
-    const NodeLoader* getLoader() const override;
-
-  private:
-    device::Computation* computation_;
 };
 
 

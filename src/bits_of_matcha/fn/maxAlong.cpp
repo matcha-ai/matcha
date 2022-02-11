@@ -11,7 +11,8 @@ namespace fn {
 
 Tensor maxAlong(const Tensor& a) {
   auto* node = new engine::fn::MaxAlong(a);
-  return Tensor::fromObject(node->out(0));
+  auto* out  = new engine::Tensor(node->out(0));
+  return Tensor::fromObject(out);
 }
 
 }
@@ -24,25 +25,15 @@ namespace fn {
 MaxAlong::MaxAlong(Tensor* a)
   : Fn{a}
 {
-  addOut(in(0)->dtype(), {});
-  computation_ = device::Cpu().createComputation(
-     "MaxAlong",
-     {in(0)->buffer()}
-  );
-  computation_->prepare();
-  out(0)->setBuffer(computation_->target(0));
+  wrapComputation("MaxAlong", {in(0)});
+  deduceStatus();
 }
 
 MaxAlong::MaxAlong(const matcha::Tensor& a)
   : MaxAlong(deref(a))
 {}
 
-void MaxAlong::eval(Tensor* target) {
-  if (!required()) return;
-  unrequire();
-  evalIns();
-  computation_->run();
-}
+/*
 
 const NodeLoader* MaxAlong::getLoader() const {
   return loader();
@@ -58,6 +49,8 @@ const NodeLoader* MaxAlong::loader() {
   };
   return &nl;
 };
+
+*/
 
 }
 }

@@ -59,6 +59,7 @@ FlowSaver::FlowSaver(std::ostream& os, const Flow* flow)
 }
 
 void FlowSaver::schedule(Node* node) {
+  /*
   if (scheduledNodes_.contains(node)) return;
   scheduledNodes_.insert(node);
 
@@ -66,9 +67,11 @@ void FlowSaver::schedule(Node* node) {
     schedule(in);
   }
   nodeQueue_.push(node);
+  */
 }
 
 void FlowSaver::schedule(Tensor* tensor) {
+  /*
   if (scheduledTensors_.contains(tensor)) return;
   scheduledTensors_.insert(tensor);
 
@@ -77,6 +80,7 @@ void FlowSaver::schedule(Tensor* tensor) {
   } else {
     schedule(tensor->in_);
   }
+  */
 }
 
 void FlowSaver::tuple(std::ostream& os, const std::vector<std::string>& names) {

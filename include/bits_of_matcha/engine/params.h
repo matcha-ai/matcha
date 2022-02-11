@@ -18,7 +18,7 @@ class Input;
 class Stream;
 
 
-class Params : public Node {
+class Params : public Object {
   public:
     Params(const Dtype& dtype, const Shape& shape);
     Params(const Dtype& dtype, const Shape& shape, Tensor* init);
@@ -34,18 +34,17 @@ class Params : public Node {
     size_t rank() const;
     size_t size() const;
 
-    void eval(Tensor* target) override;
-    void require() override;
-    void update(Tensor* tensor);
+    void update(Tensor* source);
 
-    static const NodeLoader* loader();
-    const NodeLoader* getLoader() const override;
-    void save(std::ostream& os) const override;
+    Out* out();
+
+    void prune(Out* out = nullptr) override;
 
   private:
     Dtype dtype_;
     Shape shape_;
 
+    Out* out_;
 
   private:
     device::Buffer* buffer_;

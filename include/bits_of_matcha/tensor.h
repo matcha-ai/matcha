@@ -60,6 +60,9 @@ class Tensor : public Object {
     void use(const Device& device) const;
     void update() const;
 
+    void subst(const Tensor& source);
+    void subst();
+
   public:
     static Tensor fromObject(engine::Tensor* object);
 

@@ -14,30 +14,39 @@ namespace engine {
 
 
 Params::Params(const Dtype& dtype, const Shape& shape)
-  : Node{}
-  , dtype_{dtype}
+  : dtype_{dtype}
   , shape_{shape}
 {
-  addOut(dtype, shape);
+  out_ = createOut(dtype, shape);
   buffer_ = device::Cpu().createBuffer(dtype, shape);
   buffer_->prepare();
-  out(0)->setBuffer(buffer_);
+  out()->setBuffer(buffer_);
+
+  status_ = {
+    .data   = true,
+    .update = false,
+    .ready  = true,
+  };
 }
 
 Params::Params(const Dtype& dtype, const Shape& shape, const std::byte* data)
-  : Node{}
-  , dtype_{dtype}
+  : dtype_{dtype}
   , shape_{shape}
 {
-  addOut(dtype, shape);
+  out_ = createOut(dtype, shape);
   buffer_ = device::Cpu().createBuffer(dtype, shape);
   buffer_->prepare();
 
-  std::cout << "SDFSDF" << std::endl;
   std::byte* buff = reinterpret_cast<std::byte*>(buffer_->raw());
   std::copy(data, data + size(), buff);
 
-  out(0)->setBuffer(buffer_);
+  out()->setBuffer(buffer_);
+
+  status_ = {
+    .data   = true,
+    .update = false,
+    .ready  = true,
+  };
 }
 
 Params::Params(const Dtype& dtype, const Shape& shape, Tensor* init)
@@ -51,17 +60,17 @@ Params::Params(const Dtype& dtype, const Shape& shape, Stream* init)
 {}
 
 Params::Params(Tensor* tensor)
-  : Node{}
-  , dtype_{tensor->dtype()}
+  : dtype_{tensor->dtype()}
   , shape_{tensor->shape()}
 {
   auto& dtype = tensor->dtype();
   auto& shape = tensor->shape();
-  addOut(dtype, shape);
+
+  out_ = createOut(dtype, shape);
   buffer_ = device::Cpu().createBuffer(dtype, shape);
   buffer_->prepare();
   update(tensor);
-  out(0)->setBuffer(buffer_);
+  out()->setBuffer(buffer_);
 }
 
 Params::Params(Input* init)
@@ -69,7 +78,8 @@ Params::Params(Input* init)
 {}
 
 Params::Params(Stream* init)
-  : Params(init->generateNext().dtype(), init->generateNext().shape())
+  : dtype_{Dtype::Float}
+  , shape_{}
 {}
 
 const Dtype& Params::dtype() const {
@@ -88,39 +98,36 @@ size_t Params::size() const {
   return shape().size();
 }
 
-void Params::eval(Tensor* target) {
-
-}
-
-void Params::require() {
-
-}
-
 void Params::update(Tensor* tensor) {
-  if (tensor->rank() == 0) {
-
-    tensor->eval();
-    const auto& source = tensor->buffer();
-
-    // copies the one scalar entry
-    buffer_->copy(source);
-
-    // distribute that entry to the whole object
-    float* buff = reinterpret_cast<float*>(buffer_->raw());
-    std::fill(buff, buff + size(), buff[0]);
-
-  } else if (tensor->shape() == shape()) {
+  if (tensor->rank() == 0 || tensor->shape() == shape()) {
 
     tensor->eval();
     const auto& source = tensor->buffer();
     buffer_->copy(source);
+
+    if (tensor->rank() == 0) {
+      // spread the scalar entry across the entire content
+      float* buff = reinterpret_cast<float*>(buffer_->raw());
+      std::fill(buff, buff + size(), buff[0]);
+    }
 
   } else {
     throw std::invalid_argument("Params::update - shape mismatch");
   }
-  out(0)->require();
+  out()->updateStatusChanged();
 }
 
+Out* Params::out() {
+  return out_;
+}
+
+void Params::prune(Out* link) {
+  if (referenced()) return;
+  if (out()->linked()) return;
+  delete this;
+}
+
+/*
 const NodeLoader* Params::getLoader() const {
   return loader();
 }
@@ -172,7 +179,7 @@ void Params::save(std::ostream& os) const {
   FlowSaver::flatFloats(os, (const float*)(buffer_->raw()), shape(), 1);
 }
 
-
+*/
 
 }
 }

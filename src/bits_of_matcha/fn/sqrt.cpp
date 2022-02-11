@@ -11,7 +11,8 @@ namespace fn {
 
 Tensor sqrt(const Tensor& a) {
   auto* node = new engine::fn::Sqrt(a);
-  return Tensor::fromObject(node->out(0));
+  auto* out  = new engine::Tensor(node->out(0));
+  return Tensor::fromObject(out);
 }
 
 }
@@ -25,25 +26,15 @@ namespace fn {
 Sqrt::Sqrt(Tensor* a)
   : Fn{a}
 {
-  addOut(in(0)->dtype(), in(0)->shape());
-  computation_ = device::Cpu().createComputation(
-     "Sqrt",
-     {in(0)->buffer()}
-  );
-  computation_->prepare();
-  out(0)->setBuffer(computation_->target(0));
+  wrapComputation("Sqrt", {in(0)});
+  deduceStatus();
 }
 
 Sqrt::Sqrt(const matcha::Tensor& a)
   : Sqrt(deref(a))
 {}
 
-void Sqrt::eval(Tensor* target) {
-  if (!required()) return;
-  unrequire();
-  evalIns();
-  computation_->run();
-}
+/*
 
 const NodeLoader* Sqrt::getLoader() const {
   return loader();
@@ -59,6 +50,8 @@ const NodeLoader* Sqrt::loader() {
   };
   return &nl;
 };
+
+*/
 
 }
 }

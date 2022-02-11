@@ -11,7 +11,8 @@ namespace fn {
 
 Tensor exp(const Tensor& a) {
   auto* node = new engine::fn::Exp(a);
-  return Tensor::fromObject(node->out(0));
+  auto* out  = new engine::Tensor(node->out(0));
+  return Tensor::fromObject(out);
 }
 
 }
@@ -25,25 +26,15 @@ namespace fn {
 Exp::Exp(Tensor* a)
   : Fn{a}
 {
-  addOut(in(0)->dtype(), in(0)->shape());
-  computation_ = device::Cpu().createComputation(
-     "Exp",
-     {in(0)->buffer()}
-  );
-  computation_->prepare();
-  out(0)->setBuffer(computation_->target(0));
+  wrapComputation("Exp", {in(0)});
+  deduceStatus();
 }
 
 Exp::Exp(const matcha::Tensor& a)
   : Exp(deref(a))
 {}
 
-void Exp::eval(Tensor* target) {
-  if (!required()) return;
-  unrequire();
-  evalIns();
-  computation_->run();
-}
+/*
 
 const NodeLoader* Exp::getLoader() const {
   return loader();
@@ -59,6 +50,8 @@ const NodeLoader* Exp::loader() {
   };
   return &nl;
 };
+
+*/
 
 }
 }

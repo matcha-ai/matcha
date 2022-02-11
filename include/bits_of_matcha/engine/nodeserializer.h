@@ -24,7 +24,7 @@
 
 #include "bits_of_matcha/fn/equal.h"
 
-#include "bits_of_matcha/fn/normal.h"
+#include "bits_of_matcha/rng/normal.h"
 
 #include <iostream>
 #include <initializer_list>
@@ -58,30 +58,30 @@ class NodeSerializer {
 namespace {
 
 static NodeSerializer nodeSerializer {
-  Params::loader,
-  Input::loader,
+//  Params::loader,
+//  Input::loader,
 
-  fn::Add::loader,
-  fn::Subtract::loader,
-  fn::Multiply::loader,
-  fn::Divide::loader,
+//  fn::Add::loader,
+//  fn::Subtract::loader,
+//  fn::Multiply::loader,
+//  fn::Divide::loader,
 
-  fn::Square::loader,
-  fn::Sqrt::loader,
-  fn::Exp::loader,
+//  fn::Square::loader,
+//  fn::Sqrt::loader,
+//  fn::Exp::loader,
 
-  fn::Matmul::loader,
-  fn::Transpose::loader,
+//  fn::Matmul::loader,
+//  fn::Transpose::loader,
 
-  fn::MaxAlong::loader,
-  fn::MaxIn::loader,
-  fn::MaxBetween::loader,
+//  fn::MaxAlong::loader,
+//  fn::MaxIn::loader,
+//  fn::MaxBetween::loader,
 
-  fn::Sum::loader,
+//  fn::Sum::loader,
 
-  fn::Equal::loader,
+//  fn::Equal::loader,
 
-  rng::Normal::loader,
+//  rng::Normal::loader,
 };
 
 }

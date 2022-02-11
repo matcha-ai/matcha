@@ -27,14 +27,6 @@ class Sqrt : public Fn {
   public:
     Sqrt(Tensor* a);
     Sqrt(const matcha::Tensor& a);
-
-    void eval(Tensor* target) override;
-
-    static const NodeLoader* loader();
-    const NodeLoader* getLoader() const override;
-
-  private:
-    device::Computation* computation_;
 };
 
 
