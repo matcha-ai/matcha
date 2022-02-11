@@ -53,6 +53,7 @@ engine::Stream* Stream::object() const {
 
 matcha::Stream& operator>>(matcha::Stream& stream, matcha::Tensor& tensor) {
   if (stream.isNull() || tensor.isNull()) throw std::runtime_error("object is null");
+  tensor.object()->subst();
   stream.object()->open(tensor.object());
   return stream;
 }

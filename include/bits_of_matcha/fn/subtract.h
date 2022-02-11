@@ -12,6 +12,7 @@ namespace fn {
 }
 }
 
+matcha::Tensor operator-(const matcha::Tensor& a);
 matcha::Tensor operator-(const matcha::Tensor& a, const matcha::Tensor& b);
 const matcha::Tensor& operator-=(matcha::Tensor& a, const matcha::Tensor& b);
 

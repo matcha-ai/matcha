@@ -50,15 +50,27 @@ set(
   include/bits_of_matcha/fn/exp.h
 
   include/bits_of_matcha/fn/matmul.h
+
   include/bits_of_matcha/fn/transpose.h
+  include/bits_of_matcha/fn/reshape.h
 
   include/bits_of_matcha/fn/max.h
   include/bits_of_matcha/fn/maxBetween.h
   include/bits_of_matcha/fn/maxIn.h
   include/bits_of_matcha/fn/maxAlong.h
-  include/bits_of_matcha/fn/equal.h
 
   include/bits_of_matcha/fn/sum.h
+
+  include/bits_of_matcha/fn/equal.h
+  include/bits_of_matcha/fn/nequal.h
+  include/bits_of_matcha/fn/less.h
+  include/bits_of_matcha/fn/greater.h
+  include/bits_of_matcha/fn/lequal.h
+  include/bits_of_matcha/fn/gequal.h
+
+  include/bits_of_matcha/fn/lnot.h
+  include/bits_of_matcha/fn/land.h
+  include/bits_of_matcha/fn/lor.h
 
   include/bits_of_matcha/fn/batch.h
   include/bits_of_matcha/fn/map.h
@@ -107,15 +119,26 @@ set(
   src/bits_of_matcha/fn/exp.cpp
 
   src/bits_of_matcha/fn/matmul.cpp
+
   src/bits_of_matcha/fn/transpose.cpp
+  src/bits_of_matcha/fn/reshape.cpp
 
   src/bits_of_matcha/fn/max.cpp
   src/bits_of_matcha/fn/maxBetween.cpp
   src/bits_of_matcha/fn/maxIn.cpp
   src/bits_of_matcha/fn/maxAlong.cpp
-  src/bits_of_matcha/fn/equal.cpp
-
   src/bits_of_matcha/fn/sum.cpp
+
+  src/bits_of_matcha/fn/equal.cpp
+  src/bits_of_matcha/fn/nequal.cpp
+  src/bits_of_matcha/fn/less.cpp
+  src/bits_of_matcha/fn/greater.cpp
+  src/bits_of_matcha/fn/lequal.cpp
+  src/bits_of_matcha/fn/gequal.cpp
+
+  src/bits_of_matcha/fn/lnot.cpp
+  src/bits_of_matcha/fn/land.cpp
+  src/bits_of_matcha/fn/lor.cpp
 
   src/bits_of_matcha/fn/batch.cpp
   src/bits_of_matcha/fn/map.cpp

@@ -18,6 +18,10 @@ Tensor subtract(const Tensor& a, const Tensor& b) {
 }
 }
 
+matcha::Tensor operator-(const matcha::Tensor& a) {
+  return 0 - a;
+}
+
 matcha::Tensor operator-(const matcha::Tensor& a, const matcha::Tensor& b) {
   return matcha::fn::subtract(a, b);
 }

@@ -60,7 +60,7 @@ void Batch::open(Tensor* out) {
 }
 
 void Batch::relayData(Tensor* relay, Tensor* target) {
-  auto* out = createOut(target->dtype(), target->shape()) ;
+  auto* out = createOut(target->dtype(), target->shape(), outs_.size()) ;
   out->setBuffer(relay->buffer());
 
   relays_.push_back(relay);
@@ -72,7 +72,6 @@ void Batch::relayData(Tensor* relay, Tensor* target) {
 }
 
 void Batch::close(Out* out) {
-  std::cout << "close Batch out" << std::endl;
   auto* relay = relays_[out->id()];
   relay->prune();
   outs_.erase(std::remove(std::begin(outs_), std::end(outs_), out));
