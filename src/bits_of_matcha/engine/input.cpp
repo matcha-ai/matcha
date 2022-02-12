@@ -1,9 +1,6 @@
 #include "bits_of_matcha/engine/input.h"
-#include "bits_of_matcha/engine/stream.h"
-#include "bits_of_matcha/engine/nodeloader.h"
-#include "bits_of_matcha/engine/flowloader.h"
-#include "bits_of_matcha/engine/flowsaver.h"
 
+#include <matcha/engine>
 #include <matcha/device>
 #include <iostream>
 #include <algorithm>
@@ -23,6 +20,8 @@ Input::Input(const Dtype& dtype, const Shape& shape) {
     .update = false,
     .ready = true,
   };
+
+  Debug() << "created Input " << this;
 }
 
 Input::Input(const Dtype& dtype, const Shape& shape, const std::vector<std::byte>& buffer)
@@ -46,11 +45,12 @@ Input::Input(const Dtype& dtype, const Shape& shape, const std::vector<std::byte
     .update = false,
     .ready  = true,
   };
+
+  Debug() << "created Input " << this;
 }
 
-Input::Input(const Stream& stream)
-{
-
+Input::~Input() {
+  Debug() << "deleted Input " << this;
 }
 
 Out* Input::out() {
@@ -95,6 +95,7 @@ void Input::update(Tensor* tensor) {
 }
 
 void Input::updateStatusChanged(In* in) {
+  Debug() << "updated Input " << this;
   out()->updateStatusChanged();
 }
 

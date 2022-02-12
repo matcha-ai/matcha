@@ -15,6 +15,7 @@ namespace matcha {
 #include "bits_of_matcha/input.h"
 #include "bits_of_matcha/tuple.h"
 
+#include "bits_of_matcha/engine/debug.h"
 #include "bits_of_matcha/engine/object.h"
 #include "bits_of_matcha/engine/tensor.h"
 #include "bits_of_matcha/engine/params.h"

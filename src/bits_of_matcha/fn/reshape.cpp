@@ -33,7 +33,7 @@ Reshape::Reshape(Tensor* a, const Shape& shape)
   }
 
   auto* out = createOut(a->dtype(), shape);
-  auto* buffer = Context::device().createBuffer(in(0)->dtype(), shape);
+  auto* buffer = Context::current()->getDevice()->createBuffer(in(0)->dtype(), shape);
   buffer->setSource(in(0)->buffer());
   out->setBuffer(buffer);
   outs_.push_back(out);
@@ -46,9 +46,8 @@ Reshape::Reshape(Tensor* a, const Shape& shape)
 }
 
 void Reshape::dataStatusChanged(In* in) {
-  out(0)->dataStatusChanged();
-
   status_.data = in->status().data;
+  out(0)->dataStatusChanged();
 }
 
 void Reshape::updateStatusChanged(In* in) {

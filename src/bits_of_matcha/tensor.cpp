@@ -1,13 +1,7 @@
 #include "bits_of_matcha/tensor.h"
-#include "bits_of_matcha/params.h"
-#include "bits_of_matcha/stream.h"
-#include "bits_of_matcha/input.h"
-#include "bits_of_matcha/engine/tensor.h"
-#include "bits_of_matcha/engine/params.h"
-#include "bits_of_matcha/engine/stream.h"
-#include "bits_of_matcha/engine/input.h"
-#include "bits_of_matcha/engine/flowsaver.h"
+#include "bits_of_matcha/fn/reshape.h"
 
+#include <matcha/engine>
 #include <iostream>
 
 
@@ -91,6 +85,10 @@ void Tensor::use(const Device& device) const {
 void Tensor::update() const {
   if (isNull()) throw std::runtime_error("Object is null");
   object()->updateStatusChanged();
+}
+
+Tensor Tensor::reshape(const Shape& shape) const {
+  return fn::reshape(*this, shape);
 }
 
 Tensor& Tensor::subst(const Tensor& source) {

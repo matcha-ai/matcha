@@ -40,6 +40,7 @@ set(
   include/bits_of_matcha/engine/flowloader.h
   include/bits_of_matcha/engine/inlet.h
   include/bits_of_matcha/engine/outlet.h
+  include/bits_of_matcha/engine/debug.h
 
   include/bits_of_matcha/fn/add.h
   include/bits_of_matcha/fn/subtract.h
@@ -113,6 +114,7 @@ set(
   src/bits_of_matcha/engine/flowloader.cpp
   src/bits_of_matcha/engine/inlet.cpp
   src/bits_of_matcha/engine/outlet.cpp
+  src/bits_of_matcha/engine/debug.cpp
 
   src/bits_of_matcha/fn/add.cpp
   src/bits_of_matcha/fn/subtract.cpp

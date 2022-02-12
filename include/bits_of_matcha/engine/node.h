@@ -26,6 +26,7 @@ class Out;
 class Node : public Object {
   public:
     Node(std::initializer_list<Tensor*> ins);
+    ~Node();
 
   public:
 

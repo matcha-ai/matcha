@@ -17,8 +17,7 @@ class Input : public Object {
   public:
     Input(const Dtype& dtype, const Shape& shape);
     Input(const Dtype& dtype, const Shape& shape, const std::vector<std::byte>& content);
-
-    Input(const Stream& stream);
+    ~Input();
 
     const Dtype& dtype() const;
     const Shape& shape() const;

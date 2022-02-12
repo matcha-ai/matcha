@@ -9,15 +9,17 @@ namespace matcha {
 namespace fn {
 
 Tensor fold(Stream& stream, const Tensor& init, std::function<Tensor (const Tensor& a, const Tensor& b)> fn) {
+  Context ctx("fold");
+
   stream.reset();
 
   Tensor output = init.rank() == 0
       ? Tensor(stream)
       : Tensor(init.dtype(), init.shape());
 
-//  if (init.rank() != 0) stream >> output;
-  output.subst();
-  stream >> output;
+  // keep it this way; otherwise reshaping won't work
+  // because it won't deduce the relay shape correctly
+  if (init.rank() != 0) output.subst(stream);
 
   Params buffer(output.dtype(), output.shape(), init);
   Tensor action = fn(buffer, output);

@@ -1,9 +1,6 @@
 #include "bits_of_matcha/engine/tensor.h"
-#include "bits_of_matcha/engine/params.h"
-#include "bits_of_matcha/engine/stream.h"
-#include "bits_of_matcha/engine/input.h"
-#include "bits_of_matcha/tensor.h"
 
+#include <matcha/engine>
 #include <matcha/device>
 
 
@@ -25,28 +22,8 @@ Tensor::Tensor(const Dtype& dtype, const Shape& shape)
     .update = false,
     .ready  = false
   };
-}
 
-Tensor::Tensor(Node* in, device::Buffer* buffer)
-  : dtype_{buffer->dtype()}
-  , shape_{buffer->shape()}
-  , buffer_{nullptr}
-  , cpuBuffer_{nullptr}
-  , in_{nullptr}
-  , out_{createOut(buffer->dtype(), buffer->shape())}
-{
-  setBuffer(buffer);
-}
-
-Tensor::Tensor(device::Buffer* buffer)
-  : dtype_{buffer->dtype()}
-  , shape_{buffer->shape()}
-  , buffer_{nullptr}
-  , cpuBuffer_{nullptr}
-  , in_{nullptr}
-  , out_{createOut(buffer->dtype(), buffer->shape())}
-{
-  setBuffer(buffer);
+  Debug() << "created Tensor " << this << " (from Dtype, Shape)";
 }
 
 Tensor::Tensor(Out* source)
@@ -59,6 +36,7 @@ Tensor::Tensor(Out* source)
 {
   setBuffer(source->buffer());
   status_ = source->status();
+  Debug() << "created Tensor " << this << " (from Out)";
 }
 
 In* Tensor::in() {
@@ -106,6 +84,8 @@ void Tensor::eval(Out* target) {
   if (!status_.data) throw std::runtime_error("data not available yet");
   if (!status_.update) return;
   status_.update = false;
+
+  Debug() << "eval Tensor " << this;
 
   if (in_ == nullptr) throw std::runtime_error("in is null");
   in_->eval();

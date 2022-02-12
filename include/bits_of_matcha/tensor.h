@@ -58,12 +58,14 @@ class Tensor : public Object {
     size_t rank() const;
     size_t size() const;
 
-    void use(const Device& device) const;
-    void update() const;
+    Tensor reshape(const Shape& shape) const;
 
     Tensor& subst(const Tensor& source);
     Tensor& subst(const Stream& source);
     Tensor& subst();
+
+    void use(const Device& device) const;
+    void update() const;
 
   public:
     static Tensor fromObject(engine::Tensor* object);

@@ -2,7 +2,6 @@
 
 #include <matcha/device>
 #include <matcha/engine>
-
 #include <algorithm>
 
 
@@ -27,7 +26,9 @@ void Fn::wrapComputation(const std::string& name, const std::vector<In*>& ins) {
       return in->buffer();
     }
   );
-  computation_ = Context::device().createComputation(name, bufferIns);
+
+  Debug() << "building Computation " << name;
+  computation_ = Context::current()->getDevice()->createComputation(name, bufferIns);
 
   if (outs_.empty()) {
 
@@ -100,6 +101,8 @@ void Fn::bufferChanged(In* in) {
   auto* buffer = in->buffer();
 
   if (buffer == nullptr) return;
+
+  Debug() << "reconfiguring Computation buffer: " << this;
   computation_->source(in->id())->setSource(buffer);
 }
 

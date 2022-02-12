@@ -12,15 +12,6 @@
 
 namespace matcha {
 
-
-Stream::Stream(const Tensor& tensor) {
-
-}
-
-Stream::Stream(const Input& input) {
-
-}
-
 Stream::operator bool() const {
   if (isNull()) throw std::runtime_error("Object is null");
   return !object()->eof();

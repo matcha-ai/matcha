@@ -35,8 +35,6 @@ class Node;
 class Tensor : public Object {
   public:
     Tensor(const Dtype& dtype, const Shape& shape);
-    Tensor(Node* in, device::Buffer* buffer);
-    Tensor(device::Buffer* buffer);
     Tensor(Out* source);
 
     const Dtype& dtype() const;

@@ -3,6 +3,7 @@
 #include "bits_of_matcha/device/buffer.h"
 #include "bits_of_matcha/stream.h"
 
+#include <matcha/engine>
 #include <matcha/device>
 #include <iostream>
 

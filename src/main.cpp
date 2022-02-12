@@ -11,16 +11,18 @@ using namespace matcha;
 using namespace matcha::nn;
 
 int main() {
-  Stream s = rng::uniform().batch(2);
-  Tensor x = floats({3, 3}).subst(s);
-
-  while (s) {
-    x.update();
-    cout << x;
-  }
+  auto cpu = device::Cpu();
   Context ctx;
-  ctx.use(device::Cpu());
+  ctx.debug(false);
+  ctx.use(cpu);
 
+  Stream s = dataset::csv("/home/patz/Downloads/mnist_train2.csv")
+          .batch(1)
+          .map([](auto& x) { return x > 0; })
+          .map([](auto& x) { return x.reshape({28, 28}); });
+
+  Tensor a = s.fold(0, fn::add);
+  cout << a;
 
   return 0;
 }

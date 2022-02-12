@@ -1,11 +1,6 @@
 #include "bits_of_matcha/engine/params.h"
-#include "bits_of_matcha/engine/tensor.h"
-#include "bits_of_matcha/engine/input.h"
-#include "bits_of_matcha/engine/stream.h"
-#include "bits_of_matcha/engine/nodeloader.h"
-#include "bits_of_matcha/engine/flowloader.h"
-#include "bits_of_matcha/engine/flowsaver.h"
 
+#include <matcha/engine>
 #include <matcha/device>
 
 
@@ -27,6 +22,8 @@ Params::Params(const Dtype& dtype, const Shape& shape)
     .update = false,
     .ready  = true,
   };
+
+  Debug() << "created Params";
 }
 
 Params::Params(const Dtype& dtype, const Shape& shape, const std::byte* data)
@@ -47,6 +44,8 @@ Params::Params(const Dtype& dtype, const Shape& shape, const std::byte* data)
     .update = false,
     .ready  = true,
   };
+
+  Debug() << "created Params";
 }
 
 Params::Params(const Dtype& dtype, const Shape& shape, Tensor* init)
@@ -66,11 +65,14 @@ Params::Params(Tensor* tensor)
   auto& dtype = tensor->dtype();
   auto& shape = tensor->shape();
 
-  out_ = createOut(dtype, shape);
   buffer_ = device::Cpu().createBuffer(dtype, shape);
   buffer_->prepare();
-  update(tensor);
+  out_ = createOut(dtype, shape);
   out()->setBuffer(buffer_);
+
+  Debug() << "created Params";
+
+  update(tensor);
 }
 
 Params::Params(Input* init)
@@ -114,6 +116,7 @@ void Params::update(Tensor* tensor) {
   } else {
     throw std::invalid_argument("Params::update - shape mismatch");
   }
+  Debug() << "updated Params " << this;
   out()->updateStatusChanged();
 }
 

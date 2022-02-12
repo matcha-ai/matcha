@@ -1,7 +1,6 @@
 #include "bits_of_matcha/engine/node.h"
-#include "bits_of_matcha/engine/tensor.h"
-#include "bits_of_matcha/tensor.h"
 
+#include <matcha/engine>
 #include <stdexcept>
 #include <algorithm>
 
@@ -27,6 +26,11 @@ Node::Node(std::initializer_list<Tensor*> ins)
     .update = true,
     .ready = false
   };
+  Debug() << "created Node " << this;
+}
+
+Node::~Node() {
+  Debug() << "deleted Node " << this;
 }
 
 In* Node::in(int index) {

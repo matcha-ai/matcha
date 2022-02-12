@@ -29,10 +29,6 @@ namespace engine {
 
 class Stream : public Object {
   public:
-    Stream() = default;
-    Stream(const Tensor& tensor);
-    Stream(const Input& input);
-
     void reset() const;
     void shuffle() const;
 
