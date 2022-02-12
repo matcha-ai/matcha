@@ -14,6 +14,7 @@ set(
   include/matcha/tensor
   include/matcha/engine
 
+  include/bits_of_matcha/context.h
   include/bits_of_matcha/object.h
   include/bits_of_matcha/tensor.h
   include/bits_of_matcha/params.h
@@ -77,12 +78,16 @@ set(
   include/bits_of_matcha/fn/fold.h
 
   include/bits_of_matcha/rng/normal.h
+  include/bits_of_matcha/rng/uniform.h
+  include/bits_of_matcha/rng/poisson.h
+  include/bits_of_matcha/rng/bernoulli.h
 
 )
 
 set(
   PROJECT_SOURCES
 
+  src/bits_of_matcha/context.cpp
   src/bits_of_matcha/object.cpp
   src/bits_of_matcha/tensor.cpp
   src/bits_of_matcha/params.cpp
@@ -145,11 +150,14 @@ set(
   src/bits_of_matcha/fn/fold.cpp
 
   src/bits_of_matcha/rng/normal.cpp
+  src/bits_of_matcha/rng/uniform.cpp
+  src/bits_of_matcha/rng/poisson.cpp
+  src/bits_of_matcha/rng/bernoulli.cpp
 
 )
 
 find_package(matcha-device)
-#find_package(matcha)
+find_package(matcha)
 find_package(Threads)
 find_package(Boost REQUIRED COMPONENTS serialization)
 
@@ -196,7 +204,7 @@ target_include_directories(
 #)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC matcha-device)
-#target_link_libraries(${PROJECT_NAME} PUBLIC matcha)
+target_link_libraries(${PROJECT_NAME} PUBLIC matcha)
 target_link_libraries(${PROJECT_NAME} PRIVATE pthread)
 target_link_libraries(${PROJECT_NAME} PRIVATE Boost::serialization)
 target_link_libraries(main PUBLIC ${PROJECT_NAME})

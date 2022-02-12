@@ -9,21 +9,17 @@
 
 namespace matcha {
 namespace rng {
-  Stream normal();
-  Stream normal(uint64_t seed);
-  Stream normal(float m, float sd);
-  Stream normal(float m, float sd, uint64_t seed);
-}
+  Stream poisson();
+  Stream poisson(float m);
+  Stream poisson(float m, uint64_t seed);
 }
 
-namespace matcha {
 namespace engine {
 namespace rng {
 
-
-class Normal : public Stream {
+class Poisson : public Stream {
   public:
-    Normal(float m, float sd, uint64_t seed);
+    Poisson(float m, uint64_t seed);
 
     void reset() override;
     void shuffle() override;
@@ -42,7 +38,7 @@ class Normal : public Stream {
     uint64_t seed_;
 
     mutable std::mt19937 source_;
-    mutable std::normal_distribution<float> distribution_;
+    mutable std::poisson_distribution<int> distribution_;
 };
 
 }

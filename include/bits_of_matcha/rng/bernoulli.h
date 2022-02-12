@@ -1,29 +1,28 @@
 #pragma once
 
-#include "bits_of_matcha/stream.h"
 #include "bits_of_matcha/engine/stream.h"
+#include "bits_of_matcha/engine/nodeloader.h"
 
 #include <cinttypes>
 #include <random>
 
 
 namespace matcha {
+class Stream;
+
 namespace rng {
-  Stream normal();
-  Stream normal(uint64_t seed);
-  Stream normal(float m, float sd);
-  Stream normal(float m, float sd, uint64_t seed);
-}
+  Stream bernoulli();
+  Stream bernoulli(float p);
+  Stream bernoulli(float p, uint64_t seed);
 }
 
-namespace matcha {
 namespace engine {
 namespace rng {
 
 
-class Normal : public Stream {
+class Bernoulli : public Stream {
   public:
-    Normal(float m, float sd, uint64_t seed);
+    Bernoulli(float p, uint64_t seed);
 
     void reset() override;
     void shuffle() override;
@@ -38,11 +37,11 @@ class Normal : public Stream {
     void eval(Out* out) override;
 
   private:
-    float m_, sd_;
+    float p_;
     uint64_t seed_;
 
     mutable std::mt19937 source_;
-    mutable std::normal_distribution<float> distribution_;
+    mutable std::bernoulli_distribution distribution_;
 };
 
 }

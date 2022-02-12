@@ -1,4 +1,4 @@
-#include "bits_of_matcha/rng/normal.h"
+#include "bits_of_matcha/rng/poisson.h"
 
 #include <matcha/engine>
 
@@ -6,20 +6,16 @@
 namespace matcha {
 namespace rng {
 
-Stream normal() {
-  return normal(0, 1, 0);
+Stream poisson() {
+  return poisson(1, 0);
 }
 
-Stream normal(uint64_t seed) {
-  return normal(0, 1, seed);
+Stream poisson(float m) {
+  return poisson(m, 0);
 }
 
-Stream normal(float m, float sd) {
-  return normal(m, sd, 0);
-}
-
-Stream normal(float m, float sd, uint64_t seed) {
-  return Stream::fromObject(new engine::rng::Normal(m, sd, seed));
+Stream poisson(float m, uint64_t seed) {
+  return Stream::fromObject(new engine::rng::Poisson(m, seed));
 }
 
 }
@@ -27,45 +23,46 @@ Stream normal(float m, float sd, uint64_t seed) {
 namespace engine {
 namespace rng {
 
-Normal::Normal(float m, float sd, uint64_t seed)
+Poisson::Poisson(float m, uint64_t seed)
   : m_{m}
-  , sd_{sd}
   , seed_{seed}
   , source_{seed}
-  , distribution_{m, sd}
-{}
-
-void Normal::reset() {
+  , distribution_{m}
+{
 
 }
 
-void Normal::shuffle() {
+void Poisson::reset() {
 
 }
 
-bool Normal::eof() const {
+void Poisson::shuffle() {
+
+}
+
+bool Poisson::eof() const {
   return false;
 }
 
-size_t Normal::size() const {
+size_t Poisson::size() const {
   return std::numeric_limits<size_t>::max();
 }
 
-Tensor* Normal::open() {
+Tensor* Poisson::open() {
   auto* out = new Tensor(Dtype::Float, {});
   open(out);
   return out;
 }
 
-void Normal::open(Tensor* tensor) {
+void Poisson::open(Tensor* tensor) {
   beginOut(tensor);
 }
 
-void Normal::close(Out* out) {
+void Poisson::close(Out* out) {
   outs_.erase(std::begin(outs_) + out->id());
 }
 
-void Normal::eval(Out* out) {
+void Poisson::eval(Out* out) {
   auto* buffer = out->buffer();
   buffer->prepare();
   auto* begin = (float*)buffer->raw();
@@ -77,34 +74,34 @@ void Normal::eval(Out* out) {
 
 /*
 
-const NodeLoader* Normal::getLoader() const {
+const NodeLoader* Poisson::getLoader() const {
   return loader();
 }
 
-const NodeLoader* Normal::loader() {
+const NodeLoader* Poisson::loader() {
   static NodeLoader nl = {
-    .type = "NormalRng",
+    .type = "PoissonRng",
     .load = [](auto& is, auto& ins) {
-      if (ins.size() != 0) throw std::invalid_argument("loading NormalRng: incorrect number of arguments");
+      if (ins.size() != 0) throw std::invalid_argument("loading PoissonRng: incorrect number of arguments");
       auto lval = FlowLoader::lvalue(is, ':');
-      if (lval != "m") throw std::invalid_argument("loading NormalRng: expected mu");
+      if (lval != "m") throw std::invalid_argument("loading PoissonRng: expected mu");
       float m = FlowLoader::oneFloat(is);
 
       lval = FlowLoader::lvalue(is, ':');
-      if (lval != "sd") throw std::invalid_argument("loading NormalRng: expected sigma");
+      if (lval != "sd") throw std::invalid_argument("loading PoissonRng: expected sigma");
       float sd = FlowLoader::oneFloat(is);
 
       lval = FlowLoader::lvalue(is, ':');
-      if (lval != "seed") throw std::invalid_argument("loading NormalRng: expected sigma");
+      if (lval != "seed") throw std::invalid_argument("loading PoissonRng: expected sigma");
       uint64_t seed = FlowLoader::oneUint64(is);
 
-      return new Normal(m, sd, seed);
+      return new Poisson(m, sd, seed);
     }
   };
   return &nl;
 }
 
-void Normal::save(std::ostream& os) const {
+void Poisson::save(std::ostream& os) const {
   os << "\n  ";
   FlowSaver::assignment(os, "m", ": ");
   FlowSaver::oneFloat(os, m_);

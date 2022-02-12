@@ -11,7 +11,7 @@ using namespace matcha;
 using namespace matcha::nn;
 
 int main() {
-  Stream s = rng::normal().batch(10);
+  Stream s = rng::uniform().batch(2);
   Tensor x = floats({3, 3}).subst(s);
 
   while (s) {

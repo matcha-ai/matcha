@@ -9,10 +9,10 @@
 
 namespace matcha {
 namespace rng {
-  Stream normal();
-  Stream normal(uint64_t seed);
-  Stream normal(float m, float sd);
-  Stream normal(float m, float sd, uint64_t seed);
+  Stream uniform();
+  Stream uniform(uint64_t seed);
+  Stream uniform(float lo, float hi);
+  Stream uniform(float lo, float hi, uint64_t seed);
 }
 }
 
@@ -21,9 +21,9 @@ namespace engine {
 namespace rng {
 
 
-class Normal : public Stream {
+class Uniform : public Stream {
   public:
-    Normal(float m, float sd, uint64_t seed);
+    Uniform(float lo, float hi, uint64_t seed);
 
     void reset() override;
     void shuffle() override;
@@ -38,11 +38,11 @@ class Normal : public Stream {
     void eval(Out* out) override;
 
   private:
-    float m_, sd_;
+    float lo_, hi_;
     uint64_t seed_;
 
     mutable std::mt19937 source_;
-    mutable std::normal_distribution<float> distribution_;
+    mutable std::uniform_real_distribution<float> distribution_;
 };
 
 }

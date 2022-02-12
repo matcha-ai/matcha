@@ -52,3 +52,6 @@ namespace matcha {
 #include "bits_of_matcha/fn/fold.h"
 
 #include "bits_of_matcha/rng/normal.h"
+#include "bits_of_matcha/rng/uniform.h"
+#include "bits_of_matcha/rng/poisson.h"
+#include "bits_of_matcha/rng/bernoulli.h"
