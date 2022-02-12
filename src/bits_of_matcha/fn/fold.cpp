@@ -1,16 +1,14 @@
 #include "bits_of_matcha/fn/fold.h"
-#include "bits_of_matcha/tensor.h"
-#include "bits_of_matcha/params.h"
-#include "bits_of_matcha/stream.h"
 #include "bits_of_matcha/fn/add.h"
 
+#include <matcha/engine>
 #include <iostream>
 
 
 namespace matcha {
 namespace fn {
 
-Tensor fold(Stream& stream, const Tensor& init, const std::function<Tensor (const Tensor& a, const Tensor& b)>& fn) {
+Tensor fold(Stream& stream, const Tensor& init, std::function<Tensor (const Tensor& a, const Tensor& b)> fn) {
   stream.reset();
 
   Tensor output = init.rank() == 0

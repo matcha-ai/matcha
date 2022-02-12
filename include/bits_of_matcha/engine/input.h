@@ -31,6 +31,8 @@ class Input : public Object {
     template <class T>
     T& at(size_t position);
 
+    void update(Tensor* source);
+
     void updateStatusChanged(In* in = nullptr) override;
     void prune(Out* out = nullptr) override;
 

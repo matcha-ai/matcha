@@ -6,6 +6,14 @@ namespace matcha {
 
 #include "bits_of_matcha/dtype.h"
 #include "bits_of_matcha/shape.h"
+#include "bits_of_matcha/context.h"
+
+#include "bits_of_matcha/object.h"
+#include "bits_of_matcha/tensor.h"
+#include "bits_of_matcha/stream.h"
+#include "bits_of_matcha/params.h"
+#include "bits_of_matcha/input.h"
+#include "bits_of_matcha/tuple.h"
 
 #include "bits_of_matcha/engine/object.h"
 #include "bits_of_matcha/engine/tensor.h"

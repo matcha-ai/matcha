@@ -1,6 +1,7 @@
 #include "bits_of_matcha/engine/fn.h"
 
 #include <matcha/device>
+#include <matcha/engine>
 
 #include <algorithm>
 
@@ -26,7 +27,7 @@ void Fn::wrapComputation(const std::string& name, const std::vector<In*>& ins) {
       return in->buffer();
     }
   );
-  computation_ = device::Cpu().createComputation(name, bufferIns);
+  computation_ = Context::device().createComputation(name, bufferIns);
 
   if (outs_.empty()) {
 
@@ -90,8 +91,16 @@ void Fn::updateStatusChanged(In* in) {
 }
 
 void Fn::bufferChanged(In* in) {
-  computation_->source(in->id())->setSource(in->buffer());
+  // TODO: in->id() isn't necessarily equal to its computation source index (because of Scalar0 <-> Scalar1)
+//  std::cout << this << std::endl;
+//  std::cout << in << std::endl;
+  return;
+
   status_.ready = false;
+  auto* buffer = in->buffer();
+
+  if (buffer == nullptr) return;
+  computation_->source(in->id())->setSource(buffer);
 }
 
 void Fn::eval(Out* out) {

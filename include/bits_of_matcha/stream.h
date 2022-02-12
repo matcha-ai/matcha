@@ -3,6 +3,7 @@
 #include "bits_of_matcha/object.h"
 
 #include <ostream>
+#include <functional>
 
 
 namespace matcha {
@@ -12,7 +13,6 @@ namespace matcha {
 }
 
 matcha::Stream& operator>>(matcha::Stream& stream, matcha::Tensor& Tensor);
-matcha::Stream& operator>>(matcha::Stream& stream, matcha::Input& input);
 std::ostream& operator<<(std::ostream& os, const matcha::Stream& stream);
 
 
@@ -33,12 +33,15 @@ class Stream : public Object {
     Stream(const Tensor& tensor);
     Stream(const Input& input);
 
-    operator bool() const;
-
     void reset() const;
     void shuffle() const;
 
+    operator bool() const;
     size_t size() const;
+
+    Stream batch(size_t sizeLimit);
+    Stream map(std::function<Tensor (const Tensor&)> fn);
+    Tensor fold(const Tensor& init, std::function<Tensor (const Tensor&, const Tensor&)> fn);
 
   public:
     static Stream fromObject(engine::Stream* object);
@@ -48,7 +51,6 @@ class Stream : public Object {
     engine::Stream* object() const;
 
     friend Stream& ::operator>>(matcha::Stream& stream, matcha::Tensor& tensor);
-    friend Stream& ::operator>>(matcha::Stream& stream, matcha::Input& input);
     friend std::ostream& ::operator<<(std::ostream& os, const Stream& stream);
 
     friend class engine::Stream;

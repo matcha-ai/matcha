@@ -21,6 +21,7 @@ class Dtype;
 class Shape;
 
 class Stream;
+class Tensor;
 
 namespace engine {
   class Input;
@@ -52,6 +53,7 @@ class Input : public Object {
     size_t rank() const;
     size_t size() const;
 
+    void update(const Tensor& source);
     void update() const;
 
     template <class T>
@@ -92,7 +94,6 @@ class Input : public Object {
     void buildShape(std::vector<unsigned>& axes, const std::vector<std::vector<std::vector<std::vector<float>>>>& content);
 };
 
-Input floats(const Shape& shape);
 Input constant(const Shape& shape, float value);
 Input zeros(const Shape& shape);
 Input ones(const Shape& shape);

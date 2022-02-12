@@ -1,9 +1,6 @@
 #include "bits_of_matcha/fn/reshape.h"
-#include "bits_of_matcha/shape.h"
-#include "bits_of_matcha/tensor.h"
-#include "bits_of_matcha/engine/tensor.h"
 
-#include <matcha/device>
+#include <matcha/engine>
 
 
 namespace matcha {
@@ -36,7 +33,7 @@ Reshape::Reshape(Tensor* a, const Shape& shape)
   }
 
   auto* out = createOut(a->dtype(), shape);
-  auto* buffer = device::Cpu().createBuffer(in(0)->dtype(), shape);
+  auto* buffer = Context::device().createBuffer(in(0)->dtype(), shape);
   buffer->setSource(in(0)->buffer());
   out->setBuffer(buffer);
   outs_.push_back(out);

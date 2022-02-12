@@ -99,7 +99,7 @@ size_t Params::size() const {
 }
 
 void Params::update(Tensor* tensor) {
-  if (tensor->rank() == 0 || tensor->shape() == shape()) {
+  if (tensor->size() == 1 || tensor->shape() == shape()) {
 
     tensor->eval();
     const auto& source = tensor->buffer();

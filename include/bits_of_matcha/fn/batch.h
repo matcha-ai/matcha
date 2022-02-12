@@ -1,25 +1,22 @@
 #pragma once
 
-#include "bits_of_matcha/engine/stream.h"
 #include "bits_of_matcha/stream.h"
+#include "bits_of_matcha/engine/stream.h"
 
 #include <cstddef>
 
 
 namespace matcha {
-
-class Stream;
-
 namespace fn {
   Stream batch(Stream& stream, size_t sizeLimit);
 }
+}
 
 
+namespace matcha {
 namespace engine {
-
-class Stream;
-
 namespace fn {
+
 
 class Batch : public Stream {
   public:

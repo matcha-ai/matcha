@@ -1,4 +1,5 @@
 #include "bits_of_matcha/input.h"
+#include "bits_of_matcha/tensor.h"
 #include "bits_of_matcha/stream.h"
 #include "bits_of_matcha/engine/input.h"
 
@@ -142,6 +143,11 @@ const Shape& Input::shape() const {
   return object()->shape();
 }
 
+void Input::update(const Tensor& source) {
+  if (isNull() || source.isNull()) throw std::runtime_error("Ojbect is null");
+  object()->update(source.object());
+}
+
 void Input::update() const {
   if (isNull()) throw std::runtime_error("Ojbect is null");
   object()->updateStatusChanged();
@@ -166,10 +172,6 @@ Input Input::fromObject(engine::Input* object) {
 Input::Input(engine::Input* object, char dummy)
   : Object(object)
 {}
-
-Input floats(const Shape& shape) {
-  return Input(Dtype::Float, shape);
-}
 
 Input constant(const Shape& shape, float value) {
   std::vector<float> floatData(shape.size(), value);

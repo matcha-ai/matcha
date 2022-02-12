@@ -1,7 +1,7 @@
 #pragma once
 
-#include "bits_of_matcha/engine/stream.h"
 #include "bits_of_matcha/stream.h"
+#include "bits_of_matcha/engine/stream.h"
 
 #include <functional>
 

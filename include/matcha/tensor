@@ -6,6 +6,7 @@ namespace matcha {
 
 #include "bits_of_matcha/dtype.h"
 #include "bits_of_matcha/shape.h"
+#include "bits_of_matcha/context.h"
 
 #include "bits_of_matcha/tensor.h"
 #include "bits_of_matcha/params.h"

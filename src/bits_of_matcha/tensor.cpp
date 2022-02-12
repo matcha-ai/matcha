@@ -93,14 +93,23 @@ void Tensor::update() const {
   object()->updateStatusChanged();
 }
 
-void Tensor::subst(const Tensor& source) {
+Tensor& Tensor::subst(const Tensor& source) {
   if (isNull() || source.isNull()) throw std::runtime_error("Object is null");
   object()->subst(source.object()->out());
+  return *this;
 }
 
-void Tensor::subst() {
+Tensor& Tensor::subst(const Stream& source) {
+  if (isNull() || source.isNull()) throw std::runtime_error("Object is null");
+  object()->subst();
+  source.object()->open(object());
+  return *this;
+}
+
+Tensor& Tensor::subst() {
   if (isNull()) throw std::runtime_error("Object is null");
   object()->subst();
+  return *this;
 }
 
 Tensor Tensor::fromObject(engine::Tensor* object) {
@@ -115,7 +124,15 @@ engine::Tensor* Tensor::object() const {
   return reinterpret_cast<engine::Tensor*>(Object::object());
 }
 
-std::ostream& operator<<(std::ostream& os, const Tensor& tensor) {
+Tensor floats(const Shape& shape) {
+  return Tensor(Dtype::Float, shape);
+}
+
+}
+
+std::ostream& operator<<(std::ostream& os, const matcha::Tensor& tensor) {
+  using namespace matcha;
+
   if (tensor.isNull()) throw std::invalid_argument("Object is null");
 
   if (tensor.object()->status().data) {
@@ -138,6 +155,4 @@ std::ostream& operator<<(std::ostream& os, const Tensor& tensor) {
     os << std::endl;
   }
   return os;
-}
-
 }

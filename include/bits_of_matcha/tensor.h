@@ -11,6 +11,7 @@ namespace matcha {
   class Stream;
 }
 
+std::ostream& operator<<(std::ostream& os, const matcha::Tensor& tensor);
 matcha::Stream& operator>>(matcha::Stream& stream, matcha::Tensor& tensor);
 
 namespace matcha {
@@ -60,8 +61,9 @@ class Tensor : public Object {
     void use(const Device& device) const;
     void update() const;
 
-    void subst(const Tensor& source);
-    void subst();
+    Tensor& subst(const Tensor& source);
+    Tensor& subst(const Stream& source);
+    Tensor& subst();
 
   public:
     static Tensor fromObject(engine::Tensor* object);
@@ -71,7 +73,7 @@ class Tensor : public Object {
     engine::Tensor* object() const;
 
     friend Stream& ::operator>>(matcha::Stream& stream, matcha::Tensor& tensor);
-    friend std::ostream& operator<<(std::ostream& os, const Tensor& tensor);
+    friend std::ostream& ::operator<<(std::ostream& os, const Tensor& tensor);
 
     friend class Params;
     friend class Stream;
@@ -84,8 +86,7 @@ class Tensor : public Object {
 
 };
 
-
-std::ostream& operator<<(std::ostream& os, const Tensor& tensor);
+Tensor floats(const Shape& shape);
 
 
 }

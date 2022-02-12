@@ -73,6 +73,27 @@ size_t Input::size() const {
   return shape().size();
 }
 
+void Input::update(Tensor* tensor) {
+  if (tensor->size() == 1 || tensor->shape() == shape()) {
+
+    tensor->eval();
+    const auto& source = tensor->buffer();
+    buffer_->copy(source);
+
+    if (tensor->rank() == 0) {
+      // spread the scalar entry across the entire content
+      float* buff = reinterpret_cast<float*>(buffer_->raw());
+      std::fill(buff, buff + size(), buff[0]);
+    }
+
+  } else {
+    std::cout << tensor->shape() << std::endl;
+    std::cout << shape() << std::endl;
+    throw std::invalid_argument("Input::update - shape mismatch");
+  }
+  out()->updateStatusChanged();
+}
+
 void Input::updateStatusChanged(In* in) {
   out()->updateStatusChanged();
 }

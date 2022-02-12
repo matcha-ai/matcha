@@ -1,7 +1,6 @@
 #include "bits_of_matcha/fn/matmul.h"
 #include "bits_of_matcha/tensor.h"
 #include "bits_of_matcha/engine/tensor.h"
-#include "bits_of_matcha/device/cpu/cpu.h"
 #include "bits_of_matcha/engine/nodeloader.h"
 
 #include <matcha/device>

@@ -1,10 +1,8 @@
 #pragma once
 
+#include "bits_of_matcha/tensor.h"
 
 namespace matcha {
-
-class Tensor;
-
 namespace fn {
   Tensor gequal(const Tensor& a, const Tensor& b);
 }

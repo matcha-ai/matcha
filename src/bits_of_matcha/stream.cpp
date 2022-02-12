@@ -5,6 +5,10 @@
 #include "bits_of_matcha/engine/input.h"
 #include "bits_of_matcha/engine/nodeloader.h"
 
+#include "bits_of_matcha/fn/batch.h"
+#include "bits_of_matcha/fn/map.h"
+#include "bits_of_matcha/fn/fold.h"
+
 
 namespace matcha {
 
@@ -37,6 +41,18 @@ size_t Stream::size() const {
   return object()->size();
 }
 
+Stream Stream::batch(size_t sizeLimit) {
+  return fn::batch(*this, sizeLimit);
+}
+
+Stream Stream::map(std::function<Tensor (const Tensor&)> fn) {
+  return fn::map(*this, fn);
+}
+
+Tensor Stream::fold(const Tensor& init, std::function<Tensor (const Tensor&, const Tensor&)> fn) {
+  return fn::fold(*this, init, fn);
+}
+
 Stream Stream::fromObject(engine::Stream* object) {
   return Stream(object, 0);
 }
@@ -55,12 +71,6 @@ matcha::Stream& operator>>(matcha::Stream& stream, matcha::Tensor& tensor) {
   if (stream.isNull() || tensor.isNull()) throw std::runtime_error("object is null");
   tensor.object()->subst();
   stream.object()->open(tensor.object());
-  return stream;
-}
-
-matcha::Stream& operator>>(matcha::Stream& stream, matcha::Input& input) {
-  if (stream.isNull() || input.isNull()) throw std::runtime_error("object is null");
-//  stream.object()->populateNext(input.object());
   return stream;
 }
 
