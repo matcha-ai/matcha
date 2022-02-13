@@ -153,20 +153,17 @@ void Tensor::setBuffer(device::Buffer *buffer) {
   out_->setBuffer(buffer_);
 }
 
-bool Tensor::hasData() const {
-  if (buffer_ == nullptr) return false;
-  if (buffer_->raw() == nullptr) return false;
-  return true;
-}
+void* Tensor::data() {
+  Debug() << "data requested from " << this << ", transferring buffer...";
+  if (!status().data) return nullptr;
 
-const std::byte* Tensor::getData() const {
-  if (!status().data) throw std::runtime_error("data not available");
+  eval();
   if (cpuBuffer_ == nullptr) {
     cpuBuffer_ = device::Cpu().createBuffer(buffer());
     cpuBuffer_->prepare();
   }
   cpuBuffer_->update();
-  return reinterpret_cast<std::byte*>(cpuBuffer_->raw());
+  return cpuBuffer_->raw();
 }
 
 

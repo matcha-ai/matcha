@@ -73,7 +73,10 @@ engine::Params* Params::object() const {
   return reinterpret_cast<engine::Params*>(Object::object());
 }
 
-std::ostream& operator<<(std::ostream& os, const Params& params) {
+}
+
+std::ostream& operator<<(std::ostream& os, const matcha::Params& params) {
+  using namespace matcha;
   auto& shape = params.shape();
   auto& dtype = params.dtype();
 
@@ -90,7 +93,4 @@ std::ostream& operator<<(std::ostream& os, const Params& params) {
 
   os << "}" << std::endl;
   return os;
-}
-
-
 }

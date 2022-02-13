@@ -48,6 +48,7 @@ class Out {
     Out(const Dtype& dtype, const Shape& shape, Object* source, unsigned id);
 
     unsigned id() const;
+    void setId(unsigned id);
     bool linked() const;
 
     void dataStatusChanged();

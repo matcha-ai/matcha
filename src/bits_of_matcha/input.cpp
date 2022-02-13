@@ -10,14 +10,6 @@ Input::Input(const Dtype& dtype, const Shape& shape)
   : Object(new engine::Input(dtype, shape))
 {}
 
-Input::Input(const Stream& stream) {
-  auto* tensor = stream.object()->open();
-  auto* input  = new engine::Input(tensor->dtype(), tensor->shape());
-  input->update(tensor);
-  tensor->prune();
-  reset(input);
-}
-
 Input::Input(float scalar)
   : Object(new engine::Input(Dtype::Float, {}, buildBuffer(std::vector<float>{scalar})))
 {}

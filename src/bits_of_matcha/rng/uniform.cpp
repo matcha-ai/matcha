@@ -35,29 +35,17 @@ Uniform::Uniform(float lo, float hi, uint64_t seed)
   , distribution_{lo, hi}
 {}
 
-void Uniform::reset() {
-
-}
-
-void Uniform::shuffle() {
-
-}
-
 bool Uniform::eof() const {
   return false;
 }
 
-size_t Uniform::size() const {
-  return std::numeric_limits<size_t>::max();
-}
-
-Tensor* Uniform::open() {
+Tensor* Uniform::open(int idx) {
   auto* out = new Tensor(Dtype::Float, {});
-  open(out);
+  open(idx, out);
   return out;
 }
 
-void Uniform::open(Tensor* tensor) {
+void Uniform::open(int idx, Tensor* tensor) {
   beginOut(tensor);
 }
 
@@ -75,48 +63,24 @@ void Uniform::eval(Out* out) {
   }
 }
 
-/*
-
-const NodeLoader* Uniform::getLoader() const {
-  return loader();
+bool Uniform::next() {
+  for (auto* out: outs_) out->updateStatusChanged();
+  return true;
 }
 
-const NodeLoader* Uniform::loader() {
-  static NodeLoader nl = {
-    .type = "UniformRng",
-    .load = [](auto& is, auto& ins) {
-      if (ins.size() != 0) throw std::invalid_argument("loading UniformRng: incorrect number of arguments");
-      auto lval = FlowLoader::lvalue(is, ':');
-      if (lval != "m") throw std::invalid_argument("loading UniformRng: expected mu");
-      float m = FlowLoader::oneFloat(is);
-
-      lval = FlowLoader::lvalue(is, ':');
-      if (lval != "sd") throw std::invalid_argument("loading UniformRng: expected sigma");
-      float sd = FlowLoader::oneFloat(is);
-
-      lval = FlowLoader::lvalue(is, ':');
-      if (lval != "seed") throw std::invalid_argument("loading UniformRng: expected sigma");
-      uint64_t seed = FlowLoader::oneUint64(is);
-
-      return new Uniform(m, sd, seed);
-    }
-  };
-  return &nl;
+bool Uniform::seek(size_t pos) {
+  for (auto* out: outs_) out->updateStatusChanged();
+  return true;
 }
 
-void Uniform::save(std::ostream& os) const {
-  os << "\n  ";
-  FlowSaver::assignment(os, "m", ": ");
-  FlowSaver::oneFloat(os, m_);
-  os << "\n  ";
-  FlowSaver::assignment(os, "sd", ": ");
-  FlowSaver::oneFloat(os, sd_);
-  os << "\n  ";
-  FlowSaver::assignment(os, "seed", ": ");
-  FlowSaver::oneFloat(os, seed_);
+size_t Uniform::tell() const {
+  return 0;
 }
 
-*/
+size_t Uniform::size() const {
+  return -1;
+}
+
 
 }
 }

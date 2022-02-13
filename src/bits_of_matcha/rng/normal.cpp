@@ -35,29 +35,13 @@ Normal::Normal(float m, float sd, uint64_t seed)
   , distribution_{m, sd}
 {}
 
-void Normal::reset() {
-
-}
-
-void Normal::shuffle() {
-
-}
-
-bool Normal::eof() const {
-  return false;
-}
-
-size_t Normal::size() const {
-  return std::numeric_limits<size_t>::max();
-}
-
-Tensor* Normal::open() {
+Tensor* Normal::open(int idx) {
   auto* out = new Tensor(Dtype::Float, {});
-  open(out);
+  open(idx, out);
   return out;
 }
 
-void Normal::open(Tensor* tensor) {
+void Normal::open(int idx, Tensor* tensor) {
   beginOut(tensor);
 }
 
@@ -75,48 +59,27 @@ void Normal::eval(Out* out) {
   }
 }
 
-/*
-
-const NodeLoader* Normal::getLoader() const {
-  return loader();
+bool Normal::next() {
+  for (auto* out: outs_) out->updateStatusChanged();
+  return true;
 }
 
-const NodeLoader* Normal::loader() {
-  static NodeLoader nl = {
-    .type = "NormalRng",
-    .load = [](auto& is, auto& ins) {
-      if (ins.size() != 0) throw std::invalid_argument("loading NormalRng: incorrect number of arguments");
-      auto lval = FlowLoader::lvalue(is, ':');
-      if (lval != "m") throw std::invalid_argument("loading NormalRng: expected mu");
-      float m = FlowLoader::oneFloat(is);
-
-      lval = FlowLoader::lvalue(is, ':');
-      if (lval != "sd") throw std::invalid_argument("loading NormalRng: expected sigma");
-      float sd = FlowLoader::oneFloat(is);
-
-      lval = FlowLoader::lvalue(is, ':');
-      if (lval != "seed") throw std::invalid_argument("loading NormalRng: expected sigma");
-      uint64_t seed = FlowLoader::oneUint64(is);
-
-      return new Normal(m, sd, seed);
-    }
-  };
-  return &nl;
+bool Normal::seek(size_t pos) {
+  for (auto* out: outs_) out->updateStatusChanged();
+  return true;
 }
 
-void Normal::save(std::ostream& os) const {
-  os << "\n  ";
-  FlowSaver::assignment(os, "m", ": ");
-  FlowSaver::oneFloat(os, m_);
-  os << "\n  ";
-  FlowSaver::assignment(os, "sd", ": ");
-  FlowSaver::oneFloat(os, sd_);
-  os << "\n  ";
-  FlowSaver::assignment(os, "seed", ": ");
-  FlowSaver::oneFloat(os, seed_);
+size_t Normal::tell() const {
+  return 0;
 }
 
-*/
+size_t Normal::size() const {
+  return -1;
+}
+
+bool Normal::eof() const {
+  return false;
+}
 
 }
 }

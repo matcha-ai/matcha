@@ -33,7 +33,6 @@ class Input : public Object {
     Input();
     Input(const Dtype& dtype, const Shape& shape);
     Input(const Dtype& dtype, const Shape& shape, const std::byte* content);
-    Input(const Stream& stream);
 
     Input(float scalar);
 

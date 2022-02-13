@@ -37,29 +37,13 @@ Bernoulli::Bernoulli(float p, uint64_t seed)
   , distribution_{p}
 {}
 
-void Bernoulli::reset() {
-
-}
-
-void Bernoulli::shuffle() {
-
-}
-
-bool Bernoulli::eof() const {
-  return false;
-}
-
-size_t Bernoulli::size() const {
-  return std::numeric_limits<size_t>::max();
-}
-
-Tensor* Bernoulli::open() {
+Tensor* Bernoulli::open(int idx) {
   auto* out = new Tensor(Dtype::Float, {});
-  open(out);
+  open(idx, out);
   return out;
 }
 
-void Bernoulli::open(Tensor* tensor) {
+void Bernoulli::open(int idx, Tensor* tensor) {
   beginOut(tensor);
 }
 
@@ -77,48 +61,27 @@ void Bernoulli::eval(Out* out) {
   }
 }
 
-/*
-
-const NodeLoader* Bernoulli::getLoader() const {
-  return loader();
+bool Bernoulli::next() {
+  for (auto* out: outs_) out->updateStatusChanged();
+  return true;
 }
 
-const NodeLoader* Bernoulli::loader() {
-  static NodeLoader nl = {
-    .type = "BernoulliRng",
-    .load = [](auto& is, auto& ins) {
-      if (ins.size() != 0) throw std::invalid_argument("loading BernoulliRng: incorrect number of arguments");
-      auto lval = FlowLoader::lvalue(is, ':');
-      if (lval != "m") throw std::invalid_argument("loading BernoulliRng: expected mu");
-      float m = FlowLoader::oneFloat(is);
-
-      lval = FlowLoader::lvalue(is, ':');
-      if (lval != "sd") throw std::invalid_argument("loading BernoulliRng: expected sigma");
-      float sd = FlowLoader::oneFloat(is);
-
-      lval = FlowLoader::lvalue(is, ':');
-      if (lval != "seed") throw std::invalid_argument("loading BernoulliRng: expected sigma");
-      uint64_t seed = FlowLoader::oneUint64(is);
-
-      return new Bernoulli(m, sd, seed);
-    }
-  };
-  return &nl;
+bool Bernoulli::seek(size_t pos) {
+  for (auto* out: outs_) out->updateStatusChanged();
 }
 
-void Bernoulli::save(std::ostream& os) const {
-  os << "\n  ";
-  FlowSaver::assignment(os, "m", ": ");
-  FlowSaver::oneFloat(os, m_);
-  os << "\n  ";
-  FlowSaver::assignment(os, "sd", ": ");
-  FlowSaver::oneFloat(os, sd_);
-  os << "\n  ";
-  FlowSaver::assignment(os, "seed", ": ");
-  FlowSaver::oneFloat(os, seed_);
+size_t Bernoulli::tell() const {
+  return 0;
 }
 
-*/
+size_t Bernoulli::size() const {
+  return -1;
+}
+
+bool Bernoulli::eof() const {
+  return false;
+}
+
 
 }
 }

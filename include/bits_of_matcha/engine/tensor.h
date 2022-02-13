@@ -31,7 +31,6 @@ class Stream;
 class Input;
 class Node;
 
-
 class Tensor : public Object {
   public:
     Tensor(const Dtype& dtype, const Shape& shape);
@@ -58,8 +57,7 @@ class Tensor : public Object {
     device::Buffer* buffer();
     const device::Buffer* buffer() const;
 
-    bool hasData() const;
-    const std::byte* getData() const;
+    void* data();
 
     void setBuffer(device::Buffer* buffer);
 

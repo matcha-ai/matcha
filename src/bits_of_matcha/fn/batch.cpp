@@ -22,77 +22,66 @@ Batch::Batch(matcha::Stream& source, size_t sizeLimit)
 {}
 
 Batch::Batch(Stream* source, size_t sizeLimit)
-  : ref_{matcha::Stream::fromObject(source)}
+  : Relay{source}
+  , ref_{matcha::Stream::fromObject(source)}
   , source_{source}
   , sizeLimit_{sizeLimit}
   , limitReached_{sizeLimit == 0}
+  , pos_{0}
+  , begin_{source->tell()}
 {
 }
 
-void Batch::reset() {
+bool Batch::next() {
+  if (eof()) return false;
 
+  source(0)->next();
+
+  pos_++;
+  if (pos_ == sizeLimit_) {
+    limitReached_ = true;
+  }
+
+  return true;
 }
 
-void Batch::shuffle() {
+bool Batch::seek(size_t pos) {
+  pos_ = pos;
 
+  if (pos < sizeLimit_) {
+    limitReached_ = false;
+    return source(0)->seek(begin_ + pos);
+  } else {
+    return false;
+  }
+}
+
+size_t Batch::tell() const {
+  return pos_;
+}
+
+size_t Batch::size() const {
+  return std::min(source(0)->size() - begin_, sizeLimit_);
+}
+
+Tensor* Batch::open(int idx) {
+  return source(0)->open(idx);
+}
+
+void Batch::open(int idx, Tensor* tensor) {
+  source(0)->open(idx, tensor);
+}
+
+void Batch::relayData(Tensor* relay, Tensor* target) {
+}
+
+void Batch::close(Out* out) {
+  source(0)->close(out);
 }
 
 bool Batch::eof() const {
   if (limitReached_) return true;
-  return source_->eof();
-}
-
-size_t Batch::size() const {
-  return std::min(source_->size(), sizeLimit_);
-}
-
-Tensor* Batch::open() {
-  auto* relay = source_->open();
-  auto* out = new Tensor(relay->dtype(), relay->shape());
-  relayData(relay, out);
-  return out;
-}
-
-void Batch::open(Tensor* out) {
-  auto* relay = new Tensor(out->dtype(), out->shape());
-  source_->open(relay);
-  relayData(relay, out);
-}
-
-void Batch::relayData(Tensor* relay, Tensor* target) {
-  auto* out = createOut(target->dtype(), target->shape(), outs_.size()) ;
-  out->setBuffer(relay->buffer());
-
-  relays_.push_back(relay);
-  outs_.push_back(out);
-
-  target->subst(out);
-
-  relay->rename("batchRelay");
-}
-
-void Batch::close(Out* out) {
-  auto* relay = relays_[out->id()];
-  relay->prune();
-  outs_.erase(std::remove(std::begin(outs_), std::end(outs_), out));
-  relays_.erase(std::remove(std::begin(relays_), std::end(relays_), relay));
-}
-
-void Batch::eval(Out* out) {
-  unsigned id = out->id();
-  if (id >= 64) throw std::runtime_error("Batch out id overflow");
-  position_.resize(id + 1);
-
-  auto& pos = position_[id];
-  if (pos < sizeLimit_) {
-    if (++pos == sizeLimit_) limitReached_ = true;
-  } else {
-    throw std::out_of_range("Batch limit reached");
-  }
-
-  auto* relay = relays_[id];
-  relay->updateStatusChanged();
-  relay->eval();
+  return source(0)->eof();
 }
 
 

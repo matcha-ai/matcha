@@ -14,7 +14,7 @@ Tensor fold(Stream& stream, const Tensor& init, std::function<Tensor (const Tens
   stream.reset();
 
   Tensor output = init.rank() == 0
-      ? Tensor(stream)
+      ? stream()
       : Tensor(init.dtype(), init.shape());
 
   // keep it this way; otherwise reshaping won't work
@@ -28,9 +28,7 @@ Tensor fold(Stream& stream, const Tensor& init, std::function<Tensor (const Tens
   buffer.rename("buffer");
   action.rename("action");
 
-  int i = 0;
-  while (stream) {
-    output.update();
+  while (stream.next()) {
     buffer.update(action);
   }
 

@@ -1,8 +1,11 @@
 #include "bits_of_matcha/tensor.h"
+#include "bits_of_matcha/fn/transpose.h"
 #include "bits_of_matcha/fn/reshape.h"
+#include "bits_of_matcha/plt.h"
 
 #include <matcha/engine>
 #include <iostream>
+#include <cmath>
 
 
 namespace matcha {
@@ -14,10 +17,6 @@ Tensor::Tensor(const Dtype& dtype, const Shape& shape)
 
 Tensor::Tensor(const Input& input)
   : Object(new engine::Tensor(input.object()->out()))
-{}
-
-Tensor::Tensor(const Stream& stream)
-  : Object(stream.object()->open())
 {}
 
 Tensor::Tensor(const Params& params)
@@ -91,6 +90,14 @@ Tensor Tensor::reshape(const Shape& shape) const {
   return fn::reshape(*this, shape);
 }
 
+Tensor Tensor::transpose() const {
+  return fn::transpose(*this);
+}
+
+Tensor Tensor::t() const {
+  return fn::transpose(*this);
+}
+
 Tensor& Tensor::subst(const Tensor& source) {
   if (isNull() || source.isNull()) throw std::runtime_error("Object is null");
   object()->subst(source.object()->out());
@@ -100,7 +107,7 @@ Tensor& Tensor::subst(const Tensor& source) {
 Tensor& Tensor::subst(const Stream& source) {
   if (isNull() || source.isNull()) throw std::runtime_error("Object is null");
   object()->subst();
-  source.object()->open(object());
+  source.object()->open(-1, object());
   return *this;
 }
 
@@ -108,6 +115,15 @@ Tensor& Tensor::subst() {
   if (isNull()) throw std::runtime_error("Object is null");
   object()->subst();
   return *this;
+}
+
+void* Tensor::data() const {
+  if (isNull()) throw std::runtime_error("Object is null");
+  return object()->data();
+}
+
+Plt Tensor::plt() const {
+  return Plt(*this);
 }
 
 Tensor Tensor::fromObject(engine::Tensor* object) {
@@ -126,17 +142,15 @@ Tensor floats(const Shape& shape) {
   return Tensor(Dtype::Float, shape);
 }
 
-}
-
 std::ostream& operator<<(std::ostream& os, const matcha::Tensor& tensor) {
   using namespace matcha;
 
   if (tensor.isNull()) throw std::invalid_argument("Object is null");
+  engine::Tensor* object = tensor.object();
 
-  if (tensor.object()->status().data) {
-    tensor.object()->eval();
-    if (tensor.dtype() == Dtype::Float) {
-      auto* data = reinterpret_cast<const float*>(tensor.object()->getData());
+  if (object->status().data) {
+    if (object->dtype() == Dtype::Float) {
+      auto* data = (float*)(object->data());
 
       os << "Tensor ";
       engine::FlowSaver::flatFloats(os, data, tensor.shape());
@@ -146,11 +160,11 @@ std::ostream& operator<<(std::ostream& os, const matcha::Tensor& tensor) {
       throw std::runtime_error("unkonwn dtype");
     }
   } else {
-    auto& shape = tensor.shape();
-    auto& dtype = tensor.dtype();
-
     os << tensor.dtype() << tensor.shape();
     os << std::endl;
   }
+
   return os;
+}
+
 }

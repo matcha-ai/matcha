@@ -24,17 +24,18 @@ class Bernoulli : public Stream {
   public:
     Bernoulli(float p, uint64_t seed);
 
-    void reset() override;
-    void shuffle() override;
-
-    bool eof() const override;
-    size_t size() const override;
-
-    Tensor* open() override;
-    void open(Tensor* out) override;
+    Tensor* open(int idx) override;
+    void open(int idx, Tensor* out) override;
     void close(Out* out) override;
 
     void eval(Out* out) override;
+
+    bool next() override;
+    bool seek(size_t pos) override;
+    size_t tell() const override;
+    size_t size() const override;
+
+    bool eof() const override;
 
   private:
     float p_;

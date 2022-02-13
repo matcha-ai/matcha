@@ -7,6 +7,14 @@
 
 
 namespace matcha {
+  class Params;
+}
+
+
+std::ostream& operator<<(std::ostream& os, const matcha::Params& tensor);
+
+
+namespace matcha {
 
 class Dtype;
 class Shape;
@@ -46,12 +54,10 @@ class Params : public Object {
     engine::Params* object() const;
     Params(engine::Params* object, char dummy);
 
-    friend std::ostream& operator<<(std::ostream& os, const Params& params);
+    friend std::ostream& ::operator<<(std::ostream& os, const Params& params);
     friend class Tensor;
 
 };
-
-std::ostream& operator<<(std::ostream& os, const Params& params);
 
 
 }

@@ -27,3 +27,4 @@ namespace matcha {
 #include "bits_of_matcha/engine/flow.h"
 #include "bits_of_matcha/engine/flowloader.h"
 #include "bits_of_matcha/engine/flowsaver.h"
+#include "bits_of_matcha/engine/relay.h"

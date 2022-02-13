@@ -29,11 +29,24 @@ namespace engine {
 
 class Stream : public Object {
   public:
-    void reset() const;
     void shuffle() const;
 
-    operator bool() const;
+    Tensor operator()();
+    Tensor operator()(int idx);
+
+    // actions
+
+    void reset() const;
+
+    bool next();
+    bool seek(size_t pos);
+    size_t tell() const;
     size_t size() const;
+
+    bool eof() const;
+    operator bool() const;
+
+    // operations
 
     Stream batch(size_t sizeLimit);
     Stream map(std::function<Tensor (const Tensor&)> fn);

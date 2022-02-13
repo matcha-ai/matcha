@@ -26,80 +26,53 @@ Map::Map(matcha::Stream& source, std::function<matcha::Tensor (const matcha::Ten
 }
 
 Map::Map(Stream* source, std::function<matcha::Tensor (const matcha::Tensor&)> fn)
-  : ref_{matcha::Stream::fromObject(source)}
+  : Relay{source}
+  , ref_{matcha::Stream::fromObject(source)}
   , source_{source}
   , fn_{fn}
-{
+{}
 
-}
-
-void Map::reset() {
-  source_->reset();
-}
-
-void Map::shuffle() {
-  source_->shuffle();
-}
-
-bool Map::eof() const {
-  return source_->eof();
-}
-
-size_t Map::size() const {
-  return source_->size();
-}
-
-Tensor* Map::open() {
-  auto* relay  = source_->open();
+Tensor* Map::open(int idx) {
+  auto* relay  = source(0)->open(idx);
   auto mapping = fn_(matcha::Tensor::fromObject(relay));
   auto* result = Node::deref(mapping);
-  auto* target = new Tensor(result->dtype(), result->shape());
   release(mapping);
-  relayData(relay, result, target);
-  return target;
+  return result;
 }
 
-void Map::open(Tensor* target) {
+void Map::open(int idx, Tensor* target) {
   auto* relay  = new Tensor(target->dtype(), target->shape());
-  source_->open(relay);
+  source(0)->open(idx, relay);
   auto mapping = fn_(matcha::Tensor::fromObject(relay));
   auto* result = Node::deref(mapping);
   release(mapping);
-  relayData(relay, result, target);
+  target->subst(result->out());
 }
 
 void Map::relayData(Tensor* relay, Tensor* result, Tensor* target) {
-  auto* out = createOut(result->dtype(), result->shape(), outs_.size());
-  result->buffer()->prepare();
-  out->setBuffer(result->buffer());
-
-  relays_.push_back(relay);
-  results_.push_back(result);
-  outs_.push_back(out);
-
-  target->subst(out);
-
-  relay->rename("mapRelay");
-  result->rename("mapResult");
 }
 
 void Map::close(Out* out) {
-  unsigned id = out->id();
-  auto* relay = relays_[id];
-  auto* result = results_[id];
-  result->prune();
-  outs_.erase(std::remove(std::begin(outs_), std::end(outs_), out));
-  relays_.erase(std::remove(std::begin(relays_), std::end(relays_), relay));
-  results_.erase(std::remove(std::begin(results_), std::end(results_), result));
 }
 
-void Map::eval(Out* out) {
-  unsigned id = out->id();
-  auto* relay = relays_[id];
-  auto* result = results_[id];
+bool Map::next() {
+  return source(0)->next();
+}
 
-  relay->updateStatusChanged();
-  result->eval();
+bool Map::seek(size_t pos) {
+  return source(0)->seek(pos);
+}
+
+size_t Map::tell() const {
+  return source(0)->tell();
+}
+
+size_t Map::size() const {
+  return source(0)->size();
+}
+
+bool Map::eof() const {
+  return source(0)->eof();
 }
 
 

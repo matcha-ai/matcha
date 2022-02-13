@@ -28,33 +28,15 @@ Poisson::Poisson(float m, uint64_t seed)
   , seed_{seed}
   , source_{seed}
   , distribution_{m}
-{
+{}
 
-}
-
-void Poisson::reset() {
-
-}
-
-void Poisson::shuffle() {
-
-}
-
-bool Poisson::eof() const {
-  return false;
-}
-
-size_t Poisson::size() const {
-  return std::numeric_limits<size_t>::max();
-}
-
-Tensor* Poisson::open() {
+Tensor* Poisson::open(int idx) {
   auto* out = new Tensor(Dtype::Float, {});
-  open(out);
+  open(idx, out);
   return out;
 }
 
-void Poisson::open(Tensor* tensor) {
+void Poisson::open(int idx, Tensor* tensor) {
   beginOut(tensor);
 }
 
@@ -72,48 +54,28 @@ void Poisson::eval(Out* out) {
   }
 }
 
-/*
-
-const NodeLoader* Poisson::getLoader() const {
-  return loader();
+bool Poisson::next() {
+  for (auto* out: outs_) out->updateStatusChanged();
+  return true;
 }
 
-const NodeLoader* Poisson::loader() {
-  static NodeLoader nl = {
-    .type = "PoissonRng",
-    .load = [](auto& is, auto& ins) {
-      if (ins.size() != 0) throw std::invalid_argument("loading PoissonRng: incorrect number of arguments");
-      auto lval = FlowLoader::lvalue(is, ':');
-      if (lval != "m") throw std::invalid_argument("loading PoissonRng: expected mu");
-      float m = FlowLoader::oneFloat(is);
-
-      lval = FlowLoader::lvalue(is, ':');
-      if (lval != "sd") throw std::invalid_argument("loading PoissonRng: expected sigma");
-      float sd = FlowLoader::oneFloat(is);
-
-      lval = FlowLoader::lvalue(is, ':');
-      if (lval != "seed") throw std::invalid_argument("loading PoissonRng: expected sigma");
-      uint64_t seed = FlowLoader::oneUint64(is);
-
-      return new Poisson(m, sd, seed);
-    }
-  };
-  return &nl;
+bool Poisson::seek(size_t pos) {
+  for (auto* out: outs_) out->updateStatusChanged();
+  return true;
 }
 
-void Poisson::save(std::ostream& os) const {
-  os << "\n  ";
-  FlowSaver::assignment(os, "m", ": ");
-  FlowSaver::oneFloat(os, m_);
-  os << "\n  ";
-  FlowSaver::assignment(os, "sd", ": ");
-  FlowSaver::oneFloat(os, sd_);
-  os << "\n  ";
-  FlowSaver::assignment(os, "seed", ": ");
-  FlowSaver::oneFloat(os, seed_);
+size_t Poisson::tell() const {
+  return 0;
 }
 
-*/
+size_t Poisson::size() const {
+  return -1;
+}
+
+bool Poisson::eof() const {
+  return false;
+}
+
 
 }
 }

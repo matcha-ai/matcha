@@ -12,6 +12,12 @@ Tensor reshape(const Tensor& a, const Shape& shape) {
   return Tensor::fromObject(out);
 }
 
+std::function<Tensor (const Tensor&)> reshape(const Shape& shape) {
+  return [=](const Tensor& x) {
+    return x.reshape(shape);
+  };
+}
+
 }
 }
 

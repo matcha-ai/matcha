@@ -1,9 +1,6 @@
 #include "bits_of_matcha/fn/sqrt.h"
-#include "bits_of_matcha/tensor.h"
-#include "bits_of_matcha/tuple.h"
-#include "bits_of_matcha/engine/tensor.h"
 
-#include <matcha/device>
+#include <matcha/engine>
 
 
 namespace matcha {

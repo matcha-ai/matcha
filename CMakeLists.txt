@@ -22,11 +22,13 @@ set(
   include/bits_of_matcha/input.h
   include/bits_of_matcha/tuple.h
   include/bits_of_matcha/flow.h
+  include/bits_of_matcha/plt.h
 
   include/bits_of_matcha/engine/object.h
   include/bits_of_matcha/engine/tensor.h
   include/bits_of_matcha/engine/params.h
   include/bits_of_matcha/engine/stream.h
+  include/bits_of_matcha/engine/relay.h
   include/bits_of_matcha/engine/input.h
   include/bits_of_matcha/engine/status.h
   include/bits_of_matcha/engine/node.h
@@ -47,6 +49,8 @@ set(
   include/bits_of_matcha/fn/multiply.h
   include/bits_of_matcha/fn/divide.h
 
+  include/bits_of_matcha/fn/identity.h
+  include/bits_of_matcha/fn/abs.h
   include/bits_of_matcha/fn/square.h
   include/bits_of_matcha/fn/sqrt.h
   include/bits_of_matcha/fn/exp.h
@@ -56,10 +60,15 @@ set(
   include/bits_of_matcha/fn/transpose.h
   include/bits_of_matcha/fn/reshape.h
 
+  include/bits_of_matcha/fn/min.h
   include/bits_of_matcha/fn/max.h
   include/bits_of_matcha/fn/maxBetween.h
   include/bits_of_matcha/fn/maxIn.h
   include/bits_of_matcha/fn/maxAlong.h
+
+  include/bits_of_matcha/fn/argmin.h
+  include/bits_of_matcha/fn/argmax.h
+  include/bits_of_matcha/fn/argmaxIn.h
 
   include/bits_of_matcha/fn/sum.h
 
@@ -96,11 +105,13 @@ set(
   src/bits_of_matcha/input.cpp
   src/bits_of_matcha/tuple.cpp
   src/bits_of_matcha/flow.cpp
+  src/bits_of_matcha/plt.cpp
 
   src/bits_of_matcha/engine/object.cpp
   src/bits_of_matcha/engine/tensor.cpp
   src/bits_of_matcha/engine/params.cpp
   src/bits_of_matcha/engine/stream.cpp
+  src/bits_of_matcha/engine/relay.cpp
   src/bits_of_matcha/engine/input.cpp
   src/bits_of_matcha/engine/status.cpp
   src/bits_of_matcha/engine/node.cpp
@@ -121,6 +132,8 @@ set(
   src/bits_of_matcha/fn/multiply.cpp
   src/bits_of_matcha/fn/divide.cpp
 
+  src/bits_of_matcha/fn/identity.cpp
+  src/bits_of_matcha/fn/abs.cpp
   src/bits_of_matcha/fn/square.cpp
   src/bits_of_matcha/fn/sqrt.cpp
   src/bits_of_matcha/fn/exp.cpp
@@ -130,10 +143,16 @@ set(
   src/bits_of_matcha/fn/transpose.cpp
   src/bits_of_matcha/fn/reshape.cpp
 
+  src/bits_of_matcha/fn/min.cpp
   src/bits_of_matcha/fn/max.cpp
   src/bits_of_matcha/fn/maxBetween.cpp
   src/bits_of_matcha/fn/maxIn.cpp
   src/bits_of_matcha/fn/maxAlong.cpp
+
+  src/bits_of_matcha/fn/argmin.cpp
+  src/bits_of_matcha/fn/argmax.cpp
+  src/bits_of_matcha/fn/argmaxIn.cpp
+
   src/bits_of_matcha/fn/sum.cpp
 
   src/bits_of_matcha/fn/equal.cpp

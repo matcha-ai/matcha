@@ -56,7 +56,14 @@ Params::Params(const Dtype& dtype, const Shape& shape, Tensor* init)
 
 Params::Params(const Dtype& dtype, const Shape& shape, Stream* init)
   : Params(dtype, shape)
-{}
+{
+  Tensor* temp = new Tensor(dtype, shape);
+  init->open(-1, temp);
+  update(temp);
+  temp->prune();
+
+  Debug() << "created Params";
+}
 
 Params::Params(Tensor* tensor)
   : dtype_{tensor->dtype()}
@@ -82,7 +89,9 @@ Params::Params(Input* init)
 Params::Params(Stream* init)
   : dtype_{Dtype::Float}
   , shape_{}
-{}
+{
+  std::cout << "TODO!!!" << std::endl;
+}
 
 const Dtype& Params::dtype() const {
   return dtype_;
@@ -101,17 +110,24 @@ size_t Params::size() const {
 }
 
 void Params::update(Tensor* tensor) {
-  if (tensor->size() == 1 || tensor->shape() == shape()) {
+  tensor->eval();
+  auto* source = tensor->buffer();
 
-    tensor->eval();
-    const auto& source = tensor->buffer();
+  if (tensor->shape() == shape()) {
+
     buffer_->copy(source);
 
-    if (tensor->rank() == 0) {
-      // spread the scalar entry across the entire content
-      float* buff = reinterpret_cast<float*>(buffer_->raw());
-      std::fill(buff, buff + size(), buff[0]);
-    }
+  } else if (tensor->size() == 1) {
+
+    auto* temp = device::Cpu().createBuffer(source);
+    temp->prepare();
+    temp->update();
+    float val = *(const float*)temp->raw();
+
+    float* buff = reinterpret_cast<float*>(buffer_->raw());
+    std::fill(buff, buff + size(), val);
+
+    delete temp;
 
   } else {
     throw std::invalid_argument("Params::update - shape mismatch");

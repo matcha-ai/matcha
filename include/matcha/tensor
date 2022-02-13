@@ -14,12 +14,15 @@ namespace matcha {
 #include "bits_of_matcha/input.h"
 #include "bits_of_matcha/tuple.h"
 #include "bits_of_matcha/flow.h"
+#include "bits_of_matcha/plt.h"
 
 #include "bits_of_matcha/fn/add.h"
 #include "bits_of_matcha/fn/subtract.h"
 #include "bits_of_matcha/fn/multiply.h"
 #include "bits_of_matcha/fn/divide.h"
 
+#include "bits_of_matcha/fn/identity.h"
+#include "bits_of_matcha/fn/abs.h"
 #include "bits_of_matcha/fn/square.h"
 #include "bits_of_matcha/fn/sqrt.h"
 #include "bits_of_matcha/fn/exp.h"
@@ -29,10 +32,15 @@ namespace matcha {
 #include "bits_of_matcha/fn/transpose.h"
 #include "bits_of_matcha/fn/reshape.h"
 
+#include "bits_of_matcha/fn/min.h"
 #include "bits_of_matcha/fn/max.h"
 #include "bits_of_matcha/fn/maxIn.h"
 #include "bits_of_matcha/fn/maxAlong.h"
 #include "bits_of_matcha/fn/maxBetween.h"
+
+#include "bits_of_matcha/fn/argmin.h"
+#include "bits_of_matcha/fn/argmax.h"
+#include "bits_of_matcha/fn/argmaxIn.h"
 
 #include "bits_of_matcha/fn/sum.h"
 

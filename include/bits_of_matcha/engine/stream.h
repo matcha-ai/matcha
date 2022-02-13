@@ -16,14 +16,15 @@ class Stream : public Node {
   public:
     Stream();
 
-    virtual void reset() = 0;
-    virtual void shuffle() = 0;
-
-    virtual bool eof() const = 0;
+    virtual bool next() = 0;
+    virtual bool seek(size_t pos) = 0;
+    virtual size_t tell() const = 0;
     virtual size_t size() const = 0;
 
-    virtual Tensor* open() = 0;
-    virtual void open(Tensor* out) = 0;
+    virtual bool eof() const = 0;
+
+    virtual Tensor* open(int idx) = 0;
+    virtual void open(int idx, Tensor* tensor) = 0;
     virtual void close(Out* out) = 0;
 
   public:

@@ -12,24 +12,51 @@
 
 namespace matcha {
 
-Stream::operator bool() const {
-  if (isNull()) throw std::runtime_error("Object is null");
-  return !object()->eof();
+Tensor Stream::operator()() {
+  return Tensor::fromObject(object()->open(-1));
+}
+
+Tensor Stream::operator()(int idx) {
+  if (idx < 0) throw std::invalid_argument("idx < 0");
+  return Tensor::fromObject(object()->open(idx));
 }
 
 void Stream::reset() const {
   if (isNull()) throw std::runtime_error("Object is null");
-  object()->reset();
+  object()->seek(0);
 }
 
 void Stream::shuffle() const {
   if (isNull()) throw std::runtime_error("Object is null");
-  object()->shuffle();
+}
+
+bool Stream::next() {
+  if (isNull()) throw std::runtime_error("Object is null");
+  return object()->next();
+}
+
+bool Stream::seek(size_t pos) {
+  if (isNull()) throw std::runtime_error("Object is null");
+  return object()->seek(pos);
+}
+
+size_t Stream::tell() const {
+  if (isNull()) throw std::runtime_error("Object is null");
+  return object()->tell();
 }
 
 size_t Stream::size() const {
   if (isNull()) throw std::runtime_error("Object is null");
   return object()->size();
+}
+
+bool Stream::eof() const {
+  if (isNull()) throw std::runtime_error("Object is null");
+  return object()->eof();
+}
+
+Stream::operator bool() const {
+  return !eof();
 }
 
 Stream Stream::batch(size_t sizeLimit) {
@@ -61,7 +88,7 @@ engine::Stream* Stream::object() const {
 matcha::Stream& operator>>(matcha::Stream& stream, matcha::Tensor& tensor) {
   if (stream.isNull() || tensor.isNull()) throw std::runtime_error("object is null");
   tensor.object()->subst();
-  stream.object()->open(tensor.object());
+  stream.object()->open(-1, tensor.object());
   return stream;
 }
 

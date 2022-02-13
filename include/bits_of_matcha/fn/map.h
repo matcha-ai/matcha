@@ -1,7 +1,6 @@
 #pragma once
 
-#include "bits_of_matcha/stream.h"
-#include "bits_of_matcha/engine/stream.h"
+#include "bits_of_matcha/engine/relay.h"
 
 #include <functional>
 
@@ -22,22 +21,21 @@ class Stream;
 
 namespace fn {
 
-class Map : public Stream {
+class Map : public Relay {
   public:
     Map(Stream* stream, std::function<matcha::Tensor (const matcha::Tensor&)> fn);
     Map(matcha::Stream& stream, std::function<matcha::Tensor (const matcha::Tensor&)> fn);
 
-    void reset() override;
-    void shuffle() override;
-
-    bool eof() const override;
-    size_t size() const override;
-
-    Tensor* open() override;
-    void open(Tensor* out) override;
+    Tensor* open(int idx) override;
+    void open(int idx, Tensor* tensor) override;
     void close(Out* out) override;
 
-    void eval(Out* out) override;
+    bool next() override;
+    bool seek(size_t pos) override;
+    size_t tell() const override;
+    size_t size() const override;
+
+    bool eof() const override;
 
   private:
     matcha::Stream ref_;

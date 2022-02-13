@@ -19,6 +19,10 @@ unsigned Out::id() const {
   return id_;
 }
 
+void Out::setId(unsigned id) {
+  id_ = id;
+}
+
 bool Out::linked() const {
   return !targets_.empty();
 }
