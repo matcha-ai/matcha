@@ -12,6 +12,18 @@ Tensor divide(const Tensor& a, const Tensor& b) {
   return Tensor::fromObject(out);
 }
 
+UnaryFn divideWith(const Tensor& b) {
+  return [=](auto& a) {
+    return a / b;
+  };
+}
+
+UnaryFn divideAgainst(const Tensor& a) {
+  return [=](auto& b) {
+    return a / b;
+  };
+}
+
 }
 }
 

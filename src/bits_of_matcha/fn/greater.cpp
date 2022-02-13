@@ -12,6 +12,18 @@ Tensor greater(const Tensor& a, const Tensor& b) {
   return Tensor::fromObject(out);
 }
 
+UnaryFn greaterWith(const Tensor& b) {
+  return [=](auto& a) {
+    return a > b;
+  };
+}
+
+UnaryFn greaterAgainst(const Tensor& a) {
+  return [=](auto& b) {
+    return a > b;
+  };
+}
+
 }
 }
 

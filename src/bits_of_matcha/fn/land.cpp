@@ -12,6 +12,18 @@ Tensor land(const Tensor& a, const Tensor& b) {
   return Tensor::fromObject(out);
 }
 
+UnaryFn landWith(const Tensor& b) {
+  return [=](auto& a) {
+    return a && b;
+  };
+}
+
+UnaryFn landAgainst(const Tensor& a) {
+  return [=](auto& b) {
+    return a && b;
+  };
+}
+
 }
 }
 

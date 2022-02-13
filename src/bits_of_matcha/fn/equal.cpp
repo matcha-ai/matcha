@@ -12,6 +12,18 @@ Tensor equal(const Tensor& a, const Tensor& b) {
   return Tensor::fromObject(out);
 }
 
+UnaryFn equalWith(const Tensor& b) {
+  return [=](auto& a) {
+    return a == b;
+  };
+}
+
+UnaryFn equalAgainst(const Tensor& a) {
+  return [=](auto& b) {
+    return a == b;
+  };
+}
+
 }
 }
 

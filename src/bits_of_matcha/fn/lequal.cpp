@@ -13,6 +13,18 @@ Tensor lequal(const Tensor& a, const Tensor& b) {
   return lor(less(a, b), equal(a, b));
 }
 
+UnaryFn lequalWith(const Tensor& b) {
+  return [=](auto& a) {
+    return a <= b;
+  };
+}
+
+UnaryFn lequalAgainst(const Tensor& a) {
+  return [=](auto& b) {
+    return a <= b;
+  };
+}
+
 }
 }
 

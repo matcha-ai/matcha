@@ -16,6 +16,18 @@ Tensor matmul(const Tensor& a, const Tensor& b) {
   return Tensor::fromObject(out);
 }
 
+UnaryFn matmulWith(const Tensor& b) {
+  return [=](auto& a) {
+    return matmul(a, b);
+  };
+}
+
+UnaryFn matmulAgainst(const Tensor& a) {
+  return [=](auto& b) {
+    return matmul(a, b);
+  };
+}
+
 }
 
 namespace engine {

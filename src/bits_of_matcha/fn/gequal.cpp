@@ -13,6 +13,18 @@ Tensor gequal(const Tensor& a, const Tensor& b) {
   return lor(greater(a, b), equal(a, b));
 }
 
+UnaryFn gequalWith(const Tensor& b) {
+  return [=](auto& a) {
+    return a >= b;
+  };
+}
+
+UnaryFn gequalAgainst(const Tensor& a) {
+  return [=](auto& b) {
+    return a >= b;
+  };
+}
+
 }
 }
 

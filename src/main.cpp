@@ -40,20 +40,19 @@ Tuple msd(Stream& s) {
 int main() {
   Context ctx;
 
-  Stream s = dataset::csv("/home/patz/Downloads/mnist_train2.csv").map(fn::reshape({28, 28}));
-//  s = s.map(fn::identity).batch(3);
-  s = s.batch(10);
-  Tuple x = msd(s);
+  Stream s = dataset::csv("/home/patz/Downloads/mnist_train2.csv");
+  s = s.batch(100);
+  Tensor it = s();
+  Tensor x = it.reshape({28, 28});
 
-  std::cout << (x[0] + x[1]).plt();
-
-  s = s.batch(11);
   while (Stream batch = s.batch(5)) {
-    Tensor a = s();
+    cout << "begin batch" << std::endl;
+    it.subst(batch);
+    Tensor y = batch();
     while (batch.next()) {
-      cout << a.plt() << std::endl;
+      cout << x.plot() << std::endl;
+      cout << "=> " << y.data().i() << std::endl;
     }
-    std::cout << "batch done; size " << batch.size() << std::endl;;
   }
 
 

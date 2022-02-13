@@ -12,6 +12,18 @@ Tensor add(const Tensor& a, const Tensor& b) {
   return Tensor::fromObject(out);
 }
 
+UnaryFn addWith(const Tensor& b) {
+  return [=](auto& a) {
+    return a + b;
+  };
+}
+
+UnaryFn addAgainst(const Tensor& a) {
+  return [=](auto& b) {
+    return a + b;
+  };
+}
+
 }
 }
 

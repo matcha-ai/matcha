@@ -15,5 +15,17 @@ Tensor max(const Tensor& a, const Tensor& b) {
   return maxBetween(a, b);
 }
 
+UnaryFn maxWith(const Tensor& b) {
+  return [=](auto& a) {
+    return max(a, b);
+  };
+}
+
+UnaryFn maxAgainst(const Tensor& a) {
+  return [=](auto& b) {
+    return max(a, b);
+  };
+}
+
 }
 }

@@ -1,7 +1,7 @@
 #include "bits_of_matcha/tensor.h"
 #include "bits_of_matcha/fn/transpose.h"
 #include "bits_of_matcha/fn/reshape.h"
-#include "bits_of_matcha/plt.h"
+#include "bits_of_matcha/plot.h"
 
 #include <matcha/engine>
 #include <iostream>
@@ -117,13 +117,13 @@ Tensor& Tensor::subst() {
   return *this;
 }
 
-void* Tensor::data() const {
+Data Tensor::data() const {
   if (isNull()) throw std::runtime_error("Object is null");
-  return object()->data();
+  return Data(object()->data());
 }
 
-Plt Tensor::plt() const {
-  return Plt(*this);
+Plot Tensor::plot() const {
+  return Plot(*this);
 }
 
 Tensor Tensor::fromObject(engine::Tensor* object) {

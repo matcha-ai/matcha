@@ -10,7 +10,7 @@
 namespace matcha {
 namespace fn {
 
-Stream map(Stream& stream, const std::function<Tensor (const Tensor&)> fn) {
+Stream map(Stream& stream, UnaryFn fn) {
   return Stream::fromObject(new engine::fn::Map(stream, fn));
 }
 
@@ -19,13 +19,13 @@ Stream map(Stream& stream, const std::function<Tensor (const Tensor&)> fn) {
 namespace engine {
 namespace fn {
 
-Map::Map(matcha::Stream& source, std::function<matcha::Tensor (const matcha::Tensor&)> fn)
+Map::Map(matcha::Stream& source, UnaryFn fn)
   : Map(deref(source), fn)
 {
 
 }
 
-Map::Map(Stream* source, std::function<matcha::Tensor (const matcha::Tensor&)> fn)
+Map::Map(Stream* source, UnaryFn fn)
   : Relay{source}
   , ref_{matcha::Stream::fromObject(source)}
   , source_{source}

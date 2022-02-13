@@ -12,6 +12,18 @@ Tensor lor(const Tensor& a, const Tensor& b) {
   return Tensor::fromObject(out);
 }
 
+UnaryFn lorWith(const Tensor& b) {
+  return [=](auto& a) {
+    return a || b;
+  };
+}
+
+UnaryFn lorAgainst(const Tensor& a) {
+  return [=](auto& b) {
+    return a || b;
+  };
+}
+
 }
 }
 
@@ -22,6 +34,11 @@ matcha::Tensor operator||(const matcha::Tensor& a, const matcha::Tensor& b) {
 namespace matcha {
 namespace engine {
 namespace fn {
+
+
+Lor::Lor(const matcha::Tensor& a, const matcha::Tensor& b)
+  : Lor(deref(a), deref(b))
+{}
 
 Lor::Lor(Tensor* a, Tensor* b)
   : Fn{a, b}
@@ -39,28 +56,6 @@ Lor::Lor(Tensor* a, Tensor* b)
   deduceStatus();
 }
 
-Lor::Lor(const matcha::Tensor& a, const matcha::Tensor& b)
-  : Lor(deref(a), deref(b))
-{}
-
-/*
-
-const NodeLoader* Lor::getLoader() const {
-  return loader();
-}
-
-const NodeLoader* Lor::loader() {
-  static NodeLoader nl = {
-    .type = "Lor",
-    .load = [](auto& is, auto& ins) {
-      if (ins.size() != 2) throw std::invalid_argument("loading Lor: incorrect number of arguments");
-      return new Lor(ins[0], ins[1]);
-    }
-  };
-  return &nl;
-};
-
-*/
 
 }
 }

@@ -63,11 +63,11 @@ Stream Stream::batch(size_t sizeLimit) {
   return fn::batch(*this, sizeLimit);
 }
 
-Stream Stream::map(std::function<Tensor (const Tensor&)> fn) {
+Stream Stream::map(UnaryFn fn) {
   return fn::map(*this, fn);
 }
 
-Tensor Stream::fold(const Tensor& init, std::function<Tensor (const Tensor&, const Tensor&)> fn) {
+Tensor Stream::fold(const Tensor& init, BinaryFn fn) {
   return fn::fold(*this, init, fn);
 }
 

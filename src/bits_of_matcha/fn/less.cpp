@@ -12,6 +12,19 @@ Tensor less(const Tensor& a, const Tensor& b) {
   return Tensor::fromObject(out);
 }
 
+UnaryFn lessWith(const Tensor& b) {
+  return [=](auto& a) {
+    return a < b;
+  };
+}
+
+UnaryFn lessAgainst(const Tensor& a) {
+  return [=](auto& b) {
+    return a < b;
+  };
+}
+
+
 }
 }
 
@@ -22,6 +35,11 @@ matcha::Tensor operator<(const matcha::Tensor& a, const matcha::Tensor& b) {
 namespace matcha {
 namespace engine {
 namespace fn {
+
+
+Less::Less(const matcha::Tensor& a, const matcha::Tensor& b)
+  : Less(deref(a), deref(b))
+{}
 
 Less::Less(Tensor* a, Tensor* b)
   : Fn{a, b}
@@ -38,29 +56,6 @@ Less::Less(Tensor* a, Tensor* b)
 
   deduceStatus();
 }
-
-Less::Less(const matcha::Tensor& a, const matcha::Tensor& b)
-  : Less(deref(a), deref(b))
-{}
-
-/*
-
-const NodeLoader* Less::getLoader() const {
-  return loader();
-}
-
-const NodeLoader* Less::loader() {
-  static NodeLoader nl = {
-    .type = "Less",
-    .load = [](auto& is, auto& ins) {
-      if (ins.size() != 2) throw std::invalid_argument("loading Less: incorrect number of arguments");
-      return new Less(ins[0], ins[1]);
-    }
-  };
-  return &nl;
-};
-
-*/
 
 }
 }

@@ -154,10 +154,11 @@ void Tensor::setBuffer(device::Buffer *buffer) {
 }
 
 void* Tensor::data() {
-  Debug() << "data requested from " << this << ", transferring buffer...";
   if (!status().data) return nullptr;
 
   eval();
+  Debug() << "data requested from " << this << ", transferring buffer...";
+
   if (cpuBuffer_ == nullptr) {
     cpuBuffer_ = device::Cpu().createBuffer(buffer());
     cpuBuffer_->prepare();

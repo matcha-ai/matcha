@@ -6,17 +6,33 @@
 namespace matcha {
 namespace fn {
 
+Tensor negative(const Tensor& a) {
+  return 0 - a;
+}
+
 Tensor subtract(const Tensor& a, const Tensor& b) {
   auto* node = new engine::fn::Subtract(a, b);
   auto* out  = new engine::Tensor(node->out(0));
   return Tensor::fromObject(out);
 }
 
+UnaryFn subtractWith(const Tensor& b) {
+  return [=](auto& a) {
+    return a - b;
+  };
+}
+
+UnaryFn subtractAgainst(const Tensor& a) {
+  return [=](auto& b) {
+    return a - b;
+  };
+}
+
 }
 }
 
 matcha::Tensor operator-(const matcha::Tensor& a) {
-  return 0 - a;
+  return matcha::fn::negative(a);
 }
 
 matcha::Tensor operator-(const matcha::Tensor& a, const matcha::Tensor& b) {

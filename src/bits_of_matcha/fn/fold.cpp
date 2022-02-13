@@ -8,7 +8,7 @@
 namespace matcha {
 namespace fn {
 
-Tensor fold(Stream& stream, const Tensor& init, std::function<Tensor (const Tensor& a, const Tensor& b)> fn) {
+Tensor fold(Stream& stream, const Tensor& init, BinaryFn fn) {
   Context ctx("fold");
 
   stream.reset();

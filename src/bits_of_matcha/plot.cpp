@@ -1,4 +1,5 @@
-#include "bits_of_matcha/plt.h"
+#include "bits_of_matcha/plot.h"
+#include "bits_of_matcha/data.h"
 #include "bits_of_matcha/fn/min.h"
 #include "bits_of_matcha/fn/max.h"
 #include "bits_of_matcha/context.h"
@@ -7,20 +8,20 @@
 namespace matcha {
 
 
-Plt::Plt(const Tensor& tensor)
+Plot::Plot(const Tensor& tensor)
   : tensor_{tensor}
 {}
 
-std::ostream& operator<<(std::ostream& os, const Plt& plt) {
+std::ostream& operator<<(std::ostream& os, const Plot& plt) {
   os << plt.string();
   return os;
 }
 
-std::string Plt::string() const {
+std::string Plot::string() const {
   return asciiHistogram();
 }
 
-std::string Plt::asciiHistogram() const {
+std::string Plot::asciiHistogram() const {
   Context ctx("Ascii Histogram");
   ctx.debug(false);
 
@@ -28,33 +29,36 @@ std::string Plt::asciiHistogram() const {
   int bins = charMap.size();
 
   size_t size = tensor_.size();
-  float* content = (float*)tensor_.data();
+  float* content = tensor_.data();
   auto& shape = tensor_.shape();
   auto& dtype = tensor_.dtype();
 
   if (dtype != Dtype::Float) throw std::runtime_error("unsupported Dtype");
 
   size_t width;
+  size_t height;
   if (tensor_.rank() > 0) {
     width = shape[-1];
   } else {
     width = 1;
   }
+  height = size / width;
 
   float min, max, binSize;
   if (content) {
-    min = *(float*)fn::min(tensor_).data();
-    max = *(float*)fn::max(tensor_).data();
+    min = fn::min(tensor_).data();
+    max = fn::max(tensor_).data();
     binSize = (max - min) / bins;
   }
 
   std::string buffer;
-  buffer.reserve(2 * size + size / width);
+  buffer.reserve(2 * size + 3 * size / width + 2 * width + 4);
+
+  buffer += "┌";
+  for (size_t i = 0; i < 2 * width; i++) buffer += "─";
+  buffer += "┐";
 
   for (size_t i = 0; i < size; i++) {
-    if (i % width == 0 && i != 0) {
-      buffer += '\n';
-    }
 
     char c = '?';
     if (content != nullptr) {
@@ -70,9 +74,20 @@ std::string Plt::asciiHistogram() const {
 
     buffer += c;
     buffer += c;
+
+    if (i % width == 0) {
+      if (i != 0) buffer += "│";
+      buffer += "\n";
+      if (i != height - 1) buffer += "│";
+    }
   }
 
+  buffer += "  │";
   buffer += '\n';
+  buffer += "└";
+  for (size_t i = 0; i < 2 * width; i++) buffer += "─";
+  buffer += "┘";
+
   return buffer;
 }
 

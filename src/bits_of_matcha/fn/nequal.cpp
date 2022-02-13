@@ -15,6 +15,18 @@ Tensor nequal(const Tensor& a, const Tensor& b) {
   return Tensor::fromObject(out);
 }
 
+UnaryFn nequalWith(const Tensor& b) {
+  return [=](auto& a) {
+    return a != b;
+  };
+}
+
+UnaryFn nequalAgainst(const Tensor& a) {
+  return [=](auto& b) {
+    return a != b;
+  };
+}
+
 }
 }
 
