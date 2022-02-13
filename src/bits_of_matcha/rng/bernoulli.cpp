@@ -68,6 +68,7 @@ bool Bernoulli::next() {
 
 bool Bernoulli::seek(size_t pos) {
   for (auto* out: outs_) out->updateStatusChanged();
+  return true;
 }
 
 size_t Bernoulli::tell() const {
