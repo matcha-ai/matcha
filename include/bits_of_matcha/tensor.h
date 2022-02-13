@@ -22,7 +22,8 @@ class Input;
 class Tuple;
 class Stream;
 class Params;
-class Plt;
+class Data;
+class Plot;;
 
 class Device;
 
@@ -68,8 +69,8 @@ class Tensor : public Object {
     void use(const Device& device) const;
     void update() const;
 
-    void* data() const;
-    Plt plt() const;
+    Data data() const;
+    Plot plot() const;
 
   public:
     static Tensor fromObject(engine::Tensor* object);

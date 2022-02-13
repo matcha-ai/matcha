@@ -7,6 +7,8 @@
 namespace matcha {
 namespace fn {
   Tensor matmul(const Tensor& a, const Tensor& b);
+  UnaryFn matmulWith(const Tensor& b);
+  UnaryFn matmulAgainst(const Tensor& a);
 }
 }
 

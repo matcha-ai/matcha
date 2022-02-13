@@ -1,5 +1,6 @@
 #pragma once
 
+#include "bits_of_matcha/engine/fn.h"
 #include "bits_of_matcha/object.h"
 
 #include <ostream>
@@ -49,8 +50,8 @@ class Stream : public Object {
     // operations
 
     Stream batch(size_t sizeLimit);
-    Stream map(std::function<Tensor (const Tensor&)> fn);
-    Tensor fold(const Tensor& init, std::function<Tensor (const Tensor&, const Tensor&)> fn);
+    Stream map(UnaryFn fn);
+    Tensor fold(const Tensor& init, BinaryFn fn);
 
   public:
     static Stream fromObject(engine::Stream* object);

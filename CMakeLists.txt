@@ -22,7 +22,8 @@ set(
   include/bits_of_matcha/input.h
   include/bits_of_matcha/tuple.h
   include/bits_of_matcha/flow.h
-  include/bits_of_matcha/plt.h
+  include/bits_of_matcha/data.h
+  include/bits_of_matcha/plot.h
 
   include/bits_of_matcha/engine/object.h
   include/bits_of_matcha/engine/tensor.h
@@ -105,7 +106,8 @@ set(
   src/bits_of_matcha/input.cpp
   src/bits_of_matcha/tuple.cpp
   src/bits_of_matcha/flow.cpp
-  src/bits_of_matcha/plt.cpp
+  src/bits_of_matcha/data.cpp
+  src/bits_of_matcha/plot.cpp
 
   src/bits_of_matcha/engine/object.cpp
   src/bits_of_matcha/engine/tensor.cpp

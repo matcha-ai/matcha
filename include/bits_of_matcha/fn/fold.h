@@ -9,7 +9,7 @@
 namespace matcha {
 namespace fn {
 
-Tensor fold(Stream& stream, const Tensor& init, std::function<Tensor (const Tensor&, const Tensor&)> fn);
+Tensor fold(Stream& stream, const Tensor& init, BinaryFn fn);
 
 }
 }

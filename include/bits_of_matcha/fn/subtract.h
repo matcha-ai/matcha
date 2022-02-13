@@ -6,7 +6,10 @@
 
 namespace matcha {
 namespace fn {
+  Tensor negative(const Tensor& a);
   Tensor subtract(const Tensor& a, const Tensor& b);
+  UnaryFn subtractWith(const Tensor& b);
+  UnaryFn subtractAgainst(const Tensor& a);
 }
 }
 

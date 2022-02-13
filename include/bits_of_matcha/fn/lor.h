@@ -7,6 +7,8 @@
 namespace matcha {
 namespace fn {
   Tensor lor(const Tensor& a, const Tensor& b);
+  UnaryFn lorWith(const Tensor& b);
+  UnaryFn lorAgainst(const Tensor& a);
 }
 }
 

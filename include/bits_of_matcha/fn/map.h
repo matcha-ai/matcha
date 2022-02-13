@@ -1,5 +1,6 @@
 #pragma once
 
+#include "bits_of_matcha/engine/fn.h"
 #include "bits_of_matcha/engine/relay.h"
 
 #include <functional>
@@ -11,7 +12,7 @@ class Stream;
 
 namespace fn {
 
-Stream map(Stream& stream, std::function<Tensor (const Tensor&)> fn);
+Stream map(Stream& stream, UnaryFn fn);
 
 }
 
@@ -23,8 +24,8 @@ namespace fn {
 
 class Map : public Relay {
   public:
-    Map(Stream* stream, std::function<matcha::Tensor (const matcha::Tensor&)> fn);
-    Map(matcha::Stream& stream, std::function<matcha::Tensor (const matcha::Tensor&)> fn);
+    Map(Stream* stream, UnaryFn fn);
+    Map(matcha::Stream& stream, UnaryFn fn);
 
     Tensor* open(int idx) override;
     void open(int idx, Tensor* tensor) override;
@@ -40,7 +41,7 @@ class Map : public Relay {
   private:
     matcha::Stream ref_;
     Stream* source_;
-    std::function<matcha::Tensor (const matcha::Tensor&)> fn_;
+    UnaryFn fn_;
 
     std::vector<Tensor*> relays_;
     std::vector<Tensor*> results_;

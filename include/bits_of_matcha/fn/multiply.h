@@ -7,6 +7,8 @@
 namespace matcha {
 namespace fn {
   Tensor multiply(const Tensor& a, const Tensor& b);
+  UnaryFn multiplyWith(const Tensor& b);
+  UnaryFn multiplyAgainst(const Tensor& a);
 }
 }
 

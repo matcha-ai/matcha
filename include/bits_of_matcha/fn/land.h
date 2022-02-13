@@ -7,6 +7,8 @@
 namespace matcha {
 namespace fn {
   Tensor land(const Tensor& a, const Tensor& b);
+  UnaryFn landWith(const Tensor& b);
+  UnaryFn landAgainst(const Tensor& a);
 }
 }
 

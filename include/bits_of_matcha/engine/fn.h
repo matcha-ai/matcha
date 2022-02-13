@@ -2,6 +2,15 @@
 
 #include "bits_of_matcha/engine/node.h"
 
+#include <functional>
+
+
+namespace matcha {
+  using NullaryFn = std::function<Tensor ()>;
+  using UnaryFn   = std::function<Tensor (const Tensor& a)>;
+  using BinaryFn  = std::function<Tensor (const Tensor& a, const Tensor& b)>;
+  using TernaryFn = std::function<Tensor (const Tensor& a, const Tensor& b, const Tensor& c)>;
+}
 
 namespace matcha {
 namespace device {

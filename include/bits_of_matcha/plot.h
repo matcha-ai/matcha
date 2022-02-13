@@ -8,9 +8,9 @@
 namespace matcha {
 
 
-class Plt {
+class Plot {
   public:
-    Plt(const Tensor& tensor);
+    Plot(const Tensor& tensor);
 
     std::string string() const;
 
@@ -22,7 +22,7 @@ class Plt {
 };
 
 
-std::ostream& operator<<(std::ostream& os, const Plt& plt);
+std::ostream& operator<<(std::ostream& os, const Plot& plt);
 
 
 }

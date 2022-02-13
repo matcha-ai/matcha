@@ -42,13 +42,10 @@ int main() {
 
   Stream s = dataset::csv("/home/patz/Downloads/mnist_train2.csv");
   s = s.batch(100);
-  Tensor it = s();
-  Tensor x = it.reshape({28, 28});
 
   while (Stream batch = s.batch(5)) {
     cout << "begin batch" << std::endl;
-    it.subst(batch);
-    Tensor y = batch();
+    Tensor x = batch(0).reshape({28, 28}), y = batch(1);
     while (batch.next()) {
       cout << x.plot() << std::endl;
       cout << "=> " << y.data().i() << std::endl;

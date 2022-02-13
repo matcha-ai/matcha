@@ -7,6 +7,8 @@
 namespace matcha {
 namespace fn {
   Tensor nequal(const Tensor& a, const Tensor& b);
+  UnaryFn nequalWith(const Tensor& b);
+  UnaryFn nequalAgainst(const Tensor& a);
 }
 }
 

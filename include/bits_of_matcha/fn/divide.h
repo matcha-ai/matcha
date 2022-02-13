@@ -7,6 +7,8 @@
 namespace matcha {
 namespace fn {
   Tensor divide(const Tensor& a, const Tensor& b);
+  UnaryFn divideWith(const Tensor& b);
+  UnaryFn divideAgainst(const Tensor& a);
 }
 }
 

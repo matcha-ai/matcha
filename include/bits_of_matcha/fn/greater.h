@@ -7,6 +7,8 @@
 namespace matcha {
 namespace fn {
   Tensor greater(const Tensor& a, const Tensor& b);
+  UnaryFn greaterWith(const Tensor& b);
+  UnaryFn greaterAgainst(const Tensor& a);
 }
 }
 

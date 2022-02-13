@@ -14,6 +14,7 @@ namespace matcha {
 #include "bits_of_matcha/params.h"
 #include "bits_of_matcha/input.h"
 #include "bits_of_matcha/tuple.h"
+#include "bits_of_matcha/data.h"
 
 #include "bits_of_matcha/engine/debug.h"
 #include "bits_of_matcha/engine/object.h"
