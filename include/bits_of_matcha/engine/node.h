@@ -1,60 +1,54 @@
 #pragma once
 
+#include "bits_of_matcha/computation.h"
+#include "bits_of_matcha/device.h"
+#include "bits_of_matcha/tensor.h"
 #include "bits_of_matcha/engine/tensor.h"
-#include "bits_of_matcha/engine/object.h"
-#include "bits_of_matcha/engine/status.h"
+
 
 #include <vector>
-#include <initializer_list>
-
 
 namespace matcha {
+class Tensor;
+class Device;
+}
 
-class Dtype;
-class Shape;
+namespace matcha::engine {
 
 class Tensor;
+class PipeBuffers;
 
-namespace engine {
-
-class NodeLoader;
-
-class In;
-class Out;
-
-
-class Node : public Object {
+class Node {
   public:
+    Node();
     Node(std::initializer_list<Tensor*> ins);
-    ~Node();
+    virtual ~Node();
 
-  public:
+    Tensor* in(int idx);
+    Tensor* out(int idx);
 
-    size_t ins() const;
-    size_t outs() const;
+    int ins() const;
+    int outs() const;
 
-    In* in(int index);
-    Out* out(int index);
+    int inIdx(Tensor* in) const;
+    int outIdx(Tensor* out) const;
 
-  public:
-    void dataStatusChanged(In* in) override;
-    void updateStatusChanged(In* in) override;
+    virtual void init();
+    virtual void run();
+
+    virtual void use(const Device& device);
+    virtual const Device::Concrete* device() const;
 
   protected:
-    static Tensor* deref(const matcha::Tensor* tensor);
-    static Tensor* deref(const matcha::Tensor& tensor);
+    void createOut(const Frame& frame);
+    void createOut(const Dtype& dtype, const Shape& shape);
 
   protected:
-    std::vector<In*> ins_;
-    std::vector<Out*> outs_;
-
-    friend class Flow;
-    friend class NodeSerializer;
-    friend class FlowSaver;
-    friend class FlowLoader;
-
+    std::vector<Tensor*> ins_;
+    std::vector<Tensor*> outs_;
+    std::vector<Buffer*> x_;
+    std::vector<Buffer*> y_;
 };
 
 
-}
 }

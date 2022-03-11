@@ -1,84 +1,76 @@
 #pragma once
 
-#include "bits_of_matcha/engine/object.h"
-#include "bits_of_matcha/engine/status.h"
-#include "bits_of_matcha/engine/in.h"
-#include "bits_of_matcha/engine/out.h"
-#include "bits_of_matcha/dtype.h"
-#include "bits_of_matcha/shape.h"
+#include "bits_of_matcha/frame.h"
+#include "bits_of_matcha/engine/buffer.h"
+#include "bits_of_matcha/device.h"
 
-#include <iostream>
-#include <set>
-
+#include <variant>
 
 namespace matcha {
-namespace device {
-  class Buffer;
-
-  namespace cpu {
-    class Buffer;
-  }
+class Tensor;
 }
 
-class Input;
-class Tensor;
+namespace matcha::engine {
 
-namespace engine {
+struct Node;
 
-class Tensor;
-class Params;
-class Stream;
-class Input;
-class Node;
-
-class Tensor : public Object {
+class Tensor {
   public:
+    explicit Tensor(Frame frame);
     Tensor(const Dtype& dtype, const Shape& shape);
-    Tensor(Out* source);
+    Tensor();
+    ~Tensor();
 
+    const Frame* frame() const;
     const Dtype& dtype() const;
     const Shape& shape() const;
-
-    size_t rank() const;
     size_t size() const;
+    size_t rank() const;
+    size_t bytes() const;
 
-    void dataStatusChanged(In* in) override;
-    void updateStatusChanged(In* in = nullptr) override;
-    void bufferChanged(In* in) override;
-    void eval(Out* out = nullptr) override;
-    void prune(Out* out = nullptr) override;
-
-    In* in();
-    Out* out();
-
-    void subst(Out* source);
-    void subst();
-
-    device::Buffer* buffer();
-    const device::Buffer* buffer() const;
-
+    void readData();
     void* data();
 
-    void setBuffer(device::Buffer* buffer);
+    Buffer* buffer();
+    void shareBuffer(Buffer* buffer);
+    void shareBuffer(Tensor* tensor);
+    void stealBuffer(Tensor* tensor);
+    Buffer* writeBuffer(const Device::Concrete& device = CPU);
+
+    Node* source();
+    void setSource(Node* source);
+    void compute();
+
+    const Device::Concrete* device() const;
+    bool uses(const Device::Concrete& device) const;
+    bool uses(const Device::Concrete* device) const;
+
+    void ref();
+    void unref();
+    void req();
+    void unreq();
+
+    unsigned refs() const;
+    unsigned reqs() const;
+    bool flow() const;
 
   private:
-    Dtype dtype_;
-    Shape shape_;
-
-    device::Buffer* buffer_;
-    mutable device::Buffer* cpuBuffer_;
-
-    void unrequire() const;
-
-    friend class Flow;
-    friend class FlowSaver;
+    Frame frame_;
+    Node* source_;
+    Buffer* buffer_;
+    Buffer* cpuBuffer_;
 
   private:
-    In* in_;
-    Out* out_;
+    unsigned refs_;
+    unsigned reqs_;
+    bool flow_;
 
+  private:
+    friend class matcha::Tensor;
 };
 
 
-}
+Tensor* deref(const matcha::Tensor& tensor);
+Tensor* deref(const matcha::Tensor* tensor);
+
 }

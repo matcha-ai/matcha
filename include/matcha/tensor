@@ -4,63 +4,34 @@
 namespace matcha {
 }
 
-#include "bits_of_matcha/dtype.h"
-#include "bits_of_matcha/shape.h"
-#include "bits_of_matcha/context.h"
 
+#include "bits_of_matcha/print.h"
+#include "bits_of_matcha/scope.h"
+
+#include "bits_of_matcha/frame.h"
 #include "bits_of_matcha/tensor.h"
 #include "bits_of_matcha/params.h"
-#include "bits_of_matcha/stream.h"
-#include "bits_of_matcha/input.h"
-#include "bits_of_matcha/tuple.h"
+#include "bits_of_matcha/fn.h"
 #include "bits_of_matcha/flow.h"
-#include "bits_of_matcha/data.h"
-#include "bits_of_matcha/plot.h"
+#include "bits_of_matcha/flowHost.h"
+#include "bits_of_matcha/slice.h"
+#include "bits_of_matcha/stream.h"
+#include "bits_of_matcha/random.h"
+#include "bits_of_matcha/dataset.h"
+#include "bits_of_matcha/device.h"
+#include "bits_of_matcha/computation.h"
+#include "bits_of_matcha/engine/flowContext.h"
+#include "bits_of_matcha/engine/flowBuilder.h"
 
-#include "bits_of_matcha/fn/add.h"
-#include "bits_of_matcha/fn/subtract.h"
-#include "bits_of_matcha/fn/multiply.h"
-#include "bits_of_matcha/fn/divide.h"
+#include "bits_of_matcha/varargShape.h"
 
 #include "bits_of_matcha/fn/identity.h"
-#include "bits_of_matcha/fn/abs.h"
-#include "bits_of_matcha/fn/square.h"
-#include "bits_of_matcha/fn/sqrt.h"
-#include "bits_of_matcha/fn/exp.h"
-
-#include "bits_of_matcha/fn/matmul.h"
-
+#include "bits_of_matcha/fn/basicArithmetic.h"
+#include "bits_of_matcha/fn/booleanArithmetic.h"
+#include "bits_of_matcha/fn/comparisons.h"
+#include "bits_of_matcha/fn/dot.h"
+#include "bits_of_matcha/fn/exponents.h"
 #include "bits_of_matcha/fn/transpose.h"
 #include "bits_of_matcha/fn/reshape.h"
+#include "bits_of_matcha/fn/folds.h"
 
-#include "bits_of_matcha/fn/min.h"
-#include "bits_of_matcha/fn/max.h"
-#include "bits_of_matcha/fn/maxIn.h"
-#include "bits_of_matcha/fn/maxAlong.h"
-#include "bits_of_matcha/fn/maxBetween.h"
-
-#include "bits_of_matcha/fn/argmin.h"
-#include "bits_of_matcha/fn/argmax.h"
-#include "bits_of_matcha/fn/argmaxIn.h"
-
-#include "bits_of_matcha/fn/sum.h"
-
-#include "bits_of_matcha/fn/equal.h"
-#include "bits_of_matcha/fn/nequal.h"
-#include "bits_of_matcha/fn/less.h"
-#include "bits_of_matcha/fn/greater.h"
-#include "bits_of_matcha/fn/lequal.h"
-#include "bits_of_matcha/fn/gequal.h"
-
-#include "bits_of_matcha/fn/lnot.h"
-#include "bits_of_matcha/fn/land.h"
-#include "bits_of_matcha/fn/lor.h"
-
-#include "bits_of_matcha/fn/batch.h"
-#include "bits_of_matcha/fn/map.h"
-#include "bits_of_matcha/fn/fold.h"
-
-#include "bits_of_matcha/rng/normal.h"
-#include "bits_of_matcha/rng/uniform.h"
-#include "bits_of_matcha/rng/poisson.h"
-#include "bits_of_matcha/rng/bernoulli.h"

@@ -1,75 +1,93 @@
 #include "bits_of_matcha/flow.h"
-#include "bits_of_matcha/tensor.h"
-#include "bits_of_matcha/tuple.h"
+#include "bits_of_matcha/print.h"
 #include "bits_of_matcha/engine/flow.h"
-
-#include <fstream>
+#include "bits_of_matcha/engine/flowContext.h"
 
 
 namespace matcha {
 
-
-Flow::Flow(const Tensor& out)
-  : Object(new engine::Flow({out}))
+Flow::FromFn::FromFn(const UnaryFn& fn)
+  : fn_{fn}
+  , ins_{1}
+  , outs_{1}
 {}
 
-Flow::Flow(const Tuple& outs)
-  : Object(new engine::Flow(outs))
+Flow::FromFn::FromFn(const BinaryFn& fn)
+  : fn_{fn}
+  , ins_{2}
+  , outs_{1}
 {}
 
-Flow::Flow(std::initializer_list<Tensor> outs)
-  : Object(new engine::Flow(outs))
+Flow::FromFn::FromFn(const TernaryFn& fn)
+  : fn_{fn}
+  , ins_{3}
+  , outs_{0}
 {}
 
-Tensor Flow::operator()(const Tensor& in) const {
+
+Flow::Flow(UnaryFn fn)
+  : flow_{nullptr}
+  , fn_{fn}
+{
+//  // create query tensor
+  flow_ = Tensor::flowQuery(fn);
+  if (!flow_) {
+    throw std::invalid_argument("given Fn is not a Flow; you can create one from the function by using Flow::init with it");
+  }
 }
 
-Tuple Flow::operator()(const Tuple& ins) const {
-}
-
-void Flow::test(const Stream& stream) const {
-  if (isNull()) throw std::runtime_error("object is null");
-}
-
-void Flow::save(const std::string& filepath) const {
-  std::ofstream file(filepath);
-  if (!file) throw std::invalid_argument("file could not be opened");
-  save(file);
-}
-
-void Flow::save(std::ostream& os) const {
-  if (isNull()) throw std::runtime_error("object is null");
-  object()->save(os);
-}
-
-Flow Flow::load(const std::string& filepath) {
-  std::ifstream file(filepath);
-  if (!file) throw std::invalid_argument("file could not be opened");
-  return load(file);
-}
-
-Flow Flow::load(std::istream& is) {
-  return engine::Flow::load(is);
-}
-
-Flow Flow::fromObject(engine::Flow* object) {
-  return Flow(object, 0);
-}
-
-Flow::Flow(engine::Flow* object, char dummy)
-  : Object(object)
-{}
-
-engine::Flow* Flow::object() const {
-  return reinterpret_cast<engine::Flow*>(Object::object());
-}
+Flow::Flow(FromFn fn)
+  : flow_{nullptr}
+{
 
 }
 
-std::ostream& operator<<(std::ostream& os, const matcha::Flow& flow) {
-  os << "Flow { "
-     << "location: " << flow.object() << "; "
-     << "}" << std::endl;
+Flow Flow::init(UnaryFn fn) {
+  auto* flow = Tensor::flowQuery(fn);
+  if (flow) {
+    return Flow(fn);
+  }
 
-  return os;
+  UnaryFn lambda = [&, fn](const Tensor& x) {
+    flow_init(lambda, x);
+    return fn(x);
+  };
+
+  flow = Tensor::flowQuery(lambda);
+  if (flow) {
+    return Flow(lambda);
+  }
+
+  throw std::invalid_argument("could not make it a flow");
+}
+
+Flow Flow::load(const std::string& file) {
+  return Flow(0);
+}
+
+Tensor Flow::operator()(const Tensor& a) {
+  return fn_(a);
+}
+
+bool Flow::built() {
+  return flow_->built();
+}
+
+void Flow::save(const std::string& file) {
+  if (!built()) throw std::runtime_error("flow has not been built yet");
+}
+
+float Flow::cost() {
+  if (!built()) throw std::runtime_error("flow has not been built yet");
+  return 0;
+}
+
+void Flow::use(const Device& device) {
+  if (!built()) throw std::runtime_error("flow has not been built yet");
+}
+
+void Flow::use(const Device::Strategy& strategy) {
+  use(Device{strategy});
+}
+
 }

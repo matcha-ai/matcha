@@ -1,92 +1,37 @@
 #include "bits_of_matcha/fn/reshape.h"
 
-#include <matcha/engine>
 
+namespace matcha::fn {
 
-namespace matcha {
-namespace fn {
-
-Tensor reshape(const Tensor& a, const Shape& shape) {
-  auto* node = new engine::fn::Reshape(a, shape);
-  auto* out  = new engine::Tensor(node->out(0));
-  return Tensor::fromObject(out);
-}
-
-std::function<Tensor (const Tensor&)> reshape(const Shape& shape) {
-  return [=](const Tensor& x) {
-    return x.reshape(shape);
+Tensor reshape(const Tensor& a, const Shape::Reshape& shape) {
+  auto node = new engine::fn::Reshape{
+    engine::deref(a),
+    shape
   };
+
+  auto out = node->out(0);
+  return Tensor::fromOut(out);
 }
 
 }
-}
 
 
-namespace matcha {
-namespace engine {
-namespace fn {
+namespace matcha::engine::fn {
 
-
-Reshape::Reshape(const matcha::Tensor& a, const Shape& shape)
-  : Reshape(deref(a), shape)
-{}
-
-Reshape::Reshape(Tensor* a, const Shape& shape)
+Reshape::Reshape(Tensor* a, const Shape::Reshape& target)
   : Node{a}
 {
-  if (in(0)->size() != shape.size()) {
-    throw std::invalid_argument("shapes don't have matching sizes");
-  }
-
-  auto* out = createOut(a->dtype(), shape);
-  auto* buffer = Context::current()->getDevice()->createBuffer(in(0)->dtype(), shape);
-  buffer->setSource(in(0)->buffer());
-  out->setBuffer(buffer);
-  outs_.push_back(out);
-
-  status_ = {
-    .data   = in(0)->status().data,
-    .update = true,
-    .ready  = false
-  };
+  Shape shape = target(a->shape());
+  createOut(a->dtype(), shape);
 }
 
-void Reshape::dataStatusChanged(In* in) {
-  status_.data = in->status().data;
-  out(0)->dataStatusChanged();
+void Reshape::init() {
+  if (in(0)->source()) in(0)->source()->init();
+  out(0)->shareBuffer(in(0));
 }
 
-void Reshape::updateStatusChanged(In* in) {
-  if (status_.update) return;
-  status_.update = true;
-
-  out(0)->updateStatusChanged();
+void Reshape::run() {
+  Node::run();
 }
 
-void Reshape::bufferChanged(In* in) {
-  out(0)->setBuffer(in->buffer());
-}
-
-void Reshape::eval(Out* target) {
-  if (!status_.update) return;
-
-  status_.update = false;
-
-  in(0)->eval();
-
-  if (!status_.ready) {
-    status_.ready = true;
-    out(0)->buffer()->prepare();
-  }
-}
-
-void Reshape::prune(Out* link) {
-  if (referenced()) return;
-  if (out(0)->linked()) return;
-  delete in(0);
-  delete this;
-}
-
-}
-}
 }

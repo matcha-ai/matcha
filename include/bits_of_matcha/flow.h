@@ -1,58 +1,53 @@
-#pragma once
+#include "bits_of_matcha/tensor.h"
+#include "bits_of_matcha/fn.h"
+#include "device.h"
 
-#include "bits_of_matcha/object.h"
+#include <variant>
 
-#include <initializer_list>
-#include <vector>
-#include <string>
-#include <iostream>
-
-namespace matcha {
-  class Flow;
-}
-
-std::ostream& operator<<(std::ostream& os, const matcha::Flow& flow);
 
 namespace matcha {
 
-class Tuple;
-class Tensor;
-class Stream;
+class Flow;
 
-class Device;
+#define FLOW1(a)          (matcha::Flow)(matcha::Flow::FromFn)(matcha::UnaryFn)[=](a) mutable -> matcha::Tensor
+#define FLOW2(a, b)       (matcha::Flow)(matcha::Flow::FromFn)(matcha::BinaryFn)[=]((a), (b)) mutable -> matcha::Tensor
+#define FLOW3(a, b, c)    (matcha::Flow)(matcha::Flow::FromFn)(matcha::TernaryFn)[=]((a), (b), (c)) mutable -> matcha::Tensor
+#define GET_FLOW_MACRO(_1,_2,_3,NAME,...) NAME
+#define flow_make(...) GET_FLOW_MACRO(__VA_ARGS__, FLOW3, FLOW2, FLOW1)(__VA_ARGS__)
 
-namespace engine {
-  class Flow;
-}
 
-class Flow : public Object {
+
+class Flow {
   public:
-    Flow(const Tensor& out);
-    Flow(const Tuple& outs);
-    Flow(std::initializer_list<Tensor> outs);
+    class FromFn {
+      public:
+        FromFn(const UnaryFn& fn);
+        FromFn(const BinaryFn& fn);
+        FromFn(const TernaryFn& fn);
 
-    Tensor operator()(const Tensor& in) const;
-    Tuple operator()(const Tuple& ins) const;
+      private:
+        int ins_, outs_;
+        std::variant<UnaryFn, BinaryFn, TernaryFn, NaryFn> fn_;
+    };
 
+    Flow(UnaryFn fn);
+    explicit Flow(FromFn fn);
+    static Flow init(UnaryFn fn);
+    static Flow load(const std::string& file);
+
+    Tensor operator()(const Tensor& a);
+
+    bool built();
+    void save(const std::string& file);
     void use(const Device& device);
-    void test(const Stream& stream) const;
-
-    void save(const std::string& filepath) const;
-    void save(std::ostream& os) const;
-
-    static Flow load(const std::string& filepath);
-    static Flow load(std::istream& is);
-
-  public:
-    static Flow fromObject(engine::Flow* object);
+    void use(const Device::Strategy& strategy);
+    float cost();
 
   private:
-    Flow(engine::Flow* object, char dummy);
-    engine::Flow* object() const;
-
-  private:
-    friend std::ostream& ::operator<<(std::ostream& os, const Flow& flow);
+    engine::Flow* flow_;
+    UnaryFn fn_;
 
 };
+
 
 }

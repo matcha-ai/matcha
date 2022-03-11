@@ -14,175 +14,104 @@ set(
   include/matcha/tensor
   include/matcha/engine
 
-  include/bits_of_matcha/context.h
-  include/bits_of_matcha/object.h
+  include/bits_of_matcha/error/error.h
+
+  include/bits_of_matcha/dtype.h
+  include/bits_of_matcha/shape.h
+  include/bits_of_matcha/frame.h
   include/bits_of_matcha/tensor.h
   include/bits_of_matcha/params.h
-  include/bits_of_matcha/stream.h
-  include/bits_of_matcha/input.h
-  include/bits_of_matcha/tuple.h
+  include/bits_of_matcha/fn.h
   include/bits_of_matcha/flow.h
-  include/bits_of_matcha/data.h
-  include/bits_of_matcha/plot.h
+  include/bits_of_matcha/flowHost.h
+  include/bits_of_matcha/slice.h
+  include/bits_of_matcha/stream.h
+  include/bits_of_matcha/random.h
+  include/bits_of_matcha/dataset.h
+  include/bits_of_matcha/device.h
+  include/bits_of_matcha/computation.h
+  include/bits_of_matcha/print.h
+  include/bits_of_matcha/scope.h
 
-  include/bits_of_matcha/engine/object.h
+  include/bits_of_matcha/varargShape.h
+
   include/bits_of_matcha/engine/tensor.h
-  include/bits_of_matcha/engine/params.h
-  include/bits_of_matcha/engine/stream.h
-  include/bits_of_matcha/engine/relay.h
-  include/bits_of_matcha/engine/input.h
-  include/bits_of_matcha/engine/status.h
-  include/bits_of_matcha/engine/node.h
-  include/bits_of_matcha/engine/in.h
-  include/bits_of_matcha/engine/out.h
+  include/bits_of_matcha/engine/buffer.h
   include/bits_of_matcha/engine/fn.h
-  include/bits_of_matcha/engine/nodeloader.h
-  include/bits_of_matcha/engine/nodeserializer.h
+  include/bits_of_matcha/engine/node.h
   include/bits_of_matcha/engine/flow.h
-  include/bits_of_matcha/engine/flowsaver.h
-  include/bits_of_matcha/engine/flowloader.h
-  include/bits_of_matcha/engine/inlet.h
-  include/bits_of_matcha/engine/outlet.h
-  include/bits_of_matcha/engine/debug.h
-
-  include/bits_of_matcha/fn/add.h
-  include/bits_of_matcha/fn/subtract.h
-  include/bits_of_matcha/fn/multiply.h
-  include/bits_of_matcha/fn/divide.h
+  include/bits_of_matcha/engine/flowContext.h
+  include/bits_of_matcha/engine/flowBuilder.h
+  include/bits_of_matcha/engine/memory.h
+  include/bits_of_matcha/engine/cpu/buffer.h
+  include/bits_of_matcha/engine/cpu/memoryPool.h
+  include/bits_of_matcha/engine/cpu/blockPool.h
+  include/bits_of_matcha/engine/elementwiseBinary.h
+  include/bits_of_matcha/engine/elementwiseUnary.h
+  include/bits_of_matcha/engine/fold.h
 
   include/bits_of_matcha/fn/identity.h
-  include/bits_of_matcha/fn/abs.h
-  include/bits_of_matcha/fn/square.h
-  include/bits_of_matcha/fn/sqrt.h
-  include/bits_of_matcha/fn/exp.h
-
-  include/bits_of_matcha/fn/matmul.h
-
+  include/bits_of_matcha/fn/basicArithmetic.h
+  include/bits_of_matcha/fn/booleanArithmetic.h
+  include/bits_of_matcha/fn/comparisons.h
+  include/bits_of_matcha/fn/dot.h
+  include/bits_of_matcha/fn/exponents.h
   include/bits_of_matcha/fn/transpose.h
   include/bits_of_matcha/fn/reshape.h
-
-  include/bits_of_matcha/fn/min.h
-  include/bits_of_matcha/fn/max.h
-  include/bits_of_matcha/fn/maxBetween.h
-  include/bits_of_matcha/fn/maxIn.h
-  include/bits_of_matcha/fn/maxAlong.h
-
-  include/bits_of_matcha/fn/argmin.h
-  include/bits_of_matcha/fn/argmax.h
-  include/bits_of_matcha/fn/argmaxIn.h
-
-  include/bits_of_matcha/fn/sum.h
-
-  include/bits_of_matcha/fn/equal.h
-  include/bits_of_matcha/fn/nequal.h
-  include/bits_of_matcha/fn/less.h
-  include/bits_of_matcha/fn/greater.h
-  include/bits_of_matcha/fn/lequal.h
-  include/bits_of_matcha/fn/gequal.h
-
-  include/bits_of_matcha/fn/lnot.h
-  include/bits_of_matcha/fn/land.h
-  include/bits_of_matcha/fn/lor.h
-
-  include/bits_of_matcha/fn/batch.h
-  include/bits_of_matcha/fn/map.h
-  include/bits_of_matcha/fn/fold.h
-
-  include/bits_of_matcha/rng/normal.h
-  include/bits_of_matcha/rng/uniform.h
-  include/bits_of_matcha/rng/poisson.h
-  include/bits_of_matcha/rng/bernoulli.h
+  include/bits_of_matcha/fn/folds.h
 
 )
 
 set(
   PROJECT_SOURCES
 
-  src/bits_of_matcha/context.cpp
-  src/bits_of_matcha/object.cpp
+  src/bits_of_matcha/dtype.cpp
+  src/bits_of_matcha/shape.cpp
+  src/bits_of_matcha/frame.cpp
   src/bits_of_matcha/tensor.cpp
-  src/bits_of_matcha/params.cpp
-  src/bits_of_matcha/stream.cpp
-  src/bits_of_matcha/input.cpp
-  src/bits_of_matcha/tuple.cpp
+  src/bits_of_matcha/fn.cpp
   src/bits_of_matcha/flow.cpp
-  src/bits_of_matcha/data.cpp
-  src/bits_of_matcha/plot.cpp
+  src/bits_of_matcha/slice.cpp
+  src/bits_of_matcha/stream.cpp
+  src/bits_of_matcha/random.cpp
+  src/bits_of_matcha/dataset.cpp
+  src/bits_of_matcha/device.cpp
+  src/bits_of_matcha/print.cpp
+  src/bits_of_matcha/scope.cpp
 
-  src/bits_of_matcha/engine/object.cpp
   src/bits_of_matcha/engine/tensor.cpp
-  src/bits_of_matcha/engine/params.cpp
-  src/bits_of_matcha/engine/stream.cpp
-  src/bits_of_matcha/engine/relay.cpp
-  src/bits_of_matcha/engine/input.cpp
-  src/bits_of_matcha/engine/status.cpp
+  src/bits_of_matcha/engine/buffer.cpp
   src/bits_of_matcha/engine/node.cpp
-  src/bits_of_matcha/engine/in.cpp
-  src/bits_of_matcha/engine/out.cpp
   src/bits_of_matcha/engine/fn.cpp
-  src/bits_of_matcha/engine/nodeloader.cpp
-  src/bits_of_matcha/engine/nodeserializer.cpp
   src/bits_of_matcha/engine/flow.cpp
-  src/bits_of_matcha/engine/flowsaver.cpp
-  src/bits_of_matcha/engine/flowloader.cpp
-  src/bits_of_matcha/engine/inlet.cpp
-  src/bits_of_matcha/engine/outlet.cpp
-  src/bits_of_matcha/engine/debug.cpp
-
-  src/bits_of_matcha/fn/add.cpp
-  src/bits_of_matcha/fn/subtract.cpp
-  src/bits_of_matcha/fn/multiply.cpp
-  src/bits_of_matcha/fn/divide.cpp
+  src/bits_of_matcha/engine/flowContext.cpp
+  src/bits_of_matcha/engine/flowBuilder.cpp
+  src/bits_of_matcha/engine/pipeBuffers.cpp
+  src/bits_of_matcha/engine/cpu/buffer.cpp
+  src/bits_of_matcha/engine/cpu/memoryPool.cpp
+  src/bits_of_matcha/engine/cpu/blockPool.cpp
+  src/bits_of_matcha/engine/memory.cpp
+  src/bits_of_matcha/engine/elementwiseBinary.cpp
+  src/bits_of_matcha/engine/elementwiseUnary.cpp
+  src/bits_of_matcha/engine/fold.cpp
 
   src/bits_of_matcha/fn/identity.cpp
-  src/bits_of_matcha/fn/abs.cpp
-  src/bits_of_matcha/fn/square.cpp
-  src/bits_of_matcha/fn/sqrt.cpp
-  src/bits_of_matcha/fn/exp.cpp
-
-  src/bits_of_matcha/fn/matmul.cpp
-
+  src/bits_of_matcha/fn/basicArithmetic.cpp
+  src/bits_of_matcha/fn/booleanArithmetic.cpp
+  src/bits_of_matcha/fn/comparisons.cpp
+  src/bits_of_matcha/fn/dot.cpp
+  src/bits_of_matcha/fn/exponents.cpp
   src/bits_of_matcha/fn/transpose.cpp
   src/bits_of_matcha/fn/reshape.cpp
-
-  src/bits_of_matcha/fn/min.cpp
-  src/bits_of_matcha/fn/max.cpp
-  src/bits_of_matcha/fn/maxBetween.cpp
-  src/bits_of_matcha/fn/maxIn.cpp
-  src/bits_of_matcha/fn/maxAlong.cpp
-
-  src/bits_of_matcha/fn/argmin.cpp
-  src/bits_of_matcha/fn/argmax.cpp
-  src/bits_of_matcha/fn/argmaxIn.cpp
-
-  src/bits_of_matcha/fn/sum.cpp
-
-  src/bits_of_matcha/fn/equal.cpp
-  src/bits_of_matcha/fn/nequal.cpp
-  src/bits_of_matcha/fn/less.cpp
-  src/bits_of_matcha/fn/greater.cpp
-  src/bits_of_matcha/fn/lequal.cpp
-  src/bits_of_matcha/fn/gequal.cpp
-
-  src/bits_of_matcha/fn/lnot.cpp
-  src/bits_of_matcha/fn/land.cpp
-  src/bits_of_matcha/fn/lor.cpp
-
-  src/bits_of_matcha/fn/batch.cpp
-  src/bits_of_matcha/fn/map.cpp
-  src/bits_of_matcha/fn/fold.cpp
-
-  src/bits_of_matcha/rng/normal.cpp
-  src/bits_of_matcha/rng/uniform.cpp
-  src/bits_of_matcha/rng/poisson.cpp
-  src/bits_of_matcha/rng/bernoulli.cpp
+  src/bits_of_matcha/fn/folds.cpp
 
 )
 
+
 find_package(matcha-device)
-find_package(matcha)
-find_package(Threads)
-find_package(Boost REQUIRED COMPONENTS serialization)
+find_package(BLAS REQUIRED)
+message("${BLAS_LIBRARIES}")
+
 
 add_library(${PROJECT_NAME} SHARED)
 
@@ -199,14 +128,9 @@ target_sources(
   ${PROJECT_SOURCES}
 )
 
-add_executable(main src/main.cpp)
-#add_executable(benchmark src/benchmark.cpp)
-
-#target_include_directories(
-#  ${PROJECT_NAME}
-#  PRIVATE
-#    /home/patz/Heap/matcha-device/include
-#)
+add_executable(main src/main.cpp
+#  src/todo.cpp
+  )
 
 target_include_directories(
   main
@@ -220,16 +144,12 @@ target_include_directories(
     include/
 )
 
-#target_include_directories(
-#  benchmark
-#  PRIVATE
-#    include/
-#)
+target_link_libraries(${PROJECT_NAME} PUBLIC /usr/lib/libcblas.so)
+#target_include_directories(${PROJECT_NAME} PRIVATE ${BLAS_INCLUDE_DIRS})
 
 target_link_libraries(${PROJECT_NAME} PUBLIC matcha-device)
-target_link_libraries(${PROJECT_NAME} PUBLIC matcha)
+#target_link_libraries(${PROJECT_NAME} PUBLIC matcha)
 target_link_libraries(${PROJECT_NAME} PRIVATE pthread)
-target_link_libraries(${PROJECT_NAME} PRIVATE Boost::serialization)
 target_link_libraries(main PUBLIC ${PROJECT_NAME})
 #target_link_libraries(benchmark PUBLIC ${PROJECT_NAME})
 

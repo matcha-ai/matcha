@@ -1,39 +1,23 @@
 #pragma once
 
-#include "bits_of_matcha/tensor.h"
-#include "bits_of_matcha/engine/node.h"
-
-#include <functional>
+#include "bits_of_matcha/engine/fn.h"
 
 
-namespace matcha {
-namespace fn {
-  Tensor reshape(const Tensor& a, const Shape& shape);
-  std::function<Tensor (const Tensor&)> reshape(const Shape& shape);
-}
+namespace matcha::fn {
+
+Tensor reshape(const Tensor& a, const Shape::Reshape& shape);
+
 }
 
 
-namespace matcha {
-namespace engine {
-namespace fn {
-
+namespace matcha::engine::fn {
 
 class Reshape : public Node {
   public:
-    Reshape(Tensor* a, const Shape& shape);
-    Reshape(const matcha::Tensor& a, const Shape& shape);
+    Reshape(Tensor* a, const Shape::Reshape& target);
 
-    void dataStatusChanged(In* in) override;
-    void updateStatusChanged(In* in) override;
-    void bufferChanged(In* in) override;
-
-    void eval(Out* out) override;
-    void prune(Out* out) override;
-
+    void init() override;
+    void run() override;
 };
 
-
-}
-}
 }

@@ -1,66 +1,48 @@
-#include <iostream>
 #include <matcha/tensor>
-#include <matcha/dataset>
-#include <matcha/model>
-#include <matcha/nn>
-#include <matcha/device>
+#include <matcha/engine>
 
-
-using namespace std;
 using namespace matcha;
-using namespace matcha::nn;
 
-//void nn() {
-//  Context ctx;
-//  ctx.debug(true);
-//  Stream mnist = dataset::csv("/home/patz/Downloads/mnist_train2.csv");
-//  mnist = fn::batch(mnist, 80);
+Tensor a(const Tensor& b) {
+  flow_init(a, b);
 
-//  Model ai {
-//    NeuralNetwork {
-//      Topology {
-//        Affine(100),
-//        Relu(),
-//        Affine(10),
-//        Softmax()
-//      }
-//    }
-//  };
+  std::cout << b;
+  return b;
+}
 
-//  ai.train(mnist);
-//}
+Tensor softmax(const Tensor& a) {
+  Tensor normed = a - fn::max(a);
+  Tensor exp = fn::exp(normed);
+  return exp / fn::sum(exp);
+}
 
-Tuple msd(Stream& s) {
-  Tensor m = s.fold(0, fn::add) / s.size();
-  Stream squares = s.map([&](auto& x) { return fn::square(x - m); });
-  Tensor sd = squares.fold(0, fn::add) / (squares.size() - 1);
-  return {m, sd};
+namespace ma = matcha;
+namespace mc = matcha;
+
+Tensor relu(const Tensor& a) {
+  return fn::max(a, 0);
 }
 
 int main() {
-  Context ctx;
+  random::Normal rand {
+    .m = 3
+  };
 
-  Stream s = dataset::csv("/home/patz/Downloads/mnist_train2.csv");
-  s = s.batch(100);
+  while (true) {
+    print("---------------------------------");
+    Tensor x4 = rand(800, 800);
 
-  while (Stream batch = s.batch(5)) {
-    cout << "begin batch" << std::endl;
-    Tensor x = batch(0).reshape({28, 28}), y = batch(1);
-    while (batch.next()) {
-      cout << x.plot() << std::endl;
-      cout << "=> " << y.data().i() << std::endl;
-    }
+    x4 = x4.t();
+    Tensor x5 = x4.dot(x4);
+    x5 = softmax(x5);
+
+    Tensor x6 = fn::product(x5);
+    print(x6);
+    print(fn::max(x5) + rand() > 3);
+
+    print(engine::stats::memory() >> 10, " kiB");
+//    Tensor x5 = x4 + x4;
   }
-
 
   return 0;
 }
-
-
-
-
-
-
-
-
-

@@ -1,74 +1,110 @@
 #include "bits_of_matcha/engine/node.h"
+#include "bits_of_matcha/engine/tensor.h"
+#include "bits_of_matcha/engine/flowContext.h"
+#include "bits_of_matcha/engine/pipeBuffers.h"
+#include "bits_of_matcha/engine/memory.h"
+#include "bits_of_matcha/device.h"
+#include "bits_of_matcha/tensor.h"
+#include "bits_of_matcha/print.h"
 
-#include <matcha/engine>
-#include <stdexcept>
-#include <algorithm>
+#include <numeric>
+#include <limits>
 
 
-namespace matcha {
-namespace engine {
+namespace matcha::engine {
+
+
+Node::Node()
+{}
 
 Node::Node(std::initializer_list<Tensor*> ins)
+  : ins_{ins}
 {
-  for (auto& in: ins) {
-    ins_.push_back(createIn(in->out(), ins_.size()));
-  }
-
-  bool data = std::all_of(
-    std::begin(ins_), std::end(ins_),
-    [](auto* in) {
-      return in->status().data;
-    }
-  );
-
-  status_ = {
-    .data = data,
-    .update = true,
-    .ready = false
-  };
-  Debug() << "created Node " << this;
+  for (auto in: ins_) in->req();
 }
 
 Node::~Node() {
-  Debug() << "deleted Node " << this;
+//  print("deleting node");
+  for (auto in: ins_) in->unreq();
+  for (auto out: outs_) out->setSource(nullptr);
 }
 
-In* Node::in(int index) {
-  if (index < 0) index += ins();
-  if (index < 0 || index >= ins()) throw std::out_of_range("node in index is out of range");
-  return ins_[index];
+Tensor* Node::in(int idx) {
+  return ins_[idx];
 }
 
-size_t Node::ins() const {
-  return ins_.size();
+Tensor* Node::out(int idx) {
+  return outs_[idx];
 }
 
-Out* Node::out(int index) {
-  if (index < 0) index += outs();
-  if (index < 0 || index >= outs()) throw std::out_of_range("node out index is out of range");
-  return outs_[index];
+int Node::ins() const {
+  return (int)ins_.size();
 }
 
-size_t Node::outs() const {
-  return outs_.size();
+int Node::outs() const {
+  return (int)outs_.size();
 }
 
-Tensor* Node::deref(const matcha::Tensor* tensor) {
-  return tensor->object();
+int Node::inIdx(Tensor* in) const {
+  return (int) std::distance(
+    std::begin(ins_),
+    std::find(std::begin(ins_), std::end(ins_), in)
+  );
 }
 
-Tensor* Node::deref(const matcha::Tensor& tensor) {
-  return tensor.object();
+int Node::outIdx(Tensor* out) const {
+  return (int) std::distance(
+    std::begin(outs_),
+    std::find(std::begin(outs_), std::end(outs_), out)
+  );
 }
 
-void Node::dataStatusChanged(In *in) {
-//  for (auto* out: outsNew_) out->dataStatusChanged(data);
+void Node::createOut(const Frame& frame) {
+  auto* out = new Tensor(frame);
+  out->setSource(this);
+  outs_.push_back(out);
+  if (outs() > 1) throw std::runtime_error("TODO multiple-out nodes not implemented");
 }
 
-void Node::updateStatusChanged(In *in) {
-  for (auto* out: outs_) out->updateStatusChanged();
+void Node::createOut(const Dtype& dtype, const Shape& shape) {
+  createOut(Frame(dtype, shape));
 }
 
+void Node::init() {
+  x_.resize(ins());
+  y_.resize(outs());
 
+  for (int i = 0; i < ins(); i++) {
+    auto in = ins_[i];
+    if (in->source()) {
+      in->source()->init();
+    }
+    if (in->uses(device())) {
+      x_[i] = in->buffer();
+    } else {
+      throw std::runtime_error("TODO node buffer transfers");
+      x_[i] = malloc(in->bytes(), *device());
+    }
+  }
+
+  for (int i = 0; i < outs(); i++) {
+    auto out = outs_[i];
+    out->writeBuffer(*device());
+    y_[i] = out->buffer();
+  }
 }
+
+void Node::run() {
+  for (auto in: ins_) {
+    if (in->source()) in->source()->run();
+  }
+}
+
+const Device::Concrete* Node::device() const {
+  return ins_[0]->device();
+}
+
+void Node::use(const Device& device) {
+}
+
 }

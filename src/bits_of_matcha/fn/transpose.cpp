@@ -1,67 +1,102 @@
 #include "bits_of_matcha/fn/transpose.h"
+#include "bits_of_matcha/print.h"
 
-#include <matcha/engine>
+#include <cblas.h>
 
 
-namespace matcha {
-namespace fn {
+namespace matcha::fn {
 
 Tensor transpose(const Tensor& a) {
-  auto* node = new engine::fn::Transpose(a);
-  auto* out  = new engine::Tensor(node->out(0));
-  return Tensor::fromObject(out);
+  auto node = new matcha::engine::fn::Transpose {
+    engine::deref(a)
+  };
+
+  auto out  = node->out(0);
+  return Tensor::fromOut(out);
 }
 
 }
-}
 
 
-namespace matcha {
-namespace engine {
-namespace fn {
+namespace matcha::engine::fn {
+
 
 Transpose::Transpose(Tensor* a)
-  : Fn{a}
+  : Node{a}
+  , a_{a->shape()}
+  , dev_{CPU}
 {
-  auto& shapeA = in(0)->shape();
-  auto rank = shapeA.rank();
+  std::vector<unsigned> dims(a->shape().begin(), a->shape().end());
+  if (dims.size() == 1) {
+    dims.resize(2);
+  }
+  dims[dims.size() - 1] = a_.rows;
+  dims[dims.size() - 2] = a_.cols;
 
-  if (rank < 2) {
-    throw std::invalid_argument("can only transpose matrices");
+  if (dims.size() == 2 && dims[1] == 1) {
+    dims.erase(dims.end() - 1);
   }
 
-  std::vector<unsigned> axes(shapeA.begin(), shapeA.end());
-
-
-  std::swap(axes[rank - 1], axes[rank - 2]);
-
-  wrapComputation("Transpose", {in(0)});
-  deduceStatus();
+  if (a_.rows == 1 || a_.cols == 1) {
+    idle_ = true;
+  } else {
+    idle_ = false;
+  }
+  createOut(Float, dims);
 }
 
-Transpose::Transpose(const matcha::Tensor& a)
-  : Transpose(deref(a))
-{}
-
-/*
-
-const NodeLoader* Transpose::getLoader() const {
-  return loader();
+void Transpose::init() {
+  if (in(0)->source()) in(0)->source()->init();
+  if (idle_) {
+    out(0)->shareBuffer(in(0));
+  } else {
+    Node::init();
+  }
 }
 
-const NodeLoader* Transpose::loader() {
-  static NodeLoader nl = {
-    .type = "Transpose",
-    .load = [](auto& is, auto& ins) {
-      if (ins.size() != 1) throw std::invalid_argument("loading Transpose: incorrect number of arguments");
-      return new Transpose(ins[0]);
+void Transpose::run() {
+  Node::run();
+
+  if (idle_) return;
+
+  if (a_.rows == 1 || a_.cols == 1) {
+    return;
+  }
+
+  if (dev_.type == CPU) {
+
+    auto a = (float*) x_[0]->payload();
+    auto b = (float*) y_[0]->payload();
+
+    for (int matrix = 0; matrix < a_.amount; matrix++) {
+
+      auto begA = a;
+      auto begB = b;
+
+      for (int i = 0; i < a_.rows; i++) {
+        for (int j = 0; j < a_.cols; j++) {
+          b[j * a_.rows + i] = a[i * a_.cols + j];
+        }
+      };
     }
+
+
+  } else {
+    throw std::runtime_error("TODO gpu transpose");
+  }
+}
+
+void Transpose::use(const Device& device) {
+  Computation comp {
+    .type = Computation::Transpose,
+    .cost = in(0)->size()
   };
-  return &nl;
-};
-
-*/
-
+  dev_ = device.get(comp);
 }
+
+const Device::Concrete* Transpose::device() const {
+  return &dev_;
 }
+
+
 }
