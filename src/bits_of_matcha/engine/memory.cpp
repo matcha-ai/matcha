@@ -1,5 +1,5 @@
 #include "bits_of_matcha/engine/memory.h"
-#include "bits_of_matcha/engine/buffer.h"
+#include "bits_of_matcha/engine/Buffer.h"
 #include "bits_of_matcha/engine/cpu/memoryPool.h"
 #include "bits_of_matcha/engine/cpu/buffer.h"
 

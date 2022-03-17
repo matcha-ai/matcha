@@ -4,10 +4,10 @@
 
 namespace matcha::fn {
 
-Tensor identity(const Tensor& a) {
+tensor identity(const tensor& a) {
   auto node = new engine::fn::Identity(&a);
   auto out  = node->out(0);
-  return Tensor::fromOut(out);
+  return tensor(out);
 }
 
 }
@@ -16,7 +16,7 @@ Tensor identity(const Tensor& a) {
 namespace matcha::engine::fn {
 
 
-Identity::Identity(const matcha::Tensor* a)
+Identity::Identity(const matcha::tensor* a)
   : Identity(deref(a))
 {}
 

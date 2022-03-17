@@ -3,7 +3,7 @@
 #include "bits_of_matcha/engine/fn.h"
 
 namespace matcha::fn {
-Tensor identity(const Tensor& a);
+tensor identity(const tensor& a);
 }
 
 
@@ -11,12 +11,12 @@ namespace matcha::engine::fn {
 
 
 class Identity : public Node {
-  public:
-    Identity(const matcha::Tensor* a);
-    Identity(Tensor* a);
+public:
+  Identity(const matcha::tensor* a);
+  Identity(Tensor* a);
 
-    void init() override;
-    void run() override;
+  void init() override;
+  void run() override;
 
 };
 

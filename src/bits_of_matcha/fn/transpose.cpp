@@ -6,13 +6,13 @@
 
 namespace matcha::fn {
 
-Tensor transpose(const Tensor& a) {
+tensor transpose(const tensor& a) {
   auto node = new matcha::engine::fn::Transpose {
     engine::deref(a)
   };
 
   auto out  = node->out(0);
-  return Tensor::fromOut(out);
+  return tensor(out);
 }
 
 }

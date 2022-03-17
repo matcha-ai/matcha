@@ -1,17 +1,17 @@
 #pragma once
 
-#include "bits_of_matcha/engine/elementwiseBinary.h"
-#include "bits_of_matcha/engine/elementwiseUnary.h"
+#include "bits_of_matcha/engine/ElementwiseBinary.h"
+#include "bits_of_matcha/engine/ElementwiseUnary.h"
 
 
 namespace matcha::fn {
 
-Tensor square(const Tensor& a);
-Tensor sqrt(const Tensor& a);
-Tensor pow(const Tensor& a, const Tensor& b);
-Tensor nrt(const Tensor& a, const Tensor& b);
-Tensor exp(const Tensor& a);
-Tensor log(const Tensor& a);
+tensor square(const tensor& a);
+tensor sqrt(const tensor& a);
+tensor pow(const tensor& a, const tensor& b);
+tensor nrt(const tensor& a, const tensor& b);
+tensor exp(const tensor& a);
+tensor log(const tensor& a);
 
 }
 
@@ -19,33 +19,33 @@ Tensor log(const Tensor& a);
 namespace matcha::engine::fn {
 
 class Square : public ElementwiseUnary {
-  public:
-    Square(Tensor* a);
-    void run() override;
+public:
+  Square(Tensor* a);
+  void run() override;
 };
 
 class Sqrt : public ElementwiseUnary {
-  public:
-    Sqrt(Tensor* a);
-    void run() override;
+public:
+  Sqrt(Tensor* a);
+  void run() override;
 };
 
 class Pow : public ElementwiseBinary {
-  public:
-    Pow(Tensor* a, Tensor* b);
-    void run() override;
+public:
+  Pow(Tensor* a, Tensor* b);
+  void run() override;
 };
 
 class Exp : public ElementwiseUnary {
-  public:
-    Exp(Tensor* a);
-    void run() override;
+public:
+  Exp(Tensor* a);
+  void run() override;
 };
 
 class Log : public ElementwiseUnary {
-  public:
-    Log(Tensor* a);
-    void run() override;
+public:
+  Log(Tensor* a);
+  void run() override;
 };
 
 }

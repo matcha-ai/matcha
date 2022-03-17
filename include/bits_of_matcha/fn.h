@@ -1,18 +1,18 @@
 #pragma once
 
-#include "bits_of_matcha/computation.h"
+#include "bits_of_matcha/Computation.h"
 
 #include <functional>
 
 
 namespace matcha {
 
-class Tensor;
+class tensor;
 
-using UnaryFn = std::function<Tensor(const Tensor& a)>;
-using BinaryFn = std::function<Tensor(const Tensor& a, const Tensor& b)>;
-using TernaryFn = std::function<Tensor(const Tensor& a, const Tensor& b, const Tensor& c)>;
-using NaryFn = std::function<std::vector<Tensor>(const std::vector<Tensor>& tuple)>;
+using UnaryFn = std::function<tensor(const tensor& a)>;
+using BinaryFn = std::function<tensor(const tensor& a, const tensor& b)>;
+using TernaryFn = std::function<tensor(const tensor& a, const tensor& b, const tensor& c)>;
+using NaryFn = std::function<std::vector<tensor>(const std::vector<tensor>& tuple)>;
 
 }
 

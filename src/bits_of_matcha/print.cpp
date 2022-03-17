@@ -8,7 +8,7 @@ matcha::Mout mout;
 
 namespace matcha {
 
-Mout& Mout::operator<<(const Tensor& tensor) {
+Mout& Mout::operator<<(const tensor& tensor) {
   if (!ss.str().empty()) {
     std::cout << ss.str();
     ss.str("");

@@ -4,24 +4,24 @@
 
 
 namespace matcha::fn {
-Tensor dot(const Tensor& a, const Tensor& b);
+tensor dot(const tensor& a, const tensor& b);
 }
 
 
 namespace matcha::engine::fn {
 
 class Dot: public Node {
-  public:
-    Dot(const matcha::Tensor* a, const matcha::Tensor* b);
-    Dot(Tensor* a, Tensor* b);
+public:
+  Dot(const matcha::tensor* a, const matcha::tensor* b);
+  Dot(Tensor* a, Tensor* b);
 
-    void run() override;
-    void use(const Device& device) override;
-    const Device::Concrete* device() const override;
+  void run() override;
+  void use(const Device& device) override;
+  const Device::Concrete* device() const override;
 
-  private:
-    MatrixStackIteration a_, b_;
-    Device::Concrete dev_;
+private:
+  MatrixStackIteration a_, b_;
+  Device::Concrete dev_;
 };
 
 }

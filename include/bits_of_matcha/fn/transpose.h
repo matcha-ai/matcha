@@ -5,7 +5,7 @@
 
 namespace matcha::fn {
 
-Tensor transpose(const Tensor& a);
+tensor transpose(const tensor& a);
 
 }
 
@@ -13,18 +13,18 @@ Tensor transpose(const Tensor& a);
 namespace matcha::engine::fn {
 
 class Transpose : public Node  {
-  public:
-    Transpose(Tensor* a);
+public:
+  Transpose(Tensor* a);
 
-    void init() override;
-    void run() override;
-    void use(const Device& device) override;
-    const Device::Concrete* device() const override;
+  void init() override;
+  void run() override;
+  void use(const Device& device) override;
+  const Device::Concrete* device() const override;
 
-  private:
-    MatrixStackIteration a_;
-    Device::Concrete dev_;
-    bool idle_;
+private:
+  MatrixStackIteration a_;
+  Device::Concrete dev_;
+  bool idle_;
 };
 
 }

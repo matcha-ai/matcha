@@ -1,7 +1,5 @@
 #pragma once
 
-#include "bits_of_matcha/engine/cpu/blockPool.h"
-
 #include <cstddef>
 #include <initializer_list>
 #include <vector>
@@ -10,22 +8,24 @@
 namespace matcha::engine::cpu {
 
 class Buffer;
+class BlockPool;
 
 class MemoryPool {
-  public:
-    static MemoryPool* the();
-    Buffer* malloc(size_t bytes);
-    void free(Buffer* buffer);
+public:
+  static MemoryPool* the();
 
-    size_t usage() const;
+  Buffer* malloc(size_t bytes);
+  void free(Buffer* buffer);
 
-  private:
-    MemoryPool();
+  size_t usage() const;
 
-    static MemoryPool* the_;
-    std::vector<BlockPool> blockPools_;
+private:
+  MemoryPool();
 
-    BlockPool* bestFit(size_t size);
+  static MemoryPool* the_;
+  std::vector<BlockPool> blockPools_;
+
+  BlockPool* bestFit(size_t size);
 
 };
 

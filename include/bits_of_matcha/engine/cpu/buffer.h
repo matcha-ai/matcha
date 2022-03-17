@@ -1,6 +1,6 @@
 #pragma once
 
-#include "bits_of_matcha/engine/buffer.h"
+#include "bits_of_matcha/engine/Buffer.h"
 
 
 namespace matcha::engine::cpu {

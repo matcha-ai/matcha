@@ -1,12 +1,13 @@
 #include "bits_of_matcha/tensor.h"
+#include "bits_of_matcha/Slice.h"
 #include "bits_of_matcha/print.h"
-#include "bits_of_matcha/engine/tensor.h"
-#include "bits_of_matcha/engine/flowContext.h"
+#include "bits_of_matcha/engine/Tensor.h"
+#include "bits_of_matcha/engine/flow/FlowFunctionContext.h"
 #include "bits_of_matcha/engine/cpu/buffer.h"
 #include "bits_of_matcha/engine/fn.h"
 
 #include "bits_of_matcha/fn/identity.h"
-#include "bits_of_matcha/fn/basicArithmetic.h"
+#include "bits_of_matcha/fn/basic_arithmetic.h"
 #include "bits_of_matcha/fn/dot.h"
 #include "bits_of_matcha/fn/exponents.h"
 #include "bits_of_matcha/fn/transpose.h"
@@ -15,48 +16,48 @@
 
 namespace matcha {
 
-Tensor::Tensor()
-  : pimpl_{nullptr}
+tensor::tensor()
+  : internal_{nullptr}
 {
   bind(new engine::Tensor());
 }
 
-Tensor::Tensor(const Dtype& dtype, const Shape& shape)
-  : pimpl_{nullptr}
+tensor::tensor(const Dtype& dtype, const Shape& shape)
+  : internal_{nullptr}
 {
   bind(new engine::Tensor(dtype, shape));
 }
 
-Tensor::Tensor(const Tensor& tensor)
-  : pimpl_{nullptr}
+tensor::tensor(const tensor& t)
+  : internal_{nullptr}
 {
-  Tensor id = fn::identity(tensor);
-  pimpl_ = id.pimpl_;
-  id.pimpl_ = nullptr;
+  tensor id = fn::identity(t);
+  internal_ = id.internal_;
+  id.internal_ = nullptr;
 }
 
-Tensor::Tensor(float content)
-  : pimpl_{nullptr}
+tensor::tensor(float content)
+  : internal_{nullptr}
 {
   bind(new engine::Tensor(Float, {}));
   auto buffer = new engine::cpu::Buffer(sizeof(float));
   auto& val = *(float*) buffer->payload();
   val = content;
-  pimpl_->shareBuffer(buffer);
+  internal_->shareBuffer(buffer);
 }
 
-Tensor::Tensor(std::initializer_list<float> content)
-  : pimpl_{nullptr}
+tensor::tensor(std::initializer_list<float> content)
+  : internal_{nullptr}
 {
   bind(new engine::Tensor(Float, {(unsigned) content.size()}));
   auto data = new float[content.size()];
   std::copy(std::begin(content), std::end(content), data);
   auto buffer = new engine::cpu::Buffer(sizeof(float) * content.size(), data);
-  pimpl_->shareBuffer(buffer);
+  internal_->shareBuffer(buffer);
 }
 
-Tensor::Tensor(std::initializer_list<std::initializer_list<float>> content)
-  : pimpl_{nullptr}
+tensor::tensor(std::initializer_list<std::initializer_list<float>> content)
+  : internal_{nullptr}
 {
   unsigned dims[] = {0, 0};
   dims[0] = content.size();
@@ -84,172 +85,176 @@ Tensor::Tensor(std::initializer_list<std::initializer_list<float>> content)
     bind(new engine::Tensor(Float, {(unsigned) content.size()}));
     auto data = std::data(content);
     auto buffer = new engine::cpu::Buffer(sizeof(float) * content.size(), (void*) data);
-    pimpl_->shareBuffer(buffer);
+    internal_->shareBuffer(buffer);
   }
 
 
 }
 
-Tensor::Tensor(std::initializer_list<std::initializer_list<std::initializer_list<float>>> content) {
+tensor::tensor(std::initializer_list<std::initializer_list<std::initializer_list<float>>> content) {
 
 }
 
-Tensor::~Tensor() {
+tensor::~tensor() {
   bind(nullptr);
 }
 
-Tensor& Tensor::operator=(const Tensor& tensor) {
-  tensor.assertNotQuery();
+tensor& tensor::operator=(const tensor& t) {
+  t.assertNotQuery();
   assertNotQuery();
 
-//  print("operator=(const Tensor&)");
-  Tensor id = fn::identity(tensor);
+//  print("operator=(const tensor&)");
+  tensor id = fn::identity(t);
 
-  pimpl_->unref();
-  pimpl_ = id.pimpl_;
-  id.pimpl_ = nullptr;
+  internal_->unref();
+  internal_ = id.internal_;
+  id.internal_ = nullptr;
 
   return *this;
 }
 
-bool Tensor::frame() const {
+Slice tensor::operator[](const Shape::Range& range) {
+  return Slice(this, range);
+}
+
+bool tensor::frame() const {
   assertNotQuery();
-  return !pimpl_->frame()->null();
+  return !internal_->frame()->null();
 }
 
-const Dtype& Tensor::dtype() const {
+const Dtype& tensor::dtype() const {
   assertNotQuery();
-  return pimpl_->dtype();
+  return internal_->dtype();
 }
 
-const Shape& Tensor::shape() const {
+const Shape& tensor::shape() const {
   assertNotQuery();
-  return pimpl_->shape();
+  return internal_->shape();
 }
 
-size_t Tensor::size() const {
-  return pimpl_->size();
+size_t tensor::size() const {
+  return internal_->size();
 }
 
-size_t Tensor::rank() const {
-  return pimpl_->rank();
+size_t tensor::rank() const {
+  return internal_->rank();
 }
 
-Tensor Tensor::transpose() const {
+tensor tensor::transpose() const {
   return fn::transpose(*this);
 }
 
-Tensor Tensor::t() const {
+tensor tensor::t() const {
   return transpose();
 }
 
-Tensor Tensor::reshape(const Shape::Reshape& shape) const {
+tensor tensor::reshape(const Shape::Reshape& shape) const {
   return fn::reshape(*this, shape);
 }
 
-Tensor Tensor::map(const UnaryFn& fn) const {
+tensor tensor::map(const UnaryFn& fn) const {
   return fn(*this);
 }
 
-Tensor Tensor::map(const Tensor& linear) const {
+tensor tensor::map(const tensor& linear) const {
   return linear.dot(*this);
 }
 
-Tensor Tensor::map(const Tensor& linear, const Tensor& affine) const {
+tensor tensor::map(const tensor& linear, const tensor& affine) const {
   return linear.dot(*this) + affine;
 }
 
-Tensor Tensor::dot(const Tensor& tensor) const {
+tensor tensor::dot(const tensor& tensor) const {
   return fn::dot(*this, tensor);
 }
 
-Tensor Tensor::pow(const Tensor& exponent) const {
+tensor tensor::pow(const tensor& exponent) const {
   return fn::pow(*this, exponent);
 }
 
-Tensor Tensor::nrt(const Tensor& exponent) const {
+tensor tensor::nrt(const tensor& exponent) const {
   return fn::nrt(*this, exponent);
 }
 
-Tensor Tensor::norm() const {
+tensor tensor::norm() const {
   return 1;
 }
 
-Tensor Tensor::normalize() const {
+tensor tensor::normalize() const {
   return fn::divide(*this, norm());
 }
 
-void* Tensor::data() {
+void* tensor::data() {
   assertNotQuery();
-  if (pimpl_->flow_) {
+  if (internal_->flow_) {
     throw std::runtime_error("access to tensor buffers inside a flow is forbidden; you have to use a built-in matcha function");
   }
 
-  pimpl_->readData();
-  return pimpl_->data();
+  internal_->readData();
+  return internal_->data();
 }
 
-Tensor Tensor::fromOut(engine::Tensor* out) {
-  auto tensor = Tensor(out);
-
-  if (!out->flow() && out->source()) {
-    out->compute();
-  }
-
-  return tensor;
-}
-
-Tensor::Tensor(engine::Tensor* pimpl)
-  : pimpl_{nullptr}
+tensor::tensor(engine::Tensor* internal)
+  : internal_{nullptr}
 {
-  bind(pimpl);
-}
-
-void Tensor::bind(engine::Tensor* tensor) {
-  if (pimpl_) pimpl_->unref();
-  pimpl_ = tensor;
-  if (pimpl_) pimpl_->ref();
-}
-
-engine::Flow* Tensor::flowQuery(const UnaryFn& fn) {
-  Tensor queryTensor(nullptr);
-  try {
-    Tensor responseTensor = fn(queryTensor);
-  } catch (engine::FlowQueryResponse& r) {
-    return r.flow;
+  bind(internal);
+  if (internal->eager()) {
+    internal->compute();
   }
+}
+
+void tensor::bind(engine::Tensor* tensor) {
+  if (internal_) internal_->unref();
+  internal_ = tensor;
+  if (internal_) internal_->ref();
+}
+
+engine::Flow* tensor::flowQuery(const UnaryFn& fn) {
+  tensor queryTensor(nullptr);
+//  try {
+//    tensor responseTensor = fn(queryTensor);
+//  } catch (engine::FlowQueryResponse& r) {
+//    return r.flow;
+//  }
   return nullptr;
 }
 
-bool Tensor::getFlowQuery() const {
-  return pimpl_ == nullptr;
+bool tensor::getFlowQuery() const {
+  return internal_ == nullptr;
 }
 
-void Tensor::assertNotQuery() const {
-  if (getFlowQuery()) throw engine::FlowQueryResponse();
+void tensor::assertNotQuery() const {
+//  if (getFlowQuery()) throw engine::FlowQueryResponse();
 }
 
-Tensor zeros(const Shape& shape) {
+tensor tensor::full(const Shape& shape, float value) {
   auto t = new engine::Tensor(Float, shape);
   auto b = t->writeBuffer();
 
   auto vals = (float*) b->payload();
-  std::fill(vals, vals + shape.size(), 0);
+  std::fill(vals, vals + shape.size(), value);
 
-  return Tensor::fromOut(t);
+  return tensor(t);
 }
 
-Tensor ones(const Shape& shape) {
-  auto t = new engine::Tensor(Float, shape);
-  auto b = t->writeBuffer();
 
-  auto vals = (float*) b->payload();
-  std::fill(vals, vals + shape.size(), 1);
-
-  return Tensor::fromOut(t);
+tensor tensor::zeros(const Shape& shape) {
+  return full(shape, 0);
 }
 
-Tensor eye(const Shape& shape) {
+tensor zeros(const Shape& shape) {
+  return tensor::zeros(shape);
+}
+
+tensor tensor::ones(const Shape& shape) {
+  return full(shape, 1);
+}
+
+tensor ones(const Shape& shape) {
+  return tensor::ones(shape);
+}
+
+tensor tensor::eye(const Shape& shape) {
   auto t = new engine::Tensor(Float, shape);
   auto b = t->writeBuffer();
 
@@ -267,19 +272,27 @@ Tensor eye(const Shape& shape) {
     }
   }
 
-  return Tensor::fromOut(t);
+  return tensor(t);
+}
+
+tensor full(const Shape& shape, float value) {
+  return tensor::full(shape, value);
+}
+
+tensor eye(const Shape& shape) {
+  return tensor::eye(shape);
 }
 
 }
 
-std::ostream& operator<<(std::ostream& os, const matcha::Tensor& tensor) {
+std::ostream& operator<<(std::ostream& os, const matcha::tensor& tensor) {
   tensor.assertNotQuery();
   if (!tensor.frame()) {
-    os << "Tensor {}" << std::endl;
+    os << "tensor {}" << std::endl;
     return os;
   }
 
-  auto t = tensor.pimpl_;
+  auto t = tensor.internal_;
   t->readData();
   void* data = t->data();
   if (!data) {
@@ -297,7 +310,7 @@ std::ostream& operator<<(std::ostream& os, const matcha::Tensor& tensor) {
       block = false;
       break;
     case 1:
-      block = true;
+      block = tensor.size() > 1;
       break;
     case 2:
       block = tensor.shape()[0] > 1;
@@ -308,7 +321,7 @@ std::ostream& operator<<(std::ostream& os, const matcha::Tensor& tensor) {
 
   size_t size = iter.rows * iter.cols;
 
-  os << "Tensor {";
+  os << "tensor {";
   if (block) os << "\n";
 
   for (int matrix = 0; matrix < iter.amount; matrix++) {

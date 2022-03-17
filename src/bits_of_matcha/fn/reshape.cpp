@@ -3,14 +3,14 @@
 
 namespace matcha::fn {
 
-Tensor reshape(const Tensor& a, const Shape::Reshape& shape) {
+tensor reshape(const tensor& a, const Shape::Reshape& shape) {
   auto node = new engine::fn::Reshape{
     engine::deref(a),
     shape
   };
 
   auto out = node->out(0);
-  return Tensor::fromOut(out);
+  return tensor(out);
 }
 
 }

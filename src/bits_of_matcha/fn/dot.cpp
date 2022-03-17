@@ -6,10 +6,10 @@
 
 namespace matcha::fn {
 
-Tensor dot(const Tensor& a, const Tensor& b) {
+tensor dot(const tensor& a, const tensor& b) {
   auto node = new engine::fn::Dot(&a, &b);
   auto out  = node->out(0);
-  return Tensor::fromOut(out);
+  return tensor(out);
 }
 
 }
@@ -19,7 +19,7 @@ Tensor dot(const Tensor& a, const Tensor& b) {
 namespace matcha::engine::fn {
 
 
-Dot::Dot(const matcha::Tensor* a, const matcha::Tensor* b)
+Dot::Dot(const matcha::tensor* a, const matcha::tensor* b)
   : Dot(deref(a), deref(b))
 {}
 

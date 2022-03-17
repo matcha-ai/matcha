@@ -3,118 +3,118 @@
 
 namespace matcha::fn {
 
-Tensor eq(const Tensor& a, const Tensor& b) {
+tensor eq(const tensor& a, const tensor& b) {
   auto* node = new engine::fn::Eq {
     engine::deref(a),
     engine::deref(b)
   };
 
   auto* out = node->out(0);
-  return Tensor::fromOut(out);
+  return tensor(out);
 }
 
-Tensor ne(const Tensor& a, const Tensor& b) {
+tensor ne(const tensor& a, const tensor& b) {
   auto* node = new engine::fn::Ne {
     engine::deref(a),
     engine::deref(b)
   };
 
   auto* out = node->out(0);
-  return Tensor::fromOut(out);
+  return tensor(out);
 }
 
-Tensor lt(const Tensor& a, const Tensor& b) {
+tensor lt(const tensor& a, const tensor& b) {
   auto* node = new engine::fn::Lt {
     engine::deref(a),
     engine::deref(b)
   };
 
   auto* out = node->out(0);
-  return Tensor::fromOut(out);
+  return tensor(out);
 }
 
-Tensor gt(const Tensor& a, const Tensor& b) {
+tensor gt(const tensor& a, const tensor& b) {
   auto* node = new engine::fn::Lt {
     engine::deref(b),
     engine::deref(a)
   };
 
   auto* out = node->out(0);
-  return Tensor::fromOut(out);
+  return tensor(out);
 }
 
-Tensor le(const Tensor& a, const Tensor& b) {
+tensor le(const tensor& a, const tensor& b) {
   auto* node = new engine::fn::Le {
     engine::deref(a),
     engine::deref(b)
   };
 
   auto* out = node->out(0);
-  return Tensor::fromOut(out);
+  return tensor(out);
 }
 
-Tensor ge(const Tensor& a, const Tensor& b) {
+tensor ge(const tensor& a, const tensor& b) {
   auto* node = new engine::fn::Le {
     engine::deref(b),
     engine::deref(a)
   };
 
   auto* out = node->out(0);
-  return Tensor::fromOut(out);
+  return tensor(out);
 }
 
-Tensor maxBetween(const Tensor& a, const Tensor& b) {
+tensor max_between(const tensor& a, const tensor& b) {
   auto* node = new engine::fn::MaxBetween {
     engine::deref(b),
     engine::deref(a)
   };
 
   auto* out = node->out(0);
-  return Tensor::fromOut(out);
+  return tensor(out);
 }
 
-Tensor minBetween(const Tensor& a, const Tensor& b) {
+tensor min_between(const tensor& a, const tensor& b) {
   auto* node = new engine::fn::MinBetween {
     engine::deref(b),
     engine::deref(a)
   };
 
   auto* out = node->out(0);
-  return Tensor::fromOut(out);
+  return tensor(out);
 }
 
-Tensor max(const Tensor& a, const Tensor& b) {
-  return maxBetween(a, b);
+tensor max(const tensor& a, const tensor& b) {
+  return max_between(a, b);
 }
 
-Tensor min(const Tensor& a, const Tensor& b) {
-  return minBetween(a, b);
+tensor min(const tensor& a, const tensor& b) {
+  return min_between(a, b);
 }
 
 }
 
 
-matcha::Tensor operator==(const matcha::Tensor& a, const matcha::Tensor& b) {
+matcha::tensor operator==(const matcha::tensor& a, const matcha::tensor& b) {
   return matcha::fn::eq(a, b);
 }
 
-matcha::Tensor operator!=(const matcha::Tensor& a, const matcha::Tensor& b) {
+matcha::tensor operator!=(const matcha::tensor& a, const matcha::tensor& b) {
   return matcha::fn::ne(a, b);
 }
 
-matcha::Tensor operator<(const matcha::Tensor& a, const matcha::Tensor& b) {
+matcha::tensor operator<(const matcha::tensor& a, const matcha::tensor& b) {
   return matcha::fn::lt(a, b);
 }
 
-matcha::Tensor operator>(const matcha::Tensor& a, const matcha::Tensor& b) {
+matcha::tensor operator>(const matcha::tensor& a, const matcha::tensor& b) {
   return matcha::fn::gt(a, b);
 }
 
-matcha::Tensor operator<=(const matcha::Tensor& a, const matcha::Tensor& b) {
+matcha::tensor operator<=(const matcha::tensor& a, const matcha::tensor& b) {
   return matcha::fn::le(a, b);
 }
 
-matcha::Tensor operator>=(const matcha::Tensor& a, const matcha::Tensor& b) {
+matcha::tensor operator>=(const matcha::tensor& a, const matcha::tensor& b) {
   return matcha::fn::ge(a, b);
 }
 

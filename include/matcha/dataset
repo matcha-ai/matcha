@@ -1,0 +1,13 @@
+#pragma once
+
+
+namespace matcha {
+}
+
+namespace ma = matcha;
+
+
+#include "bits_of_matcha/data/Instance.h"
+#include "bits_of_matcha/data/batch.h"
+#include "bits_of_matcha/data/Dataset.h"
+#include "bits_of_matcha/dataset/csv.h"

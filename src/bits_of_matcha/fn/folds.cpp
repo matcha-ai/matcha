@@ -3,82 +3,82 @@
 
 namespace matcha::fn {
 
-Tensor sumAcross(const Tensor& a) {
+tensor sum_across(const tensor& a) {
   auto node = new engine::fn::SumAcross {
     engine::deref(a)
   };
 
   auto out = node->out(0);
-  return Tensor::fromOut(out);
+  return tensor(out);
 }
 
-Tensor productAcross(const Tensor& a) {
+tensor product_across(const tensor& a) {
   auto node = new engine::fn::ProductAcross {
     engine::deref(a)
   };
 
   auto out = node->out(0);
-  return Tensor::fromOut(out);
+  return tensor(out);
 }
 
-Tensor maxAcross(const Tensor& a) {
+tensor max_across(const tensor& a) {
   auto node = new engine::fn::MaxAcross {
     engine::deref(a)
   };
 
   auto out = node->out(0);
-  return Tensor::fromOut(out);
+  return tensor(out);
 }
 
-Tensor minAcross(const Tensor& a) {
+tensor min_across(const tensor& a) {
   auto node = new engine::fn::MinAcross {
     engine::deref(a)
   };
 
   auto out = node->out(0);
-  return Tensor::fromOut(out);
+  return tensor(out);
 }
 
-Tensor argmaxAcross(const Tensor& a) {
+tensor argmax_across(const tensor& a) {
   auto node = new engine::fn::ArgmaxAcross {
     engine::deref(a)
   };
 
   auto out = node->out(0);
-  return Tensor::fromOut(out);
+  return tensor(out);
 }
 
-Tensor argminAcross(const Tensor& a) {
+tensor argmin_across(const tensor& a) {
   auto node = new engine::fn::ArgminAcross {
     engine::deref(a)
   };
 
   auto out = node->out(0);
-  return Tensor::fromOut(out);
+  return tensor(out);
 }
 
-Tensor sum(const Tensor& a) {
-  return sumAcross(a);
+tensor sum(const tensor& a) {
+  return sum_across(a);
 }
 
-Tensor product(const Tensor& a) {
-  return productAcross(a);
+tensor product(const tensor& a) {
+  return product_across(a);
 }
 
-Tensor max(const Tensor& a) {
-  return maxAcross(a);
+tensor max(const tensor& a) {
+  return max_across(a);
 }
 
-Tensor min(const Tensor& a) {
-  return minAcross(a);
+tensor min(const tensor& a) {
+  return min_across(a);
 }
 
-Tensor argmax(const Tensor& a) {
-  return argmaxAcross(a);
+tensor argmax(const tensor& a) {
+  return argmax_across(a);
 }
 
-Tensor argmin(const Tensor& a) {
-  return argminAcross(a);
+tensor argmin(const tensor& a) {
+  return argmin_across(a);
 }
 
 }

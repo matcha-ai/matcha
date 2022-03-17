@@ -1,24 +1,24 @@
 #pragma once
 
-#include "bits_of_matcha/engine/fold.h"
+#include "bits_of_matcha/engine/Fold.h"
 
 
 namespace matcha::fn {
 
-Tensor sumAcross(const Tensor& a);
-Tensor productAcross(const Tensor& a);
-Tensor sum(const Tensor& a);
-Tensor product(const Tensor& a);
+tensor sum_across(const tensor& a);
+tensor product_across(const tensor& a);
+tensor sum(const tensor& a);
+tensor product(const tensor& a);
 
-Tensor maxAcross(const Tensor& a);
-Tensor minAcross(const Tensor& a);
-Tensor max(const Tensor& a);
-Tensor min(const Tensor& a);
+tensor max_across(const tensor& a);
+tensor min_across(const tensor& a);
+tensor max(const tensor& a);
+tensor min(const tensor& a);
 
-Tensor argmaxAcross(const Tensor& a);
-Tensor argminAcross(const Tensor& a);
-Tensor argmax(const Tensor& a);
-Tensor argmin(const Tensor& a);
+tensor argmax_across(const tensor& a);
+tensor argmin_across(const tensor& a);
+tensor argmax(const tensor& a);
+tensor argmin(const tensor& a);
 
 }
 
@@ -26,39 +26,39 @@ Tensor argmin(const Tensor& a);
 namespace matcha::engine::fn {
 
 class SumAcross : public Fold {
-  public:
-    SumAcross(Tensor* a);
-    void run() override;
+public:
+  SumAcross(Tensor* a);
+  void run() override;
 };
 
 class ProductAcross : public Fold {
-  public:
-    ProductAcross(Tensor* a);
-    void run() override;
+public:
+  ProductAcross(Tensor* a);
+  void run() override;
 };
 
 class MaxAcross : public Fold {
-  public:
-    MaxAcross(Tensor* a);
-    void run() override;
+public:
+  MaxAcross(Tensor* a);
+  void run() override;
 };
 
 class MinAcross : public Fold {
-  public:
-    MinAcross(Tensor* a);
-    void run() override;
+public:
+  MinAcross(Tensor* a);
+  void run() override;
 };
 
 class ArgmaxAcross : public Fold {
-  public:
-    ArgmaxAcross(Tensor* a);
-    void run() override;
+public:
+  ArgmaxAcross(Tensor* a);
+  void run() override;
 };
 
 class ArgminAcross : public Fold {
-  public:
-    ArgminAcross(Tensor* a);
-    void run() override;
+public:
+  ArgminAcross(Tensor* a);
+  void run() override;
 };
 
 };

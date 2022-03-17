@@ -5,7 +5,7 @@
 
 namespace matcha {
 
-class Tensor;
+class tensor;
 
 class Mout {
   public:
@@ -15,7 +15,7 @@ class Mout {
       return *this;
     }
 
-    Mout& operator<<(const Tensor& tensor);
+    Mout& operator<<(const tensor& tensor);
     Mout& operator<<( std::ostream& (*f)(std::ostream&) );
 
   private:

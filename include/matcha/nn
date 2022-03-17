@@ -1,0 +1,13 @@
+#pragma once
+
+#ifndef MATCHA_KEEP_NAMESPACE
+namespace matcha::nn {}
+namespace nn = matcha::nn;
+#endif
+
+#include "bits_of_matcha/nn/Solver.h"
+#include "bits_of_matcha/nn/SGD.h"
+#include "bits_of_matcha/nn/Sequential.h"
+#include "bits_of_matcha/nn/Layers.h"
+
+

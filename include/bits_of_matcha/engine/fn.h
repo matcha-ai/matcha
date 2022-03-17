@@ -1,6 +1,6 @@
 #pragma once
 
-#include "bits_of_matcha/engine/node.h"
+#include "bits_of_matcha/engine/Node.h"
 
 
 namespace matcha::engine::fn {

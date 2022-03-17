@@ -1,0 +1,12 @@
+#pragma once
+
+namespace matcha {
+}
+
+namespace ma = matcha;
+
+
+#include "matcha/tensor"
+#include "matcha/engine"
+#include "matcha/dataset"
+#include "matcha/nn"

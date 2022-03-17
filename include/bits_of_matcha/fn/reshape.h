@@ -5,7 +5,7 @@
 
 namespace matcha::fn {
 
-Tensor reshape(const Tensor& a, const Shape::Reshape& shape);
+tensor reshape(const tensor& a, const Shape::Reshape& shape);
 
 }
 
@@ -13,11 +13,11 @@ Tensor reshape(const Tensor& a, const Shape::Reshape& shape);
 namespace matcha::engine::fn {
 
 class Reshape : public Node {
-  public:
-    Reshape(Tensor* a, const Shape::Reshape& target);
+public:
+  Reshape(Tensor* a, const Shape::Reshape& target);
 
-    void init() override;
-    void run() override;
+  void init() override;
+  void run() override;
 };
 
 }
