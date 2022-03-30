@@ -42,4 +42,12 @@ size_t Frame::bytes() const {
   return dtype_.size() * shape_.size();
 }
 
+bool Frame::operator==(const Frame& frame) const {
+  return dtype_ == frame.dtype_ && shape_ == frame.shape_;
+}
+
+bool Frame::operator!=(const Frame& frame) const {
+  return !operator==(frame);
+}
+
 }

@@ -9,6 +9,6 @@ namespace ma = matcha;
 #include "bits_of_matcha/engine/fn.h"
 #include "bits_of_matcha/engine/Node.h"
 #include "bits_of_matcha/engine/flow/Flow.h"
-#include "bits_of_matcha/engine/flow/FlowTracer.h"
+#include "bits_of_matcha/engine/flow/Tracer.h"
 #include "bits_of_matcha/engine/memory.h"
 

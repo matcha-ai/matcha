@@ -17,6 +17,9 @@ public:
 
   size_t bytes() const;
 
+  bool operator==(const Frame& frame) const;
+  bool operator!=(const Frame& frame) const;
+
 private:
   bool null_;
   Dtype dtype_;

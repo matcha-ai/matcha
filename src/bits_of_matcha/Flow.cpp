@@ -1,7 +1,7 @@
 #include "bits_of_matcha/Flow.h"
 #include "bits_of_matcha/Sequence.h"
 #include "bits_of_matcha/engine/flow/Flow.h"
-#include "bits_of_matcha/engine/flow/FlowTracer.h"
+#include "bits_of_matcha/engine/flow/Tracer.h"
 #include "bits_of_matcha/engine/Tensor.h"
 
 
@@ -11,17 +11,13 @@ Flow::Flow(Function function)
   : api_{API::Functional}
   , function_{std::move(function)}
   , internal_{nullptr}
-{}
-
-Flow::Flow(std::initializer_list<UnaryFn> sequence)
-  : api_{API::Sequential}
-  , function_{Sequence(sequence)}
-  , internal_{nullptr}
+  , grad{this}
 {}
 
 Flow::Flow()
   : api_{API::Subclassing}
   , internal_{nullptr}
+  , grad{this}
 {}
 
 bool Flow::built() {
@@ -39,8 +35,69 @@ void Flow::build(const std::vector<tensor> ins) {
 
 void Flow::build(const std::vector<Frame> ins) {
   if (built()) throw std::runtime_error("flow has been already built");
+
+  engine::Tracer tracer;
+  Tuple tracerIns = tracer.open(ins);
+  Tuple tracerOuts;
+
+  try {
+    switch (api_) {
+    case API::Functional:
+      tracerOuts = tracingFunctional(tracerIns);
+      break;
+    case API::Subclassing:
+      tracerOuts = tracingSubclassing(tracerIns);
+      break;
+    }
+  } catch (NotImplemented&) {
+    throw std::invalid_argument("couldn't build flow for given signature");
+  }
+
+  tracer.close(tracerOuts);
+  internal_ = tracer.collect();
+
+  if (!internal_) throw std::runtime_error("flow build failed");
+  internal_->compile();
 }
 
+Tuple Flow::tracingFunctional(const Tuple& ins) {
+  if (std::holds_alternative<UnaryFn>(function_)) {
+    if (ins.size() != 1) throw NotImplemented();
+    return {std::get<UnaryFn>(function_)(ins[0])};
+  }
+  if (std::holds_alternative<BinaryFn>(function_)) {
+    if (ins.size() != 2) throw NotImplemented();
+    return {std::get<BinaryFn>(function_)(ins[0], ins[1])};
+  }
+  if (std::holds_alternative<TernaryFn>(function_)) {
+    if (ins.size() != 3) throw NotImplemented();
+    return {std::get<TernaryFn>(function_)(ins[0], ins[1], ins[2])};
+  }
+  if (ins.size() <= 3) throw NotImplemented();
+  return std::get<NaryFn>(function_)(ins);
+}
+
+Tuple Flow::tracingSubclassing(const Tuple& ins) {
+  try {
+    init(ins);
+    return run(ins);
+  } catch (NotImplemented&) {
+  }
+
+  switch (ins.size()) {
+  case 1:
+    init(ins[0]);
+    return {run(ins[0])};
+  case 2:
+    init(ins[0], ins[1]);
+    return {run(ins[0], ins[1])};
+  case 3:
+    init(ins[0], ins[1], ins[2]);
+    return {run(ins[0], ins[1], ins[2])};
+  default:
+    throw NotImplemented();
+  }
+}
 
 tensor Flow::operator()(const tensor& a) {
   if (!built()) build({a});
@@ -62,14 +119,18 @@ Tuple Flow::operator()(const Tuple& tuple) {
   return getFunction<NaryFn>()(tuple);
 }
 
-void Flow::init(const tensor& a)                                    { throw InactiveInit(); }
-void Flow::init(const tensor& a, const tensor& b)                   { throw InactiveInit(); }
-void Flow::init(const tensor& a, const tensor& b, const tensor& c)  { throw InactiveInit(); }
-void Flow::init(const Tuple& tuple)                                 { throw InactiveInit(); }
-tensor Flow::run(const tensor& a)                                   { throw InactiveRun(); }
-tensor Flow::run(const tensor& a, const tensor& b)                  { throw InactiveRun(); }
-tensor Flow::run(const tensor& a, const tensor& b, const tensor& c) { throw InactiveRun(); }
-Tuple Flow::run(const Tuple& tuple)                                 { throw InactiveRun(); }
+Flow flow(const Flow::Function& function) {
+  return Flow(function);
+}
+
+void Flow::init(const tensor& a)                                    {}
+void Flow::init(const tensor& a, const tensor& b)                   {}
+void Flow::init(const tensor& a, const tensor& b, const tensor& c)  {}
+void Flow::init(const Tuple& tuple)                                 {}
+tensor Flow::run(const tensor& a)                                   { throw NotImplemented(); }
+tensor Flow::run(const tensor& a, const tensor& b)                  { throw NotImplemented(); }
+tensor Flow::run(const tensor& a, const tensor& b, const tensor& c) { throw NotImplemented(); }
+Tuple Flow::run(const Tuple& tuple)                                 { throw NotImplemented(); }
 
 
 

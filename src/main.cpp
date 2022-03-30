@@ -1,22 +1,26 @@
 #include <matcha/matcha>
 
 
-class MyFlow : public matcha::Flow {
-  tensor p;
+tensor param;
 
+class Foo : public matcha::Flow {
   void init(const tensor& a) override {
-    p = 3;
+    param = 0;
   }
 
   tensor run(const tensor& a) override {
-    p += 1;
-    return 0;
+    return a.dot(a) + param;
   }
 };
 
+
 int main() {
-  MyFlow myflow;
-  tensor x = myflow(3);
+  Foo foo;
+  foo(tensor::ones(3, 3));
+
+  foo.grad.add(&param);
+
+//  auto foo = matcha::load("file");
 
   return 0;
 }

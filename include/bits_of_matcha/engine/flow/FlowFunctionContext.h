@@ -1,6 +1,7 @@
 #pragma once
 
 #include "bits_of_matcha/fn.h"
+#include "bits_of_matcha/Flow.h"
 #include "bits_of_matcha/engine/Tensor.h"
 
 #include <string>
@@ -31,7 +32,7 @@ class Flow;
 
 class FlowFunctionContext {
 public:
-  using Function = std::variant<UnaryFn, BinaryFn, TernaryFn, NaryFn>;
+  using Function = matcha::Flow::Function;
   explicit FlowFunctionContext(const Function& fn);
 
   void load(const std::string& file);
@@ -44,8 +45,7 @@ public:
   std::vector<tensor> run();
 
 private:
-  Function function_;
-  Flow* internal_;
+  matcha::Flow flow_;
 
 };
 

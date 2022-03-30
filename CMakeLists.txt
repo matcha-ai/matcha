@@ -23,6 +23,7 @@ set(
   include/bits_of_matcha/Shape.h
   include/bits_of_matcha/Frame.h
   include/bits_of_matcha/tensor.h
+  include/bits_of_matcha/tuple.h
   include/bits_of_matcha/Generator.h
   include/bits_of_matcha/fn.h
   include/bits_of_matcha/initializable_fn.h
@@ -52,7 +53,8 @@ set(
   include/bits_of_matcha/engine/ElementwiseUnary.h
   include/bits_of_matcha/engine/Fold.h
   include/bits_of_matcha/engine/flow/Flow.h
-  include/bits_of_matcha/engine/flow/FlowTracer.h
+  include/bits_of_matcha/engine/flow/Graph.h
+  include/bits_of_matcha/engine/flow/Tracer.h
   include/bits_of_matcha/engine/flow/FlowFunctionContext.h
 
   include/bits_of_matcha/fn/identity.h
@@ -72,7 +74,7 @@ set(
   include/bits_of_matcha/dataset/csv.h
 
   include/bits_of_matcha/nn/Solver.h
-  include/bits_of_matcha/nn/Sequential.h
+  include/bits_of_matcha/nn/Net.h
   include/bits_of_matcha/nn/SGD.h
   include/bits_of_matcha/nn/Layers.h
 
@@ -89,6 +91,7 @@ set(
   src/bits_of_matcha/initializable_fn.cpp
   src/bits_of_matcha/Sequence.cpp
   src/bits_of_matcha/Flow.cpp
+  src/bits_of_matcha/Grad.cpp
   src/bits_of_matcha/Slice.cpp
   src/bits_of_matcha/Device.cpp
   src/bits_of_matcha/print.cpp
@@ -106,7 +109,8 @@ set(
   src/bits_of_matcha/engine/ElementwiseUnary.cpp
   src/bits_of_matcha/engine/Fold.cpp
   src/bits_of_matcha/engine/flow/Flow.cpp
-  src/bits_of_matcha/engine/flow/FlowTracer.cpp
+  src/bits_of_matcha/engine/flow/Graph.cpp
+  src/bits_of_matcha/engine/flow/Tracer.cpp
   src/bits_of_matcha/engine/flow/FlowFunctionContext.cpp
 
   src/bits_of_matcha/fn/identity.cpp
@@ -129,7 +133,7 @@ set(
 
   src/bits_of_matcha/dataset/csv.cpp
 
-  src/bits_of_matcha/nn/Sequential.cpp
+  src/bits_of_matcha/nn/Net.cpp
   src/bits_of_matcha/nn/Layers.cpp
   src/bits_of_matcha/nn/Solver.cpp
   src/bits_of_matcha/nn/SGD.cpp

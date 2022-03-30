@@ -18,8 +18,6 @@ namespace matcha::engine {
   Tensor* deref(const matcha::tensor* tensor);
 }
 
-std::ostream& operator<<(std::ostream& os, const matcha::tensor& tensor);
-
 
 namespace matcha {
 
@@ -69,6 +67,11 @@ public:
 
   bool getFlowQuery() const;
 
+  template <class... tensors>
+  static inline void grad(tensors... ts) {
+
+  }
+
   static tensor floats(const Shape& shape);
   static tensor full(const Shape& shape, float value);
   static tensor zeros(const Shape& shape);
@@ -97,19 +100,19 @@ public:
 
   explicit tensor(engine::Tensor* internal);
 
-
-
 private:
   static engine::Flow* flowQuery(const UnaryFn& fn);
 
   void bind(engine::Tensor* tensor);
 
+  void assignExternal(const tensor& t);
+  void assignInternal(const tensor& t);
+  void updateInternal(const tensor& t);
+
   engine::Tensor* internal_;
   void assertNotQuery() const;
 
   friend engine::Tensor* engine::deref(const matcha::tensor* tensor);
-  friend std::ostream& ::operator<<(std::ostream& os, const tensor& tensor);
-
 };
 
 enum {

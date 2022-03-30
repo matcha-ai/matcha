@@ -1,7 +1,10 @@
 #include "bits_of_matcha/engine/Tensor.h"
 #include "bits_of_matcha/engine/Node.h"
 #include "bits_of_matcha/engine/memory.h"
+#include "bits_of_matcha/engine/flow/Tracer.h"
 #include "bits_of_matcha/print.h"
+
+#include <execution>
 
 
 namespace matcha::engine {
@@ -14,7 +17,15 @@ Tensor::Tensor(Frame frame)
   , source_{nullptr}
   , refs_{0}
   , reqs_{0}
-{}
+  , mode_{Untraced}
+  , ctxId_{-1}
+  , flow_{false}
+{
+  auto tracer = Tracer::current();
+  if (tracer){
+    tracer->add(this);
+  }
+}
 
 Tensor::Tensor(const Dtype& dtype, const Shape& shape)
   : Tensor(Frame(dtype, shape))
@@ -139,6 +150,14 @@ bool Tensor::uses(const Device::Concrete* dev) const {
   return *device() == *dev;
 }
 
+int Tensor::ctxId() const {
+  return ctxId_;
+}
+
+void Tensor::setCtxId(int ctxId) {
+  ctxId_ = ctxId;
+}
+
 void Tensor::ref() {
   refs_++;
 }
@@ -175,12 +194,38 @@ bool Tensor::lazy() const {
   return (!source_ || source_->flow());
 }
 
+unsigned Tensor::mode() const {
+  return mode_;
+}
+
+void Tensor::setMode(unsigned mode) {
+  mode_ = mode;
+}
+
+void Tensor::assign(Tensor* source) {
+  frame_ = source->frame_;
+}
+
+void Tensor::update(Tensor* source) {
+  if (source->frame_ != frame_) throw std::invalid_argument("shape mismatch");
+}
+
 Tensor* deref(const matcha::tensor& tensor) {
   return deref(&tensor);
 }
 
 Tensor* deref(const matcha::tensor* tensor) {
   return tensor->internal_;
+}
+
+Tensor* Tensor::full(float value, const Shape& shape) {
+  auto t = new Tensor(Float, shape);
+  auto b = t->writeBuffer();
+
+  auto vals = (float*) b->payload();
+  std::fill(std::execution::par_unseq, vals, vals + shape.size(), value);
+
+  return t;
 }
 
 

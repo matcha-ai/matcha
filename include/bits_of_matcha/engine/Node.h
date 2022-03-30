@@ -16,6 +16,7 @@ class Device;
 namespace matcha::engine {
 
 class Tensor;
+class NodeBackward;
 
 class Node {
 public:
@@ -26,8 +27,11 @@ public:
   Tensor* in(int idx);
   Tensor* out(int idx);
 
-  int ins() const;
-  int outs() const;
+  int degIn() const;
+  int degOut() const;
+
+  const std::vector<Tensor*>& ins() const;
+  const std::vector<Tensor*>& outs() const;
 
   int inIdx(Tensor* in) const;
   int outIdx(Tensor* out) const;
@@ -38,7 +42,14 @@ public:
   virtual void use(const Device& device);
   virtual const Device::Concrete* device() const;
 
-  bool flow();
+  virtual bool sideEffect() const;
+
+  bool flow() const;
+  int ctxId() const;
+  void setCtxId(int ctxId);
+
+  using ArgPartials = std::vector<int>;
+  NodeBackward* createBackward(const std::vector<Tensor*>& chainIns, const ArgPartials& argPartials);
 
 protected:
   void createOut(const Frame& frame);
@@ -50,7 +61,9 @@ protected:
   std::vector<Buffer*> x_;
   std::vector<Buffer*> y_;
 
+
 private:
+  int ctxId_;
   bool flow_;
 };
 

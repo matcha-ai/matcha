@@ -22,6 +22,8 @@ public:
   Tensor();
   ~Tensor();
 
+  static Tensor* full(float value, const Shape& shape);
+
   const Frame* frame() const;
   const Dtype& dtype() const;
   const Shape& shape() const;
@@ -57,7 +59,25 @@ public:
   bool eager() const;
   bool lazy() const;
 
+  enum {
+    Untraced = 0,
+    Constant = 1,
+    Variable = 2,
+    Gradable = 3
+  };
+
+  unsigned mode() const;
+  void setMode(unsigned mode);
+
+  void assign(Tensor* source);
+  void update(Tensor* source);
+
+  int ctxId() const;
+  void setCtxId(int ctxId);
+
 private:
+  int ctxId_;
+
   Frame frame_;
   Node* source_;
 
@@ -67,6 +87,8 @@ private:
   unsigned refs_;
   unsigned reqs_;
   bool flow_;
+
+  unsigned mode_;
 
 private:
   friend class matcha::tensor;

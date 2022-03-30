@@ -1,12 +1,18 @@
 #pragma once
 
 #include "bits_of_matcha/tensor.h"
+#include "bits_of_matcha/tuple.h"
 #include "bits_of_matcha/fn.h"
+#include "bits_of_matcha/Grad.h"
 #include "Device.h"
 
 #include <variant>
 #include <any>
 
+
+namespace matcha::engine {
+class FlowFunctionContext;
+}
 
 namespace matcha {
 
@@ -17,31 +23,10 @@ Flow load(const std::string& filename);
 
 class Flow {
 public:
-  /*
-   *  Functional API
-   *  Flow foo {
-   *    fn1,
-   *    fn2,
-   *    ...
-   *  };
-   */
   using Function = std::variant<UnaryFn, BinaryFn, TernaryFn, NaryFn>;
   Flow(Function function);
 
-  /*
-   *  Sequential API
-   *  Flow foo = [] (const tensor& a, ...) {
-   *    return ...;
-   *  };
-   */
-  Flow(std::initializer_list<UnaryFn> sequence);
-
 protected:
-  /*
-   *  Subclassing API
-   *  override exactly one `tensor run(...)`
-   *  and optionally the appropriate `void init(...)`
-   */
   Flow();
 
   virtual void init(const tensor& a);
@@ -65,9 +50,11 @@ public:
   void build(const std::vector<tensor> ins);
   void build(const std::vector<Frame> ins);
 
+public:
+  Grad grad;
+
 private:
   enum class API {
-    Sequential,
     Functional,
     Subclassing
   };
@@ -77,8 +64,7 @@ private:
   API api_;
 
 private:
-  struct InactiveInit : public std::exception {};
-  struct InactiveRun : public std::exception {};
+  struct NotImplemented : std::exception {};
 
   template <class Fn>
   inline Fn getFunction() {
@@ -88,7 +74,13 @@ private:
     return std::get<Fn>(function_);
   }
 
+  Tuple tracingFunctional(const Tuple& ins);
+  Tuple tracingSubclassing(const Tuple& ins);
+
+  friend class engine::FlowFunctionContext;
+
 };
 
+Flow flow(const Flow::Function& function);
 
 }

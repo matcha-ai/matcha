@@ -1,7 +1,7 @@
 #include "bits_of_matcha/engine/Node.h"
 #include "bits_of_matcha/engine/Tensor.h"
 #include "bits_of_matcha/engine/memory.h"
-#include "bits_of_matcha/engine/flow/FlowTracer.h"
+#include "bits_of_matcha/engine/flow/Tracer.h"
 #include "bits_of_matcha/Device.h"
 #include "bits_of_matcha/tensor.h"
 #include "bits_of_matcha/print.h"
@@ -14,15 +14,23 @@ namespace matcha::engine {
 
 
 Node::Node()
+  : Node{{}}
 {}
 
 Node::Node(std::initializer_list<Tensor*> ins)
   : ins_{ins}
+  , ctxId_{-1}
 {
-  for (auto in: ins_) in->req();
-  auto tracer = FlowTracer::current();
+  auto tracer = Tracer::current();
   if (tracer) tracer->add(this);
   flow_ = tracer;
+
+  for (auto in: ins_) {
+    if (flow_ && in->mode() == Tensor::Untraced) {
+      in->setMode(Tensor::Variable);
+    }
+    in->req();
+  }
 }
 
 Node::~Node() {
@@ -39,12 +47,20 @@ Tensor* Node::out(int idx) {
   return outs_[idx];
 }
 
-int Node::ins() const {
+int Node::degIn() const {
   return (int)ins_.size();
 }
 
-int Node::outs() const {
+int Node::degOut() const {
   return (int)outs_.size();
+}
+
+const std::vector<Tensor*>& Node::ins() const {
+  return ins_;
+}
+
+const std::vector<Tensor*>& Node::outs() const {
+  return outs_;
 }
 
 int Node::inIdx(Tensor* in) const {
@@ -63,9 +79,10 @@ int Node::outIdx(Tensor* out) const {
 
 void Node::createOut(const Frame& frame) {
   auto* out = new Tensor(frame);
+  out->setMode(flow_ ? Tensor::Constant : Tensor::Untraced);
   out->setSource(this);
   outs_.push_back(out);
-  if (outs() > 1) throw std::runtime_error("TODO multiple-out nodes not implemented");
+  if (degOut() > 1) throw std::runtime_error("TODO multiple-out nodes not implemented");
 }
 
 void Node::createOut(const Dtype& dtype, const Shape& shape) {
@@ -73,10 +90,10 @@ void Node::createOut(const Dtype& dtype, const Shape& shape) {
 }
 
 void Node::init() {
-  x_.resize(ins());
-  y_.resize(outs());
+  x_.resize(degIn());
+  y_.resize(degOut());
 
-  for (int i = 0; i < ins(); i++) {
+  for (int i = 0; i < degIn(); i++) {
     auto in = ins_[i];
     if (in->source()) {
       in->source()->init();
@@ -89,7 +106,7 @@ void Node::init() {
     }
   }
 
-  for (int i = 0; i < outs(); i++) {
+  for (int i = 0; i < degOut(); i++) {
     auto out = outs_[i];
     out->writeBuffer(*device());
     y_[i] = out->buffer();
@@ -109,8 +126,24 @@ const Device::Concrete* Node::device() const {
 void Node::use(const Device& device) {
 }
 
-bool Node::flow() {
+bool Node::sideEffect() const {
+  return false;
+}
+
+int Node::ctxId() const {
+  return ctxId_;
+}
+
+void Node::setCtxId(int ctxId) {
+  ctxId_= ctxId;
+}
+
+bool Node::flow() const {
   return flow_;
+}
+
+NodeBackward* Node::createBackward(const std::vector<Tensor*>& chainIns, const ArgPartials& argPartials) {
+  return nullptr;
 }
 
 }

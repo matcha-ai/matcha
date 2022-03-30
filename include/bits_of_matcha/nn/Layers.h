@@ -9,40 +9,50 @@
 namespace matcha::nn {
 
 class Layer {
-protected:
-  virtual void init(const tensor& feed) = 0;
-  virtual tensor run(const tensor& feed) = 0;
-
 public:
-  tensor operator()(const tensor& feed) {
-    if (!initialized_) init(feed);
-    return run(feed);
-  }
+  Layer();
+  tensor operator()(const tensor& x);
+
+protected:
+  virtual void init(const tensor& x);
+  virtual tensor run(const tensor& x) = 0;
+  virtual tensor fit(const tensor& x);
 
 private:
   bool initialized_;
 };
 
-
-struct Dense {
-  unsigned units = 0;
-  bool use_bias = true;
-  std::string activation = "relu";
-
-  operator UnaryFn();
+class Flatten : public Layer {
+  tensor run(const tensor& x) override;
 };
 
-struct Affine {
-  unsigned units = 0;
-  bool use_bias = true;
+class Affine : public Layer {
+public:
+  Affine(unsigned units, bool use_bias = true);
 
-  operator UnaryFn();
+private:
+  unsigned units;
+  bool use_bias;
+  tensor kernel, bias;
+
+  void init(const tensor& x) override;
+  tensor run(const tensor& x) override;
+
 };
 
-struct Activation {
-  std::string activation = "relu";
+tensor relu(const tensor& x);
 
-  operator UnaryFn();
+class Relu : public Layer {
+  tensor run(const tensor& x);
+};
+
+class BatchNormalization : public Layer {
+  tensor mAvg, sdAvg;
+  float momentum = .9;
+
+  void init(const tensor& x) override;
+  tensor run(const tensor& x) override;
+  tensor fit(const tensor& x) override;
 };
 
 }

@@ -15,6 +15,7 @@ namespace ma = matcha;
 
 #include "bits_of_matcha/Frame.h"
 #include "bits_of_matcha/tensor.h"
+#include "bits_of_matcha/tuple.h"
 #include "bits_of_matcha/Generator.h"
 #include "bits_of_matcha/fn.h"
 #include "bits_of_matcha/initializable_fn.h"

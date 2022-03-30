@@ -9,8 +9,8 @@
 namespace matcha::nn {
 
 struct LearningRate {
-  LearningRate(float constant);
-  LearningRate(std::function<float (unsigned)> scheduling);
+  LearningRate(float constant){};
+  LearningRate(std::function<float (unsigned)> scheduling){};
 };
 
 struct CategoricalCrossentropy {

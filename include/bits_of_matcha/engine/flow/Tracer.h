@@ -1,34 +1,34 @@
 #pragma once
 
 #include "bits_of_matcha/tensor.h"
+#include "bits_of_matcha/engine/flow/Graph.h"
 
 
 namespace matcha::engine {
 
 class Flow;
 
-class FlowTracer {
+class Tracer {
 public:
-  FlowTracer();
-  ~FlowTracer();
+  Tracer();
+  ~Tracer();
 
   Tuple open(const std::vector<Frame>& ins);
   void close(const Tuple& outs);
 
-  Flow* get();
+  Flow* collect();
 
 
-  static FlowTracer* current();
+  static Tracer* current();
   void add(Node* node);
+  void add(Tensor* tensor);
 
 private:
-  std::vector<Tensor*> ins_;
-  std::vector<Tensor*> outs_;
-  std::vector<Node*> nodes_;
+  Graph graph_;
   bool open_;
 
 private:
-  static FlowTracer* current_;
+  static Tracer* current_;
 
 };
 

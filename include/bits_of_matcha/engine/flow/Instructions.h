@@ -7,12 +7,15 @@ namespace matcha::engine {
 
 class Node;
 
-class Instructions {
-public:
+struct Instructions {
+
   void run();
 
-private:
-  std::vector<Node*> nodes_;
+  void prepareBuffers();
+  void clearBuffers();
+  void runNodes();
+
+  std::vector<Node*> nodes;
 
 };
 

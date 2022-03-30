@@ -104,13 +104,38 @@ tensor& tensor::operator=(const tensor& t) {
   assertNotQuery();
 
 //  print("operator=(const tensor&)");
-  tensor id = fn::identity(t);
+  auto mode = internal_->mode();
+  switch (mode) {
+  default:
+    assignExternal(t);
+    break;
 
-  internal_->unref();
-  internal_ = id.internal_;
-  id.internal_ = nullptr;
+  case engine::Tensor::Variable:
+  case engine::Tensor::Gradable:
+    try {
+      assignInternal(t);
+    } catch (std::invalid_argument& e) {
+      throw std::invalid_argument("can't redefine frame of a Flow variable");
+    }
+    break;
+  }
 
   return *this;
+}
+
+void tensor::assignExternal(const tensor& t) {
+  tensor id = fn::identity(t);
+  if (internal_) internal_->unref();
+  internal_ = id.internal_;
+  id.internal_ = nullptr;
+}
+
+void tensor::assignInternal(const tensor& t) {
+  internal_->assign(t.internal_);
+}
+
+void tensor::updateInternal(const tensor& t) {
+  internal_->update(t.internal_);
 }
 
 Slice tensor::operator[](const Shape::Range& range) {
@@ -228,12 +253,7 @@ void tensor::assertNotQuery() const {
 }
 
 tensor tensor::full(const Shape& shape, float value) {
-  auto t = new engine::Tensor(Float, shape);
-  auto b = t->writeBuffer();
-
-  auto vals = (float*) b->payload();
-  std::fill(vals, vals + shape.size(), value);
-
+  auto t = engine::Tensor::full(value, shape);
   return tensor(t);
 }
 
@@ -286,13 +306,12 @@ tensor eye(const Shape& shape) {
 }
 
 std::ostream& operator<<(std::ostream& os, const matcha::tensor& tensor) {
-  tensor.assertNotQuery();
   if (!tensor.frame()) {
     os << "tensor {}" << std::endl;
     return os;
   }
 
-  auto t = tensor.internal_;
+  auto t = matcha::engine::deref(tensor);
   t->readData();
   void* data = t->data();
   if (!data) {
