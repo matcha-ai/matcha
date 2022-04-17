@@ -1,5 +1,5 @@
 #include "bits_of_matcha/Device.h"
-#include "bits_of_matcha/engine/Buffer.h"
+#include "bits_of_matcha/engine/memory/Buffer.h"
 
 
 namespace matcha {

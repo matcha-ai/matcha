@@ -26,6 +26,10 @@ private:
 
 };
 
+enum {
+  Float = Dtype::Float
+};
+
 std::ostream& operator<<(std::ostream& os, const Dtype& dtype);
 
 }

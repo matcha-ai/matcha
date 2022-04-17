@@ -1,153 +1,107 @@
 #pragma once
 
 #include "bits_of_matcha/Frame.h"
-#include "bits_of_matcha/macros/varargShape.h"
-#include "bits_of_matcha/fn.h"
+#include "bits_of_matcha/macros/vararg_shape.h"
 
+#include <iostream>
 
-namespace matcha {
-  class tensor;
-  class Slice;
-  class Device;
-}
-
-namespace matcha::engine {
-  class Tensor;
-  class Flow;
-  class Node;
-  Tensor* deref(const matcha::tensor* tensor);
-}
+#define MATCHA_TENSOR_API alignas(void*)
 
 
 namespace matcha {
 
-class tensor {
+/**
+ * multidimensional array
+ * matcha primitive
+ */
+class MATCHA_TENSOR_API tensor {
+public:
+
+  /**
+   * @return the tensor shape
+   */
+  const Dtype& dtype() const;
+
+  /**
+   * @return the tensor content datatype
+   */
+  const Shape& shape() const;
+
+  /**
+   * @return the dot product of two tensors
+   */
+  tensor dot(const tensor& b);
+
+  /**
+   * @return the concatenation of two tensors
+   */
+  tensor cat(const tensor& b);
+
+  tensor pow(const tensor& b);
+
 public:
   tensor();
-  tensor(const Dtype& dtype, const Shape& shape);
-  tensor(float content);
-  tensor(std::initializer_list<float> content);
-  tensor(std::initializer_list<std::initializer_list<float>> content);
-  tensor(std::initializer_list<std::initializer_list<std::initializer_list<float>>> content);
+  tensor(float scalar);
+  ~tensor() = default;
 
-  ~tensor();
+  /**
+   * @return tensor of given shape filled with specified value
+   */
+  static tensor full(float value, const Shape& shape);
 
-  bool frame() const;
-  const Dtype& dtype() const;
-  const Shape& shape() const;
-  size_t size() const;
-  size_t rank() const;
-
-  Slice operator[](const Shape::Range& range);
-
-  tensor transpose() const;
-  tensor t() const;
-
-  tensor reshape(const Shape::Reshape& shape) const;
-
-  template <class... Dims>
-  inline tensor reshape(Dims... dims) const {
-    return reshape(Shape::Reshape(VARARG_RESHAPE(dims...)));
-  }
-
-  tensor map(const UnaryFn& fn) const;
-  tensor map(const tensor& linear) const;
-  tensor map(const tensor& linear, const tensor& affine) const;
-  tensor dot(const tensor& tensor) const;
-  tensor pow(const tensor& exponent) const;
-  tensor nrt(const tensor& exponent) const;
-
-  tensor norm() const;
-  tensor normalize() const;
-
-  tensor(const tensor& tensor);
-  tensor& operator=(const tensor& tensor);
-
-  void* data();
-
-  bool getFlowQuery() const;
-
-  template <class... tensors>
-  static inline void grad(tensors... ts) {
-
-  }
-
-  static tensor floats(const Shape& shape);
-  static tensor full(const Shape& shape, float value);
+  /**
+   * The zero tensor
+   * @return tensor of specified shape full of zeros
+   */
   static tensor zeros(const Shape& shape);
+
+  /**
+   * The ones tensor
+   * @return tensor of specified shape full of ones
+   */
   static tensor ones(const Shape& shape);
+
+  /**
+   * The identity tensor
+   * @return slice of the identity matrix of given shape
+   */
   static tensor eye(const Shape& shape);
 
+  /**
+   * The zero tensor
+   * @return tensor of specified shape full of zeros
+   */
   template <class... Dims>
-  static inline tensor floats(Dims... dims) {
-    return floats(VARARG_SHAPE(dims...));
-  }
+  static inline tensor zeros(Dims... dims) { return zeros(VARARG_SHAPE(dims...)); }
 
+  /**
+   * The ones tensor
+   * @return tensor of specified shape full of ones
+   */
   template <class... Dims>
-  static inline tensor ones(Dims... dims) {
-    return ones(VARARG_SHAPE(dims...));
-  }
+  static inline tensor ones(Dims... dims) { return ones(VARARG_SHAPE(dims...)); }
 
+  /**
+   * The identity tensor
+   * @return slice of the identity matrix of given shape
+   */
   template <class... Dims>
-  static inline tensor zeros(Dims... dims) {
-    return zeros(VARARG_SHAPE(dims...));
-  }
+  static inline tensor eye(Dims... dims) { return eye(VARARG_SHAPE(dims...)); }
 
-  template <class... Dims>
-  static inline tensor eye(Dims... dims) {
-    return eye(VARARG_SHAPE(dims...));
-  }
+public:
+  tensor& operator=(const tensor& other);
 
-  explicit tensor(engine::Tensor* internal);
+public:
+  /**
+   * tensor data
+   * @return pointer to tensor data
+   */
+  void* data();
 
 private:
-  static engine::Flow* flowQuery(const UnaryFn& fn);
-
-  void bind(engine::Tensor* tensor);
-
-  void assignExternal(const tensor& t);
-  void assignInternal(const tensor& t);
-  void updateInternal(const tensor& t);
-
-  engine::Tensor* internal_;
-  void assertNotQuery() const;
-
-  friend engine::Tensor* engine::deref(const matcha::tensor* tensor);
+  void* internal_;
 };
 
-enum {
-  Float = Dtype::Float
-};
-
-using Tuple = std::vector<tensor>;
-
-tensor floats(const Shape& shape);
-tensor full(const Shape& shape, float value);
-tensor zeros(const Shape& shape);
-tensor ones(const Shape& shape);
-tensor eye(const Shape& shape);
-
-template <class... Dims>
-inline tensor floats(Dims... dims) {
-  return floats(VARARG_SHAPE(dims...));
 }
 
-template <class... Dims>
-inline tensor ones(Dims... dims) {
-  return ones(VARARG_SHAPE(dims...));
-}
-
-template <class... Dims>
-inline tensor zeros(Dims... dims) {
-  return zeros(VARARG_SHAPE(dims...));
-}
-
-template <class... Dims>
-inline tensor eye(Dims... dims) {
-  return eye(VARARG_SHAPE(dims...));
-}
-
-}
-
-std::ostream& operator<<(std::ostream& os, const matcha::tensor& tensor);
-
+std::ostream& operator<<(std::ostream& os, const matcha::tensor& t);

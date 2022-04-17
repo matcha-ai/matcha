@@ -1,69 +1,103 @@
 #include "bits_of_matcha/engine/flow/Tracer.h"
-#include "bits_of_matcha/engine/flow/Flow.h"
-#include "bits_of_matcha/engine/Tensor.h"
-#include "bits_of_matcha/engine/Node.h"
-#include "bits_of_matcha/print.h"
+#include "bits_of_matcha/engine/tensor/Tensor.h"
+#include "bits_of_matcha/engine/op/Op.h"
 
 
 namespace matcha::engine {
 
-
-Tracer* Tracer::current_ = nullptr;
-
-Tracer::Tracer()
-  : open_{false}
-{}
-
-Tracer::~Tracer() {
-  if (open_) current_ = nullptr;
+bool Tracer::handleOp(Op* op) {
+  if (!current_) return false;
+  if (current_->ops_.contains(op)) return false;
+  if (op->ctx().traced()) throw std::runtime_error("op is already traced");
+  op->ctx().setTraced();
+  current_->ops_.insert(op);
+  current_->graph_.ops.push_back(op);
+  for (auto in: op->inputs) handleOldTensor(in);
+  return true;
 }
 
-Tuple Tracer::open(const std::vector<Frame>& ins) {
-  Tuple tuple;
-  tuple.reserve(ins.size());
+bool Tracer::handleNewTensor(Tensor* tensor) {
+  if (!current_) return false;
+  if (current_->tensors_.contains(tensor)) return false;
+  tensor->ctx().setMode(TensorCtx::Constant);
+  current_->tensors_.insert(tensor);
+  current_->graph_.tensors.push_back(tensor);
+  return true;
+}
 
-  for (auto& frame: ins) {
-    auto t = new Tensor(frame);
-    graph_.ins.push_back(t);
-    tuple.push_back(tensor(t));
+bool Tracer::handleOldTensor(Tensor* tensor) {
+  if (!current_) return false;
+  if (current_->tensors_.contains(tensor)) return false;
+
+  switch (tensor->ctx().mode()) {
+  case TensorCtx::Untraced:
+    tensor->ctx().setMode(TensorCtx::Variable);
+    break;
+  case TensorCtx::Constant:
+    throw std::runtime_error("tensor is a traced constant");
+  case TensorCtx::Variable:
+    break;
   }
 
-  if (current_) throw std::runtime_error("already tracing");
-  open_ = true;
-  current_ = this;
-  return tuple;
-}
-
-void Tracer::close(const Tuple& outs) {
-  current_ = nullptr;
-  open_ = false;
-
-  for (auto& out: outs) {
-    auto t = deref(out);
-    graph_.outs.push_back(t);
-  }
-  for (auto* node: graph_.nodes) {
-//    print(node);
-//    print(node->degIn(), " -> ", node->degOut());
-  }
-}
-
-void Tracer::add(Node* node) {
-  graph_.nodes.push_back(node);
-}
-
-void Tracer::add(Tensor* tensor) {
-  graph_.tensors.push_back(tensor);
+  current_->tensors_.insert(tensor);
+  current_->graph_.tensors.push_back(tensor);
+  return true;
 }
 
 Tracer* Tracer::current() {
   return current_;
 }
 
-Flow* Tracer::collect() {
-  if (graph_.ins.empty()) throw std::runtime_error("no Flow to collect");
-  graph_.initCtx();
-  return new Flow(graph_);
+Tracer::Tracer()
+{}
+
+tuple Tracer::open(const std::vector<Frame>& frames) {
+  if (current_) throw std::runtime_error("already tracing");
+  current_ = this;
+
+  tuple inputs;
+  inputs.reserve(frames.size());
+  for (auto frame: frames) {
+    auto t = new Tensor(frame);
+    inputs.push_back(ref(t));
+    graph_.inputs.push_back(t);
+  }
+
+  return inputs;
+}
+
+void Tracer::close(const tuple& outputs) {
+  for (auto out: outputs) {
+    auto t = deref(out);
+    graph_.outputs.push_back(t);
+  }
+
+  current_ = nullptr;
+}
+
+Graph Tracer::collect() {
+  return std::move(graph_);
+}
+
+Tracer* Tracer::current_ = nullptr;
+
+Graph trace(const AnyOp& anyOp, const std::vector<Frame>& frames) {
+  Tracer tracer;
+  tuple inputs = tracer.open(frames);
+  tuple outputs;
+
+  if (std::holds_alternative<UnaryOp>(anyOp)) {
+
+    if (inputs.size() != 1) throw std::runtime_error("wrong number of frames");
+    auto op = std::get<UnaryOp>(anyOp);
+    outputs = {op(inputs[0])};
+
+  } else {
+    throw std::runtime_error("askldfjasldf");
+  }
+
+  tracer.close(outputs);
+  return tracer.collect();
 }
 
 }

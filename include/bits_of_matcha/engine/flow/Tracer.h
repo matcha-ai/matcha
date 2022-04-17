@@ -1,35 +1,40 @@
 #pragma once
 
-#include "bits_of_matcha/tensor.h"
-#include "bits_of_matcha/engine/flow/Graph.h"
+#include "bits_of_matcha/ops.h"
+#include "bits_of_matcha/Frame.h"
+#include "bits_of_matcha/engine/flow/graph/Graph.h"
 
+#include <set>
 
 namespace matcha::engine {
 
-class Flow;
+class Tensor;
+class Op;
 
 class Tracer {
 public:
-  Tracer();
-  ~Tracer();
+  static bool handleOp(Op* op);
+  static bool handleNewTensor(Tensor* tensor);
+  static bool handleOldTensor(Tensor* tensor);
 
-  Tuple open(const std::vector<Frame>& ins);
-  void close(const Tuple& outs);
-
-  Flow* collect();
-
-
+public:
   static Tracer* current();
-  void add(Node* node);
-  void add(Tensor* tensor);
+  Tracer();
+
+  tuple open(const std::vector<Frame>& frames);
+  void close(const tuple& outputs);
+  Graph collect();
 
 private:
   Graph graph_;
-  bool open_;
+  std::set<Tensor*> tensors_;
+  std::set<Op*> ops_;
 
 private:
   static Tracer* current_;
 
 };
+
+Graph trace(const AnyOp& op, const std::vector<Frame>& frames);
 
 }

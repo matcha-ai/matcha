@@ -33,6 +33,20 @@ const Shape* Frame::shape() const {
   return &shape_;
 }
 
+std::string Frame::string() const {
+  if (null_) return "NullFrame";
+
+  std::string buffer = dtype_.string();
+  buffer += "[";
+
+  for (int i = 0; i < shape_.rank(); i++) {
+    if (i != 0) buffer += ", ";
+    buffer += std::to_string(shape_[i]);
+  }
+  buffer += "]";
+  return buffer;
+}
+
 void Frame::assertFrame() const {
   if (null_) throw std::runtime_error("Frame is Null");
 }

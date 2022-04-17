@@ -20,6 +20,8 @@ public:
   bool operator==(const Frame& frame) const;
   bool operator!=(const Frame& frame) const;
 
+  std::string string() const;
+
 private:
   bool null_;
   Dtype dtype_;

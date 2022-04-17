@@ -1,26 +1,15 @@
 #include <matcha/matcha>
 
 
-tensor param;
-
-class Foo : public matcha::Flow {
-  void init(const tensor& a) override {
-    param = 0;
-  }
-
-  tensor run(const tensor& a) override {
-    return a.dot(a) + param;
-  }
+auto flow = (matcha::Flow) [](const tensor& a) {
+  tensor b = a + 3 + tensor::eye(3, 3) + a;
+  auto c = b + 1 + a;
+  return c;
 };
 
-
 int main() {
-  Foo foo;
-  foo(tensor::ones(3, 3));
-
-  foo.grad.add(&param);
-
-//  auto foo = matcha::load("file");
+  tensor a = tensor::ones(3, 3);
+  flow(a);
 
   return 0;
 }

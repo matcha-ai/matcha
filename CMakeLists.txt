@@ -13,71 +13,50 @@ set(
 
   include/matcha/matcha
   include/matcha/tensor
-  include/matcha/engine
-  include/matcha/dataset
-  include/matcha/nn
-
-  include/bits_of_matcha/error/error.h
 
   include/bits_of_matcha/Dtype.h
   include/bits_of_matcha/Shape.h
   include/bits_of_matcha/Frame.h
   include/bits_of_matcha/tensor.h
-  include/bits_of_matcha/tuple.h
-  include/bits_of_matcha/Generator.h
-  include/bits_of_matcha/fn.h
-  include/bits_of_matcha/initializable_fn.h
-  include/bits_of_matcha/Sequence.h
-  include/bits_of_matcha/Flow.h
-  include/bits_of_matcha/Grad.h
-  include/bits_of_matcha/Slice.h
+  include/bits_of_matcha/ops.h
   include/bits_of_matcha/Device.h
-  include/bits_of_matcha/Computation.h
   include/bits_of_matcha/print.h
-  include/bits_of_matcha/Scope.h
-  include/bits_of_matcha/rng.h
+  include/bits_of_matcha/Flow.h
 
-  include/bits_of_matcha/macros/varargShape.h
-  include/bits_of_matcha/macros/generator.h
-  include/bits_of_matcha/macros/dataset.h
+  include/bits_of_matcha/engine/memory/memory.h
+  include/bits_of_matcha/engine/memory/Buffer.h
 
-  include/bits_of_matcha/engine/Tensor.h
-  include/bits_of_matcha/engine/Buffer.h
-  include/bits_of_matcha/engine/fn.h
-  include/bits_of_matcha/engine/Node.h
-  include/bits_of_matcha/engine/memory.h
-  include/bits_of_matcha/engine/cpu/buffer.h
-  include/bits_of_matcha/engine/cpu/memoryPool.h
-  include/bits_of_matcha/engine/cpu/blockPool.h
-  include/bits_of_matcha/engine/ElementwiseBinary.h
-  include/bits_of_matcha/engine/ElementwiseUnary.h
-  include/bits_of_matcha/engine/Fold.h
+  include/bits_of_matcha/engine/tensor/Tensor.h
+  include/bits_of_matcha/engine/tensor/TensorCtx.h
+  include/bits_of_matcha/engine/tensor/RefReqCounted.h
+  include/bits_of_matcha/engine/tensor/iterations.h
+
+  include/bits_of_matcha/engine/op/Op.h
+  include/bits_of_matcha/engine/op/OpInputs.h
+  include/bits_of_matcha/engine/op/OpOutputs.h
+  include/bits_of_matcha/engine/op/OpMeta.h
+  include/bits_of_matcha/engine/op/Ops.h
+
+  include/bits_of_matcha/engine/op/abstract/ElementwiseUnaryOp.h
+  include/bits_of_matcha/engine/op/abstract/ElementwiseBinaryOp.h
+
   include/bits_of_matcha/engine/flow/Flow.h
-  include/bits_of_matcha/engine/flow/Graph.h
   include/bits_of_matcha/engine/flow/Tracer.h
-  include/bits_of_matcha/engine/flow/FlowFunctionContext.h
+  include/bits_of_matcha/engine/flow/Tasks.h
+  include/bits_of_matcha/engine/flow/graph/Graph.h
+  include/bits_of_matcha/engine/flow/graph/OpDict.h
+  include/bits_of_matcha/engine/flow/graph/OpMask.h
+  include/bits_of_matcha/engine/flow/graph/TensorDict.h
+  include/bits_of_matcha/engine/flow/graph/TensorMask.h
+  include/bits_of_matcha/engine/flow/compiler/Compiler.h
 
-  include/bits_of_matcha/fn/identity.h
-  include/bits_of_matcha/fn/basic_arithmetic.h
-  include/bits_of_matcha/fn/boolean_arithmetic.h
-  include/bits_of_matcha/fn/comparisons.h
-  include/bits_of_matcha/fn/dot.h
-  include/bits_of_matcha/fn/exponents.h
-  include/bits_of_matcha/fn/transpose.h
-  include/bits_of_matcha/fn/reshape.h
-  include/bits_of_matcha/fn/folds.h
-  include/bits_of_matcha/fn/slice.h
+  include/bits_of_matcha/engine/utils/TexGraph.h
 
-  include/bits_of_matcha/data/Instance.h
-  include/bits_of_matcha/data/batch.h
-  include/bits_of_matcha/data/Dataset.h
-  include/bits_of_matcha/dataset/csv.h
+  include/bits_of_matcha/engine/cpu/Buffer.h
+  include/bits_of_matcha/engine/cpu/MemoryPool.h
+  include/bits_of_matcha/engine/cpu/BlockPool.h
 
-  include/bits_of_matcha/nn/Solver.h
-  include/bits_of_matcha/nn/Net.h
-  include/bits_of_matcha/nn/SGD.h
-  include/bits_of_matcha/nn/Layers.h
-
+  include/bits_of_matcha/engine/ops/Add.h
 )
 
 set(
@@ -87,57 +66,48 @@ set(
   src/bits_of_matcha/Shape.cpp
   src/bits_of_matcha/Frame.cpp
   src/bits_of_matcha/tensor.cpp
-  src/bits_of_matcha/fn.cpp
-  src/bits_of_matcha/initializable_fn.cpp
-  src/bits_of_matcha/Sequence.cpp
-  src/bits_of_matcha/Flow.cpp
-  src/bits_of_matcha/Grad.cpp
-  src/bits_of_matcha/Slice.cpp
+  src/bits_of_matcha/ops.cpp
   src/bits_of_matcha/Device.cpp
-  src/bits_of_matcha/print.cpp
-  src/bits_of_matcha/Scope.cpp
+  src/bits_of_matcha/Flow.cpp
 
-  src/bits_of_matcha/engine/Tensor.cpp
-  src/bits_of_matcha/engine/Buffer.cpp
-  src/bits_of_matcha/engine/Node.cpp
-  src/bits_of_matcha/engine/fn.cpp
-  src/bits_of_matcha/engine/cpu/buffer.cpp
-  src/bits_of_matcha/engine/cpu/memoryPool.cpp
-  src/bits_of_matcha/engine/cpu/blockPool.cpp
-  src/bits_of_matcha/engine/memory.cpp
-  src/bits_of_matcha/engine/ElementwiseBinary.cpp
-  src/bits_of_matcha/engine/ElementwiseUnary.cpp
-  src/bits_of_matcha/engine/Fold.cpp
+  src/bits_of_matcha/engine/memory/memory.cpp
+  src/bits_of_matcha/engine/memory/Buffer.cpp
+
+  src/bits_of_matcha/engine/tensor/Tensor.cpp
+  src/bits_of_matcha/engine/tensor/TensorCtx.cpp
+  src/bits_of_matcha/engine/tensor/RefReqCounted.cpp
+  src/bits_of_matcha/engine/tensor/iterations.cpp
+
+  src/bits_of_matcha/engine/op/Op.cpp
+  src/bits_of_matcha/engine/autograd/OpBack.cpp
+  src/bits_of_matcha/engine/autograd/AccumulateGrads.cpp
+
+  src/bits_of_matcha/engine/op/OpCtx.cpp
+  src/bits_of_matcha/engine/op/OpInputs.cpp
+  src/bits_of_matcha/engine/op/OpOutputs.cpp
+  src/bits_of_matcha/engine/op/Ops.cpp
+
+  src/bits_of_matcha/engine/op/abstract/ElementwiseUnaryOp.cpp
+  src/bits_of_matcha/engine/op/abstract/ElementwiseBinaryOp.cpp
+
   src/bits_of_matcha/engine/flow/Flow.cpp
-  src/bits_of_matcha/engine/flow/Graph.cpp
   src/bits_of_matcha/engine/flow/Tracer.cpp
-  src/bits_of_matcha/engine/flow/FlowFunctionContext.cpp
+  src/bits_of_matcha/engine/flow/Tasks.cpp
+  src/bits_of_matcha/engine/flow/graph/Graph.cpp
+  src/bits_of_matcha/engine/flow/graph/OpDict.cpp
+  src/bits_of_matcha/engine/flow/graph/OpMask.cpp
+  src/bits_of_matcha/engine/flow/graph/TensorDict.cpp
+  src/bits_of_matcha/engine/flow/graph/TensorMask.cpp
+  src/bits_of_matcha/engine/flow/compiler/Compiler.cpp
 
-  src/bits_of_matcha/fn/identity.cpp
-  src/bits_of_matcha/fn/basic_arithmetic.cpp
-  src/bits_of_matcha/fn/boolean_arithmetic.cpp
-  src/bits_of_matcha/fn/comparisons.cpp
-  src/bits_of_matcha/fn/dot.cpp
-  src/bits_of_matcha/fn/exponents.cpp
-  src/bits_of_matcha/fn/transpose.cpp
-  src/bits_of_matcha/fn/reshape.cpp
-  src/bits_of_matcha/fn/folds.cpp
-  src/bits_of_matcha/fn/slice.cpp
-  src/bits_of_matcha/rng.cpp
+  src/bits_of_matcha/engine/utils/TexGraph.cpp
 
-  src/bits_of_matcha/Generator.cpp
+  src/bits_of_matcha/engine/cpu/Buffer.cpp
+  src/bits_of_matcha/engine/cpu/MemoryPool.cpp
+  src/bits_of_matcha/engine/cpu/BlockPool.cpp
 
-  src/bits_of_matcha/data/Instance.cpp
-  src/bits_of_matcha/data/batch.cpp
-  src/bits_of_matcha/data/Dataset.cpp
-
-  src/bits_of_matcha/dataset/csv.cpp
-
-  src/bits_of_matcha/nn/Net.cpp
-  src/bits_of_matcha/nn/Layers.cpp
-  src/bits_of_matcha/nn/Solver.cpp
-  src/bits_of_matcha/nn/SGD.cpp
-
+  src/bits_of_matcha/engine/ops/Add.cpp
+  src/bits_of_matcha/engine/ops/AddBack.cpp
 )
 
 

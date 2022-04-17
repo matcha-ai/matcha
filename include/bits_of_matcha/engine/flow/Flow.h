@@ -1,33 +1,35 @@
 #pragma once
 
-#include "bits_of_matcha/engine/Tensor.h"
-#include "bits_of_matcha/engine/flow/Graph.h"
-#include "bits_of_matcha/engine/flow/Instructions.h"
+
+#include "bits_of_matcha/Flow.h"
+#include "bits_of_matcha/tensor.h"
+#include "bits_of_matcha/engine/flow/graph/Graph.h"
+#include "bits_of_matcha/engine/flow/Tasks.h"
+
+#include <vector>
 
 
 namespace matcha::engine {
 
-class Instructions;
-
 class Flow {
 public:
-  Flow(Graph graph);
-  std::vector<Tensor*> run(const std::vector<Tensor*> ins);
+  explicit Flow();
+  explicit Flow(const AnyOp& op);
+  void setOp(const AnyOp& op);
+  bool hasOp() const;
 
-  std::tuple<std::vector<Frame>, std::vector<Frame>> signature() const;
-
-  void compile();
-  std::vector<Tensor*> forward();
-  std::vector<Tensor*> backward();
-
-private:
-  void createBackwardFlow();
+  bool built() const;
+  void build(const std::vector<Frame>& frames);
 
 private:
+  bool hasOp_;
+  AnyOp op_;
   Graph graph_;
-  Instructions instructions_;
-
-private:
+  Tasks tasks_;
 };
+
+matcha::Flow ref(Flow* internal);
+Flow* deref(const matcha::Flow& external);
+Flow* deref(const matcha::Flow* external);
 
 }

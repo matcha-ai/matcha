@@ -1,50 +1,15 @@
 #pragma once
 
-
-namespace matcha::fn {
-}
-
 namespace matcha {
-using namespace fn;
 }
 
-namespace ma = matcha;
-
-#include "bits_of_matcha/print.h"
-#include "bits_of_matcha/Scope.h"
-
-#include "bits_of_matcha/Frame.h"
 #include "bits_of_matcha/tensor.h"
-#include "bits_of_matcha/tuple.h"
-#include "bits_of_matcha/Generator.h"
-#include "bits_of_matcha/fn.h"
-#include "bits_of_matcha/initializable_fn.h"
-#include "bits_of_matcha/Sequence.h"
+#include "bits_of_matcha/ops.h"
+#include "bits_of_matcha/print.h"
 #include "bits_of_matcha/Flow.h"
-#include "bits_of_matcha/Grad.h"
-#include "bits_of_matcha/Slice.h"
-#include "bits_of_matcha/Device.h"
-#include "bits_of_matcha/Computation.h"
-#include "bits_of_matcha/engine/flow/FlowFunctionContext.h"
-
-#include "bits_of_matcha/macros/varargShape.h"
-
-#include "bits_of_matcha/fn/identity.h"
-#include "bits_of_matcha/fn/basic_arithmetic.h"
-#include "bits_of_matcha/fn/boolean_arithmetic.h"
-#include "bits_of_matcha/fn/comparisons.h"
-#include "bits_of_matcha/fn/dot.h"
-#include "bits_of_matcha/fn/exponents.h"
-#include "bits_of_matcha/fn/transpose.h"
-#include "bits_of_matcha/fn/reshape.h"
-#include "bits_of_matcha/fn/folds.h"
-#include "bits_of_matcha/fn/slice.h"
-
-#include "bits_of_matcha/rng.h"
 
 #ifndef MATCHA_KEEP_NAMESPACE
 using matcha::tensor;
-namespace fn = matcha::fn;
 #endif
 
 
