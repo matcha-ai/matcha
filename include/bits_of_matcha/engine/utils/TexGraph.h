@@ -46,6 +46,7 @@ public:
   bool claimGraphCtx = true;
 
   std::string caption = "\\texttt{matcha::Flow}";
+  std::tuple<float, float> dims = {11.0, 19.7}; // A4 with margins
 
   std::function<OpInfo (Op*)> defaultOpInfo = [](Op* op) {
     return OpInfo {
@@ -99,6 +100,8 @@ private:
   TensorDict<int> getTensorDepths(const OpDict<int>& opDepths);
   TensorDict<TikzNode*> getTensorNodes();
   std::vector<TikzPath*> getPaths(const OpDict<TikzNode*>& opNodes, const TensorDict<TikzNode*>& tensorNodes);
+  std::tuple<float, float> getContentDims(const OpDict<TikzNode*>& opNodes, const TensorDict<TikzNode*>& tensorNodes);
+  std::tuple<float, float> getGridDims(const std::tuple<float, float>& content, const std::tuple<float, float>& target);
   void dump(std::ostream& os);
 
 };

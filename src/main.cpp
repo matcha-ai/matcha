@@ -8,7 +8,7 @@ tensor more = 0;
 auto flow = (matcha::Flow) [](const tensor& a) {
   tensor b = a + another + params.dot(a);
   auto c = b + a;
-  return (c.t().dot(params) + more).t();
+  return (c.t().dot(params) + more).t() + params.t() + (another + more);
 };
 
 int main() {

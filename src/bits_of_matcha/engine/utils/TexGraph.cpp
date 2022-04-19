@@ -20,11 +20,15 @@ void TexGraph::dump(std::ostream& os) {
   auto tensorNodes = getTensorNodes();
   auto paths = getPaths(opNodes, tensorNodes);
   space(opNodes, tensorNodes);
+  auto [gridW, gridH] = getGridDims(getContentDims(opNodes, tensorNodes), dims);
 
   if (includeHeader) dumpHeader(os);
   os << "\\begin{figure}\n";
   os << "\\centering\n";
-  os << "\\begin{tikzpicture}\n";
+
+  os << "\\begin{tikzpicture}[";
+  os << "x=" << gridW << "cm, y=" << gridH << "cm";
+  os << "]\n";
 
   for (auto node: opNodes) if (node) node->dump(os);
   for (auto node: tensorNodes) if (node) node->dump(os);
@@ -197,8 +201,8 @@ void TexGraph::TikzPath::dump(std::ostream& os) {
 }
 
 void TexGraph::dumpHeader(std::ostream& os) {
-  os << "\\documentclass{article}\n"
-     << "\\usepackage{tikz}\n"
+  os << "\\documentclass{article}\n";
+  os << "\\usepackage{tikz}\n"
      << "\\usetikzlibrary{arrows.meta}\n"
      << "\\begin{document}\n";
 }
@@ -284,6 +288,37 @@ void TexGraph::space(OpDict<TikzNode*>& opNodes, TensorDict<TikzNode*>& tensorNo
 //    }
     horizontalTensorSpacing[depth]++;
   }
+}
+
+std::tuple<float, float> TexGraph::getContentDims(const OpDict<TikzNode*>& opNodes, const TensorDict<TikzNode*>& tensorNodes) {
+  float minX = std::numeric_limits<float>::max();
+  float minY = std::numeric_limits<float>::max();
+  float maxX = std::numeric_limits<float>::min();
+  float maxY = std::numeric_limits<float>::min();
+
+  for (auto node: opNodes) {
+    if (!node) continue;
+    minX = std::min(minX, node->x);
+    minY = std::min(minY, node->y);
+    maxX = std::max(maxX, node->x);
+    maxY = std::max(maxY, node->y);
+  }
+
+  return {maxX, maxY};
+}
+
+std::tuple<float, float> TexGraph::getGridDims(const std::tuple<float, float>& content, const std::tuple<float, float>& target) {
+  auto [contentW, contentH] = content;
+  auto [targetW, targetH] = target;
+
+  contentW += 3;
+  contentH += 5;
+
+  float gridW, gridH;
+  gridW = targetW / contentW;
+  gridH = targetH / contentH;
+
+  return {gridW, gridH};
 }
 
 }

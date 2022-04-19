@@ -47,6 +47,7 @@ Tasks Compiler::run() {
   std::cout << utils::TexGraph {
     .graph = backwardGraph,
     .claimGraphCtx = false,
+    .caption = "Backpropagation",
     .tensorInfo = [&] (auto tensor) {
       utils::TexGraph::TensorInfo info;
       if (deltas[tensor]) info.label = "$\\Delta$";
