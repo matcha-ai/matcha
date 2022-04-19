@@ -48,4 +48,4 @@ See you on [GitHub](https://github.com/matcha-ai/)!
 
 ---
 
-![logo](assets/img/matcha32-border-only.png)
+![logo](media/img/matcha32-border-only.png)
