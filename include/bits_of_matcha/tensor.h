@@ -18,14 +18,29 @@ class MATCHA_TENSOR_API tensor {
 public:
 
   /**
-   * @return the tensor shape
+   * @return the tensor frame
+   */
+   const Frame& frame() const;
+
+  /**
+   * @return the tensor dtype
    */
   const Dtype& dtype() const;
 
   /**
-   * @return the tensor content datatype
+   * @return the tensor shape
    */
   const Shape& shape() const;
+
+  /**
+   * @returns tensor transpose
+   */
+  tensor transpose() const;
+
+  /**
+   * @returns tensor transpose
+   */
+  tensor t() const;
 
   /**
    * @return the dot product of two tensors

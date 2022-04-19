@@ -51,9 +51,15 @@ Tensor* ones(const Shape& shape);
 Tensor* eye(const Shape& shape);
 
 tensor ref(Tensor* internal);
-Tensor* deref(const tensor& internal);
-Tensor* deref(const tensor* internal);
-Tensor* unref(tensor& internal);
-Tensor* unref(tensor* internal);
+std::vector<tensor> ref(const std::vector<Tensor*> internals);
+
+Tensor* deref(const tensor& external);
+Tensor* deref(const tensor* external);
+
+std::vector<Tensor*> deref(const std::vector<tensor>& externals);
+std::vector<Tensor*> deref(const std::vector<tensor*>& externals);
+
+Tensor* unref(tensor& external);
+Tensor* unref(tensor* external);
 
 }

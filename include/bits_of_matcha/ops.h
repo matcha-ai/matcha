@@ -25,5 +25,8 @@ namespace matcha {
 
 tensor add(const tensor& a, const tensor& b);
 
+tensor dot(const tensor& a, const tensor& b);
+tensor transpose(const tensor& a);
+
 
 }

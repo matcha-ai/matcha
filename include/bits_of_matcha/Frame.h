@@ -12,8 +12,8 @@ public:
   Frame(Dtype dtype, Shape shape);
 
   bool null() const;
-  const Dtype* dtype() const;
-  const Shape* shape() const;
+  const Dtype& dtype() const;
+  const Shape& shape() const;
 
   size_t bytes() const;
 

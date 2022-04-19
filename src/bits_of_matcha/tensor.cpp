@@ -1,4 +1,5 @@
 #include "bits_of_matcha/tensor.h"
+#include "bits_of_matcha/ops.h"
 #include "bits_of_matcha/engine/tensor/Tensor.h"
 
 using namespace matcha::engine;
@@ -19,6 +20,18 @@ tensor& tensor::operator=(const tensor& other) {
   return *this;
 }
 
+const Frame& tensor::frame() const {
+  return deref(this)->frame();
+}
+
+const Dtype& tensor::dtype() const {
+  return frame().dtype();
+}
+
+const Shape& tensor::shape() const {
+  return frame().shape();
+}
+
 tensor tensor::full(float value, const Shape& shape) {
   return ref(engine::full(value, shape));
 }
@@ -33,6 +46,19 @@ tensor tensor::ones(const Shape& shape) {
 
 tensor tensor::eye(const Shape& shape) {
   return ref(engine::eye(shape));
+}
+
+
+tensor tensor::transpose() const {
+  return matcha::transpose(*this);
+}
+
+tensor tensor::t() const {
+  return matcha::transpose(*this);
+}
+
+tensor tensor::dot(const tensor& b) {
+  return matcha::dot(*this, b);
 }
 
 

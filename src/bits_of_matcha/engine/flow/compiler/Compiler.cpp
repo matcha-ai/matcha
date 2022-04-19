@@ -23,7 +23,6 @@ Tasks compile(Graph& graph, const TensorMask& grads) {
 
 Tasks Compiler::run() {
   auto ctx = graph_->ctx();
-  Tasks tasks;
 
   auto partials = findGradientFlow();
   Graph* backwardGraph = buildBackwardGraph();
@@ -56,6 +55,14 @@ Tasks Compiler::run() {
     .includeHeader = false,
   };
 
+  Tasks tasks {
+    .opsForward = graph_->ops,
+    .opsBackward = backwardGraph->ops,
+    .inputs  = graph_->inputs,
+    .outputs = graph_->outputs,
+  };
+
+  tasks.init();
   return tasks;
 }
 

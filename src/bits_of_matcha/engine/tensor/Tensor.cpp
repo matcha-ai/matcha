@@ -31,11 +31,11 @@ const Frame& Tensor::frame() const {
 }
 
 const Dtype& Tensor::dtype() const {
-  return *frame_.dtype();
+  return frame_.dtype();
 }
 
 const Shape& Tensor::shape() const {
-  return *frame_.shape();
+  return frame_.shape();
 }
 
 size_t Tensor::rank() const {
@@ -70,6 +70,16 @@ Op* Tensor::op() {
 
 void Tensor::setOp(Op* op) {
   op_ = op;
+}
+
+void Tensor::shareBuffer(Buffer* buffer) {
+  if (buffer_) buffer_->unbind();
+  buffer_ = buffer;
+  if (buffer_) buffer->bind();
+}
+
+void Tensor::shareBuffer(Tensor* tensor) {
+  shareBuffer(tensor->buffer());
 }
 
 void Tensor::repr(std::ostream& os) {

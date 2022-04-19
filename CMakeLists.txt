@@ -57,6 +57,11 @@ set(
   include/bits_of_matcha/engine/cpu/BlockPool.h
 
   include/bits_of_matcha/engine/ops/Add.h
+  include/bits_of_matcha/engine/ops/AddBack.h
+  include/bits_of_matcha/engine/ops/Dot.h
+  include/bits_of_matcha/engine/ops/DotBack.h
+  include/bits_of_matcha/engine/ops/Transpose.h
+  include/bits_of_matcha/engine/ops/TransposeBack.h
 )
 
 set(
@@ -108,6 +113,10 @@ set(
 
   src/bits_of_matcha/engine/ops/Add.cpp
   src/bits_of_matcha/engine/ops/AddBack.cpp
+  src/bits_of_matcha/engine/ops/Dot.cpp
+  src/bits_of_matcha/engine/ops/DotBack.cpp
+  src/bits_of_matcha/engine/ops/Transpose.cpp
+  src/bits_of_matcha/engine/ops/TransposeBack.cpp
 )
 
 

@@ -23,14 +23,14 @@ bool Frame::null() const {
   return null_;
 }
 
-const Dtype* Frame::dtype() const {
+const Dtype& Frame::dtype() const {
   assertFrame();
-  return &dtype_;
+  return dtype_;
 }
 
-const Shape* Frame::shape() const {
+const Shape& Frame::shape() const {
   assertFrame();
-  return &shape_;
+  return shape_;
 }
 
 std::string Frame::string() const {

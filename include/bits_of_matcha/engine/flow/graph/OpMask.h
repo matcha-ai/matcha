@@ -1,3 +1,5 @@
+#pragma once
+
 #include "bits_of_matcha/engine/flow/graph/OpDict.h"
 
 

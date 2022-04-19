@@ -15,9 +15,17 @@ public:
   tensor operator()(const tensor& a, const tensor& b, const tensor& c);
   tuple operator()(const tuple& inputs);
 
-  void setRequiredGradients(const std::vector<tensor*>& tensors);
-  std::vector<tensor*> requiredGradients() const;
-  std::vector<std::pair<tensor*, tensor>> backward();
+  void requireGrad(const tensor& wrt);
+  void requireGrad(const tuple& wrts);
+
+  void unrequireGrad(const tensor& wrt);
+  void unrequireGrad(const tuple& wrts);
+
+  tuple requiredGrad();
+  void setRequiredGrad(const tuple& wrts);
+
+  std::vector<std::pair<tensor, tensor>> grad();
+
   int profiler();
 
   void save(const std::string& file);
