@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.17)
 project(
-  matcha-engine VERSION 0.0
-  DESCRIPTION "Attachable Machine Learning - Core engine"
+  matcha VERSION 0.0
+  DESCRIPTION "Attachable Machine Learning."
   LANGUAGES CXX
 )
 
@@ -126,7 +126,6 @@ set(
 )
 
 
-find_package(matcha-device)
 find_package(BLAS REQUIRED)
 message("${BLAS_LIBRARIES}")
 
@@ -146,15 +145,7 @@ target_sources(
   ${PROJECT_SOURCES}
 )
 
-add_executable(main src/main.cpp
-#  src/todo.cpp
-  )
-
-target_include_directories(
-  main
-  PUBLIC
-    matcha-device/include
-)
+add_executable(main src/main.cpp)
 
 target_include_directories(
   main
@@ -163,40 +154,36 @@ target_include_directories(
 )
 
 target_link_libraries(${PROJECT_NAME} PUBLIC /usr/lib/libcblas.so)
-#target_include_directories(${PROJECT_NAME} PRIVATE ${BLAS_INCLUDE_DIRS})
-
-target_link_libraries(${PROJECT_NAME} PUBLIC matcha-device)
-#target_link_libraries(${PROJECT_NAME} PUBLIC matcha)
 target_link_libraries(${PROJECT_NAME} PRIVATE pthread)
 target_link_libraries(main PUBLIC ${PROJECT_NAME})
-#target_link_libraries(benchmark PUBLIC ${PROJECT_NAME})
 
 
 include(CMakePackageConfigHelpers)
 write_basic_package_version_file(
-    "${PROJECT_BINARY_DIR}/matcha-engineConfigVersion.cmake"
-    VERSION 0.1
-    COMPATIBILITY AnyNewerVersion
+  "${PROJECT_BINARY_DIR}/MatchaConfigVersion.cmake"
+  VERSION 0.1
+  COMPATIBILITY AnyNewerVersion
 )
 
 install(TARGETS ${PROJECT_NAME}
-    EXPORT matcha-engineTargets
-    LIBRARY DESTINATION lib COMPONENT Runtime
-    ARCHIVE DESTINATION lib COMPONENT Development
-    RUNTIME DESTINATION bin COMPONENT Runtime
-    PUBLIC_HEADER DESTINATION include COMPONENT Development
-    BUNDLE DESTINATION bin COMPONENT Runtime
+  EXPORT MatchaTargets
+  LIBRARY DESTINATION lib COMPONENT Runtime
+  ARCHIVE DESTINATION lib COMPONENT Development
+  RUNTIME DESTINATION bin COMPONENT Runtime
+  PUBLIC_HEADER DESTINATION include COMPONENT Development
+  BUNDLE DESTINATION bin COMPONENT Runtime
 )
 
 include(CMakePackageConfigHelpers)
 configure_package_config_file(
-    "${PROJECT_SOURCE_DIR}/cmake/matcha-engineConfig.cmake"
-    "${PROJECT_BINARY_DIR}/matcha-engineConfig.cmake"
-    INSTALL_DESTINATION lib/cmake/matcha-engine
+  "${PROJECT_SOURCE_DIR}/cmake/MatchaConfig.cmake"
+  "${PROJECT_BINARY_DIR}/MatchaConfig.cmake"
+  INSTALL_DESTINATION lib/cmake/matcha
 )
 
-install(EXPORT matcha-engineTargets DESTINATION lib/cmake/matcha-engine)
-install(FILES "${PROJECT_BINARY_DIR}/matcha-engineConfigVersion.cmake"
-              "${PROJECT_BINARY_DIR}/matcha-engineConfig.cmake"
-        DESTINATION lib/cmake/matcha-engine)
+install(EXPORT MatchaTargets DESTINATION lib/cmake/matcha)
+install(FILES "${PROJECT_BINARY_DIR}/MatchaConfigVersion.cmake"
+  "${PROJECT_BINARY_DIR}/MatchaConfig.cmake"
+  DESTINATION lib/cmake/matcha-engine
+)
 install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/ DESTINATION include)
