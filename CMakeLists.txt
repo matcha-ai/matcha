@@ -22,6 +22,9 @@ set(
   include/bits_of_matcha/Device.h
   include/bits_of_matcha/print.h
   include/bits_of_matcha/Flow.h
+  include/bits_of_matcha/random.h
+
+  include/bits_of_matcha/macros/generator.h
 
   include/bits_of_matcha/engine/memory/memory.h
   include/bits_of_matcha/engine/memory/Buffer.h
@@ -30,6 +33,7 @@ set(
   include/bits_of_matcha/engine/tensor/TensorCtx.h
   include/bits_of_matcha/engine/tensor/RefReqCounted.h
   include/bits_of_matcha/engine/tensor/iterations.h
+  include/bits_of_matcha/engine/tensor/factories.h
 
   include/bits_of_matcha/engine/op/Op.h
   include/bits_of_matcha/engine/op/OpInputs.h
@@ -74,6 +78,7 @@ set(
   src/bits_of_matcha/ops.cpp
   src/bits_of_matcha/Device.cpp
   src/bits_of_matcha/Flow.cpp
+  src/bits_of_matcha/random.cpp
 
   src/bits_of_matcha/engine/memory/memory.cpp
   src/bits_of_matcha/engine/memory/Buffer.cpp
@@ -82,6 +87,7 @@ set(
   src/bits_of_matcha/engine/tensor/TensorCtx.cpp
   src/bits_of_matcha/engine/tensor/RefReqCounted.cpp
   src/bits_of_matcha/engine/tensor/iterations.cpp
+  src/bits_of_matcha/engine/tensor/factories.cpp
 
   src/bits_of_matcha/engine/op/Op.cpp
   src/bits_of_matcha/engine/autograd/OpBack.cpp

@@ -45,11 +45,6 @@ private:
   Op* op_;
 };
 
-Tensor* full(float value, const Shape& shape);
-Tensor* zeros(const Shape& shape);
-Tensor* ones(const Shape& shape);
-Tensor* eye(const Shape& shape);
-
 tensor ref(Tensor* internal);
 std::vector<tensor> ref(const std::vector<Tensor*> internals);
 

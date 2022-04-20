@@ -1,5 +1,7 @@
 #include "bits_of_matcha/engine/flow/compiler/Compiler.h"
 #include "bits_of_matcha/engine/autograd/AccumulateGrads.h"
+#include "bits_of_matcha/engine/tensor/Tensor.h"
+#include "bits_of_matcha/engine/tensor/factories.h"
 #include "bits_of_matcha/engine/utils/TexGraph.h"
 
 #include <set>

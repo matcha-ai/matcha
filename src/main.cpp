@@ -12,12 +12,19 @@ auto flow = (matcha::Flow) [](const tensor& a) {
 };
 
 int main() {
-  flow.requireGrad(another);
-  flow.requireGrad(params);
-  flow.requireGrad(more);
-  tensor a = tensor::ones(3, 3);
-  flow(a);
+//  flow.requireGrad(another);
+//  flow.requireGrad(params);
+//  flow.requireGrad(more);
+//  tensor a = tensor::ones(3, 3);
+//  flow(a);
 
+  auto rand = matcha::random::Uniform {
+    .a = 10,
+    .b = 100,
+    .seed = 3,
+  };
+  tensor x = rand(5).t().t();
+  print(x);
 
   return 0;
 }

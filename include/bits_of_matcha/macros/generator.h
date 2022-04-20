@@ -1,4 +1,4 @@
-#define MA_GENERATOR_TAIL() \
+#define MATCHA_GENERATOR_TAIL() \
                  \
 public:                 \
 const Generator generator = init();                    \
