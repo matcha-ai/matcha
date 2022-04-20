@@ -32,7 +32,7 @@ c = tensor::zeros(100);
 The `tensor` object provides shortcut methods for some tensor operations.
 You can learn more about those e.g. in [the following article](tensor/basic-arithmetic).
 
-Notably, `tensor` overrides arithmetic operators for readable and natural code such as:
+Notably, `tensor` overloads arithmetic operators for readable and natural code such as:
 
 ```cpp
 tensor d;    // forward-declaration is possible too
@@ -43,8 +43,8 @@ d = -b;
 // and so on...
 ```
 
-Unluckily, there is only few overridable operators; `tensor` provides helper methods even
-for operations that don't have any overridable operator syntax, such as:
+Unluckily, there is only few overloadable operators; `tensor` provides helper methods even
+for operations that don't have any overloadable operator syntax, such as:
 
 ```cpp
 d = b.pow(a);       // a-th power
@@ -61,8 +61,8 @@ So far, we have created quite a diversity of tensors. To inspect their datatypes
 ```cpp
 d = tensor::ones(50, 50);
 
-std::cout << a.dtype() << std::endl;  // Float
-std::cout << a.shape() << std::endl;  // [50, 50]
+std::cout << d.dtype() << std::endl;  // Float
+std::cout << d.shape() << std::endl;  // [50, 50]
 
 ```
 
@@ -90,11 +90,11 @@ e = b.dot(c);        // OK! dot product between a matrix and an appropriate vect
 e = exp(d);          // OK! elementwise exponential function does not care
 ```
 
-Frames also determine the backend size required to store tensors. For example `b`, which is a 100-element array/vector,
+Frames also determine the backend size required to store tensors. For example `c`, which is a 100-element array/vector,
 will require 100-times the size of the underlying data type, which in this case is 4-byte `Float`. The total required backend size is therefore 400 bytes:
 
 ```cpp
-std::cout << b.frame().bytes() << std::endl;  // 400
+std::cout << c.frame().bytes() << std::endl;  // 400
 ```
 
 You may have been suspicious about this. Afterall, `sizeof(tensor)` always seems to return 8 bytes (or similar, this is platform-specific).
