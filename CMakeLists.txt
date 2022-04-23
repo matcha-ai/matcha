@@ -61,11 +61,11 @@ set(
   include/bits_of_matcha/engine/cpu/BlockPool.h
 
   include/bits_of_matcha/engine/ops/Add.h
-  include/bits_of_matcha/engine/ops/AddBack.h
+  include/bits_of_matcha/engine/ops/Multiply.h
   include/bits_of_matcha/engine/ops/Dot.h
-  include/bits_of_matcha/engine/ops/DotBack.h
   include/bits_of_matcha/engine/ops/Transpose.h
-  include/bits_of_matcha/engine/ops/TransposeBack.h
+  include/bits_of_matcha/engine/ops/Identity.h
+  include/bits_of_matcha/engine/ops/Print.h
 )
 
 set(
@@ -118,11 +118,11 @@ set(
   src/bits_of_matcha/engine/cpu/BlockPool.cpp
 
   src/bits_of_matcha/engine/ops/Add.cpp
-  src/bits_of_matcha/engine/ops/AddBack.cpp
+  src/bits_of_matcha/engine/ops/Multiply.cpp
   src/bits_of_matcha/engine/ops/Dot.cpp
-  src/bits_of_matcha/engine/ops/DotBack.cpp
   src/bits_of_matcha/engine/ops/Transpose.cpp
-  src/bits_of_matcha/engine/ops/TransposeBack.cpp
+  src/bits_of_matcha/engine/ops/Identity.cpp
+  src/bits_of_matcha/engine/ops/Print.cpp
 )
 
 

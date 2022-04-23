@@ -117,7 +117,7 @@ std::vector<TexGraph::TikzPath*> TexGraph::getPaths(const OpDict<TikzNode*>& opN
   std::vector<TikzPath*> tikz;
   std::vector<int> deps(graph->tensors.size(), 0);
   OpMask visitedOps(graph);
-  TensorMask visistedTensors(graph);
+  TensorMask visitedTensors(graph);
 
   size_t minSize = -1;
   size_t maxSize = 0;
@@ -128,41 +128,43 @@ std::vector<TexGraph::TikzPath*> TexGraph::getPaths(const OpDict<TikzNode*>& opN
     if (size < minSize) minSize = size;
   }
 
+//  print("ops: ", graph->ops.size());
   for (auto op: graph->ops) {
     graph->dfsPostfix(
-    op,
-    [&](Op* op) {
-      for (auto in: op->inputs) {
-        auto tensorNode = tensorNodes[in];
-        auto defaultInfo = defaultTensorInfo(in);
-        auto info = tensorInfo(in);
-        TikzPath* path;
+      op,
+      [&](Op* op) {
+        for (auto in: op->inputs) {
+          auto tensorNode = tensorNodes[in];
+          auto defaultInfo = defaultTensorInfo(in);
+          auto info = tensorInfo(in);
+          TikzPath* path;
 
-        if (info.label.empty()) info.label = defaultInfo.label;
-        if (info.color.empty()) info.color = defaultInfo.color;
+          if (info.label.empty()) info.label = defaultInfo.label;
+          if (info.color.empty()) info.color = defaultInfo.color;
 
-        if (tensorNode) {
-          path = new TikzPath {
-            .a = tensorNode,
-            .b = opNodes[op],
-            .label = "",
-            .style = info.color,
-          };
-        } else {
-          path = new TikzPath {
-            .a = opNodes[in->op()],
-            .b = opNodes[op],
-            .label = "",
-            .style = info.color,
-          };
+          if (tensorNode) {
+            path = new TikzPath {
+              .a = tensorNode,
+              .b = opNodes[op],
+              .label = "",
+              .style = info.color,
+            };
+          } else {
+            path = new TikzPath {
+              .a = opNodes[in->op()],
+              .b = opNodes[op],
+              .label = "",
+              .style = info.color,
+            };
+          }
+          tikz.push_back(path);
         }
-        tikz.push_back(path);
-      }
-    },
-    visitedOps
+      },
+      visitedOps
     );
   }
 
+//  print("tensors: ", graph->tensors.size());
   for (auto tensor: graph->tensors) {
     auto op = tensor->op();
     auto tensorNode = tensorNodes[tensor];

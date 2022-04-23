@@ -17,6 +17,9 @@ public:
   Tensor** begin();
   Tensor** end();
 
+  bool any() const;
+  bool none() const;
+
 private:
   std::vector<Tensor*> data_;
 };

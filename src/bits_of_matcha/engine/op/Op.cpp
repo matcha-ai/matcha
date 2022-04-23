@@ -13,6 +13,10 @@ Op::Op(const std::vector<Tensor*>& inputs)
   , ctx_(this)
 {}
 
+Op::~Op() {
+//  print("deleting op");
+}
+
 void Op::init() {
   for (auto out: outputs) out->malloc();
 }

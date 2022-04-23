@@ -18,6 +18,7 @@ class Tensor;
 struct Op {
   Op(std::initializer_list<Tensor*> inputs);
   Op(const std::vector<Tensor*>& inputs);
+  virtual ~Op();
 
   OpInputs inputs;
   OpOutputs outputs;

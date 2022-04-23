@@ -57,7 +57,6 @@ public:
 public:
   tensor();
   tensor(float scalar);
-  ~tensor() = default;
 
   /**
    * @return tensor of given shape filled with specified value
@@ -104,7 +103,12 @@ public:
   static inline tensor eye(Dims... dims) { return eye(VARARG_SHAPE(dims...)); }
 
 public:
+  tensor(const tensor& other);
+  tensor(tensor&& other) noexcept;
   tensor& operator=(const tensor& other);
+  ~tensor();
+
+  explicit tensor(void* engineObject);
 
 public:
   /**
@@ -116,6 +120,21 @@ public:
 private:
   void* internal_;
 };
+
+
+template <class... Dims>
+static inline tensor zeros(Dims... dims) { return tensor::zeros(dims...); }
+
+template <class... Dims>
+static inline tensor ones(Dims... dims) { return tensor::ones(dims...); }
+
+template <class... Dims>
+static inline tensor eye(Dims... dims) { return tensor::eye(dims...); }
+
+static tensor full(float value, const Shape& shape) { return tensor::full(value, shape); }
+static tensor zeros(const Shape& shape) { return tensor::zeros(shape); }
+static tensor ones(const Shape& shape) { return tensor::ones(shape); }
+static tensor eye(const Shape& shape) { return tensor::eye(shape); }
 
 }
 

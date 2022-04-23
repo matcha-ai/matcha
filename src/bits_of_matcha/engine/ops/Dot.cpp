@@ -1,5 +1,4 @@
 #include "bits_of_matcha/engine/ops/Dot.h"
-#include "bits_of_matcha/engine/ops/DotBack.h"
 
 
 namespace matcha::engine::ops {
@@ -21,6 +20,20 @@ OpMeta<Dot> Dot::meta {
 
 void Dot::run() {
 
+}
+
+DotBack::DotBack(const BackCtx& ctx)
+  : OpBack(ctx)
+{}
+
+OpMeta<DotBack> DotBack::meta {
+  .name = "DotBack",
+};
+
+void DotBack::run() {
+  auto a = inputs[0]->buffer()->as<float*>();
+  auto b = inputs[1]->buffer()->as<float*>();
+  auto c = outputs[0]->malloc()->as<float*>();
 }
 
 }

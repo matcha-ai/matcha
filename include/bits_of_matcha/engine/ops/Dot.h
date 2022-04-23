@@ -1,6 +1,7 @@
 #pragma once
 
 #include "bits_of_matcha/engine/op/Op.h"
+#include "bits_of_matcha/engine/autograd/OpBack.h"
 #include "bits_of_matcha/engine/tensor/iterations.h"
 
 
@@ -14,6 +15,14 @@ struct Dot : Op {
 
 private:
   MatrixStackIteration iterA_, iterB_;
+};
+
+
+struct DotBack : OpBack {
+  DotBack(const BackCtx& ctx);
+  static OpMeta<DotBack> meta;
+
+  void run() override;
 };
 
 }

@@ -1,6 +1,7 @@
 #include "bits_of_matcha/engine/flow/Tracer.h"
 #include "bits_of_matcha/engine/tensor/Tensor.h"
 #include "bits_of_matcha/engine/op/Op.h"
+#include "bits_of_matcha/engine/ops/Print.h"
 
 
 namespace matcha::engine {
@@ -22,6 +23,7 @@ bool Tracer::handleNewTensor(Tensor* tensor) {
   tensor->ctx().setMode(TensorCtx::Constant);
   current_->tensors_.insert(tensor);
   current_->graph_.tensors.push_back(tensor);
+  tensor->ref();
   return true;
 }
 
@@ -41,6 +43,7 @@ bool Tracer::handleOldTensor(Tensor* tensor) {
 
   current_->tensors_.insert(tensor);
   current_->graph_.tensors.push_back(tensor);
+  tensor->ref();
   return true;
 }
 
@@ -63,11 +66,16 @@ tuple Tracer::open(const std::vector<Frame>& frames) {
     graph_.inputs.push_back(t);
   }
 
+  ops::Print::claimCout();
   return inputs;
 }
 
 void Tracer::close(const tuple& outputs) {
-  for (auto out: outputs) {
+  ops::Print::unclaimCout();
+  auto printRest = new ops::Print("", false);
+  engine::collect(printRest);
+
+  for (auto& out: outputs) {
     auto t = deref(out);
     graph_.outputs.push_back(t);
   }

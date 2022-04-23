@@ -1,5 +1,4 @@
 #include "bits_of_matcha/engine/ops/Transpose.h"
-#include "bits_of_matcha/engine/ops/TransposeBack.h"
 
 
 namespace matcha::engine::ops {
@@ -31,5 +30,18 @@ OpMeta<Transpose> Transpose::meta {
 void Transpose::run() {
 
 }
+
+TransposeBack::TransposeBack(const BackCtx& ctx)
+  : OpBack(ctx)
+{}
+
+OpMeta<TransposeBack> TransposeBack::meta {
+  .name = "TransposeBack",
+};
+
+void TransposeBack::run() {
+
+}
+
 
 }

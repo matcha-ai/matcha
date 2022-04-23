@@ -49,6 +49,10 @@ Op* Ops::back(const BackCtx& ctx) {
   return entry.back(ctx);
 }
 
+bool Ops::isSideEffect(Op* op) {
+  return get(op).sideEffect(op);
+}
+
 Ops::Entry::~Entry() {
 }
 
@@ -59,5 +63,6 @@ namespace matcha::engine::ops {
 std::string name(Op* op) { return Ops::name(op); }
 std::string label(Op* op) { return Ops::label(op); }
 Op* back(const BackCtx& ctx) { return Ops::back(ctx); }
+bool isSideEffect(Op* op) { return Ops::isSideEffect(op); }
 
 }

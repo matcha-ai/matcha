@@ -20,7 +20,7 @@ public:
     std::function<std::string ()> name;
     std::function<std::string (Op* op)> label;
     std::function<Op* (const BackCtx&)> back;
-    std::function<bool (Op* op)> effect;
+    std::function<bool (Op* op)> sideEffect;
 
     ~Entry();
   };
@@ -29,6 +29,7 @@ public:
   static std::string name(Op* op);
   static std::string label(Op* op);
   static Op* back(const BackCtx& ctx);
+  static bool isSideEffect(Op* op);
 
 private:
   static Entry& get(Op* op);
@@ -45,5 +46,6 @@ namespace matcha::engine::ops {
 std::string name(Op* op);
 std::string label(Op* op);
 Op* back(const BackCtx& ctx);
+bool isSideEffect(Op* op);
 
 }

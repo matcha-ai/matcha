@@ -43,43 +43,63 @@ void Flow::updateTasks() {
 }
 
 void Flow::compile() {
-  TensorMask grads = getGradMask();
-  tasks_ = engine::compile(graph_, grads);
+  tasks_ = engine::compile(graph_, grads_);
 }
 
 std::vector<Tensor*> Flow::forward(const std::vector<Tensor*>& inputs) {
   if (!built()) throw std::runtime_error("flow is not built");
   updateTasks();
+
+  if (inputs.size() != graph_.inputs.size()) {
+    throw std::invalid_argument("incorrect number of inputs");
+  }
+
+  for (int i = 0; i < inputs.size(); i++) {
+    if (inputs[i]->frame() != graph_.inputs[i]->frame()) {
+      throw std::invalid_argument("input frame mismatch");
+    }
+  }
+
   auto outs = tasks_.forward(inputs);
   return outs;
 }
 
-void Flow::requireGrad(Tensor* wrt) {
-  grads_.insert(wrt);
+void Flow::requireGrad(tensor* wrt) {
+  grads_[wrt] = deref(wrt);
   compileJit();
 }
 
-void Flow::requireGrad(const std::vector<Tensor*>& wrts) {
+void Flow::requireGrad(const std::vector<tensor*>& wrts) {
   for (auto wrt: wrts) requireGrad(wrt);
 }
 
-void Flow::unrequireGrad(Tensor* wrt) {
+void Flow::unrequireGrad(tensor* wrt) {
   grads_.erase(wrt);
   compileJit();
 }
 
-void Flow::unrequireGrad(const std::vector<Tensor*>& wrts) {
+void Flow::unrequireGrad(const std::vector<tensor*>& wrts) {
   for (auto wrt: wrts) unrequireGrad(wrt);
 }
 
-const std::set<Tensor*>& Flow::requiredGrad() {
-  return grads_;
+std::set<tensor*> Flow::requiredGrad() {
+  std::set<tensor*> keys;
+  for (auto [external, internal]: grads_) {
+    keys.insert(external);
+  }
+  return keys;
 }
 
-void Flow::setRequiredGrad(const std::vector<Tensor*>& wrts) {
+void Flow::setRequiredGrad(const std::vector<tensor*>& wrts) {
   grads_.clear();
   for (auto wrt: wrts) requireGrad(wrt);
   compileJit();
+}
+
+std::map<tensor*, tensor> Flow::backward(Tensor* delta) {
+  if (delta->frame() != tasks_.delta->frame()) throw std::runtime_error("delta frame mismatch");
+  auto result = tasks_.backward(delta);
+  return result;
 }
 
 void Flow::compileJit() {
@@ -89,8 +109,8 @@ void Flow::compileJit() {
 TensorMask Flow::getGradMask() {
   auto ctx = graph_.ctx();
   TensorMask grads(graph_);
-  for (auto wrt: grads_) {
-    grads[wrt] = true;
+  for (auto [external, internal]: grads_) {
+    grads[internal] = true;
   }
 
   return grads;

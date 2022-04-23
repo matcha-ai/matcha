@@ -2,6 +2,8 @@
 
 #include "bits_of_matcha/tensor.h"
 #include "bits_of_matcha/ops.h"
+#include <map>
+#include <set>
 
 #define MATCHA_FLOW_API alignas(void*)
 
@@ -15,16 +17,16 @@ public:
   tensor operator()(const tensor& a, const tensor& b, const tensor& c);
   tuple operator()(const tuple& inputs);
 
-  void requireGrad(const tensor& wrt);
-  void requireGrad(const tuple& wrts);
+  void requireGrad(tensor* wrt);
+  void requireGrad(const std::vector<tensor*>& wrts);
 
-  void unrequireGrad(const tensor& wrt);
-  void unrequireGrad(const tuple& wrts);
+  void unrequireGrad(tensor* wrt);
+  void unrequireGrad(const std::vector<tensor*>& wrts);
 
-  tuple requiredGrad();
-  void setRequiredGrad(const tuple& wrts);
+  std::set<tensor*> requiredGrad();
+  void setRequiredGrad(const std::vector<tensor*>& wrts);
 
-  std::vector<std::pair<tensor, tensor>> grad();
+  std::map<tensor*, tensor> grad(const tensor& delta = 1);
 
   int profiler();
 

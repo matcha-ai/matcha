@@ -14,7 +14,7 @@ namespace matcha::engine {
 class Buffer;
 class Op;
 
-class Tensor : RefReqCounted {
+class Tensor : public RefReqCounted {
 public:
   explicit Tensor(const Dtype& dtype, const Shape& shape, Op* op = nullptr);
   explicit Tensor(const Frame& frame, Op* op = nullptr);
@@ -31,6 +31,7 @@ public:
   Buffer* buffer();
   void shareBuffer(Buffer* buffer);
   void shareBuffer(Tensor* tensor);
+  void free();
 
   TensorCtx& ctx();
   Op* op();

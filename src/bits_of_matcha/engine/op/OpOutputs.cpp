@@ -36,4 +36,12 @@ Tensor** OpOutputs::end() {
   return begin() + size();
 }
 
+bool OpOutputs::any() const {
+  return !data_.empty();
+}
+
+bool OpOutputs::none() const {
+  return data_.empty();
+}
+
 }

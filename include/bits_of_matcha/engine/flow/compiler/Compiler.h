@@ -6,29 +6,35 @@
 #include "bits_of_matcha/engine/flow/graph/OpMask.h"
 #include "bits_of_matcha/engine/flow/graph/TensorDict.h"
 #include "bits_of_matcha/engine/flow/graph/TensorMask.h"
+#include "bits_of_matcha/engine/flow/graph/AdjointGraph.h"
 
 #include <vector>
+#include <map>
 
 namespace matcha::engine {
 
-Tasks compile(Graph* graph, const TensorMask& grads);
-Tasks compile(Graph& graph, const TensorMask& grads);
+Tasks compile(Graph* graph, const std::map<tensor*, Tensor*>& grads);
+Tasks compile(Graph& graph, const std::map<tensor*, Tensor*>& grads);
 
 class Compiler {
 private:
-  Compiler(Graph* graph, const TensorMask& grads);
+  Compiler(Graph* graph, const std::map<tensor*, Tensor*>& grads);
   Tasks run();
 
 private:
-  Graph* buildBackwardGraph();
+  AdjointGraph buildBackwardGraph();
   TensorMask findGradientFlow();
+  OpMask findEffects();
+  Tasks generateTasks(const AdjointGraph& back);
+  TensorDict<unsigned> getTotalTensorReqs(const AdjointGraph& back);
 
 private:
   Graph* graph_;
-  TensorMask grads_;
+  std::map<tensor*, Tensor*> grads_;
+  TensorMask gradsMask_;
 
 private:
-  friend Tasks compile(Graph*, const TensorMask&);
+  friend Tasks compile(Graph*, const std::map<tensor*, Tensor*>&);
 };
 
 }

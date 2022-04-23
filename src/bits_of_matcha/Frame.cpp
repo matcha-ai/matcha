@@ -64,4 +64,9 @@ bool Frame::operator!=(const Frame& frame) const {
   return !operator==(frame);
 }
 
+std::ostream& operator<<(std::ostream& os, const Frame& frame) {
+  os << frame.string();
+  return os;
+}
+
 }

@@ -15,15 +15,15 @@ Tensor* full(float value, const Shape& shape) {
 }
 
 Tensor* zeros(const Shape& shape) {
-  return full(0, shape);
+  return engine::full(0, shape);
 }
 
 Tensor* ones(const Shape& shape) {
-  return full(1, shape);
+  return engine::full(1, shape);
 }
 
 Tensor* eye(const Shape& shape) {
-  auto tensor = zeros(shape);
+  auto tensor = engine::zeros(shape);
   auto floats = tensor->buffer()->as<float*>();
 
   auto iter = MatrixStackIteration(shape);

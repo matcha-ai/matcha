@@ -67,7 +67,7 @@ public:
       if (tensor != in) continue;
 
       label += " $i_" + std::to_string(i) + "$";
-      color  = "purple";
+      color  = "purple!40";
     }
 
     for (int i = 0; i < outs.size(); i++) {
@@ -75,7 +75,7 @@ public:
       if (tensor != out) continue;
 
       label += " $o_" + std::to_string(i) + "$";
-      color  = "purple";
+      color  = "purple!40";
     }
 
     return TensorInfo {

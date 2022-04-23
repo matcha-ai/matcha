@@ -18,22 +18,37 @@ Flow::Flow()
   : internal_(new engine::Flow())
 {}
 
-void Flow::requireGrad(const tensor& wrt) {
+void Flow::requireGrad(tensor* wrt) {
   auto flow = Internal(internal_);
-  flow->requireGrad(deref(wrt));
+  flow->requireGrad(wrt);
 }
 
-void Flow::requireGrad(const tuple& wrts) {
+void Flow::requireGrad(const std::vector<tensor*>& wrts) {
   for (auto& wrt: wrts) requireGrad(wrt);
 }
 
-void Flow::unrequireGrad(const tensor& wrt) {
+void Flow::unrequireGrad(tensor* wrt) {
   auto flow = Internal(internal_);
-  flow->unrequireGrad(deref(wrt));
+  flow->unrequireGrad(wrt);
 }
 
-void Flow::unrequireGrad(const tuple& wrts) {
+void Flow::unrequireGrad(const std::vector<tensor*>& wrts) {
   for (auto& wrt: wrts) unrequireGrad(wrt);
+}
+
+std::set<tensor*> Flow::requiredGrad() {
+  auto flow = Internal(internal_);
+  return flow->requiredGrad();
+}
+
+void Flow::setRequiredGrad(const std::vector<tensor*>& wrts) {
+  auto flow = Internal(internal_);
+  flow->setRequiredGrad(wrts);
+}
+
+std::map<tensor*, tensor> Flow::grad(const tensor& delta) {
+  auto flow = Internal(internal_);
+  return flow->backward(deref(delta));
 }
 
 tensor Flow::operator()(const tensor& a) {

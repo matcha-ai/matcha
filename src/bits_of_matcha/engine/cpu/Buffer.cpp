@@ -1,7 +1,6 @@
 #include "bits_of_matcha/engine/cpu/Buffer.h"
 #include "bits_of_matcha/engine/cpu/MemoryPool.h"
-
-#include <iostream>
+#include "bits_of_matcha/print.h"
 
 
 namespace matcha::engine::cpu {
@@ -19,6 +18,7 @@ Buffer::Buffer(size_t bytes, void* memory)
 {}
 
 Buffer::~Buffer() {
+//  print("freeing buffer ", this);
   MemoryPool::the()->free(this);
 }
 

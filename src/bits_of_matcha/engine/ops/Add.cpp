@@ -1,5 +1,4 @@
 #include "bits_of_matcha/engine/ops/Add.h"
-#include "bits_of_matcha/engine/ops/AddBack.h"
 
 
 namespace matcha::engine::ops {
@@ -14,7 +13,19 @@ OpMeta<Add> Add::meta {
 };
 
 void Add::run() {
-//  runCPU(std::plus<float>());
+  outputs[0]->malloc();
+//  print("add run: ", outputs[0]->buffer());
+  runCPU(std::plus<float>());
 }
+
+
+AddBack::AddBack(const BackCtx& ctx)
+  : OpBack(ctx)
+{
+}
+
+OpMeta<AddBack> AddBack::meta {
+  .name = "AddBack",
+};
 
 }

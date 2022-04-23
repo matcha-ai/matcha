@@ -7,6 +7,7 @@
 #include "bits_of_matcha/engine/flow/Tasks.h"
 
 #include <vector>
+#include <map>
 #include <set>
 
 
@@ -23,13 +24,14 @@ public:
   void build(const std::vector<Frame>& frames);
 
   std::vector<Tensor*> forward(const std::vector<Tensor*>& inputs);
+  std::map<tensor*, tensor> backward(Tensor* delta);
 
-  void requireGrad(Tensor* wrt);
-  void requireGrad(const std::vector<Tensor*>& wrts);
-  void unrequireGrad(Tensor* wrt);
-  void unrequireGrad(const std::vector<Tensor*>& wrts);
-  const std::set<Tensor*>& requiredGrad();
-  void setRequiredGrad(const std::vector<Tensor*>& wrts);
+  void requireGrad(tensor* wrt);
+  void requireGrad(const std::vector<tensor*>& wrts);
+  void unrequireGrad(tensor* wrt);
+  void unrequireGrad(const std::vector<tensor*>& wrts);
+  std::set<tensor*> requiredGrad();
+  void setRequiredGrad(const std::vector<tensor*>& wrts);
 
   TensorMask getGradMask();
   void compile();
@@ -42,7 +44,7 @@ private:
   Graph graph_;
   Tasks tasks_;
 
-  std::set<Tensor*> grads_;
+  std::map<tensor*, Tensor*> grads_;
   bool compile_;
 };
 
