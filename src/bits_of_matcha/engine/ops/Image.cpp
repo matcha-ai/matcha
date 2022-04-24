@@ -15,7 +15,8 @@ Image::Image(Tensor* a, const std::string& file)
 {}
 
 OpMeta<Image> Image::meta {
-  .name = "Image"
+  .name = "Image",
+  .sideEffect = true,
 };
 
 void Image::run() {
