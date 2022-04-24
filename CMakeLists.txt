@@ -66,6 +66,8 @@ set(
   include/bits_of_matcha/engine/ops/Transpose.h
   include/bits_of_matcha/engine/ops/Identity.h
   include/bits_of_matcha/engine/ops/Print.h
+  include/bits_of_matcha/engine/ops/Pow.h
+  include/bits_of_matcha/engine/ops/Image.h
 )
 
 set(
@@ -123,10 +125,13 @@ set(
   src/bits_of_matcha/engine/ops/Transpose.cpp
   src/bits_of_matcha/engine/ops/Identity.cpp
   src/bits_of_matcha/engine/ops/Print.cpp
+  src/bits_of_matcha/engine/ops/Pow.cpp
+  src/bits_of_matcha/engine/ops/Image.cpp
 )
 
 
 find_package(BLAS REQUIRED)
+find_package(libpng CONFIG REQUIRED)
 message("${BLAS_LIBRARIES}")
 
 
@@ -153,7 +158,8 @@ target_include_directories(
     include/
 )
 
-target_link_libraries(${PROJECT_NAME} PUBLIC /usr/lib/libcblas.so)
+target_link_libraries(${PROJECT_NAME} PUBLIC blas)
+target_link_libraries(${PROJECT_NAME} PUBLIC png)
 target_link_libraries(${PROJECT_NAME} PRIVATE pthread)
 target_link_libraries(main PUBLIC ${PROJECT_NAME})
 

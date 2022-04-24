@@ -3,6 +3,7 @@
 #include <functional>
 #include <vector>
 #include <variant>
+#include <string>
 
 
 namespace matcha {
@@ -33,5 +34,10 @@ tensor transpose(const tensor& a);
 
 tensor identity(const tensor& a);
 
+tensor pow(const tensor& a, const tensor& b);
+tensor square(const tensor& a);
+tensor exp(const tensor& a);
+
+void image(const tensor& a, const std::string& file);
 
 }

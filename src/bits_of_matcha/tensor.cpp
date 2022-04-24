@@ -90,6 +90,10 @@ tensor tensor::dot(const tensor& b) {
   return matcha::dot(*this, b);
 }
 
+tensor tensor::pow(const tensor& b) {
+  return matcha::pow(*this, b);
+}
+
 
 }
 

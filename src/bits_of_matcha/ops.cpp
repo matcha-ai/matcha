@@ -7,6 +7,8 @@
 #include "bits_of_matcha/engine/ops/Dot.h"
 #include "bits_of_matcha/engine/ops/Transpose.h"
 #include "bits_of_matcha/engine/ops/Identity.h"
+#include "bits_of_matcha/engine/ops/Pow.h"
+#include "bits_of_matcha/engine/ops/Image.h"
 
 
 using namespace matcha::engine;
@@ -76,11 +78,38 @@ tensor transpose(const tensor& a) {
 }
 
 tensor identity(const tensor& a) {
-//  print("identity");
   auto op = new ops::Identity {deref(a)};
   auto out = ref(op->outputs[0]);
   engine::collect(op);
   return out;
+}
+
+tensor pow(const tensor& a, const tensor& b) {
+  auto op = new ops::Pow {
+    deref(a),
+    deref(b)
+  };
+
+  auto out = ref(op->outputs[0]);
+  engine::collect(op);
+  return out;
+}
+
+tensor square(const tensor& a) {
+  return pow(a, 2);
+}
+
+tensor exp(const tensor& a) {
+  return pow(2.71828182845904, a);
+}
+
+void image(const tensor& a, const std::string& file) {
+  auto op = new ops::Image {
+    deref(a),
+    file
+  };
+
+  engine::collect(op);
 }
 
 }

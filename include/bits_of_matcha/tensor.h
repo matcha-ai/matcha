@@ -43,15 +43,21 @@ public:
   tensor t() const;
 
   /**
+   * @param b the second tensor
    * @return the dot product of two tensors
    */
   tensor dot(const tensor& b);
 
   /**
-   * @return the concatenation of two tensors
+   * @param b the second tensor
+   * @return concatenation of two tensors
    */
   tensor cat(const tensor& b);
 
+  /**
+   * @param b exponent
+   * @return tensor to the power of b
+   */
   tensor pow(const tensor& b);
 
 public:
