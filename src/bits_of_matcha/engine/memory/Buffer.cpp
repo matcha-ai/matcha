@@ -1,5 +1,6 @@
 #include "bits_of_matcha/engine/memory/Buffer.h"
 #include "bits_of_matcha/engine/tensor/Tensor.h"
+#include "bits_of_matcha/print.h"
 
 
 namespace matcha::engine {
@@ -25,6 +26,7 @@ Buffer::Buffer(const Device::Concrete& device, size_t bytes)
 {}
 
 Buffer::~Buffer() {
+//  print("deleting buffer");
 }
 
 const Device::Concrete* Buffer::device() const {
@@ -60,6 +62,7 @@ void Buffer::bind() {
 }
 
 void Buffer::unbind() {
+  if (!refs_) throw std::runtime_error("Buffer refs are already 0");
   refs_--;
   if (!refs_) delete this;
 }

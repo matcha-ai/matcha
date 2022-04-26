@@ -88,9 +88,15 @@ void Print::dumpTensor(std::ostream& os) {
     cellW = std::max(cellW, w);
   }
 
-  size_t termCols = 80;
-  int skipSize = (int) iter.cols - (int)(termCols / cellW);
-  int skipBegin = ((int) iter.cols - skipSize) / 2;
+  int termCols = 80;
+  int skipColsSize = (int) iter.cols - (int)(termCols / cellW);
+  int skipColsBegin = ((int) iter.cols - skipColsSize) / 2;
+  int skipColsEnd = skipColsBegin + skipColsSize;
+
+  int termRows = 40;
+  int skipRowsSize = (int) iter.rows - (int)(termRows);
+  int skipRowsBegin = ((int) iter.rows - skipRowsSize) / 2;
+  int skipRowsEnd = skipRowsBegin + skipRowsSize;
 
   int indent = 0;
 //  os << "[";
@@ -114,6 +120,10 @@ void Print::dumpTensor(std::ostream& os) {
       }
 
       for (int col = 0; col < iter.cols; col++) {
+        if (col == skipColsBegin) {
+          os << " ... ";
+          col = skipColsEnd;
+        }
         if (col != 0) os << " ";
         std::stringstream ss;
         float val = floats[matrix * iter.amount + row * iter.cols + col];

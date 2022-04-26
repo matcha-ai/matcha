@@ -44,13 +44,13 @@ public:
 
   const Value& operator[](Op* op) const {
     int key = op->ctx().key();
-    if (key < 0 || key >= size()) throw std::out_of_range("key is out of range");
+    if (key < 0 || key >= size()) throw std::out_of_range(std::string("op key is out of range: ") + std::to_string(key) + " (" + ops::name(op) + ")");
     return values_[key];
   }
 
   Value& operator[](Op* op) {
     int key = op->ctx().key();
-    if (key < 0 || key >= size()) throw std::out_of_range("key is out of range");
+    if (key < 0 || key >= size()) throw std::out_of_range(std::string("op key is out of range: ") + std::to_string(key) + " (" + ops::name(op) + ")");
     return values_[key];
   }
 

@@ -41,16 +41,15 @@ std::map<tensor*, tensor> Tasks::backward(Tensor* d) {
   }
 
   std::map<tensor*, tensor> result;
-  std::vector<Tensor*> test;
   for (auto [external, target]: grads) {
     auto t = new Tensor(target->frame());
-//    t->shareBuffer(target);
-    print(t->frame().string());
+    t->shareBuffer(target);
+//    print(t->frame().string());
     result[external] = ref(t);
-    test.push_back(t);
+//    print(t->buffer());
   }
 //  for (auto& [var, grad]: result) print(grad.frame().string());
-  for (auto t: test) print(t->frame().string());
+//  for (auto t: test) print(t->frame().string());
   return result;
 }
 

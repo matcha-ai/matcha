@@ -3,6 +3,7 @@
 #include "bits_of_matcha/engine/tensor/iterations.h"
 #include "bits_of_matcha/engine/memory/memory.h"
 #include "bits_of_matcha/engine/flow/Tracer.h"
+#include "bits_of_matcha/Engine.h"
 #include "bits_of_matcha/print.h"
 
 #include <sstream>
@@ -16,6 +17,7 @@ Tensor::Tensor(const Frame& frame, Op* op)
   , buffer_(nullptr)
   , op_(op)
 {
+//  print("created tensor ", this);
   Tracer::handleNewTensor(this);
 }
 
@@ -59,6 +61,7 @@ Buffer* Tensor::buffer() {
 Buffer* Tensor::malloc() {
   if (buffer_) return buffer_;
   buffer_ = engine::malloc(bytes());
+  buffer_->bind();
   return buffer_;
 }
 
@@ -172,32 +175,23 @@ void Tensor::repr(std::ostream& os) {
 }
 
 tensor ref(Tensor* internal) {
-  static_assert(sizeof(tensor) == sizeof(void*));
-  return tensor(internal);
+  return Engine::ref(internal);
 }
 
 Tensor* unref(tensor& external) {
-  return unref(&external);
+  return Engine::unref(external);
 }
 
 Tensor* unref(tensor* external) {
-  static_assert(sizeof(tensor) == sizeof(void*));
-  void** pp = reinterpret_cast<void**>(external);
-  void*& p = *pp;
-  auto internal = (Tensor*) p;
-  p = nullptr;
-  return internal;
+  return Engine::unref(external);
 }
 
 Tensor* deref(const tensor* external) {
-  static_assert(sizeof(tensor) == sizeof(void*));
-  const tensor** tensorpp = &external;
-  auto internalppp = (Tensor***)tensorpp;
-  return **internalppp;
+  return Engine::deref(external);
 }
 
 Tensor* deref(const tensor& external) {
-  return deref(&external);
+  return Engine::deref(external);
 }
 
 }

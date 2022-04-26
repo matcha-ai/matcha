@@ -4,34 +4,12 @@
 #include <sstream>
 
 namespace matcha {
-
 class tensor;
-
-class Mout {
-  public:
-    template <class T>
-    inline Mout& operator<<(const T& t) {
-      ss << t;
-      return *this;
-    }
-
-    Mout& operator<<(const tensor& tensor);
-    Mout& operator<<( std::ostream& (*f)(std::ostream&) );
-
-  private:
-    std::stringstream ss;
-};
-
-}
-
-namespace std {
-extern matcha::Mout mout;
 }
 
 
 template <class... Args>
 inline void print(Args... args);
-
 
 
 template <class Type>

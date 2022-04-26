@@ -22,7 +22,12 @@ set(
   include/bits_of_matcha/Device.h
   include/bits_of_matcha/print.h
   include/bits_of_matcha/Flow.h
+  include/bits_of_matcha/Engine.h
   include/bits_of_matcha/random.h
+
+  include/bits_of_matcha/error/Error.h
+  include/bits_of_matcha/error/IncompatibleShapesError.h
+  include/bits_of_matcha/error/BroadcastError.h
 
   include/bits_of_matcha/macros/generator.h
 
@@ -40,6 +45,8 @@ set(
   include/bits_of_matcha/engine/op/OpOutputs.h
   include/bits_of_matcha/engine/op/OpMeta.h
   include/bits_of_matcha/engine/op/Ops.h
+
+  include/bits_of_matcha/engine/iterations/ElementwiseBinaryCtx.h
 
   include/bits_of_matcha/engine/op/abstract/ElementwiseUnaryOp.h
   include/bits_of_matcha/engine/op/abstract/ElementwiseBinaryOp.h
@@ -59,6 +66,10 @@ set(
   include/bits_of_matcha/engine/cpu/Buffer.h
   include/bits_of_matcha/engine/cpu/MemoryPool.h
   include/bits_of_matcha/engine/cpu/BlockPool.h
+  include/bits_of_matcha/engine/cpu/elementwiseUnary.h
+  include/bits_of_matcha/engine/cpu/elementwiseBinary.h
+  include/bits_of_matcha/engine/cpu/elementwiseBinaryBack.h
+  include/bits_of_matcha/engine/cpu/fill.h
 
   include/bits_of_matcha/engine/ops/Add.h
   include/bits_of_matcha/engine/ops/Multiply.h
@@ -67,6 +78,7 @@ set(
   include/bits_of_matcha/engine/ops/Identity.h
   include/bits_of_matcha/engine/ops/Print.h
   include/bits_of_matcha/engine/ops/Pow.h
+  include/bits_of_matcha/engine/ops/Exp.h
   include/bits_of_matcha/engine/ops/Image.h
 )
 
@@ -80,7 +92,12 @@ set(
   src/bits_of_matcha/ops.cpp
   src/bits_of_matcha/Device.cpp
   src/bits_of_matcha/Flow.cpp
+  src/bits_of_matcha/Engine.cpp
   src/bits_of_matcha/random.cpp
+
+  src/bits_of_matcha/error/Error.cpp
+  src/bits_of_matcha/error/IncompatibleShapesError.cpp
+  src/bits_of_matcha/error/BroadcastError.cpp
 
   src/bits_of_matcha/engine/memory/memory.cpp
   src/bits_of_matcha/engine/memory/Buffer.cpp
@@ -92,13 +109,15 @@ set(
   src/bits_of_matcha/engine/tensor/factories.cpp
 
   src/bits_of_matcha/engine/op/Op.cpp
-  src/bits_of_matcha/engine/autograd/OpBack.cpp
+  src/bits_of_matcha/engine/op/OpBack.cpp
   src/bits_of_matcha/engine/autograd/AccumulateGrads.cpp
 
   src/bits_of_matcha/engine/op/OpCtx.cpp
   src/bits_of_matcha/engine/op/OpInputs.cpp
   src/bits_of_matcha/engine/op/OpOutputs.cpp
   src/bits_of_matcha/engine/op/Ops.cpp
+
+  src/bits_of_matcha/engine/iterations/ElementwiseBinaryCtx.cpp
 
   src/bits_of_matcha/engine/op/abstract/ElementwiseUnaryOp.cpp
   src/bits_of_matcha/engine/op/abstract/ElementwiseBinaryOp.cpp
@@ -126,6 +145,7 @@ set(
   src/bits_of_matcha/engine/ops/Identity.cpp
   src/bits_of_matcha/engine/ops/Print.cpp
   src/bits_of_matcha/engine/ops/Pow.cpp
+  src/bits_of_matcha/engine/ops/Exp.cpp
   src/bits_of_matcha/engine/ops/Image.cpp
 )
 

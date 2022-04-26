@@ -18,7 +18,6 @@ Buffer::Buffer(size_t bytes, void* memory)
 {}
 
 Buffer::~Buffer() {
-//  print("freeing buffer ", this);
   MemoryPool::the()->free(this);
 }
 

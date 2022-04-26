@@ -8,5 +8,5 @@ namespace ma = matcha;
 
 #include "matcha/tensor"
 //#include "matcha/engine"
-//#include "matcha/dataset"
+#include "matcha/dataset"
 //#include "matcha/nn"

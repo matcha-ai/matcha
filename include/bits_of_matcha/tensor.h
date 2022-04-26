@@ -114,7 +114,6 @@ public:
   tensor& operator=(const tensor& other);
   ~tensor();
 
-  explicit tensor(void* engineObject);
 
 public:
   /**
@@ -124,6 +123,9 @@ public:
   void* data();
 
 private:
+  explicit tensor(void* engineObject);
+  friend class Engine;
+
   void* internal_;
 };
 

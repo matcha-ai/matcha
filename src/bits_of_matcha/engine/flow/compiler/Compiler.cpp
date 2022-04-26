@@ -35,6 +35,11 @@ Tasks Compiler::run() {
     std::cout << utils::TexGraph {
     .graph = graph_,
     .claimGraphCtx = false,
+    .opInfo = [](auto op) {
+      utils::TexGraph::OpInfo info;
+      info.label = ops::name(op) + " " + std::to_string(op->ctx().key());
+      return info;
+    },
     .tensorInfo = [&](auto tensor) {
       utils::TexGraph::TensorInfo info;
       if (backwardGraph.adjointTensors[tensor]) info.color = "orange";
@@ -53,6 +58,11 @@ Tasks Compiler::run() {
     .graph = backwardGraph.adjointGraph,
     .claimGraphCtx = false,
     .caption = "Backpropagation",
+    .opInfo = [](auto op) {
+      utils::TexGraph::OpInfo info;
+      info.label = ops::name(op) + " " + std::to_string(op->ctx().key());
+      return info;
+    },
     .tensorInfo = [&, gradTargets = gradsMask_.get()](auto tensor) {
       utils::TexGraph::TensorInfo info;
       if (deltas[tensor]) info.label = "$\\Delta$";
@@ -122,6 +132,7 @@ Tasks Compiler::generateTasks(const AdjointGraph& back) {
 
     for (auto i: op->inputs) {
       if (!i) continue;
+      if (!i->op()) continue;
       auto& remaining = backwardTensorReqs[i];
       if (!remaining) throw std::runtime_error("lifetime is already 0");
       if (!--remaining) {
@@ -134,6 +145,7 @@ Tasks Compiler::generateTasks(const AdjointGraph& back) {
   }
 
   for (auto tensor: graph_->tensors) {
+    if (!tensor->op()) continue;
     auto& reqs = forwardTensorReqs[tensor];
     if (!reqs) continue;
     if (debug)
@@ -208,7 +220,7 @@ AdjointGraph Compiler::buildBackwardGraph() {
   TensorDict<Partials> partials(graph_);
 
   Tensor* altitude = graph_->outputs[0];
-  Tensor* delta = ones({});
+  Tensor* delta = new Tensor(altitude->frame());
 
   partials[altitude].first = delta;
   OpDict<Op*> adjointOps(graph_);
@@ -264,31 +276,87 @@ AdjointGraph Compiler::buildBackwardGraph() {
 
   graph->inputs.push_back(delta);
 
+  for (auto tensor: graph_->tensors) {
+    if (tensor == altitude) {
+      tryAddTensor(delta);
+      continue;
+    }
+    auto& partial = partials[tensor];
+    auto& toAccumulate = partial.second;
+    auto& target = partial.first;
+    if (target) {
+      new autograd::AccumulateGrads(toAccumulate, target);
+      tryAddTensor(target);
+    }
+    for (auto grad: toAccumulate) tryAddTensor(grad);
+  }
+//  print("asdf");
+
+  for (int i = (int) graph_->ops.size() - 1; i >= 0; i--) {
+    Op* adjoint = adjointOps[graph_->ops[i]];
+    if (!adjoint) continue;
+//    print(ops::name(adjoint));
+    for (auto in: adjoint->inputs) {
+      // gradient accumulators
+      if (!(in && in->op())) continue;
+      auto accumulate = in->op();
+      if (addedOps.contains(accumulate)) continue;
+      graph->ops.push_back(accumulate);
+      accumulate->ctx().setTraced();
+      addedOps.insert(accumulate);
+    }
+    if (addedOps.contains(adjoint)) continue;
+    graph->ops.push_back(adjoint);
+    adjoint->ctx().setTraced();
+    addedOps.insert(adjoint);
+//    print("op ", ops::name(adjoint));
+  }
+
+  for (auto tensor: graph_->tensors) {
+    auto& partial = partials[tensor];
+    auto target = partial.first;
+    if (target && target->op()) {
+      auto accumulator = target->op();
+      if (addedOps.contains(accumulator)) continue;
+      addedOps.insert(accumulator);
+      graph->ops.push_back(accumulator);
+      accumulator->ctx().setTraced();
+    }
+  }
+
+  int i = 0;
   for (Tensor* t: partialsMask.rget()) {
+    continue;
+    print("---");
     auto& partial = partials[t];
     Op* adjoint = t->op() ? adjointOps[t->op()] : nullptr;
 
     std::vector<Tensor*>& grads = partial.second;
     Tensor* target = partial.first;
 
+    if (t != altitude) {
+      auto accumulator = new autograd::AccumulateGrads(grads, target);
+      for (auto grad: grads) tryAddTensor(grad);
+      tryAddTensor(target);
+
+      accumulator->ctx().setTraced();
+      graph->ops.push_back(accumulator);
+      print(i++, " A ", ops::name(accumulator));
+    } else {
+      tryAddTensor(delta);
+    }
+
+
+    if (!adjoint) print("no adjoint");
     if (adjoint && !addedOps.contains(adjoint)) {
 //      print("Adding ", adjoint);
       graph->ops.push_back(adjoint);
       addedOps.insert(adjoint);
       adjoint->ctx().setTraced();
+      print(i++, " O ", ops::name(adjoint));
     }
 
-    if (t == altitude) {
-      tryAddTensor(delta);
-      continue;
-    }
 
-    auto accumulator = new autograd::AccumulateGrads(grads, target);
-    for (auto grad: grads) tryAddTensor(grad);
-    tryAddTensor(target);
-
-    accumulator->ctx().setTraced();
-    graph->ops.push_back(accumulator);
   }
 
   TensorDict<Tensor*> adjointTensors(graph_);

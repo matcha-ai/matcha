@@ -5,15 +5,4 @@
 namespace matcha::engine {
 
 
-ElementwiseBinaryOp::ElementwiseBinaryOp(Tensor* a, Tensor* b)
-  : Op{a, b}
-//  , dev_{CPU}
-{
-  iter_ = ElementwiseBinaryIteration(a->shape(), b->shape());
-  outputs.add(this, iter_.scalar == 1 ? a->frame() : b->frame());
-}
-
-ElementwiseBinaryOp::~ElementwiseBinaryOp() {
-}
-
 }

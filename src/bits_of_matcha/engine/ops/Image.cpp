@@ -27,8 +27,6 @@ void Image::dumpPng() {
   FILE *fp = fopen(file_.c_str(), "wb");
   if (!fp) throw std::runtime_error("couldn't open file for writing image");
 
-  print("running");
-
   png_structp pngPtr = png_create_write_struct(
     PNG_LIBPNG_VER_STRING,
     (png_voidp) nullptr,

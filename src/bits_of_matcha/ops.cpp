@@ -8,6 +8,7 @@
 #include "bits_of_matcha/engine/ops/Transpose.h"
 #include "bits_of_matcha/engine/ops/Identity.h"
 #include "bits_of_matcha/engine/ops/Pow.h"
+#include "bits_of_matcha/engine/ops/Exp.h"
 #include "bits_of_matcha/engine/ops/Image.h"
 
 
@@ -100,7 +101,13 @@ tensor square(const tensor& a) {
 }
 
 tensor exp(const tensor& a) {
-  return pow(2.71828182845904, a);
+  auto op = new ops::Exp {
+    deref(a)
+  };
+
+  auto out = ref(op->outputs[0]);
+  engine::collect(op);
+  return out;
 }
 
 void image(const tensor& a, const std::string& file) {

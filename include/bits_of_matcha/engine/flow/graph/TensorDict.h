@@ -44,13 +44,13 @@ public:
 
   const Value& operator[](Tensor* tensor) const {
     int key = tensor->ctx().key();
-    if (key < 0 || key >= size()) throw std::out_of_range("key is out of range");
+    if (key < 0 || key >= size()) throw std::out_of_range("tensor key is out of range");
     return values_[key];
   }
 
   Value& operator[](Tensor* tensor) {
     int key = tensor->ctx().key();
-    if (key < 0 || key >= size()) throw std::out_of_range("key is out of range");
+    if (key < 0 || key >= size()) throw std::out_of_range("tensor key is out of range");
     return values_[key];
   }
 

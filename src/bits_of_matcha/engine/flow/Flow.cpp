@@ -4,6 +4,8 @@
 #include "bits_of_matcha/engine/flow/graph/Graph.h"
 #include "bits_of_matcha/engine/flow/graph/TensorMask.h"
 #include "bits_of_matcha/print.h"
+#include "bits_of_matcha/error/IncompatibleShapesError.h"
+#include "bits_of_matcha/engine/cpu/fill.h"
 
 
 namespace matcha::engine {
@@ -97,9 +99,20 @@ void Flow::setRequiredGrad(const std::vector<tensor*>& wrts) {
 }
 
 std::map<tensor*, tensor> Flow::backward(Tensor* delta) {
-  if (delta->frame() != tasks_.delta->frame()) throw std::runtime_error("delta frame mismatch");
-  auto result = tasks_.backward(delta);
-  return result;
+  if (!tasks_.delta) return {};
+  if (delta->dtype() != tasks_.delta->dtype()) {
+    throw std::invalid_argument("dtype mismatch");
+  }
+  if (delta->shape() == tasks_.delta->shape()) {
+    return tasks_.backward(delta);
+  } else if (delta->rank() == 0){
+    auto stretched = std::make_unique<Tensor>(tasks_.delta->frame());
+    auto buffer = stretched->malloc();
+    cpu::fill(buffer, stretched->size(), *delta->buffer()->as<float*>());
+    return tasks_.backward(stretched.get());
+  } else {
+    throw IncompatibleShapesError(delta->shape(), tasks_.delta->shape());
+  }
 }
 
 void Flow::compileJit() {
