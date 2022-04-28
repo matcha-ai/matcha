@@ -1,7 +1,7 @@
 #pragma once
 
 #include "bits_of_matcha/engine/op/Op.h"
-#include "bits_of_matcha/engine/cpu/elementwiseUnary.h"
+#include "bits_of_matcha/engine/cpu/kernels/elementwiseUnary.h"
 
 #include <algorithm>
 #include <numeric>

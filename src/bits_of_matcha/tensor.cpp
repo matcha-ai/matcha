@@ -61,6 +61,27 @@ const Shape& tensor::shape() const {
   return frame().shape();
 }
 
+tensor tensor::reshape(const Shape& shape) const {
+  return matcha::reshape(*this, shape);
+}
+
+tensor tensor::transpose() const {
+  return matcha::transpose(*this);
+}
+
+tensor tensor::t() const {
+  return matcha::transpose(*this);
+}
+
+tensor tensor::dot(const tensor& b) const {
+  return matcha::dot(*this, b);
+}
+
+tensor tensor::pow(const tensor& b) const {
+  return matcha::pow(*this, b);
+}
+
+
 tensor tensor::full(float value, const Shape& shape) {
   return ref(engine::full(value, shape));
 }
@@ -76,24 +97,6 @@ tensor tensor::ones(const Shape& shape) {
 tensor tensor::eye(const Shape& shape) {
   return ref(engine::eye(shape));
 }
-
-
-tensor tensor::transpose() const {
-  return matcha::transpose(*this);
-}
-
-tensor tensor::t() const {
-  return matcha::transpose(*this);
-}
-
-tensor tensor::dot(const tensor& b) {
-  return matcha::dot(*this, b);
-}
-
-tensor tensor::pow(const tensor& b) {
-  return matcha::pow(*this, b);
-}
-
 
 }
 

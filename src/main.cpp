@@ -2,23 +2,14 @@
 using namespace matcha;
 
 
-tensor weights = 1;
-tensor bias = 1;
-
-auto foo = (Flow)[] (const tensor& x) {
-  tensor c = weights * x + bias;
-  return c;
-};
-
 int main() {
-  foo.requireGrad({&weights, &bias});
+  tensor a = uniform(2, 2);
+  tensor b = 2 * eye(6, 2, 2);
+  print(a);
+  print(b);
 
-  for (int i = 0; i < 1000; i++) {
-    tensor x = uniform(100, 100);
-    tensor y = foo(x);
-    for (auto& [var, grad]: foo.grad()) {
-    }
-  }
+  tensor c = a.dot(b);
+  print(c);
 
   return 0;
 }

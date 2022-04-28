@@ -5,7 +5,7 @@
 namespace matcha {
 
 struct BroadcastError : IncompatibleShapesError {
-  BroadcastError(const Shape& a, const Shape& b, int dim);
+  BroadcastError(const Shape& a, const Shape& b, int dim = 0);
   BroadcastError() = default;
 };
 

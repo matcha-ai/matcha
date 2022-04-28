@@ -1,6 +1,6 @@
 #include "bits_of_matcha/engine/ops/Multiply.h"
-#include "bits_of_matcha/engine/cpu/fill.h"
-#include "bits_of_matcha/engine/cpu/elementwiseBinaryBack.h"
+#include "bits_of_matcha/engine/cpu/kernels/fill.h"
+#include "bits_of_matcha/engine/cpu/kernels/elementwiseBinaryBack.h"
 
 
 namespace matcha::engine::ops {

@@ -17,7 +17,6 @@ OpMeta<Identity> Identity::meta {
 };
 
 void Identity::run() {
-//  print("identity run: ", inputs[0]->buffer());
   outputs[0]->shareBuffer(inputs[0]);
 }
 
@@ -30,11 +29,7 @@ OpMeta<IdentityBack> IdentityBack::meta {
 };
 
 void IdentityBack::run() {
-//  print("IdentityBack");
-//  print("", inputs[0] ," -> ", outputs[0]);
-//  print();
   outputs[0]->shareBuffer(inputs[0]);
-//  print("output: ", outputs[0]);
 }
 
 }

@@ -2,7 +2,7 @@
 
 #include "bits_of_matcha/engine/op/Op.h"
 #include "bits_of_matcha/engine/op/OpBack.h"
-#include "bits_of_matcha/engine/tensor/iterations.h"
+#include "bits_of_matcha/engine/iterations/MatrixwiseUnaryCtx.h"
 
 
 namespace matcha::engine::ops {
@@ -14,7 +14,7 @@ struct Transpose : Op {
   void run() override;
 
 private:
-  MatrixStackIteration iter_;
+  MatrixwiseUnaryCtx iter_;
 };
 
 struct TransposeBack : OpBack {
@@ -22,6 +22,9 @@ struct TransposeBack : OpBack {
   static OpMeta<TransposeBack> meta;
 
   void run() override;
+
+public:
+  MatrixwiseUnaryCtx iter_;
 };
 
 

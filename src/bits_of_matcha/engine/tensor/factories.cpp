@@ -1,15 +1,18 @@
 #include "bits_of_matcha/engine/tensor/factories.h"
 #include "bits_of_matcha/engine/tensor/iterations.h"
+#include "bits_of_matcha/engine/cpu/kernels/fill.h"
+#include "bits_of_matcha/print.h"
+
+#include <execution>
+#include <numeric>
+#include <algorithm>
 
 
 namespace matcha::engine {
 
 Tensor* full(float value, const Shape& shape) {
   auto tensor = new Tensor(Float, shape);
-
-  auto buffer = tensor->malloc();
-  auto floats = buffer->as<float*>();
-  std::fill(floats, floats + tensor->size(), value);
+  cpu::fill(tensor->malloc(), tensor->size(), value);
 
   return tensor;
 }

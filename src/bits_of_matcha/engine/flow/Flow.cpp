@@ -5,7 +5,7 @@
 #include "bits_of_matcha/engine/flow/graph/TensorMask.h"
 #include "bits_of_matcha/print.h"
 #include "bits_of_matcha/error/IncompatibleShapesError.h"
-#include "bits_of_matcha/engine/cpu/fill.h"
+#include "bits_of_matcha/engine/cpu/kernels/fill.h"
 
 
 namespace matcha::engine {

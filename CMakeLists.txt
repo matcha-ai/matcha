@@ -47,6 +47,8 @@ set(
   include/bits_of_matcha/engine/op/Ops.h
 
   include/bits_of_matcha/engine/iterations/ElementwiseBinaryCtx.h
+  include/bits_of_matcha/engine/iterations/MatrixwiseBinaryCtx.h
+  include/bits_of_matcha/engine/iterations/MatrixwiseUnaryCtx.h
 
   include/bits_of_matcha/engine/op/abstract/ElementwiseUnaryOp.h
   include/bits_of_matcha/engine/op/abstract/ElementwiseBinaryOp.h
@@ -66,16 +68,21 @@ set(
   include/bits_of_matcha/engine/cpu/Buffer.h
   include/bits_of_matcha/engine/cpu/MemoryPool.h
   include/bits_of_matcha/engine/cpu/BlockPool.h
-  include/bits_of_matcha/engine/cpu/elementwiseUnary.h
-  include/bits_of_matcha/engine/cpu/elementwiseBinary.h
-  include/bits_of_matcha/engine/cpu/elementwiseBinaryBack.h
-  include/bits_of_matcha/engine/cpu/fill.h
+
+  include/bits_of_matcha/engine/cpu/kernels/elementwiseUnary.h
+  include/bits_of_matcha/engine/cpu/kernels/elementwiseBinary.h
+  include/bits_of_matcha/engine/cpu/kernels/elementwiseBinaryBack.h
+  include/bits_of_matcha/engine/cpu/kernels/fill.h
+  include/bits_of_matcha/engine/cpu/kernels/transpose.h
+  include/bits_of_matcha/engine/cpu/kernels/mm.h
 
   include/bits_of_matcha/engine/ops/Add.h
   include/bits_of_matcha/engine/ops/Multiply.h
+  include/bits_of_matcha/engine/ops/Divide.h
   include/bits_of_matcha/engine/ops/Dot.h
   include/bits_of_matcha/engine/ops/Transpose.h
   include/bits_of_matcha/engine/ops/Identity.h
+  include/bits_of_matcha/engine/ops/Reshape.h
   include/bits_of_matcha/engine/ops/Print.h
   include/bits_of_matcha/engine/ops/Pow.h
   include/bits_of_matcha/engine/ops/Exp.h
@@ -118,6 +125,8 @@ set(
   src/bits_of_matcha/engine/op/Ops.cpp
 
   src/bits_of_matcha/engine/iterations/ElementwiseBinaryCtx.cpp
+  src/bits_of_matcha/engine/iterations/MatrixwiseBinaryCtx.cpp
+  src/bits_of_matcha/engine/iterations/MatrixwiseUnaryCtx.cpp
 
   src/bits_of_matcha/engine/op/abstract/ElementwiseUnaryOp.cpp
   src/bits_of_matcha/engine/op/abstract/ElementwiseBinaryOp.cpp
@@ -140,9 +149,11 @@ set(
 
   src/bits_of_matcha/engine/ops/Add.cpp
   src/bits_of_matcha/engine/ops/Multiply.cpp
+  src/bits_of_matcha/engine/ops/Divide.cpp
   src/bits_of_matcha/engine/ops/Dot.cpp
   src/bits_of_matcha/engine/ops/Transpose.cpp
   src/bits_of_matcha/engine/ops/Identity.cpp
+  src/bits_of_matcha/engine/ops/Reshape.cpp
   src/bits_of_matcha/engine/ops/Print.cpp
   src/bits_of_matcha/engine/ops/Pow.cpp
   src/bits_of_matcha/engine/ops/Exp.cpp
@@ -178,7 +189,7 @@ target_include_directories(
     include/
 )
 
-target_link_libraries(${PROJECT_NAME} PUBLIC blas)
+target_link_libraries(${PROJECT_NAME} PUBLIC /usr/lib/libcblas.so)
 target_link_libraries(${PROJECT_NAME} PUBLIC png)
 target_link_libraries(${PROJECT_NAME} PRIVATE pthread)
 target_link_libraries(main PUBLIC ${PROJECT_NAME})

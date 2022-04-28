@@ -1,4 +1,7 @@
 #include "bits_of_matcha/engine/ops/Transpose.h"
+#include "bits_of_matcha/engine/cpu/kernels/transpose.h"
+
+#include <cblas.h>
 
 
 namespace matcha::engine::ops {
@@ -14,7 +17,7 @@ Transpose::Transpose(Tensor* a)
     dims = std::vector(shapeA.begin(), shapeA.end());
     std::swap(dims[dims.size() - 1], dims[dims.size() - 2]);
   } else {
-    dims = {iter_.rows, iter_.cols};
+    throw std::invalid_argument("can't transpose scalar or vector");
   }
 
   outputs.add(this, a->dtype(), dims);
@@ -28,11 +31,17 @@ OpMeta<Transpose> Transpose::meta {
 };
 
 void Transpose::run() {
+  if (iter_.rows == 1 || iter_.cols == 1) {
+    outputs[0]->shareBuffer(inputs[0]);
+    return;
+  }
 
+  cpu::transpose(inputs[0]->buffer(), outputs[0]->malloc(), iter_);
 }
 
 TransposeBack::TransposeBack(const BackCtx& ctx)
   : OpBack(ctx)
+  , iter_(outputs[0]->shape())
 {}
 
 OpMeta<TransposeBack> TransposeBack::meta {
@@ -40,7 +49,12 @@ OpMeta<TransposeBack> TransposeBack::meta {
 };
 
 void TransposeBack::run() {
+  if (iter_.rows == 1 || iter_.cols == 1) {
+    outputs[0]->shareBuffer(inputs[0]);
+    return;
+  }
 
+  cpu::transpose(inputs[0]->buffer(), outputs[0]->malloc(), iter_);
 }
 
 

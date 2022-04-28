@@ -33,6 +33,19 @@ public:
   const Shape& shape() const;
 
   /**
+   * @returns tensor reshaped to specified dimensions
+   * @see matcha::reshape
+   */
+  template <class... Dims>
+  tensor reshape(Dims... dims) const { return reshape(VARARG_SHAPE(dims...)); };
+
+  /**
+   * @returns tensor reshaped to specified dimensions
+   * @see matcha::reshape
+   */
+  tensor reshape(const Shape& shape) const;
+
+  /**
    * @returns tensor transpose
    */
   tensor transpose() const;
@@ -46,19 +59,19 @@ public:
    * @param b the second tensor
    * @return the dot product of two tensors
    */
-  tensor dot(const tensor& b);
+  tensor dot(const tensor& b) const;
 
   /**
    * @param b the second tensor
    * @return concatenation of two tensors
    */
-  tensor cat(const tensor& b);
+  tensor cat(const tensor& b) const;
 
   /**
    * @param b exponent
    * @return tensor to the power of b
    */
-  tensor pow(const tensor& b);
+  tensor pow(const tensor& b) const;
 
 public:
   tensor();

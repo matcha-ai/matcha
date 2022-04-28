@@ -2,7 +2,7 @@
 
 #include "bits_of_matcha/engine/op/Op.h"
 #include "bits_of_matcha/engine/iterations/ElementwiseBinaryCtx.h"
-#include "bits_of_matcha/engine/cpu/elementwiseBinary.h"
+#include "bits_of_matcha/engine/cpu/kernels/elementwiseBinary.h"
 
 #include <algorithm>
 #include <numeric>
