@@ -17,7 +17,8 @@ class ElementwiseBinaryCtx;
 namespace matcha::engine::cpu {
 
 template <class Callable>
-inline void elementwiseBinaryBack(Callable callable, engine::Buffer* a, engine::Buffer* b, engine::Buffer* c, const ElementwiseBinaryCtx& ctx) {
+inline void elementwiseBinary(Callable callable, engine::Buffer* a, engine::Buffer* b, engine::Buffer* c, const ElementwiseBinaryCtx& ctx) {
+//  return;
   dynamic_cast<Buffer*>(a);
   dynamic_cast<Buffer*>(b);
   dynamic_cast<Buffer*>(c);
@@ -29,7 +30,7 @@ inline void elementwiseBinaryBack(Callable callable, engine::Buffer* a, engine::
   int strides = (int) ctx.stridesA.size();
   if (strides == 1) {
     // scalars
-    callable(*valsA, *valsB, *valsC);
+    *valsC = callable(*valsA, *valsB);
     return;
   }
 
@@ -74,8 +75,8 @@ inline void elementwiseBinaryBack(Callable callable, engine::Buffer* a, engine::
       auto sB = ctx.stridesB[axis];
 
       for (auto iC = bC; iC != eC; iC++) {
-//        print("compute ", std::distance(valsA , iA), " ", std::distance(valsB , iB), " ", std::distance(valsC, iC));
-        callable(*iA, *iB, *iC);
+//        print("compute ", std::distance(valsA , iA), " ", std::distance(valsB , iB), " -> ", std::distance(valsC, iC));
+        *iC = callable(*iA, *iB);
         iA += sA;
         iB += sB;
       }

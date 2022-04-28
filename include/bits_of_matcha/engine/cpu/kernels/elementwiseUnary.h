@@ -11,6 +11,7 @@ namespace matcha::engine::cpu {
 
 template <class Callable>
 void elementwiseUnary(Callable callable, engine::Buffer* a, engine::Buffer* b, size_t size) {
+//  return;
   auto valsA = a->as<float*>();
   auto valsB = b->as<float*>();
 

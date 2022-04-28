@@ -126,7 +126,7 @@ void Print::dumpTensor(std::ostream& os) {
         }
         if (col != 0) os << " ";
         std::stringstream ss;
-        float val = floats[matrix * iter.amount + row * iter.cols + col];
+        float val = floats[matrix * iter.size + row * iter.cols + col];
         ss << val;
         std::string temp = ss.str();
         os << temp << std::string(cellW - temp.size(), ' ');
