@@ -49,9 +49,11 @@ set(
   include/bits_of_matcha/engine/iterations/ElementwiseBinaryCtx.h
   include/bits_of_matcha/engine/iterations/MatrixwiseBinaryCtx.h
   include/bits_of_matcha/engine/iterations/MatrixwiseUnaryCtx.h
+  include/bits_of_matcha/engine/iterations/AxiswiseFoldCtx.h
 
   include/bits_of_matcha/engine/op/abstract/ElementwiseUnaryOp.h
   include/bits_of_matcha/engine/op/abstract/ElementwiseBinaryOp.h
+  include/bits_of_matcha/engine/op/abstract/AxiswiseFoldOp.h
 
   include/bits_of_matcha/engine/flow/Flow.h
   include/bits_of_matcha/engine/flow/Tracer.h
@@ -87,6 +89,12 @@ set(
   include/bits_of_matcha/engine/ops/Pow.h
   include/bits_of_matcha/engine/ops/Exp.h
   include/bits_of_matcha/engine/ops/Image.h
+  include/bits_of_matcha/engine/ops/Max.h
+  include/bits_of_matcha/engine/ops/MaxBetween.h
+  include/bits_of_matcha/engine/ops/Min.h
+  include/bits_of_matcha/engine/ops/MinBetween.h
+  include/bits_of_matcha/engine/ops/Eq.h
+  include/bits_of_matcha/engine/ops/Neq.h
 )
 
 set(
@@ -127,6 +135,8 @@ set(
   src/bits_of_matcha/engine/iterations/ElementwiseBinaryCtx.cpp
   src/bits_of_matcha/engine/iterations/MatrixwiseBinaryCtx.cpp
   src/bits_of_matcha/engine/iterations/MatrixwiseUnaryCtx.cpp
+  src/bits_of_matcha/engine/iterations/MatrixwiseUnaryCtx.cpp
+  src/bits_of_matcha/engine/iterations/AxiswiseFoldCtx.cpp
 
   src/bits_of_matcha/engine/op/abstract/ElementwiseUnaryOp.cpp
   src/bits_of_matcha/engine/op/abstract/ElementwiseBinaryOp.cpp
@@ -158,6 +168,12 @@ set(
   src/bits_of_matcha/engine/ops/Pow.cpp
   src/bits_of_matcha/engine/ops/Exp.cpp
   src/bits_of_matcha/engine/ops/Image.cpp
+  src/bits_of_matcha/engine/ops/Max.cpp
+  src/bits_of_matcha/engine/ops/MaxBetween.cpp
+  src/bits_of_matcha/engine/ops/Min.cpp
+  src/bits_of_matcha/engine/ops/MinBetween.cpp
+  src/bits_of_matcha/engine/ops/Eq.cpp
+  src/bits_of_matcha/engine/ops/Neq.cpp
 )
 
 

@@ -1,15 +1,29 @@
 #include <matcha/matcha>
 using namespace matcha;
 
+tensor relu(const tensor& a) {
+  return maxBetween(a, 0);
+}
+
+auto foo = (Flow) [](tensor a) {
+  print(a);
+  print("------------------------------");
+  tensor b = a.t().dot(a);
+  print(b);
+  return b;
+};
 
 int main() {
-  tensor a = uniform(2, 2);
-  tensor b = 2 * eye(6, 2, 2);
-  print(a);
-  print(b);
+  tensor a = normal(5, 4, 5);
+  tensor b = relu(a);
+  a = minBetween(a, 0);
 
-  tensor c = a.dot(b);
-  print(c);
+  print(a.shape());
+  print(b.shape());
+  print(std::string(64, '='));
+  print(a);
+  print(std::string(64, '='));
+  print(b != 0);
 
   return 0;
 }

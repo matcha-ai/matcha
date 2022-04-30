@@ -1,14 +1,17 @@
-#include "bits_of_matcha/engine/iterations/AxiswiseCtx.h"
+#include "bits_of_matcha/engine/iterations/AxiswiseFoldCtx.h"
 #include "bits_of_matcha/print.h"
 
 namespace matcha::engine {
 
-AxiswiseCtx::AxiswiseCtx(const Shape& a) {
-
-  exit(0);
+AxiswiseFoldCtx::AxiswiseFoldCtx(const Shape& a) {
+  axisStride = 1;
+  axisLength = a.size();
+  prefixStrides = {0, 0};
+  prefixLengths = {1, 1};
+//  exit(0);
 }
 
-AxiswiseCtx::AxiswiseCtx(const Shape& a, int axis) {
+AxiswiseFoldCtx::AxiswiseFoldCtx(const Shape& a, int axis) {
   if (axis < 0) axis += (int) a.rank();
   if (axis < 0 || axis >= a.rank()) throw std::invalid_argument("axis is out of range");
 
@@ -47,16 +50,20 @@ AxiswiseCtx::AxiswiseCtx(const Shape& a, int axis) {
         prefixStrides[0] = 0;
         prefixLengths[0] = 1;
       } else {
+        prefixStrides[1] = 1;
+        prefixLengths[1] = dimBuff;
 
+        prefixStrides[0] = dimBuff * dim;
+        prefixLengths[0] = a.size() / prefixStrides[0];
       }
     }
     dimBuff *= dim;
   }
 
-  print("axis: ", axisStride, " ", axisLength);
-  print("0: ", prefixStrides[0], " ", prefixLengths[0]);
-  print("1: ", prefixStrides[1], " ", prefixLengths[1]);
-  exit(0);
+//  print("axis: ", axisStride, " ", axisLength);
+//  print("0: ", prefixStrides[0], " ", prefixLengths[0]);
+//  print("1: ", prefixStrides[1], " ", prefixLengths[1]);
+//  exit(0);
 }
 
 }

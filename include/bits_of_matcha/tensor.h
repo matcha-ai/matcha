@@ -73,6 +73,7 @@ public:
    */
   tensor pow(const tensor& b) const;
 
+
 public:
   tensor();
   tensor(float scalar);

@@ -12,6 +12,12 @@
 #include "bits_of_matcha/engine/ops/Pow.h"
 #include "bits_of_matcha/engine/ops/Exp.h"
 #include "bits_of_matcha/engine/ops/Image.h"
+#include "bits_of_matcha/engine/ops/Max.h"
+#include "bits_of_matcha/engine/ops/MaxBetween.h"
+#include "bits_of_matcha/engine/ops/Min.h"
+#include "bits_of_matcha/engine/ops/MinBetween.h"
+#include "bits_of_matcha/engine/ops/Eq.h"
+#include "bits_of_matcha/engine/ops/Neq.h"
 
 
 using namespace matcha::engine;
@@ -55,6 +61,14 @@ matcha::tensor& operator/=(matcha::tensor& a, const matcha::tensor& b) {
 
 matcha::tensor operator-(const matcha::tensor& a) {
   return negative(a);
+}
+
+matcha::tensor operator==(const matcha::tensor& a, const matcha::tensor& b) {
+  return eq(a, b);
+}
+
+matcha::tensor operator!=(const matcha::tensor& a, const matcha::tensor& b) {
+  return neq(a, b);
 }
 
 
@@ -170,5 +184,62 @@ void image(const tensor& a, const std::string& file) {
 
   engine::collect(op);
 }
+
+tensor max(const tensor& a) {
+  auto op = new ops::Max { deref(a) };
+  auto out = ref(op->outputs[0]);
+  engine::collect(op);
+  return out;
+}
+
+tensor max(const tensor& a, int axis) {
+  auto op = new ops::Max { deref(a), axis };
+  auto out = ref(op->outputs[0]);
+  engine::collect(op);
+  return out;
+}
+
+tensor min(const tensor& a) {
+  auto op = new ops::Min { deref(a) };
+  auto out = ref(op->outputs[0]);
+  engine::collect(op);
+  return out;
+}
+
+tensor maxBetween(const tensor& a, const tensor& b) {
+  auto op = new ops::MaxBetween { deref(a), deref(b) };
+  auto out = ref(op->outputs[0]);
+  engine::collect(op);
+  return out;
+}
+
+tensor min(const tensor& a, int axis) {
+  auto op = new ops::Min { deref(a), axis };
+  auto out = ref(op->outputs[0]);
+  engine::collect(op);
+  return out;
+}
+
+tensor minBetween(const tensor& a, const tensor& b) {
+  auto op = new ops::MinBetween { deref(a), deref(b) };
+  auto out = ref(op->outputs[0]);
+  engine::collect(op);
+  return out;
+}
+
+tensor eq(const tensor& a, const tensor& b) {
+  auto op = new ops::Eq { deref(a), deref(b) };
+  auto out = ref(op->outputs[0]);
+  engine::collect(op);
+  return out;
+}
+
+tensor neq(const tensor& a, const tensor& b) {
+  auto op = new ops::Neq { deref(a), deref(b) };
+  auto out = ref(op->outputs[0]);
+  engine::collect(op);
+  return out;
+}
+
 
 }

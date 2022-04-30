@@ -8,10 +8,10 @@
 
 namespace matcha::engine {
 
-struct AxiswiseCtx {
-  AxiswiseCtx(const Shape& a);
-  AxiswiseCtx(const Shape& a, int axis);
-  AxiswiseCtx() = default;
+struct AxiswiseFoldCtx {
+  AxiswiseFoldCtx(const Shape& a);
+  AxiswiseFoldCtx(const Shape& a, int axis);
+  AxiswiseFoldCtx() = default;
 
   size_t axisStride;
   size_t axisLength;

@@ -30,6 +30,8 @@ matcha::tensor& operator*=(matcha::tensor& a, const matcha::tensor& b);
 matcha::tensor operator/(const matcha::tensor& a, const matcha::tensor& b);
 matcha::tensor& operator/=(matcha::tensor& a, const matcha::tensor& b);
 matcha::tensor operator-(const matcha::tensor& a);
+matcha::tensor operator==(const matcha::tensor& a, const matcha::tensor& b);
+matcha::tensor operator!=(const matcha::tensor& a, const matcha::tensor& b);
 
 namespace matcha {
 
@@ -50,5 +52,20 @@ tensor square(const tensor& a);
 tensor exp(const tensor& a);
 
 void image(const tensor& a, const std::string& file);
+
+tensor sum(const tensor& a);
+tensor sum(const tensor& a, int axis);
+
+tensor max(const tensor& a);
+tensor max(const tensor& a, int axis);
+tensor min(const tensor& a);
+tensor min(const tensor& a, int axis);
+
+tensor maxBetween(const tensor& a, const tensor& b);
+tensor minBetween(const tensor& a, const tensor& b);
+
+tensor eq(const tensor& a, const tensor& b);
+tensor neq(const tensor& a, const tensor& b);
+
 
 }
