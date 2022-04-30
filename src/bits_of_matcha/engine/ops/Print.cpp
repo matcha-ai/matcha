@@ -92,6 +92,7 @@ void Print::dumpTensor(std::ostream& os) {
   int skipColsSize = (int) iter.cols - (int)(termCols / cellW);
   int skipColsBegin = ((int) iter.cols - skipColsSize) / 2;
   int skipColsEnd = skipColsBegin + skipColsSize;
+  if (skipColsEnd <= skipColsBegin - 1) skipColsBegin = -1;
 
   int termRows = 40;
   int skipRowsSize = (int) iter.rows - (int)(termRows);
@@ -102,7 +103,6 @@ void Print::dumpTensor(std::ostream& os) {
 //  os << "[";
 
   for (int matrix = 0; matrix < iter.amount; matrix++) {
-
     if (iter.rows > 1) {
       if (matrix != 0) {
         os << "],\n";
