@@ -14,7 +14,7 @@
   - [Block operations](tensor/block-operations)
   - [Utilities](tensor/utils)
   - [Factories](tensor/factories)
-  - [Accessing data](accessing-data)
+  - [Accessing data](tensor/accessing-data)
 
 - Flow API
 
