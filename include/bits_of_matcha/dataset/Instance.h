@@ -22,6 +22,8 @@ public:
   std::vector<std::string> keys() const;
   std::vector<tensor> values() const;
 
+  operator bool() const;
+
 private:
   std::map<std::string, tensor> data_;
 };

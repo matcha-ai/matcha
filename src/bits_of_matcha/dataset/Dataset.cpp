@@ -48,12 +48,21 @@ size_t Dataset::size() const {
 
 Instance Dataset::get() const {
   if (!internal_) throw std::runtime_error("dataset is null");
+  if (eof()) return {};
   return deref(this)->get();
 }
 
 void Dataset::seek(size_t pos) const {
   if (!internal_) throw std::runtime_error("dataset is null");
   return deref(this)->seek(pos);
+}
+
+void Dataset::reset() const {
+  seek(0);
+}
+
+bool Dataset::eof() const {
+  return tell() >= size();
 }
 
 size_t Dataset::tell() const {

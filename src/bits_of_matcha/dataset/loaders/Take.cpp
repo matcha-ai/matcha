@@ -13,7 +13,6 @@ Take::operator Dataset() {
   struct Internal : engine::Dataset {
     matcha::Dataset dataset_;
     size_t limit_;
-    size_t pos_ = 0;
     size_t offset_;
 
     Internal(const matcha::Dataset& ds, size_t limit)
@@ -24,7 +23,6 @@ Take::operator Dataset() {
     }
 
     Instance get() override {
-      if (pos_++ > limit_) throw std::out_of_range("Take dataset limit reached");
       return dataset_.get();
     }
 
@@ -33,12 +31,11 @@ Take::operator Dataset() {
     }
 
     size_t tell() const override {
-      return pos_;
+      return dataset_.tell() - offset_;
     }
 
     void seek(size_t pos) override {
       dataset_.seek(offset_ + pos);
-      pos_ = pos;
     }
   };
 

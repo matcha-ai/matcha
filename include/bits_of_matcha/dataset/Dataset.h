@@ -17,6 +17,8 @@ public:
   size_t size() const;
   size_t tell() const;
   void seek(size_t pos) const;
+  void reset() const;
+  bool eof() const;
 
   InstanceIterator begin() const;
   InstanceIterator end() const;

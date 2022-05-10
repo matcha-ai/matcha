@@ -49,6 +49,10 @@ std::vector<tensor> Instance::values() const {
   return v;
 }
 
+Instance::operator bool() const {
+  return !data_.empty();
+}
+
 }
 
 std::ostream& operator<<(std::ostream& os, const matcha::Instance& instance) {
