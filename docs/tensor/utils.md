@@ -1,6 +1,6 @@
 # Utilities
 
-Miscellanous, handy operations out-of-the-box. Note that all of them can be used inside the [Flow](flow/), including side-effects.
+Miscellaneous, handy operations out-of-the-box. Note that all of them can be used inside the [Flow](flow/), including side-effects.
 
 ## Printing
 
@@ -49,7 +49,7 @@ output: 6
 
 > `image(const tensor& a, const std::string& file)`
 
-Renders tensor image. The image dimensions are given by the last two (matrix-wise) axes of input tensor.
+Renders a tensor image. The image dimensions are given by the last two (matrix-wise) axes of the input tensor.
 
 !> Currently, the only supported target format is `.png`.
 

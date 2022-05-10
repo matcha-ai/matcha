@@ -28,8 +28,8 @@ Full `1`. See [full](#full).
 > `eye(const Shape& shape)` \
 > `eye(Dims... dims)`
 
-Identity matrix of specified shape. If the target rank is larger than two, it is interpreted as a stack of matrices and the values are initialized matrix-wise.
-If the matrix part is not square, only corresponding identity matrix chunk is generated.
+Identity matrix of specified shape. If the target rank is greater than two, it is interpreted as a stack of matrices and the values are initialized matrix-wise.
+If the matrix part is not square, only corresponding identity matrix sub-chunk is generated.
 
 ## Randomness
 

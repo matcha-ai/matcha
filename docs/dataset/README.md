@@ -8,7 +8,7 @@ and manipulate it just-in-time on the run or otherwise tune it to your needs.
 
 ## Data instances
 
-A single piece of data is called `Instance`. Instances behave as a dictionary of tensors with string keys. Why? It's quite common to
+A single piece of data is called an `Instance`. Instances behave as a dictionary of tensors with string keys. Why? It's quite common to
 store more than one information per data entry: for example, we might have labeled images (\*image of a cat\* - "cat", and so on).
 For labeled data, it's a convention to have the keys `"x"` for data, `"y"` for label. 
 The list of all keys can be obtained by calling the `keys()` method:
@@ -67,7 +67,7 @@ Contents of `digit_original.png` and `digit_reshaped.png`:
 ![img](digit_original.png)
 ![img](digit_reshaped.png)
 
-This is kind of unfortuante. We would like a dataset that provides 28x28 images right away. We can easily do this by
+This is kind of unfortunate. We would like a dataset that provides 28x28 images right away. We can easily do this by
 _mapping_ the original dataset. Map is a _relay_ example. It modifies instances of the underlying dataset in a way we want.
 Using a lambda function:
 
@@ -102,7 +102,7 @@ At last, we would like to get instances from the dataset. We have already seen t
 Instance i = mnist.get();
 ```
 
-The method `Dataset::get()` retrieves next `Instance` from the dataset. We can do that repeatedly to iterate through the entire dataset:
+The method `Dataset::get()` retrieves the next `Instance` from the dataset. We can do that repeatedly to iterate through the entire dataset:
 
 ```cpp
 while (Instance i = mnist.get()) {
@@ -121,7 +121,7 @@ for (Instance i: mnist) {
 ## Jumping through datasets
 
 Datasets behave as linear streams. As such, they provide `tell` method returning the current position,
-and `seek` method for changing the current position manually. Note that since the `get` method reads _next_ Instance,
+and `seek` method for changing the current position manually. Note that since the `get` method reads _the next_ Instance,
 it increases the position by one. The `reset` method is a shorthand for `seek(0)`.
 If the current position is greater or equal to the dataset size, `eof` returns `true`, else it returns `false`.
 
@@ -135,7 +135,7 @@ std::cout << mnist.tell() << std::endl;     // 5
 mnist.seek(3);
 std::cout << mnist.tell() << std::endl;     // 3
 
-mnist.get()
+mnist.get();
 std::cout << mnist.tell() << std::endl;     // 4
 
 std::cout << mnist.eof() << std::endl;      // 0
@@ -154,5 +154,5 @@ std::cout << mnist.tell() << std::endl;     // 1
 std::cout << mnist.eof() << std::endl;      // 0
 ```
 
-!> **NOTE:** Depending on the concrete pipeline componenets used, it may or may not be inefficient to jump frequently through the dataset. \
+!> **NOTE:** Depending on the concrete pipeline components used, it may or may not be inefficient to jump frequently through the dataset. \
    It's recommended to avoid unneeded jumping and to proceed linearly instead.

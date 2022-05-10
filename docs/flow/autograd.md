@@ -18,7 +18,7 @@ We have created a simple Flow that takes external matrix `params`, multiplies it
 Let's say we would like to see how that output changes with respect to ("w.r.t.") the matrix. Then we simply say:
 
 ```cpp
-foo.requireGrad(params);
+foo.requireGrad(&params);
 ```
 
 From now on, the Flow will be able to compute the gradient of its output w.r.t to `params`. To do that,
@@ -29,7 +29,7 @@ computation:
 tensor output = foo(42);
 
 for (auto [var, delta]: foo.grad()) {
-  std::cout << "the derivative w.r.t. " << var << " is " << delta;
+  std::cout << "the derivative w.r.t. " << *var << " is " << delta;
 }
 ```
 
@@ -51,17 +51,17 @@ computed with at least partial correctness, if there exists some other derivativ
 
 ## requireGrad
 
-> `Flow::requireGrad(const tensor& wrt)` \
-> `Flow::requireGrad(const tuple& wrts)`
+> `Flow::requireGrad(const tensor* wrt)` \
+> `Flow::requireGrad(const std::vector<tensor*>& wrts)`
 
-Requires gradient calculation w.r.t. to given tensor(s).
+Requires gradient calculation w.r.t. given tensor(s).
 
 ## unrequireGrad
 
 > `Flow::unrequireGrad(const tensor& wrt)` \
-> `Flow::unrequireGrad(const tuple& wrts)`
+> `Flow::unrequireGrad(const std::vector<tensor*>& wrts)`
 
-Unrequires gradient calculation w.r.t. to given tensor(s).
+Unrequires gradient calculation w.r.t. given tensor(s).
 
 ## requiredGrad
 
@@ -71,12 +71,12 @@ Lists tensors with required gradient computation.
 
 ## setRequiredGrad
 
-> `Flow::setRequiredGrad(const tuple& wrts)`
+> `Flow::setRequiredGrad(const std::vector<tensor*>& wrts)`
 
-Requires gradient computation only for given list of tensors.
+Requires gradient computation only for the given list of tensors.
 
 ## grad
 
 > `Flow::grad(tensor delta = 1)  ->  std::vector<std::pair<tensor, tensor>>`
 
-Fires the backpropagation towards all required gradient tensors. Forward run must be invoked first.
+Fires the backpropagation towards all the required gradient tensors. The forward run must be invoked first.

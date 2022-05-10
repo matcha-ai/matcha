@@ -4,26 +4,42 @@
 
 
 ```cpp
-using matcha::nn;
+#include <matcha/matcha>
+using namespace matcha;
 
 
 int main() {
-  matcha::Net classifier {
-    nn::FC(100, "relu"),
-    nn::FC(50, "relu"),
-    nn::FC(10, "softmax")
+  // create neural net
+
+  Net classifier {
+    nn::Flatten {},
+    nn::Fc {100, "relu"},
+    nn::BatchNorm {},
+    nn::Fc {50, "relu"},
+    nn::BatchNorm {},
+    nn::Fc {10, "softmax"}
   };
 
-  classifier.solver = nn::Adam {
+  classifier.optimizer = nn::Adam {
     .loss = nn::Crossentropy(),
   };
 
-  auto mnist = matcha::dataset::Csv {
-    .file = "my_datasets/mnist.csv",
+
+  // create dataset
+
+  Dataset mnist = dataset::Csv {
+    .file = "mnist_train.csv",
     .y = {"label"}
   };
 
+  mnist = mnist.map([](Instance i) {
+    i["x"] /= 255;
+    return i;
+  });
+
+
+  // train!
+
   classifier.fit(mnist);
-  return 0;
 }
 ```
