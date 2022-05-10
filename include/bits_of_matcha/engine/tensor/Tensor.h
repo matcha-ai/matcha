@@ -33,6 +33,8 @@ public:
   void shareBuffer(Tensor* tensor);
   void free();
 
+  void* readData();
+
   TensorCtx& ctx();
   Op* op();
   void setOp(Op* op);

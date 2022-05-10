@@ -19,7 +19,19 @@ tensor& Instance::operator[](const std::string& key) {
   return data_[key];
 }
 
+tensor& Instance::operator[](const char* key) {
+  return data_[key];
+}
+
 const tensor& Instance::operator[](const std::string& key) const {
+  try {
+    return data_.at(key);
+  } catch (std::out_of_range&) {
+    throw std::out_of_range("unknown Instance key");
+  }
+}
+
+const tensor& Instance::operator[](const char* key) const {
   try {
     return data_.at(key);
   } catch (std::out_of_range&) {

@@ -17,6 +17,8 @@ public:
 
   tensor& operator[](const std::string& key);
   const tensor& operator[](const std::string& key) const;
+  tensor& operator[](const char* key);
+  const tensor& operator[](const char* key) const;
 
   size_t size() const;
   std::vector<std::string> keys() const;

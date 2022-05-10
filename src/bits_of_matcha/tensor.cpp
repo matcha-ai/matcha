@@ -95,6 +95,10 @@ tensor tensor::pow(const tensor& b) const {
   return matcha::pow(*this, b);
 }
 
+void* tensor::data() {
+  return deref(this)->readData();
+}
+
 
 tensor tensor::full(float value, const Shape& shape) {
   return ref(engine::full(value, shape));

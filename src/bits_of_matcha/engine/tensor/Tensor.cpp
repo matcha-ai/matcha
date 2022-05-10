@@ -93,6 +93,14 @@ void Tensor::free() {
   buffer_ = nullptr;
 }
 
+void* Tensor::readData() {
+  if (Tracer::current()) {
+    throw std::runtime_error("reading tensor data directly inside the Flow is forbidden");
+  }
+  if (!buffer_) return nullptr;
+  return buffer_->payload();
+}
+
 tensor ref(Tensor* internal) {
   return Engine::ref(internal);
 }

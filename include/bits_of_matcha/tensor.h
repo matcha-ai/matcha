@@ -82,18 +82,22 @@ public:
   tensor(float scalar);
 
   /**
+   * @brief Float tensor filled with value
+   * @param shape target shape
    * @return tensor of given shape filled with specified value
    */
   static tensor full(float value, const Shape& shape);
 
   /**
-   * The zero tensor
+   * @brief The zero tensor
+   * @param shape target shape
    * @return tensor of specified shape full of zeros
    */
   static tensor zeros(const Shape& shape);
 
   /**
-   * The ones tensor
+   * @brief The ones tensor
+   * @param shape target shape
    * @return tensor of specified shape full of ones
    */
   static tensor ones(const Shape& shape);
@@ -105,21 +109,24 @@ public:
   static tensor eye(const Shape& shape);
 
   /**
-   * The zero tensor
+   * @brief The zero tensor
+   * @param dims target dimensions
    * @return tensor of specified shape full of zeros
    */
   template <class... Dims>
   static inline tensor zeros(Dims... dims) { return zeros(VARARG_SHAPE(dims...)); }
 
   /**
-   * The ones tensor
+   * @brief The ones tensor
+   * @param dims target dimensions
    * @return tensor of specified shape full of ones
    */
   template <class... Dims>
   static inline tensor ones(Dims... dims) { return ones(VARARG_SHAPE(dims...)); }
 
   /**
-   * The identity tensor
+   * @brief The identity tensor
+   * @param dims target dimensions
    * @return slice of the identity matrix of given shape
    */
   template <class... Dims>
@@ -135,8 +142,9 @@ public:
 
 public:
   /**
-   * tensor dataset
-   * @return pointer to tensor dataset
+   * @brief tensor data
+   * @return pointer to tensor data
+   * @warning forbidden inside the `Flow`
    */
   void* data();
 
