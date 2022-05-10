@@ -44,4 +44,8 @@ bool OpOutputs::none() const {
   return data_.empty();
 }
 
+OpOutputs::~OpOutputs() {
+  for (auto out: data_) out->setOp(nullptr);
+}
+
 }

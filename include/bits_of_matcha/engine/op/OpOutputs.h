@@ -25,6 +25,8 @@ public:
   bool any() const;
   bool none() const;
 
+  ~OpOutputs();
+
 private:
   std::vector<Tensor*> data_;
 

@@ -34,4 +34,8 @@ bool OpInputs::none() const {
   return data_.empty();
 }
 
+OpInputs::~OpInputs() {
+  for (auto in: data_) in->unreq();
+}
+
 }

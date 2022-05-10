@@ -23,10 +23,9 @@ Dot::Dot(Tensor* a, Tensor* b)
 
   outputs.add(this, a->dtype(), dimsC);
 
-  for (int i = 0; i < iter_.prefixStridesB.size(); i++) {
+//  for (int i = 0; i < iter_.prefixStridesB.size(); i++) {
 //    print(iter_.prefixStridesA[i], " ", iter_.prefixStridesB[i]);
-  }
-
+//  }
 }
 
 OpMeta<Dot> Dot::meta {

@@ -2,17 +2,19 @@
 
 using namespace matcha;
 
-auto foo = (Flow) [](tensor digit) {
-  auto data = (float*) digit.data();
-  for (int i = 0; i < digit.size(); i++) {
-    std::cout << data[i] << std::endl;
-  }
-  print(digit);
-  return 0;
+tensor weights = normal(2, 2);
+
+auto foo = (Flow) [](tensor x) {
+  tensor a = weights.dot(x);
+  a = square(a) + exp(a) + 2;
+  tensor b = a.t().dot(x);
+  b += a * x;
+  std::cout << b << std::endl;
+  return b;
 };
 
 int main() {
-  Dataset ds = dataset::Csv {"mnist_train.csv"};
-  tensor digit = ds.get()["x"].reshape(28, 28) / 255;
-  foo(digit);
+  tensor x = eye(2, 2);
+  foo(x);
+  foo(2 * x);
 }

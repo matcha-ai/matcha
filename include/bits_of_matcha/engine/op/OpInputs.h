@@ -20,6 +20,8 @@ public:
   bool any() const;
   bool none() const;
 
+  ~OpInputs();
+
 private:
   std::vector<Tensor*> data_;
 };
