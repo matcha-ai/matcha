@@ -5,7 +5,9 @@
 > `add(const tensor& a, const tensor& b)` \
 > `operator+(const tensor& a, const tensor& b)` 
 
-Adds two tensors together elementwise. The input tensors must either have the same shape or one of them has to be a scalar.
+Adds two tensors together elementwise. 
+Performs [broadcasting](https://numpy.org/doc/stable/user/basics.broadcasting.html) if necessary.
+If shapes cannot be broadcasted, `BroadcastingError` exception is thrown.
 
 ```cpp
 tensor a = tensor::ones(3, 3);
