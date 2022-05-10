@@ -246,7 +246,6 @@ AdjointGraph Compiler::buildBackwardGraph() {
       if (partialsMask[in]) {
         auto t = new Tensor(in->frame());
         localWrts.push_back(t);
-        partials[in].second.push_back(t);
       } else {
         localWrts.push_back(nullptr);
       }
@@ -258,8 +257,15 @@ AdjointGraph Compiler::buildBackwardGraph() {
       .wrts = localWrts
     });
 
-    if (!back) continue;
-    adjointOps[op] = back;
+    if (back) {
+      adjointOps[op] = back;
+      for (int i = 0; i < op->inputs.size(); i++) {
+        if (!localWrts[i]) continue;
+        partials[op->inputs[i]].second.push_back(localWrts[i]);
+      }
+    } else {
+      for (auto wrt: localWrts) delete wrt;
+    }
   }
 
   auto graph = new Graph();

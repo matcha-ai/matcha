@@ -32,18 +32,21 @@ public:
    */
   const Shape& shape() const;
 
-  /**
-   * @returns tensor reshaped to specified dimensions
-   * @see matcha::reshape
-   */
-  template <class... Dims>
-  tensor reshape(Dims... dims) const { return reshape(VARARG_SHAPE(dims...)); };
+  size_t size() const;
+  size_t rank() const;
 
   /**
    * @returns tensor reshaped to specified dimensions
    * @see matcha::reshape
    */
-  tensor reshape(const Shape& shape) const;
+  template <class... Dims>
+  tensor reshape(Dims... dims) const { return reshape(VARARG_RESHAPE(dims...)); };
+
+  /**
+   * @returns tensor reshaped to specified dimensions
+   * @see matcha::reshape
+   */
+  tensor reshape(const Shape::Reshape& dims) const;
 
   /**
    * @returns tensor transpose
@@ -126,20 +129,20 @@ public:
   tensor(const tensor& other);
   tensor(tensor&& other) noexcept;
   tensor& operator=(const tensor& other);
+  tensor& operator=(tensor&& other);
   ~tensor();
 
 
 public:
   /**
-   * tensor data
-   * @return pointer to tensor data
+   * tensor dataset
+   * @return pointer to tensor dataset
    */
   void* data();
 
 private:
-  explicit tensor(void* engineObject);
   friend class Engine;
-
+  explicit tensor(void* internal);
   void* internal_;
 };
 

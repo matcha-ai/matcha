@@ -45,7 +45,7 @@ tensor dot(const tensor& a, const tensor& b);
 tensor transpose(const tensor& a);
 
 tensor identity(const tensor& a);
-tensor reshape(const tensor& a, const Shape& shape);
+tensor reshape(const tensor& a, const Shape::Reshape& dims);
 
 tensor pow(const tensor& a, const tensor& b);
 tensor square(const tensor& a);
@@ -60,6 +60,11 @@ tensor max(const tensor& a);
 tensor max(const tensor& a, int axis);
 tensor min(const tensor& a);
 tensor min(const tensor& a, int axis);
+
+tensor argmax(const tensor& a);
+tensor argmax(const tensor& a, int axis);
+tensor argmin(const tensor& a);
+tensor argmin(const tensor& a, int axis);
 
 tensor maxBetween(const tensor& a, const tensor& b);
 tensor minBetween(const tensor& a, const tensor& b);

@@ -18,6 +18,10 @@
 #include "bits_of_matcha/engine/ops/MinBetween.h"
 #include "bits_of_matcha/engine/ops/Eq.h"
 #include "bits_of_matcha/engine/ops/Neq.h"
+#include "bits_of_matcha/engine/ops/Argmax.h"
+#include "bits_of_matcha/engine/ops/Argmin.h"
+#include "bits_of_matcha/engine/ops/Sum.h"
+#include "bits_of_matcha/engine/ops/Product.h"
 
 
 using namespace matcha::engine;
@@ -143,8 +147,8 @@ tensor identity(const tensor& a) {
   return out;
 }
 
-tensor reshape(const tensor& a, const Shape& shape) {
-  auto op = new ops::Reshape {deref(a), shape};
+tensor reshape(const tensor& a, const Shape::Reshape& dims) {
+  auto op = new ops::Reshape {deref(a), dims};
   auto out = ref(op->outputs[0]);
   engine::collect(op);
   return out;
@@ -222,6 +226,34 @@ tensor min(const tensor& a, int axis) {
 
 tensor minBetween(const tensor& a, const tensor& b) {
   auto op = new ops::MinBetween { deref(a), deref(b) };
+  auto out = ref(op->outputs[0]);
+  engine::collect(op);
+  return out;
+}
+
+tensor argmax(const tensor& a) {
+  auto op = new ops::Argmax { deref(a) };
+  auto out = ref(op->outputs[0]);
+  engine::collect(op);
+  return out;
+}
+
+tensor argmin(const tensor& a) {
+  auto op = new ops::Argmin { deref(a) };
+  auto out = ref(op->outputs[0]);
+  engine::collect(op);
+  return out;
+}
+
+tensor argmax(const tensor& a, int axis) {
+  auto op = new ops::Argmax { deref(a), axis };
+  auto out = ref(op->outputs[0]);
+  engine::collect(op);
+  return out;
+}
+
+tensor argmin(const tensor& a, int axis) {
+  auto op = new ops::Argmin { deref(a), axis };
   auto out = ref(op->outputs[0]);
   engine::collect(op);
   return out;

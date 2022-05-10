@@ -1,5 +1,7 @@
 #include "bits_of_matcha/random.h"
 #include "bits_of_matcha/engine/tensor/factories.h"
+#include "bits_of_matcha/engine/ops/Uniform.h"
+#include "bits_of_matcha/engine/ops/Normal.h"
 
 #include <random>
 
@@ -16,22 +18,30 @@ random::Normal normal;
 namespace matcha::random {
 
 Generator Uniform::init() {
-  std::mt19937 gen(seed);
-  std::uniform_real_distribution<float> dis(a, b);
-
   return [=] (auto shape) mutable {
-    auto tensor = generate([&]() { return dis(gen); }, shape);
-    return ref(tensor);
+    auto op = new engine::ops::Uniform {
+      deref(a),
+      deref(b),
+      shape,
+      (size_t) rand()
+    };
+    auto out = ref(op->outputs[0]);
+    engine::collect(op);
+    return out;
   };
 }
 
 Generator Normal::init() {
-  std::mt19937 gen(seed);
-  std::normal_distribution<float> dis(m, sd);
-
   return [=] (auto shape) mutable {
-    auto tensor = generate([&]() { return dis(gen); }, shape);
-    return ref(tensor);
+    auto op = new engine::ops::Normal {
+      deref(m),
+      deref(sd),
+      shape,
+      (size_t) rand()
+    };
+    auto out = ref(op->outputs[0]);
+    engine::collect(op);
+    return out;
   };
 }
 

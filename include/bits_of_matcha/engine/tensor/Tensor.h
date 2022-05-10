@@ -37,8 +37,6 @@ public:
   Op* op();
   void setOp(Op* op);
 
-  void repr(std::ostream& os);
-
 private:
   Frame frame_;
   Buffer* buffer_;

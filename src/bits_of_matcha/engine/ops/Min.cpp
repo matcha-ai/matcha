@@ -7,12 +7,16 @@
 namespace matcha::engine::ops {
 
 Min::Min(Tensor* a)
-: AxiswiseFoldOp(a)
+  : AxiswiseFoldOp(a)
 {}
 
 Min::Min(Tensor* a, int axis)
-: AxiswiseFoldOp(a, axis)
+  : AxiswiseFoldOp(a, axis)
 {}
+
+OpMeta<Min> Min::meta {
+  .name = "Min",
+};
 
 void Min::run() {
   outputs[0]->malloc();

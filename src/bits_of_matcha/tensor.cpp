@@ -30,6 +30,12 @@ tensor& tensor::operator=(const tensor& other) {
   return *this;
 }
 
+tensor& tensor::operator=(tensor&& other) {
+  internal_ = other.internal_;
+  other.internal_ = nullptr;
+  return *this;
+}
+
 tensor::tensor(const tensor& other) {
   auto temp = identity(other);
   internal_ = unref(temp);
@@ -61,8 +67,16 @@ const Shape& tensor::shape() const {
   return frame().shape();
 }
 
-tensor tensor::reshape(const Shape& shape) const {
-  return matcha::reshape(*this, shape);
+size_t tensor::size() const {
+  return shape().size();
+}
+
+size_t tensor::rank() const {
+  return shape().rank();
+}
+
+tensor tensor::reshape(const Shape::Reshape& dims) const {
+  return matcha::reshape(*this, dims);
 }
 
 tensor tensor::transpose() const {

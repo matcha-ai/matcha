@@ -7,7 +7,7 @@
 namespace matcha::engine::ops {
 
 struct Reshape : Op {
-  Reshape(Tensor* a, const Shape& shape);
+  Reshape(Tensor* a, const Shape::Reshape& dims);
   static OpMeta<Reshape> meta;
 
   void run() override;

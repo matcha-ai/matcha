@@ -14,6 +14,10 @@ Max::Max(Tensor* a, int axis)
   : AxiswiseFoldOp(a, axis)
 {}
 
+OpMeta<Max> Max::meta {
+  .name = "Max",
+};
+
 void Max::run() {
   outputs[0]->malloc();
 

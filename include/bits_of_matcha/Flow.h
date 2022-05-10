@@ -39,7 +39,6 @@ public:
 
 protected:
   // subclassing API
-  Flow();
 
   virtual void init(const tensor& a);
   virtual void init(const tensor& a, const tensor& b);
@@ -52,6 +51,7 @@ protected:
   virtual tuple run(const tuple& inputs);
 
 public:
+  Flow();
   ~Flow() = default;
 
 private:

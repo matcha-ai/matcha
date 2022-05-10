@@ -1,29 +1,19 @@
 #include <matcha/matcha>
+
 using namespace matcha;
 
-tensor relu(const tensor& a) {
-  return maxBetween(a, 0);
-}
-
-auto foo = (Flow) [](tensor a) {
-  print(a);
-  print("------------------------------");
-  tensor b = a.t().dot(a);
-  print(b);
-  return b;
-};
 
 int main() {
-  tensor a = normal(5, 4, 5);
-  tensor b = relu(a);
-  a = minBetween(a, 0);
+  Dataset ds = dataset::Csv {"/home/patz/Downloads/mnist_train.csv"};
+  ds = ds.map([] (Instance i) {
+    i["x"] *= .1 * normal(i["x"].shape());
+    return i;
+  });
 
-  print(a.shape());
-  print(b.shape());
-  print(std::string(64, '='));
-  print(a);
-  print(std::string(64, '='));
-  print(b != 0);
+  Net net {
+    nn::Fc{30, "relu"},
+    nn::Fc{30, "softmax"},
+  };
 
-  return 0;
+  net.fit(ds);
 }

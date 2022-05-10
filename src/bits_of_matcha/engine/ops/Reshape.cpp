@@ -4,9 +4,10 @@
 
 namespace matcha::engine::ops {
 
-Reshape::Reshape(Tensor* a, const Shape& shape)
+Reshape::Reshape(Tensor* a, const Shape::Reshape& dims)
   : Op{a}
 {
+  Shape shape = dims(a->shape());
   if (a->size() != shape.size()) {
     throw IncompatibleShapesError(a->shape(), shape);
   }

@@ -1,4 +1,5 @@
 #include "bits_of_matcha/Shape.h"
+#include "bits_of_matcha/error/IncompatibleShapesError.h"
 
 #include <stdexcept>
 #include <numeric>
