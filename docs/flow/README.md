@@ -67,7 +67,7 @@ auto myOtherFlow = matcha::Flow(existingFunction);
 The Subclassing API provides an alternative for functions that are perhaps
 more complex and cannot be easily expressed by a single lambda function.
 
-Subclassing can be down by overriding one of the `Flow::run` methods, e.g.:
+Subclassing can be done by overriding one of the `Flow::run` methods, e.g.:
 
 ```cpp
 struct MyFlow : Flow {

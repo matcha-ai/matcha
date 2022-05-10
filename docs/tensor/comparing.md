@@ -50,7 +50,7 @@ See [argmax](#argmax).
 
 > `maxBetween(const tensor& a, const tensor& b)`
 
-Performs comparing two tensors elementwise (applying appropriate [broadcasting](https://numpy.org/doc/stable/user/basics.broadcasting.html) rules).
+Elementwise maximum of two tensors (applying [broadcasting](https://numpy.org/doc/stable/user/basics.broadcasting.html) if necessary).
 
 ## minBetween
 
