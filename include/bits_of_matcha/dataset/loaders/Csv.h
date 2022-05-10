@@ -9,10 +9,9 @@ namespace matcha::dataset {
 
 struct Csv {
   std::string file;
-  std::set<std::string> y;
+  std::set<std::string> y = {"class", "label", "y", "target"};
 
-  Dataset init();
-  MATCHA_DATASET_TAIL()
+  operator Dataset();
 };
 
 }

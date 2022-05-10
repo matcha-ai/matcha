@@ -31,6 +31,15 @@ set(
 
   include/bits_of_matcha/macros/generator.h
 
+  include/bits_of_matcha/dataset/Instance.h
+  include/bits_of_matcha/dataset/InstanceIterator.h
+  include/bits_of_matcha/dataset/Dataset.h
+  include/bits_of_matcha/dataset/loaders/Tensors.h
+  include/bits_of_matcha/dataset/loaders/Generator.h
+  include/bits_of_matcha/dataset/loaders/Take.h
+  include/bits_of_matcha/dataset/loaders/Map.h
+  include/bits_of_matcha/dataset/loaders/Csv.h
+
   include/bits_of_matcha/engine/memory/memory.h
   include/bits_of_matcha/engine/memory/Buffer.h
 
@@ -78,6 +87,8 @@ set(
   include/bits_of_matcha/engine/cpu/kernels/transpose.h
   include/bits_of_matcha/engine/cpu/kernels/mm.h
 
+  include/bits_of_matcha/engine/dataset/Dataset.h
+
   include/bits_of_matcha/engine/ops/Add.h
   include/bits_of_matcha/engine/ops/Multiply.h
   include/bits_of_matcha/engine/ops/Divide.h
@@ -95,6 +106,12 @@ set(
   include/bits_of_matcha/engine/ops/MinBetween.h
   include/bits_of_matcha/engine/ops/Eq.h
   include/bits_of_matcha/engine/ops/Neq.h
+  include/bits_of_matcha/engine/ops/Argmax.h
+  include/bits_of_matcha/engine/ops/Argmin.h
+  include/bits_of_matcha/engine/ops/Sum.h
+  include/bits_of_matcha/engine/ops/Product.h
+  include/bits_of_matcha/engine/ops/Uniform.h
+  include/bits_of_matcha/engine/ops/Normal.h
 )
 
 set(
@@ -113,6 +130,23 @@ set(
   src/bits_of_matcha/error/Error.cpp
   src/bits_of_matcha/error/IncompatibleShapesError.cpp
   src/bits_of_matcha/error/BroadcastError.cpp
+
+  src/bits_of_matcha/dataset/Instance.cpp
+  src/bits_of_matcha/dataset/InstanceIterator.cpp
+  src/bits_of_matcha/dataset/Dataset.cpp
+  src/bits_of_matcha/dataset/loaders/Tensors.cpp
+  src/bits_of_matcha/dataset/loaders/Generator.cpp
+  src/bits_of_matcha/dataset/loaders/Take.cpp
+  src/bits_of_matcha/dataset/loaders/Map.cpp
+  src/bits_of_matcha/dataset/loaders/Csv.cpp
+
+  src/bits_of_matcha/nn/Net.cpp
+  src/bits_of_matcha/nn/Layer.cpp
+  src/bits_of_matcha/nn/layers/Activation.cpp
+  src/bits_of_matcha/nn/layers/Affine.cpp
+  src/bits_of_matcha/nn/layers/Fc.cpp
+  src/bits_of_matcha/nn/layers/Flatten.cpp
+  src/bits_of_matcha/nn/optimizers/Sgd.cpp
 
   src/bits_of_matcha/engine/memory/memory.cpp
   src/bits_of_matcha/engine/memory/Buffer.cpp
@@ -157,6 +191,8 @@ set(
   src/bits_of_matcha/engine/cpu/MemoryPool.cpp
   src/bits_of_matcha/engine/cpu/BlockPool.cpp
 
+  src/bits_of_matcha/engine/dataset/Dataset.cpp
+
   src/bits_of_matcha/engine/ops/Add.cpp
   src/bits_of_matcha/engine/ops/Multiply.cpp
   src/bits_of_matcha/engine/ops/Divide.cpp
@@ -174,6 +210,12 @@ set(
   src/bits_of_matcha/engine/ops/MinBetween.cpp
   src/bits_of_matcha/engine/ops/Eq.cpp
   src/bits_of_matcha/engine/ops/Neq.cpp
+  src/bits_of_matcha/engine/ops/Argmax.cpp
+  src/bits_of_matcha/engine/ops/Argmin.cpp
+  src/bits_of_matcha/engine/ops/Sum.cpp
+  src/bits_of_matcha/engine/ops/Product.cpp
+  src/bits_of_matcha/engine/ops/Uniform.cpp
+  src/bits_of_matcha/engine/ops/Normal.cpp
 )
 
 
