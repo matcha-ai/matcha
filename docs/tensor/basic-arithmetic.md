@@ -7,7 +7,7 @@
 
 Adds two tensors together elementwise. 
 Performs [broadcasting](https://numpy.org/doc/stable/user/basics.broadcasting.html) if necessary.
-If shapes cannot be broadcasted, `BroadcastingError` exception is thrown.
+If shapes cannot be broadcasted, `BroadcastError` exception is thrown.
 
 ```cpp
 tensor a = tensor::ones(3, 3);
