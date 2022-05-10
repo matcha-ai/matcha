@@ -19,7 +19,7 @@ Compares two tensors element-wise. True if elements are not equal. Performs broa
 > `max(const tensor& a, int axis)` \
 > `max(const tensor& a)`
 
-Finds maximum value in given tensor along given axis (negative axis values go from back). The output tensor has rank `a.rank() - 1`.
+Finds the maximum value in given tensor along given axis (negative axis values go from back). The output tensor has rank `a.rank() - 1`.
 If no axis is specified, global fold is performed. The output tensor will be a single scalar (i.e. have rank `0`).
 
 ## min
@@ -34,7 +34,7 @@ See [max](#max).
 > `argmax(const tensor& a, int axis)` \
 > `argmax(const tensor& a)`
 
-Finds index of maximum value in given tensor along given axis (negative axis values go from back). The output tensor has rank `a.rank() - 1`.
+Finds the index of maximum value in given tensor along given axis (negative axis values go from back). The output tensor has rank `a.rank() - 1`.
 If no axis is specified, global fold is performed. The output tensor will be a single scalar (i.e. have rank `0`). See [max](#max).
 
 ?> NOTE: If the maximum appears in the fold space multiple times, index of first such value is returned.
@@ -50,7 +50,7 @@ See [argmax](#argmax).
 
 > `maxBetween(const tensor& a, const tensor& b)`
 
-Elementwise maximum of two tensors (applying [broadcasting](https://numpy.org/doc/stable/user/basics.broadcasting.html) if necessary).
+Elementwise maximum of two tensors ([broadcasting](https://numpy.org/doc/stable/user/basics.broadcasting.html) if necessary).
 
 ## minBetween
 

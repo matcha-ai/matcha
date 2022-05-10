@@ -1,7 +1,7 @@
 # Dataset pipelines
 
 Matcha comes together with a seamlessly integrated and modular dataset pipeline system. The pipelines enable you to load (or generate) data
-and manipulate it just-in-time on the run or otherwise tune it to your needs.
+and manipulate it just-in-time or otherwise tune it to your needs.
 
 ?> **NOTE:** Use datasets for large amounts of data. Datasets load from the disk only the part that is needed at the moment. \
    This prevents wasting memory.
@@ -17,8 +17,8 @@ The list of all keys can be obtained by calling the `keys()` method:
 // we will show this later...
 Dataset labeledImages;
 
-
-Instance i = ds.get();
+// get an instance from the dataset
+Instance i = labeledImages.get();
 
 for (auto& key: i.keys()) {
   std::cout << key << ": " << i[key].frame() << std::endl;;
