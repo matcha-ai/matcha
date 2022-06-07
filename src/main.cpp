@@ -2,19 +2,33 @@
 
 using namespace matcha;
 
-tensor weights = normal(2, 2);
+struct : Flow {
+  tensor w;
 
-auto foo = (Flow) [](tensor x) {
-  tensor a = weights.dot(x);
-  a = square(a) + exp(a) + 2;
-  tensor b = a.t().dot(x);
-  b += a * x;
-  std::cout << b << std::endl;
-  return b;
-};
+  void init(const tensor& x) {
+    print("asdf");
+    w = uniform(x.shape());
+    requireGrad(&w);
+  }
+
+  tensor run(const tensor& x) {
+    return x * w;
+  }
+
+} foo;
 
 int main() {
-  tensor x = eye(2, 2);
-  foo(x);
-  foo(2 * x);
+  Dataset mnist = dataset::Csv {"mnist_test.csv"};
+  print(mnist.size());
+  mnist = mnist.map([](Instance i) {
+    i["x"] = i["x"].reshape(28, 28) / 255;
+    return i;
+  });
+
+  for (auto i: mnist.take(5)) {
+    tensor x = i["x"];
+    x = foo(x);
+    print(x != 0, "\n");
+  }
+
 }

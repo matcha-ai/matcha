@@ -4,6 +4,7 @@
 #include "bits_of_matcha/engine/tensor/iterations.h"
 
 #include <iostream>
+#include <stack>
 
 
 namespace matcha::engine::ops {
@@ -29,8 +30,16 @@ private:
   void dumpText(std::ostream& os);
 
 private:
+
+  struct StreamGuard {
+    std::stringstream recorder;
+    std::streambuf* originalBuffer;
+  };
   static std::stringstream recorder_;
   static std::streambuf* coutBuffer_;
+
+  static std::stack<StreamGuard> guards;
+  static std::string recorderNext();
 };
 
 }

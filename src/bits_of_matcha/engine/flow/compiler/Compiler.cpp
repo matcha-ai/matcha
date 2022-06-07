@@ -160,8 +160,8 @@ Tasks Compiler::generateTasks(const AdjointGraph& back) {
   }
 
   Tensor* delta = back.adjointGraph->inputs.empty()
-    ? nullptr
-    : back.adjointGraph->inputs[0];
+  ? nullptr
+  : back.adjointGraph->inputs[0];
 
   Tasks tasks {
     .instructionsForward = forward,

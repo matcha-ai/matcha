@@ -5,6 +5,7 @@
 #include "bits_of_matcha/engine/flow/graph/Graph.h"
 
 #include <set>
+#include <stack>
 
 namespace matcha::engine {
 
@@ -31,7 +32,7 @@ private:
   std::set<Op*> ops_;
 
 private:
-  static Tracer* current_;
+  static std::stack<Tracer*> stack_;
 
 };
 

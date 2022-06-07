@@ -65,6 +65,8 @@ set(
   include/bits_of_matcha/engine/op/abstract/AxiswiseFoldOp.h
 
   include/bits_of_matcha/engine/flow/Flow.h
+  include/bits_of_matcha/engine/flow/Module.h
+  include/bits_of_matcha/engine/flow/ModuleBack.h
   include/bits_of_matcha/engine/flow/Tracer.h
   include/bits_of_matcha/engine/flow/Tasks.h
   include/bits_of_matcha/engine/flow/graph/Graph.h
@@ -176,6 +178,8 @@ set(
   src/bits_of_matcha/engine/op/abstract/ElementwiseBinaryOp.cpp
 
   src/bits_of_matcha/engine/flow/Flow.cpp
+  src/bits_of_matcha/engine/flow/Module.cpp
+  src/bits_of_matcha/engine/flow/ModuleBack.cpp
   src/bits_of_matcha/engine/flow/Tracer.cpp
   src/bits_of_matcha/engine/flow/Tasks.cpp
   src/bits_of_matcha/engine/flow/graph/Graph.cpp

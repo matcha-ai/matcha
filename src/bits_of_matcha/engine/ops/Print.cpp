@@ -11,8 +11,7 @@ Print::Print(Tensor* a, bool endl, std::ostream& os)
   , os_(os)
   , endl_(endl)
 {
-  recorded_ = recorder_.str();
-  recorder_.str("");
+  recorded_ = recorderNext();
 }
 
 Print::Print(const std::string& text, bool endl, std::ostream& os)
@@ -21,8 +20,7 @@ Print::Print(const std::string& text, bool endl, std::ostream& os)
   , endl_(endl)
   , os_(os)
 {
-  recorded_ = recorder_.str();
-  recorder_.str("");
+  recorded_ = recorderNext();
 }
 
 OpMeta<Print> Print::meta {
@@ -148,13 +146,27 @@ void Print::dumpTensor(std::ostream& os) {
 std::stringstream Print::recorder_;
 std::streambuf* Print::coutBuffer_ = nullptr;
 
+std::stack<Print::StreamGuard> Print::guards = {};
+
 void Print::claimCout() {
-  coutBuffer_ = std::cout.rdbuf();
-  std::cout.rdbuf(recorder_.rdbuf());
+  guards.push({});
+  auto& guard = guards.top();
+  guard.originalBuffer = std::cout.rdbuf();
+  std::cout.rdbuf(guard.recorder.rdbuf());
 }
 
 void Print::unclaimCout() {
-  std::cout.rdbuf(coutBuffer_);
+  auto& guard = guards.top();
+  std::cout.rdbuf(guard.originalBuffer);
+  guards.pop();
+}
+
+std::string Print::recorderNext() {
+  if (guards.empty()) return "";
+  auto& recorder = guards.top().recorder;
+  std::string buff = recorder.str();
+  recorder.str("");
+  return buff;
 }
 
 }

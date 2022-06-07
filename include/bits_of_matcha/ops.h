@@ -15,7 +15,7 @@ using tuple = std::vector<tensor>;
 
 using UnaryOp = std::function<tensor(const tensor&)>;
 using BinaryOp = std::function<tensor(const tensor&, const tensor&)>;
-using TernaryOp = std::function<tensor(const tensor&, const tensor&)>;
+using TernaryOp = std::function<tensor(const tensor&, const tensor&, const tensor&)>;
 using NaryOp = std::function<tuple (const tuple&)>;
 using AnyOp = std::variant<UnaryOp, BinaryOp, TernaryOp, NaryOp>;
 

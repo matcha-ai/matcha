@@ -20,11 +20,18 @@ public:
   void setOp(const AnyOp& op);
   bool hasOp() const;
 
+  bool submoduling() const;
+  std::vector<Tensor*> submodule(const std::vector<Tensor*>& inputs);
+
   bool built() const;
   void build(const std::vector<Frame>& frames);
 
   std::vector<Tensor*> forward(const std::vector<Tensor*>& inputs);
   std::map<tensor*, tensor> backward(Tensor* delta);
+  std::vector<Tensor*> call(const std::vector<Tensor*>& inputs);
+
+  bool wantsOp() const;
+  bool wantsBuild() const;
 
   void requireGrad(tensor* wrt);
   void requireGrad(const std::vector<tensor*>& wrts);

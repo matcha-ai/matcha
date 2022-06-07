@@ -1,6 +1,7 @@
 #include "bits_of_matcha/Flow.h"
 #include "bits_of_matcha/engine/flow/Flow.h"
 #include "bits_of_matcha/engine/tensor/Tensor.h"
+#include "bits_of_matcha/engine/flow/Tracer.h"
 
 using matcha::engine::ref;
 using matcha::engine::deref;
@@ -54,28 +55,76 @@ std::map<tensor*, tensor> Flow::grad(const tensor& delta) {
 tensor Flow::operator()(const tensor& a) {
   auto flow = Internal(internal_);
 
-  if (!flow->built()) {
-    if (!flow->hasOp()) {
-      flow->setOp([&](const tensor& a) { init(a); return run(a); });
-    }
-    flow->build({deref(a)->frame()});
+  if (flow->wantsOp()) {
+    flow->setOp([&](const tensor& a) { init(a); return run(a); });
   }
 
-  auto outs = flow->forward({deref(a)});
+  if (flow->wantsBuild()) {
+    flow->build({a.frame()});
+  }
+
+  auto outs = flow->call({deref(a)});
   if (outs.size() != 1) throw std::runtime_error("incorrect output signature");
   return ref(outs[0]);
 }
 
 tensor Flow::operator()(const tensor& a, const tensor& b) {
+  auto flow = Internal(internal_);
 
+  if (flow->wantsOp()) {
+    flow->setOp([&](const tensor& a, const tensor& b) { init(a); return run(a, b); });
+  }
+
+  if (flow->wantsBuild()) {
+    flow->build({a.frame(), b.frame()});
+  }
+
+  auto outs = flow->call({deref(a), deref(b)});
+  if (outs.size() != 1) throw std::runtime_error("incorrect output signature");
+  return ref(outs[0]);
 }
 
 tensor Flow::operator()(const tensor& a, const tensor& b, const tensor& c) {
+  auto flow = Internal(internal_);
 
+  if (flow->wantsOp()) {
+    flow->setOp([&](const tensor& a, const tensor& b, const tensor& c) { init(a); return run(a, b, c); });
+  }
+
+  if (flow->wantsBuild()) {
+    flow->build({a.frame(), b.frame(), c.frame()});
+  }
+
+  auto outs = flow->call({deref(a), deref(b), deref(c)});
+  if (outs.size() != 1) throw std::runtime_error("incorrect output signature");
+  return ref(outs[0]);
 }
 
 tuple Flow::operator()(const tuple& inputs) {
+  auto flow = Internal(internal_);
 
+  if (flow->wantsOp()) {
+    flow->setOp([&](const tuple& inputs) { init(inputs); return run(inputs); });
+  }
+
+  if (flow->wantsBuild()) {
+    std::vector<Frame> frames;
+    frames.reserve(inputs.size());
+    for (auto&& input: inputs) frames.push_back(input.frame());
+    flow->build(frames);
+  }
+
+  std::vector<engine::Tensor*> internals;
+  internals.reserve(inputs.size());
+  for (auto&& input: inputs) internals.push_back(deref(input));
+
+  auto outs = flow->call(internals);
+
+  tuple externals;
+  externals.reserve(outs.size());
+  for (auto&& out: outs) externals.push_back(ref(out));
+
+  return externals;
 }
 
 

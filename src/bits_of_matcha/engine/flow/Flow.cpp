@@ -3,6 +3,7 @@
 #include "bits_of_matcha/engine/flow/compiler/Compiler.h"
 #include "bits_of_matcha/engine/flow/graph/Graph.h"
 #include "bits_of_matcha/engine/flow/graph/TensorMask.h"
+#include "bits_of_matcha/engine/flow/Module.h"
 #include "bits_of_matcha/print.h"
 #include "bits_of_matcha/error/IncompatibleShapesError.h"
 #include "bits_of_matcha/engine/cpu/kernels/fill.h"
@@ -64,6 +65,38 @@ std::vector<Tensor*> Flow::forward(const std::vector<Tensor*>& inputs) {
 
   auto outs = tasks_.forward(inputs);
   return outs;
+}
+
+bool Flow::wantsOp() const {
+  return !hasOp();
+}
+
+bool Flow::wantsBuild() const {
+  return !built() && !submoduling();
+}
+
+bool Flow::submoduling() const {
+  return Tracer::current();
+}
+
+std::vector<Tensor*> Flow::submodule(const std::vector<Tensor*>& inputs) {
+  std::vector<Frame> frames;
+  frames.reserve(inputs.size());
+  for (auto i: inputs) frames.push_back(i->frame());
+  Graph graph = engine::trace(op_, frames);
+  auto module = new Module(inputs, graph);
+  std::vector<Tensor*> outputs(module->outputs.begin(), module->outputs.end());
+  engine::collect(module);
+  return outputs;
+}
+
+std::vector<Tensor*> Flow::call(const std::vector<Tensor*>& inputs) {
+//  print("calling");
+  if (submoduling()) {
+    return submodule(inputs);
+  } else {
+    return forward(inputs);
+  }
 }
 
 void Flow::requireGrad(tensor* wrt) {
