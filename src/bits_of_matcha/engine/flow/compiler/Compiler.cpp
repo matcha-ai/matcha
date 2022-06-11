@@ -168,7 +168,7 @@ Tasks Compiler::generateTasks(const AdjointGraph& back) {
     .instructionsBackward = backward,
     .inputs = graph_->inputs,
     .outputs = graph_->outputs,
-    .delta = delta,
+    .deltas = back.adjointGraph->inputs,
     .grads = backTargets,
   };
   return tasks;
@@ -205,6 +205,18 @@ OpMask Compiler::findEffects() {
 }
 
 AdjointGraph Compiler::buildBackwardGraph() {
+  Tensor* altitude1 = graph_->outputs[0];
+  Tensor* delta1 = new Tensor(altitude1->frame());
+  TensorMask isAltitude(graph_);
+  std::vector<Tensor*>& altitudes = graph_->outputs;
+  std::vector<Tensor*> deltas;
+  deltas.reserve(altitudes.size());
+  for (auto altitude: altitudes) {
+    isAltitude[altitude] = true;
+    auto delta = new Tensor(altitude->frame());
+    deltas.push_back(delta);
+  }
+
   TensorMask partialsMask = findGradientFlow();
   TensorMask intermediate = partialsMask & ~gradsMask_;
   AdjointGraph adjointGraph {
@@ -219,14 +231,17 @@ AdjointGraph Compiler::buildBackwardGraph() {
   using Partials = std::pair<Tensor*, std::vector<Tensor*>>;
   TensorDict<Partials> partials(graph_);
 
-  Tensor* altitude = graph_->outputs[0];
-  Tensor* delta = new Tensor(altitude->frame());
 
-  partials[altitude].first = delta;
+  for (int i = 0; i < altitudes.size(); i++)
+    partials[altitudes[i]].first = deltas[i];
+
+//  partials[altitude1].first = delta1;
+
   OpDict<Op*> adjointOps(graph_);
 
   for (auto partial: partialsMask.get()) {
-    if (partial == altitude) continue;
+//    if (partial == altitude1) continue;
+    if (isAltitude[partial]) continue;
     auto t = new Tensor(partial->frame());
     partials[partial].first = t;
   }
@@ -280,10 +295,16 @@ AdjointGraph Compiler::buildBackwardGraph() {
     tensor->ctx().setMode(TensorCtx::Constant);
   };
 
-  graph->inputs.push_back(delta);
+//  graph->inputs.push_back(delta1);
+  for (auto delta: deltas) {
+    graph->inputs.push_back(delta);
+    tryAddTensor(delta);
+  }
 
   for (auto tensor: graph_->tensors) {
-    if (tensor == altitude) {
+    if (isAltitude[tensor]) {
+      auto it = std::find(altitudes.begin(), altitudes.end(), tensor);
+      auto delta = deltas[it - altitudes.begin()];
       tryAddTensor(delta);
       continue;
     }
@@ -296,7 +317,6 @@ AdjointGraph Compiler::buildBackwardGraph() {
     }
     for (auto grad: toAccumulate) tryAddTensor(grad);
   }
-//  print("asdf");
 
   for (int i = (int) graph_->ops.size() - 1; i >= 0; i--) {
     Op* adjoint = adjointOps[graph_->ops[i]];
@@ -328,41 +348,6 @@ AdjointGraph Compiler::buildBackwardGraph() {
       graph->ops.push_back(accumulator);
       accumulator->ctx().setTraced();
     }
-  }
-
-  int i = 0;
-  for (Tensor* t: partialsMask.rget()) {
-    continue;
-    print("---");
-    auto& partial = partials[t];
-    Op* adjoint = t->op() ? adjointOps[t->op()] : nullptr;
-
-    std::vector<Tensor*>& grads = partial.second;
-    Tensor* target = partial.first;
-
-    if (t != altitude) {
-      auto accumulator = new autograd::AccumulateGrads(grads, target);
-      for (auto grad: grads) tryAddTensor(grad);
-      tryAddTensor(target);
-
-      accumulator->ctx().setTraced();
-      graph->ops.push_back(accumulator);
-      print(i++, " A ", ops::name(accumulator));
-    } else {
-      tryAddTensor(delta);
-    }
-
-
-    if (!adjoint) print("no adjoint");
-    if (adjoint && !addedOps.contains(adjoint)) {
-//      print("Adding ", adjoint);
-      graph->ops.push_back(adjoint);
-      addedOps.insert(adjoint);
-      adjoint->ctx().setTraced();
-      print(i++, " O ", ops::name(adjoint));
-    }
-
-
   }
 
   TensorDict<Tensor*> adjointTensors(graph_);

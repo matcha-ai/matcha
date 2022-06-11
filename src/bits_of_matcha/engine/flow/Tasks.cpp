@@ -33,23 +33,18 @@ std::vector<Tensor*> Tasks::forward(const std::vector<Tensor*>& tempIns) {
   return tempOuts;
 }
 
-std::map<tensor*, tensor> Tasks::backward(Tensor* d) {
-  if (!delta) throw std::runtime_error("no backprop flow");
-  delta->shareBuffer(d);
-  for (auto& instruction: instructionsBackward) {
-    instruction();
-  }
+std::map<tensor*, tensor> Tasks::backward(const std::vector<Tensor*>& ds) {
+  if (deltas.empty()) throw std::runtime_error("no backprop flow");
+  if (deltas.size() != ds.size()) throw std::invalid_argument("incorrect number of deltas");
+  for (int i = 0; i < deltas.size(); i++) deltas[i]->shareBuffer(ds[i]);
+  for (auto& instruction: instructionsBackward) instruction();
 
   std::map<tensor*, tensor> result;
   for (auto [external, target]: grads) {
     auto t = new Tensor(target->frame());
     t->shareBuffer(target);
-//    print(t->frame().string());
     result[external] = ref(t);
-//    print(t->buffer());
   }
-//  for (auto& [var, grad]: result) print(grad.frame().string());
-//  for (auto t: test) print(t->frame().string());
   return result;
 }
 

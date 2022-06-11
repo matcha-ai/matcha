@@ -59,6 +59,4 @@ private:
 
 };
 
-Flow load(const std::string& file);
-
 }

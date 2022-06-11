@@ -18,13 +18,13 @@ struct Tasks {
   std::vector<Tensor*> inputs;
   std::vector<Tensor*> outputs;
 
-  Tensor* delta;
+  std::vector<Tensor*> deltas;
   std::map<tensor*, Tensor*> grads;
 
   void init();
 
   std::vector<Tensor*> forward(const std::vector<Tensor*>& inputs);
-  std::map<tensor*, tensor> backward(Tensor* delta);
+  std::map<tensor*, tensor> backward(const std::vector<Tensor*>& delta);
 
 
 };

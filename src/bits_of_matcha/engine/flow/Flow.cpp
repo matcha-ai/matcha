@@ -132,19 +132,19 @@ void Flow::setRequiredGrad(const std::vector<tensor*>& wrts) {
 }
 
 std::map<tensor*, tensor> Flow::backward(Tensor* delta) {
-  if (!tasks_.delta) return {};
-  if (delta->dtype() != tasks_.delta->dtype()) {
+  if (tasks_.deltas.empty()) return {};
+  if (delta->dtype() != tasks_.deltas[0]->dtype()) {
     throw std::invalid_argument("dtype mismatch");
   }
-  if (delta->shape() == tasks_.delta->shape()) {
-    return tasks_.backward(delta);
-  } else if (delta->rank() == 0){
-    auto stretched = std::make_unique<Tensor>(tasks_.delta->frame());
+  if (delta->shape() == tasks_.deltas[0]->shape()) {
+    return tasks_.backward({delta});
+  } else if (delta->rank() == 0) {
+    auto stretched = std::make_unique<Tensor>(tasks_.deltas[0]->frame());
     auto buffer = stretched->malloc();
     cpu::fill(buffer, stretched->size(), *delta->buffer()->as<float*>());
-    return tasks_.backward(stretched.get());
+    return tasks_.backward({stretched.get()});
   } else {
-    throw IncompatibleShapesError(delta->shape(), tasks_.delta->shape());
+    throw IncompatibleShapesError(delta->shape(), tasks_.deltas[0]->shape());
   }
 }
 

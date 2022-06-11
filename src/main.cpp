@@ -12,14 +12,19 @@ struct : Flow {
   }
 
   tensor run(const tensor& x) {
-    return x * w;
+    return x - w * w + w;
   }
 
 } foo;
 
+auto bar = (Flow) [](tensor x) {
+  float a = 1;
+  return a * x + 0 * foo(x);
+};
+
 int main() {
-  Dataset mnist = dataset::Csv {"mnist_test.csv"};
-  print(mnist.size());
+  Dataset mnist = load("mnist_test.csv");
+  tensor mari = load("mari.jpeg");
   mnist = mnist.map([](Instance i) {
     i["x"] = i["x"].reshape(28, 28) / 255;
     return i;
@@ -27,8 +32,8 @@ int main() {
 
   for (auto i: mnist.take(5)) {
     tensor x = i["x"];
-    x = foo(x);
     print(x != 0, "\n");
   }
+
 
 }

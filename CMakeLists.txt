@@ -23,6 +23,7 @@ set(
   include/bits_of_matcha/print.h
   include/bits_of_matcha/Flow.h
   include/bits_of_matcha/Engine.h
+  include/bits_of_matcha/Loader.h
   include/bits_of_matcha/random.h
 
   include/bits_of_matcha/error/Error.h
@@ -127,6 +128,7 @@ set(
   src/bits_of_matcha/Device.cpp
   src/bits_of_matcha/Flow.cpp
   src/bits_of_matcha/Engine.cpp
+  src/bits_of_matcha/Loader.cpp
   src/bits_of_matcha/random.cpp
 
   src/bits_of_matcha/error/Error.cpp
