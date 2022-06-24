@@ -6,6 +6,7 @@
 #include <execution>
 #include <numeric>
 #include <algorithm>
+#include <cstring>
 
 
 namespace matcha::engine {
@@ -37,6 +38,13 @@ Tensor* eye(const Shape& shape) {
   }
 
   return tensor;
+}
+
+Tensor* blob(const void* data, const Frame& frame) {
+  auto t = new Tensor(frame);
+  auto b = t->malloc()->as<uint8_t*>();
+  memcpy(b, data, frame.bytes());
+  return t;
 }
 
 }

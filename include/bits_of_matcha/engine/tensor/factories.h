@@ -20,4 +20,6 @@ Tensor* zeros(const Shape& shape);
 Tensor* ones(const Shape& shape);
 Tensor* eye(const Shape& shape);
 
+Tensor* blob(const void* data, const Frame& frame);
+
 }

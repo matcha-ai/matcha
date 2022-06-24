@@ -4,6 +4,10 @@
 #include "bits_of_matcha/engine/tensor/factories.h"
 #include "bits_of_matcha/print.h"
 #include "bits_of_matcha/engine/ops/Print.h"
+#include "bits_of_matcha/engine/ops/SaveImage.h"
+#include "bits_of_matcha/engine/ops/SaveCsv.h"
+
+#include <filesystem>
 
 
 using namespace matcha::engine;
@@ -99,6 +103,21 @@ void* tensor::data() {
   return deref(this)->readData();
 }
 
+void tensor::save(const std::string& file, SaveSpec spec) {
+  std::filesystem::path path(file);
+  std::string ext = path.extension();
+  std::transform(ext.begin(), ext.end(), ext.begin(), tolower);
+  engine::Op* op = nullptr;
+  if (ext == ".png" || ext == ".jpg" || ext == ".jpeg") {
+    op = new engine::ops::SaveImage(deref(this), file);
+  } else if (ext == ".csv") {
+    op = new engine::ops::SaveCsv(deref(this), file);
+  } else {
+    throw std::runtime_error("unsupported export format: " + ext);
+  }
+  engine::send(op);
+}
+
 
 tensor tensor::full(float value, const Shape& shape) {
   return ref(engine::full(value, shape));
@@ -115,6 +134,19 @@ tensor tensor::ones(const Shape& shape) {
 tensor tensor::eye(const Shape& shape) {
   return ref(engine::eye(shape));
 }
+
+tensor tensor::blob(const void* data, const Frame& frame) {
+  return ref(engine::blob(data, frame));
+}
+
+tensor tensor::blob(const void* data, const Dtype& dtype, const Shape& shape) {
+  return ref(engine::blob(data, Frame{dtype, shape}));
+}
+
+tensor tensor::blob(const float* data, const Shape& shape) {
+  return ref(engine::blob((void*) data, Frame{Float, shape}));
+}
+
 
 }
 

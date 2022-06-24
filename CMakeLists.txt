@@ -33,6 +33,9 @@ set(
   include/bits_of_matcha/error/BroadcastError.h
 
   include/bits_of_matcha/macros/generator.h
+  include/bits_of_matcha/macros/dataset.h
+  include/bits_of_matcha/macros/vararg_shape.h
+  include/bits_of_matcha/macros/vararg_tensors.h
 
   include/bits_of_matcha/dataset/Instance.h
   include/bits_of_matcha/dataset/InstanceIterator.h
@@ -103,19 +106,26 @@ set(
   include/bits_of_matcha/engine/ops/Print.h
   include/bits_of_matcha/engine/ops/Pow.h
   include/bits_of_matcha/engine/ops/Exp.h
-  include/bits_of_matcha/engine/ops/Image.h
+  include/bits_of_matcha/engine/ops/SaveImage.h
+  include/bits_of_matcha/engine/ops/SaveCsv.h
+  include/bits_of_matcha/engine/ops/LoadCsv.h
   include/bits_of_matcha/engine/ops/Max.h
   include/bits_of_matcha/engine/ops/MaxBetween.h
   include/bits_of_matcha/engine/ops/Min.h
   include/bits_of_matcha/engine/ops/MinBetween.h
   include/bits_of_matcha/engine/ops/Eq.h
   include/bits_of_matcha/engine/ops/Neq.h
+  include/bits_of_matcha/engine/ops/Lt.h
+  include/bits_of_matcha/engine/ops/Le.h
+  include/bits_of_matcha/engine/ops/Gt.h
+  include/bits_of_matcha/engine/ops/Ge.h
   include/bits_of_matcha/engine/ops/Argmax.h
   include/bits_of_matcha/engine/ops/Argmin.h
   include/bits_of_matcha/engine/ops/Sum.h
   include/bits_of_matcha/engine/ops/Product.h
   include/bits_of_matcha/engine/ops/Uniform.h
   include/bits_of_matcha/engine/ops/Normal.h
+  include/bits_of_matcha/engine/ops/Stack.h
 )
 
 set(
@@ -211,19 +221,26 @@ set(
   src/bits_of_matcha/engine/ops/Print.cpp
   src/bits_of_matcha/engine/ops/Pow.cpp
   src/bits_of_matcha/engine/ops/Exp.cpp
-  src/bits_of_matcha/engine/ops/Image.cpp
+  src/bits_of_matcha/engine/ops/SaveImage.cpp
+  src/bits_of_matcha/engine/ops/SaveCsv.cpp
+  src/bits_of_matcha/engine/ops/LoadCsv.cpp
   src/bits_of_matcha/engine/ops/Max.cpp
   src/bits_of_matcha/engine/ops/MaxBetween.cpp
   src/bits_of_matcha/engine/ops/Min.cpp
   src/bits_of_matcha/engine/ops/MinBetween.cpp
   src/bits_of_matcha/engine/ops/Eq.cpp
   src/bits_of_matcha/engine/ops/Neq.cpp
+  src/bits_of_matcha/engine/ops/Lt.cpp
+  src/bits_of_matcha/engine/ops/Le.cpp
+  src/bits_of_matcha/engine/ops/Gt.cpp
+  src/bits_of_matcha/engine/ops/Ge.cpp
   src/bits_of_matcha/engine/ops/Argmax.cpp
   src/bits_of_matcha/engine/ops/Argmin.cpp
   src/bits_of_matcha/engine/ops/Sum.cpp
   src/bits_of_matcha/engine/ops/Product.cpp
   src/bits_of_matcha/engine/ops/Uniform.cpp
   src/bits_of_matcha/engine/ops/Normal.cpp
+  src/bits_of_matcha/engine/ops/Stack.cpp
 )
 
 

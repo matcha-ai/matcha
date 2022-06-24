@@ -1,4 +1,4 @@
-#include "bits_of_matcha/engine/ops/Image.h"
+#include "bits_of_matcha/engine/ops/SaveImage.h"
 #include "bits_of_matcha/engine/tensor/iterations.h"
 
 #include <png.h>
@@ -9,21 +9,21 @@
 
 namespace matcha::engine::ops {
 
-Image::Image(Tensor* a, const std::string& file)
+SaveImage::SaveImage(Tensor* a, const std::string& file)
   : Op{a}
   , file_(file)
 {}
 
-OpMeta<Image> Image::meta {
-  .name = "Image",
+OpMeta<SaveImage> SaveImage::meta {
+  .name = "SaveImage",
   .sideEffect = true,
 };
 
-void Image::run() {
+void SaveImage::run() {
   dumpPng();
 }
 
-void Image::dumpPng() {
+void SaveImage::dumpPng() {
   FILE *fp = fopen(file_.c_str(), "wb");
   if (!fp) throw std::runtime_error("couldn't open file for writing image");
 

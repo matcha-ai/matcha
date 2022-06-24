@@ -1,5 +1,6 @@
 #include "bits_of_matcha/ops.h"
 #include "bits_of_matcha/tensor.h"
+#include "bits_of_matcha/engine/flow/Tracer.h"
 
 #include "bits_of_matcha/engine/ops/Add.h"
 #include "bits_of_matcha/engine/ops/Multiply.h"
@@ -10,17 +11,21 @@
 #include "bits_of_matcha/engine/ops/Reshape.h"
 #include "bits_of_matcha/engine/ops/Pow.h"
 #include "bits_of_matcha/engine/ops/Exp.h"
-#include "bits_of_matcha/engine/ops/Image.h"
 #include "bits_of_matcha/engine/ops/Max.h"
 #include "bits_of_matcha/engine/ops/MaxBetween.h"
 #include "bits_of_matcha/engine/ops/Min.h"
 #include "bits_of_matcha/engine/ops/MinBetween.h"
 #include "bits_of_matcha/engine/ops/Eq.h"
 #include "bits_of_matcha/engine/ops/Neq.h"
+#include "bits_of_matcha/engine/ops/Lt.h"
+#include "bits_of_matcha/engine/ops/Le.h"
+#include "bits_of_matcha/engine/ops/Gt.h"
+#include "bits_of_matcha/engine/ops/Ge.h"
 #include "bits_of_matcha/engine/ops/Argmax.h"
 #include "bits_of_matcha/engine/ops/Argmin.h"
 #include "bits_of_matcha/engine/ops/Sum.h"
 #include "bits_of_matcha/engine/ops/Product.h"
+#include "bits_of_matcha/engine/ops/Stack.h"
 
 
 using namespace matcha::engine;
@@ -72,6 +77,23 @@ matcha::tensor operator==(const matcha::tensor& a, const matcha::tensor& b) {
 
 matcha::tensor operator!=(const matcha::tensor& a, const matcha::tensor& b) {
   return neq(a, b);
+}
+
+matcha::tensor operator<(const matcha::tensor& a, const matcha::tensor& b) {
+  return lt(a, b);
+}
+
+matcha::tensor operator>(const matcha::tensor& a, const matcha::tensor& b) {
+  return gt(a, b);
+}
+
+
+matcha::tensor operator<=(const matcha::tensor& a, const matcha::tensor& b) {
+  return le(a, b);
+}
+
+matcha::tensor operator>=(const matcha::tensor& a, const matcha::tensor& b) {
+  return ge(a, b);
 }
 
 
@@ -179,14 +201,14 @@ tensor exp(const tensor& a) {
   return out;
 }
 
-void image(const tensor& a, const std::string& file) {
-  auto op = new ops::Image {
-    deref(a),
-    file
-  };
-
-  engine::send(op);
-}
+//void image(const tensor& a, const std::string& file) {
+//  auto op = new ops::SaveImage {
+//    deref(a),
+//    file
+//  };
+//
+//  engine::send(op);
+//}
 
 tensor max(const tensor& a) {
   auto op = new ops::Max { deref(a) };
@@ -272,9 +294,43 @@ tensor neq(const tensor& a, const tensor& b) {
   return out;
 }
 
+tensor lt(const tensor& a, const tensor& b) {
+  auto op = new ops::Lt { deref(a), deref(b) };
+  auto out = ref(op->outputs[0]);
+  engine::send(op);
+  return out;
+}
+
+tensor le(const tensor& a, const tensor& b) {
+  auto op = new ops::Le { deref(a), deref(b) };
+  auto out = ref(op->outputs[0]);
+  engine::send(op);
+  return out;
+}
+
+tensor gt(const tensor& a, const tensor& b) {
+  auto op = new ops::Gt { deref(a), deref(b) };
+  auto out = ref(op->outputs[0]);
+  engine::send(op);
+  return out;
+}
+
+tensor ge(const tensor& a, const tensor& b) {
+  auto op = new ops::Ge { deref(a), deref(b) };
+  auto out = ref(op->outputs[0]);
+  engine::send(op);
+  return out;
+}
+
 tensor broadcast(const tensor& a, const Shape& shape) {
   return a + zeros(shape);
 }
 
+tensor stack(const std::vector<tensor>& tensors) {
+  auto op = new ops::Stack(deref(tensors));
+  auto out = ref(op->outputs[0]);
+  engine::send(op);
+  return out;
+}
 
 }

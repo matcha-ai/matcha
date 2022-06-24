@@ -1,6 +1,8 @@
 #pragma once
 
 #include "bits_of_matcha/Frame.h"
+#include "bits_of_matcha/macros/vararg_tensors.h"
+#include "bits_of_matcha/macros/vararg_shape.h"
 
 #include <functional>
 #include <vector>
@@ -32,6 +34,10 @@ matcha::tensor& operator/=(matcha::tensor& a, const matcha::tensor& b);
 matcha::tensor operator-(const matcha::tensor& a);
 matcha::tensor operator==(const matcha::tensor& a, const matcha::tensor& b);
 matcha::tensor operator!=(const matcha::tensor& a, const matcha::tensor& b);
+matcha::tensor operator<(const matcha::tensor& a, const matcha::tensor& b);
+matcha::tensor operator>(const matcha::tensor& a, const matcha::tensor& b);
+matcha::tensor operator<=(const matcha::tensor& a, const matcha::tensor& b);
+matcha::tensor operator>=(const matcha::tensor& a, const matcha::tensor& b);
 
 namespace matcha {
 
@@ -51,7 +57,7 @@ tensor pow(const tensor& a, const tensor& b);
 tensor square(const tensor& a);
 tensor exp(const tensor& a);
 
-void image(const tensor& a, const std::string& file);
+//void image(const tensor& a, const std::string& file);
 
 tensor sum(const tensor& a);
 tensor sum(const tensor& a, int axis);
@@ -71,8 +77,18 @@ tensor minBetween(const tensor& a, const tensor& b);
 
 tensor eq(const tensor& a, const tensor& b);
 tensor neq(const tensor& a, const tensor& b);
+tensor lt(const tensor& a, const tensor& b);
+tensor le(const tensor& a, const tensor& b);
+tensor gt(const tensor& a, const tensor& b);
+tensor ge(const tensor& a, const tensor& b);
 
 tensor broadcast(const tensor& a, const Shape& shape);
 
+tensor stack(const std::vector<tensor>& tensors);
+
+template <class Tensor, class... Tensors>
+inline tensor stack(const Tensor& tensor, Tensors... tensors) {
+  return stack(VARARG_TENSORS(tensor, tensors...));
+}
 
 }

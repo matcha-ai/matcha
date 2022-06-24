@@ -3,6 +3,6 @@
 using namespace matcha;
 
 int main() {
-  tensor x = uniform(3, 1);
-  print(x);
+  std::vector<float> v {1, 2, 3, 55};
+  tensor x = blob(v.data(), {4});
 }

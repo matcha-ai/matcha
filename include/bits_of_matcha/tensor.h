@@ -82,54 +82,20 @@ public:
   tensor();
   tensor(float scalar);
 
-  /**
-   * @brief Float tensor filled with value
-   * @param shape target shape
-   * @return tensor of given shape filled with specified value
-   */
   static tensor full(float value, const Shape& shape);
-
-  /**
-   * @brief The zero tensor
-   * @param shape target shape
-   * @return tensor of specified shape full of zeros
-   */
   static tensor zeros(const Shape& shape);
-
-  /**
-   * @brief The ones tensor
-   * @param shape target shape
-   * @return tensor of specified shape full of ones
-   */
   static tensor ones(const Shape& shape);
-
-  /**
-   * The identity tensor
-   * @return slice of the identity matrix of given shape
-   */
   static tensor eye(const Shape& shape);
+  static tensor blob(const void* data, const Frame& frame);
+  static tensor blob(const void* data, const Dtype& dtype, const Shape& shape);
+  static tensor blob(const float* data, const Shape& shape);
 
-  /**
-   * @brief The zero tensor
-   * @param dims target dimensions
-   * @return tensor of specified shape full of zeros
-   */
   template <class... Dims>
   static inline tensor zeros(Dims... dims) { return zeros(VARARG_SHAPE(dims...)); }
 
-  /**
-   * @brief The ones tensor
-   * @param dims target dimensions
-   * @return tensor of specified shape full of ones
-   */
   template <class... Dims>
   static inline tensor ones(Dims... dims) { return ones(VARARG_SHAPE(dims...)); }
 
-  /**
-   * @brief The identity tensor
-   * @param dims target dimensions
-   * @return slice of the identity matrix of given shape
-   */
   template <class... Dims>
   static inline tensor eye(Dims... dims) { return eye(VARARG_SHAPE(dims...)); }
 
@@ -174,6 +140,9 @@ static tensor full(float value, const Shape& shape) { return tensor::full(value,
 static tensor zeros(const Shape& shape) { return tensor::zeros(shape); }
 static tensor ones(const Shape& shape) { return tensor::ones(shape); }
 static tensor eye(const Shape& shape) { return tensor::eye(shape); }
+static tensor blob(void* data, const Frame& frame) { return tensor::blob(data, frame); }
+static tensor blob(void* data, const Dtype& dtype, const Shape& shape) { return tensor::blob(data, dtype, shape); }
+static tensor blob(float* data, const Shape& frame) { return tensor::blob(data, frame); };
 
 }
 

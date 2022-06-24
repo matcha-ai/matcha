@@ -18,7 +18,8 @@ struct Internal : Callback {
     , updaterIntervalMs(30)
     , spinner(updaterIntervalMs)
     , eta_(1000)
-  {}
+  {
+  }
 
   class Line {
   public:
@@ -147,9 +148,11 @@ struct Internal : Callback {
     size_t intervalMs = updaterIntervalMs;
     eta_ = "";
     eta_.action();
+    batches_ = -1;
     updater_ = (std::thread) [&, epoch_ = epoch_, intervalMs]() {
       while (this->epoch_ == epoch_) {
         std::this_thread::sleep_for(std::chrono::milliseconds(intervalMs));
+        if (batches_ == -1) continue;
         this->update();
       }
     };
@@ -197,7 +200,15 @@ struct Internal : Callback {
 //      ss_ << std::fixed << std::setprecision(2);
       ss_ << " ::  ";
 //      << ((float) usBatch_ / 1000.0)  << " ms, ";
-      float etas = (float) (batches_ - batch_) / batch_ * (usEpoch_/1000) / 1000.;
+      if (batch_ == lastEtaBatch_) {
+        if (sEta_ >= 3) sEta_ = sEta_ - 1;
+      } else {
+        lastEtaBatch_ = batch_;
+        sEta_ = (float) (batches_ - batch_) / batch_ * (usEpoch_ / 1000) / 1000.;
+      }
+
+      float etas = sEta_;
+
       ss_ << "ETA ";
       int h = (int) etas / 3600;
       etas -= (float) h * 3600;
@@ -225,6 +236,8 @@ struct Internal : Callback {
   size_t epochs_;
   size_t usEpoch_;
   size_t usBatch_;
+  size_t lastEtaBatch_;
+  float sEta_;
 
   Interval<std::string> eta_;
 
