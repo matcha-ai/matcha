@@ -2,6 +2,7 @@
 
 #include "bits_of_matcha/Frame.h"
 #include "bits_of_matcha/macros/vararg_shape.h"
+#include "bits_of_matcha/savers/SaveSpec.h"
 
 #include <iostream>
 
@@ -147,6 +148,11 @@ public:
    * @warning forbidden inside the `Flow`
    */
   void* data();
+
+  /**
+   * @brief saves tensor in given format
+   */
+  void save(const std::string& file, SaveSpec spec = {});
 
 private:
   friend class Engine;

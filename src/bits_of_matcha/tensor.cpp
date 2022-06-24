@@ -120,6 +120,6 @@ tensor tensor::eye(const Shape& shape) {
 
 std::ostream& operator<<(std::ostream& os, const matcha::tensor& t) {
   auto op = new ops::Print(deref(t), false, os);
-  collect(op);
+  send(op);
   return os;
 }

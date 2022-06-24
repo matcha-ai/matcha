@@ -35,7 +35,7 @@ void AddBack::run() {
 //  print();
 //  return;
   if (outputs[0]) {
-    cpu::fill(outputs[0]->malloc(), outputs[0]->size(), 0);
+    cpu::fill(outputs[0]->malloc(), outputs[0]->size(), (float) 0);
 
     cpu::elementwiseBinaryBack(
       [](float& a, float& b, float& c) {
@@ -48,7 +48,7 @@ void AddBack::run() {
     );
   }
   if (outputs[1]) {
-    cpu::fill(outputs[1]->malloc(), outputs[1]->size(), 0);
+    cpu::fill(outputs[1]->malloc(), outputs[1]->size(), (float) 0);
 
     cpu::elementwiseBinaryBack(
       [](float& a, float& b, float& c) {

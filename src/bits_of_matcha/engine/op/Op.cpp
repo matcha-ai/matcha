@@ -10,8 +10,9 @@ Op::Op(std::initializer_list<Tensor*> inputs)
 
 Op::Op(const std::vector<Tensor*>& inputs)
   : inputs(inputs)
-  , ctx_(this)
-{}
+{
+  for (auto in: inputs) Tracer::handleOldTensor(in);
+}
 
 Op::~Op() {
 //  print("deleting op");
@@ -25,13 +26,8 @@ void Op::run() {
 
 }
 
-OpCtx& Op::ctx() {
-  return ctx_;
-}
-
-void collect(Op* op) {
-  if (Tracer::handleOp(op)) {
-
+void send(Op* op) {
+  if (Tracer::handleNewOp(op)) {
   } else {
     op->init();
     op->run();

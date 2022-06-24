@@ -1,5 +1,4 @@
 #include "bits_of_matcha/engine/tensor/Tensor.h"
-#include "bits_of_matcha/engine/tensor/TensorCtx.h"
 #include "bits_of_matcha/engine/tensor/iterations.h"
 #include "bits_of_matcha/engine/memory/memory.h"
 #include "bits_of_matcha/engine/flow/Tracer.h"
@@ -13,7 +12,6 @@ namespace matcha::engine {
 
 Tensor::Tensor(const Frame& frame, Op* op)
   : frame_(frame)
-  , ctx_(this)
   , buffer_(nullptr)
   , op_(op)
 {
@@ -65,10 +63,6 @@ Buffer* Tensor::malloc() {
   return buffer_;
 }
 
-TensorCtx& Tensor::ctx() {
-  return ctx_;
-}
-
 Op* Tensor::op() {
   return op_;
 }
@@ -94,9 +88,9 @@ void Tensor::free() {
 }
 
 void* Tensor::readData() {
-  if (Tracer::current()) {
+  if (tracing())
     throw std::runtime_error("reading tensor data directly inside the Flow is forbidden");
-  }
+
   if (!buffer_) return nullptr;
   return buffer_->payload();
 }
@@ -119,6 +113,30 @@ Tensor* deref(const tensor* external) {
 
 Tensor* deref(const tensor& external) {
   return Engine::deref(external);
+}
+
+std::vector<tensor> ref(const std::vector<Tensor*>& internals) {
+  std::vector<tensor> result;
+  result.reserve(internals.size());
+  for (auto&& internal: internals)
+    result.push_back(ref(internal));
+  return result;
+}
+
+std::vector<Tensor*> deref(const std::vector<tensor>& externals) {
+  std::vector<Tensor*> result;
+  result.reserve(externals.size());
+  for (auto&& external: externals)
+    result.push_back(deref(external));
+  return result;
+}
+
+std::vector<Tensor*> deref(const std::vector<tensor*>& externals) {
+  std::vector<Tensor*> result;
+  result.reserve(externals.size());
+  for (auto&& external: externals)
+    result.push_back(deref(external));
+  return result;
 }
 
 }

@@ -65,6 +65,22 @@ Instance::operator bool() const {
   return !data_.empty();
 }
 
+std::map<std::string, tensor>::iterator Instance::begin() {
+  return data_.begin();
+}
+
+std::map<std::string, tensor>::iterator Instance::end() {
+  return data_.end();
+}
+
+std::map<std::string, tensor>::const_iterator Instance::begin() const {
+  return data_.begin();
+}
+
+std::map<std::string, tensor>::const_iterator Instance::end() const {
+  return data_.end();
+}
+
 }
 
 std::ostream& operator<<(std::ostream& os, const matcha::Instance& instance) {

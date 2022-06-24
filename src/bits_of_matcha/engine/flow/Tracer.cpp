@@ -1,128 +1,114 @@
 #include "bits_of_matcha/engine/flow/Tracer.h"
 #include "bits_of_matcha/engine/tensor/Tensor.h"
 #include "bits_of_matcha/engine/op/Op.h"
+#include "bits_of_matcha/tensor.h"
 #include "bits_of_matcha/engine/ops/Print.h"
 
 
 namespace matcha::engine {
 
-bool Tracer::handleOp(Op* op) {
-  if (!current()) return false;
-  if (current()->ops_.contains(op)) return false;
-  if (op->ctx().traced()) throw std::runtime_error("op is already traced");
-  op->ctx().setTraced();
-  current()->ops_.insert(op);
-  current()->graph_.ops.push_back(op);
-  for (auto in: op->inputs) handleOldTensor(in);
-  return true;
+thread_local  std::stack<Tracer*> Tracer::tracings_ = {};
+
+bool tracing() {
+  return Tracer::active();
 }
 
-bool Tracer::handleNewTensor(Tensor* tensor) {
-  if (!current()) return false;
-  if (current()->tensors_.contains(tensor)) return false;
-  tensor->ctx().setMode(TensorCtx::Constant);
-  current()->tensors_.insert(tensor);
-  current()->graph_.tensors.push_back(tensor);
-  tensor->ref();
-  return true;
-}
+std::unique_ptr<Graph> trace(const AnyOp& op, const std::vector<Frame>& frames) {
+  Tracer tracer;
+  tuple ins = tracer.open(frames);
+  tuple outs;
 
-bool Tracer::handleOldTensor(Tensor* tensor) {
-  if (!current()) return false;
-  if (current()->tensors_.contains(tensor)) return false;
-
-  switch (tensor->ctx().mode()) {
-  case TensorCtx::Untraced:
-    tensor->ctx().setMode(TensorCtx::Variable);
-    break;
-  case TensorCtx::Constant:
-    throw std::runtime_error("tensor is a traced constant");
-  case TensorCtx::Variable:
-    break;
+  if (std::holds_alternative<UnaryOp>(op)) {
+    outs = {std::get<UnaryOp>(op)(ins[0])};
+  } else if (std::holds_alternative<BinaryOp>(op)) {
+    outs = {std::get<BinaryOp>(op)(ins[0], ins[1])};
+  } else if (std::holds_alternative<TernaryOp>(op)) {
+    outs = {std::get<TernaryOp>(op)(ins[0], ins[1], ins[2])};
+  } else if (std::holds_alternative<NaryOp>(op)) {
+    outs = std::get<NaryOp>(op)(ins);
+  } else {
+    throw std::runtime_error("unexpected op variant");
   }
-
-  current()->tensors_.insert(tensor);
-  current()->graph_.tensors.push_back(tensor);
-  tensor->ref();
-  return true;
+  return tracer.close(outs);
 }
 
-Tracer* Tracer::current() {
-  if (stack_.empty()) return nullptr;
-  return stack_.top();
+bool Tracer::active() {
+  return !tracings_.empty();
 }
 
-Tracer::Tracer()
-{}
+Tracer* Tracer::get() {
+  if (!active()) return nullptr;
+  return tracings_.top();
+}
+
+Tracer::Tracer() {}
+Tracer::~Tracer() {}
 
 tuple Tracer::open(const std::vector<Frame>& frames) {
-//  print("tracing open");
-  stack_.push(this);
-
+  ops::Print::claimCout();
+  graph_ = std::make_unique<Graph>();
+  tracings_.push(this);
   tuple inputs;
   inputs.reserve(frames.size());
-  for (auto&& frame: frames) {
-    auto t = new Tensor(frame);
-    inputs.push_back(ref(t));
-    graph_.inputs.push_back(t);
+  for (auto& frame: frames) {
+    auto in = new Tensor(frame);
+    graph_->inputs.push_back(in);
+    inputs.push_back(ref(in));
   }
-
-  ops::Print::claimCout();
   return inputs;
 }
 
-void Tracer::close(const tuple& outputs) {
-//  print("tracing close");
+std::unique_ptr<Graph> Tracer::close(const tuple& outputs) {
   ops::Print::unclaimCout();
-  auto printRest = new ops::Print("", false);
-  engine::collect(printRest);
-
-  for (auto& out: outputs) {
-    auto t = deref(out);
-    graph_.outputs.push_back(t);
+  for (auto& output: outputs) {
+    auto out = deref(output);
+    graph_->outputs.push_back(out);
   }
 
-  stack_.pop();
-}
+  if (tracings_.top() != this)
+    throw std::runtime_error("tracing stack got corrupted");
 
-Graph Tracer::collect() {
+  tracings_.pop();
   return std::move(graph_);
 }
 
-std::stack<Tracer*> Tracer::stack_ = {};
+bool Tracer::handleNewOp(Op* op) {
+  auto tracer = get();
+  if (!tracer) return false;
+  return tracer->addNewOp(op);
+}
 
-Graph trace(const AnyOp& anyOp, const std::vector<Frame>& frames) {
-  Tracer tracer;
-  tuple inputs = tracer.open(frames);
-  tuple outputs;
+bool Tracer::handleNewTensor(Tensor* tensor) {
+  auto tracer = get();
+  if (!tracer) return false;
+  return tracer->addNewTensor(tensor);
+}
 
-  if (std::holds_alternative<UnaryOp>(anyOp)) {
+bool Tracer::handleOldTensor(Tensor* tensor) {
+  auto tracer = get();
+  if (!tracer) return false;
+  return tracer->addNewTensor(tensor);
+}
 
-    if (inputs.size() != 1) throw std::runtime_error("wrong number of frames");
-    auto op = std::get<UnaryOp>(anyOp);
-    outputs = {op(inputs[0])};
+bool Tracer::addNewOp(Op* op) {
+  graph_->ops.push_back(op);
+  return true;
+}
 
-  } else if (std::holds_alternative<BinaryOp>(anyOp)) {
+bool Tracer::addNewTensor(Tensor* tensor) {
+  if (addedTensors_.contains(tensor)) return true;
+  addedTensors_.insert(tensor);
+  graph_->tensors.push_back(tensor);
+  tensor->req();
+  return true;
+}
 
-    if (inputs.size() != 2) throw std::runtime_error("wrong number of frames");
-    auto op = std::get<BinaryOp>(anyOp);
-    outputs = {op(inputs[0], inputs[1])};
-
-  } else if (std::holds_alternative<TernaryOp>(anyOp)) {
-
-    if (inputs.size() != 3) throw std::runtime_error("wrong number of frames");
-    auto op = std::get<TernaryOp>(anyOp);
-    outputs = {op(inputs[0], inputs[1], inputs[2])};
-
-  } else if (std::holds_alternative<NaryOp>(anyOp)) {
-
-    auto op = std::get<NaryOp>(anyOp);
-    outputs = {op(inputs)};
-
-  }
-
-  tracer.close(outputs);
-  return tracer.collect();
+bool Tracer::addOldTensor(Tensor* tensor) {
+  if (addedTensors_.contains(tensor)) return true;
+  addedTensors_.insert(tensor);
+  graph_->tensors.push_back(tensor);
+  tensor->req();
+  return true;
 }
 
 }

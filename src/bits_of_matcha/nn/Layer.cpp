@@ -1,4 +1,5 @@
 #include "bits_of_matcha/nn/Layer.h"
+#include "bits_of_matcha/nn/Net.h"
 
 
 namespace matcha::nn {
@@ -12,9 +13,19 @@ tensor Layer::operator()(const tensor& a) {
     initialized_ = true;
     init(a);
   }
+  if (net()) {
+    net()->params.add(params);
+  }
   return run(a);
 }
 
 void Layer::init(const tensor& a) {}
+
+thread_local std::stack<Net*> Layer::netStack_ {};
+
+Net* Layer::net() {
+  if (netStack_.empty()) return nullptr;
+  return netStack_.top();
+}
 
 }

@@ -5,6 +5,7 @@
 #include "bits_of_matcha/dataset/loaders/Tensors.h"
 #include "bits_of_matcha/dataset/loaders/Generator.h"
 #include "bits_of_matcha/dataset/loaders/Take.h"
+#include "bits_of_matcha/dataset/loaders/Batch.h"
 #include "bits_of_matcha/dataset/loaders/Map.h"
 
 
@@ -82,6 +83,10 @@ InstanceIterator Dataset::end() const {
 
 Dataset Dataset::take(size_t limit) const {
   return dataset::Take(*this, limit);
+}
+
+Dataset Dataset::batch(size_t limit) const {
+  return dataset::Batch(*this, limit);
 }
 
 Dataset Dataset::map(const std::function<Instance (const Instance&)>& function) const {

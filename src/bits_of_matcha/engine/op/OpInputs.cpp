@@ -7,7 +7,10 @@ namespace matcha::engine {
 OpInputs::OpInputs(const std::vector<Tensor*>& inputs)
   : data_{inputs}
 {
-  for (auto i: data_) i->req();
+  for (auto i: data_) {
+    if (!i) continue;
+    i->req();
+  }
 }
 
 size_t OpInputs::size() const {
@@ -36,6 +39,14 @@ bool OpInputs::none() const {
 
 OpInputs::~OpInputs() {
   for (auto in: data_) in->unreq();
+}
+
+std::vector<Tensor*>& OpInputs::stdVector() {
+  return data_;
+}
+
+const std::vector<Tensor*>& OpInputs::stdVector() const {
+  return data_;
 }
 
 }

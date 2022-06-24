@@ -31,6 +31,8 @@ OpMeta<MultiplyBack> MultiplyBack::meta {
 };
 
 void MultiplyBack::run() {
+//  print(inputs[0], " ", outputs[0], " ", outputs[1]);
+//  print(inputs[0]->buffer());
   if (outputs[0]) {
     cpu::fill(outputs[0]->malloc(), outputs[0]->size(), 0);
 

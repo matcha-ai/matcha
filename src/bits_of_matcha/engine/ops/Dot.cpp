@@ -48,9 +48,15 @@ OpMeta<DotBack> DotBack::meta {
 };
 
 void DotBack::run() {
-  auto a = inputs[0]->buffer()->as<float*>();
-  auto b = inputs[1]->buffer()->as<float*>();
-  auto c = outputs[0]->malloc()->as<float*>();
+//  if (inputs[0]) {
+//    inputs[0]->malloc()->as<float*>();
+//
+//  }
+//
+//  if (inputs[1]) {
+//    inputs[1]->malloc()->as<float*>();
+//
+//  }
 }
 
 }

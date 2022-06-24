@@ -23,8 +23,11 @@ public:
   InstanceIterator begin() const;
   InstanceIterator end() const;
 
+  void save(const std::string& file);
+
 public:
   Dataset take(size_t limit) const;
+  Dataset batch(size_t limit) const;
   Dataset map(const std::function<Instance (const Instance&)>& function) const;
 
 public:

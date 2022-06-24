@@ -72,5 +72,7 @@ tensor minBetween(const tensor& a, const tensor& b);
 tensor eq(const tensor& a, const tensor& b);
 tensor neq(const tensor& a, const tensor& b);
 
+tensor broadcast(const tensor& a, const Shape& shape);
+
 
 }

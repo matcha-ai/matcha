@@ -10,6 +10,6 @@
 
 namespace matcha::nn {
 
-using Optimizer = std::function<void (const Dataset& ds, Flow& flow)>;
+using Optimizer = std::function<void (tensor&, const tensor&)>;
 
 }

@@ -156,6 +156,11 @@ void Print::claimCout() {
 }
 
 void Print::unclaimCout() {
+  auto txt = Print::recorderNext();
+  if (!txt.empty()) {
+    auto op = new Print(txt, false, std::cout);
+    engine::send(op);
+  }
   auto& guard = guards.top();
   std::cout.rdbuf(guard.originalBuffer);
   guards.pop();

@@ -22,6 +22,9 @@ public:
 
   ~OpInputs();
 
+  std::vector<Tensor*>& stdVector();
+  const std::vector<Tensor*>& stdVector() const;
+
 private:
   std::vector<Tensor*> data_;
 };

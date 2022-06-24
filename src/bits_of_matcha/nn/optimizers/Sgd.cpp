@@ -5,7 +5,5 @@
 
 namespace matcha::nn {
 
-void Sgd::operator()(const Dataset& ds, Flow& flow) {
-}
 
 }

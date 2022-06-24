@@ -45,7 +45,18 @@ bool OpOutputs::none() const {
 }
 
 OpOutputs::~OpOutputs() {
-  for (auto out: data_) out->setOp(nullptr);
+  for (auto out: data_) {
+    if (!out) continue;
+    out->setOp(nullptr);
+  }
+}
+
+std::vector<Tensor*>& OpOutputs::stdVector() {
+  return data_;
+}
+
+const std::vector<Tensor*>& OpOutputs::stdVector() const {
+  return data_;
 }
 
 }

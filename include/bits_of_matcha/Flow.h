@@ -2,6 +2,7 @@
 
 #include "bits_of_matcha/tensor.h"
 #include "bits_of_matcha/ops.h"
+#include "bits_of_matcha/savers/SaveSpec.h"
 #include <map>
 #include <set>
 
@@ -17,21 +18,14 @@ public:
   tensor operator()(const tensor& a, const tensor& b, const tensor& c);
   tuple operator()(const tuple& inputs);
 
-  void requireGrad(tensor* wrt);
-  void requireGrad(const std::vector<tensor*>& wrts);
+  void save(const std::string& file, const SaveSpec& spec = {});
 
-  void unrequireGrad(tensor* wrt);
-  void unrequireGrad(const std::vector<tensor*>& wrts);
+  void build(const std::vector<tensor>& tensors);
+  void build(const std::vector<Frame>& frames);
 
-  std::set<tensor*> requiredGrad();
-  void setRequiredGrad(const std::vector<tensor*>& wrts);
-
-  std::map<tensor*, tensor> grad(const tensor& delta = 1);
-
-  int profiler();
-
-  void save(const std::string& file);
-  static Flow load(const std::string& file);
+  size_t flops() const;
+  size_t flops(const std::vector<Frame>& frames) const;
+  size_t flops(const std::vector<tensor>& tensors) const;
 
 public:
   // functional API

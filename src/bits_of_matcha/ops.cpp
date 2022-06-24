@@ -1,6 +1,5 @@
 #include "bits_of_matcha/ops.h"
 #include "bits_of_matcha/tensor.h"
-#include "bits_of_matcha/engine/flow/Tracer.h"
 
 #include "bits_of_matcha/engine/ops/Add.h"
 #include "bits_of_matcha/engine/ops/Multiply.h"
@@ -85,7 +84,7 @@ tensor add(const tensor& a, const tensor& b) {
   };
 
   auto out = ref(op->outputs[0]);
-  engine::collect(op);
+  engine::send(op);
   return out;
 }
 
@@ -100,7 +99,7 @@ tensor multiply(const tensor& a, const tensor& b) {
   };
 
   auto out = ref(op->outputs[0]);
-  engine::collect(op);
+  engine::send(op);
   return out;
 }
 
@@ -111,7 +110,7 @@ tensor divide(const tensor& a, const tensor& b) {
   };
 
   auto out = ref(op->outputs[0]);
-  engine::collect(op);
+  engine::send(op);
   return out;
 }
 
@@ -126,7 +125,7 @@ tensor dot(const tensor& a, const tensor& b) {
   };
 
   auto out = ref(op->outputs[0]);
-  engine::collect(op);
+  engine::send(op);
   return out;
 }
 
@@ -136,21 +135,21 @@ tensor transpose(const tensor& a) {
   };
 
   auto out = ref(op->outputs[0]);
-  engine::collect(op);
+  engine::send(op);
   return out;
 }
 
 tensor identity(const tensor& a) {
   auto op = new ops::Identity {deref(a)};
   auto out = ref(op->outputs[0]);
-  engine::collect(op);
+  engine::send(op);
   return out;
 }
 
 tensor reshape(const tensor& a, const Shape::Reshape& dims) {
   auto op = new ops::Reshape {deref(a), dims};
   auto out = ref(op->outputs[0]);
-  engine::collect(op);
+  engine::send(op);
   return out;
 }
 
@@ -162,7 +161,7 @@ tensor pow(const tensor& a, const tensor& b) {
   };
 
   auto out = ref(op->outputs[0]);
-  engine::collect(op);
+  engine::send(op);
   return out;
 }
 
@@ -176,7 +175,7 @@ tensor exp(const tensor& a) {
   };
 
   auto out = ref(op->outputs[0]);
-  engine::collect(op);
+  engine::send(op);
   return out;
 }
 
@@ -186,91 +185,95 @@ void image(const tensor& a, const std::string& file) {
     file
   };
 
-  engine::collect(op);
+  engine::send(op);
 }
 
 tensor max(const tensor& a) {
   auto op = new ops::Max { deref(a) };
   auto out = ref(op->outputs[0]);
-  engine::collect(op);
+  engine::send(op);
   return out;
 }
 
 tensor max(const tensor& a, int axis) {
   auto op = new ops::Max { deref(a), axis };
   auto out = ref(op->outputs[0]);
-  engine::collect(op);
+  engine::send(op);
   return out;
 }
 
 tensor min(const tensor& a) {
   auto op = new ops::Min { deref(a) };
   auto out = ref(op->outputs[0]);
-  engine::collect(op);
+  engine::send(op);
   return out;
 }
 
 tensor maxBetween(const tensor& a, const tensor& b) {
   auto op = new ops::MaxBetween { deref(a), deref(b) };
   auto out = ref(op->outputs[0]);
-  engine::collect(op);
+  engine::send(op);
   return out;
 }
 
 tensor min(const tensor& a, int axis) {
   auto op = new ops::Min { deref(a), axis };
   auto out = ref(op->outputs[0]);
-  engine::collect(op);
+  engine::send(op);
   return out;
 }
 
 tensor minBetween(const tensor& a, const tensor& b) {
   auto op = new ops::MinBetween { deref(a), deref(b) };
   auto out = ref(op->outputs[0]);
-  engine::collect(op);
+  engine::send(op);
   return out;
 }
 
 tensor argmax(const tensor& a) {
   auto op = new ops::Argmax { deref(a) };
   auto out = ref(op->outputs[0]);
-  engine::collect(op);
+  engine::send(op);
   return out;
 }
 
 tensor argmin(const tensor& a) {
   auto op = new ops::Argmin { deref(a) };
   auto out = ref(op->outputs[0]);
-  engine::collect(op);
+  engine::send(op);
   return out;
 }
 
 tensor argmax(const tensor& a, int axis) {
   auto op = new ops::Argmax { deref(a), axis };
   auto out = ref(op->outputs[0]);
-  engine::collect(op);
+  engine::send(op);
   return out;
 }
 
 tensor argmin(const tensor& a, int axis) {
   auto op = new ops::Argmin { deref(a), axis };
   auto out = ref(op->outputs[0]);
-  engine::collect(op);
+  engine::send(op);
   return out;
 }
 
 tensor eq(const tensor& a, const tensor& b) {
   auto op = new ops::Eq { deref(a), deref(b) };
   auto out = ref(op->outputs[0]);
-  engine::collect(op);
+  engine::send(op);
   return out;
 }
 
 tensor neq(const tensor& a, const tensor& b) {
   auto op = new ops::Neq { deref(a), deref(b) };
   auto out = ref(op->outputs[0]);
-  engine::collect(op);
+  engine::send(op);
   return out;
+}
+
+tensor broadcast(const tensor& a, const Shape& shape) {
+  return a + zeros(shape);
 }
 
 

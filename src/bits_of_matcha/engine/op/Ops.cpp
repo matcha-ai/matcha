@@ -45,7 +45,6 @@ std::string Ops::label(Op* op) {
 Op* Ops::back(const BackCtx& ctx) {
   auto op = ctx.forward;
   auto& entry = get(op);
-  entry.back(ctx);
   return entry.back(ctx);
 }
 

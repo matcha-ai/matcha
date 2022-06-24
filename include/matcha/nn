@@ -6,10 +6,11 @@ namespace matcha::nn {
 #include "bits_of_matcha/nn/Net.h"
 #include "bits_of_matcha/nn/Layer.h"
 #include "bits_of_matcha/nn/Optimizer.h"
+#include "bits_of_matcha/nn/activations.h"
 
 #include "bits_of_matcha/nn/layers/Flatten.h"
 #include "bits_of_matcha/nn/layers/Fc.h"
-#include "bits_of_matcha/nn/layers/Affine.h"
+#include "bits_of_matcha/nn/layers/Linear.h"
 #include "bits_of_matcha/nn/layers/Activation.h"
 #include "bits_of_matcha/nn/layers/Activation.h"
 

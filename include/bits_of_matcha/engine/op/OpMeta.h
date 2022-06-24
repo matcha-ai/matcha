@@ -1,6 +1,7 @@
 #pragma once
 
 #include "bits_of_matcha/engine/op/Ops.h"
+#include "bits_of_matcha/engine/op/BackCtx.h"
 #include "bits_of_matcha/print.h"
 
 #include <string>
@@ -19,6 +20,8 @@ struct OpMeta {
   std::function<std::string (T*)> label = [&](auto) { return name; };
   std::function<Op* (const BackCtx&)> back = [](auto) { return nullptr; };
   bool sideEffect = false;
+  std::function<void (T*)> save;
+  std::function<void (T*)> load;
 
   struct RegisterCtx {
     explicit RegisterCtx(OpMeta* meta) {

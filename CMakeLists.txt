@@ -25,6 +25,8 @@ set(
   include/bits_of_matcha/Engine.h
   include/bits_of_matcha/Loader.h
   include/bits_of_matcha/random.h
+  include/bits_of_matcha/Backprop.h
+  include/bits_of_matcha/gradient.h
 
   include/bits_of_matcha/error/Error.h
   include/bits_of_matcha/error/IncompatibleShapesError.h
@@ -38,6 +40,7 @@ set(
   include/bits_of_matcha/dataset/loaders/Tensors.h
   include/bits_of_matcha/dataset/loaders/Generator.h
   include/bits_of_matcha/dataset/loaders/Take.h
+  include/bits_of_matcha/dataset/loaders/Batch.h
   include/bits_of_matcha/dataset/loaders/Map.h
   include/bits_of_matcha/dataset/loaders/Csv.h
 
@@ -45,7 +48,6 @@ set(
   include/bits_of_matcha/engine/memory/Buffer.h
 
   include/bits_of_matcha/engine/tensor/Tensor.h
-  include/bits_of_matcha/engine/tensor/TensorCtx.h
   include/bits_of_matcha/engine/tensor/RefReqCounted.h
   include/bits_of_matcha/engine/tensor/iterations.h
   include/bits_of_matcha/engine/tensor/factories.h
@@ -66,16 +68,15 @@ set(
   include/bits_of_matcha/engine/op/abstract/AxiswiseFoldOp.h
 
   include/bits_of_matcha/engine/flow/Flow.h
-  include/bits_of_matcha/engine/flow/Module.h
-  include/bits_of_matcha/engine/flow/ModuleBack.h
+  include/bits_of_matcha/engine/flow/Graph.h
   include/bits_of_matcha/engine/flow/Tracer.h
-  include/bits_of_matcha/engine/flow/Tasks.h
-  include/bits_of_matcha/engine/flow/graph/Graph.h
-  include/bits_of_matcha/engine/flow/graph/OpDict.h
-  include/bits_of_matcha/engine/flow/graph/OpMask.h
-  include/bits_of_matcha/engine/flow/graph/TensorDict.h
-  include/bits_of_matcha/engine/flow/graph/TensorMask.h
-  include/bits_of_matcha/engine/flow/compiler/Compiler.h
+  include/bits_of_matcha/engine/flow/module/Module.h
+  include/bits_of_matcha/engine/flow/module/ModuleForw.h
+  include/bits_of_matcha/engine/flow/module/ModuleBack.h
+
+  include/bits_of_matcha/engine/autograd/gradient.h
+  include/bits_of_matcha/engine/autograd/Autograd.h
+  include/bits_of_matcha/engine/autograd/AccumulateGrads.h
 
   include/bits_of_matcha/engine/utils/TexGraph.h
 
@@ -130,6 +131,8 @@ set(
   src/bits_of_matcha/Engine.cpp
   src/bits_of_matcha/Loader.cpp
   src/bits_of_matcha/random.cpp
+  src/bits_of_matcha/gradient.cpp
+  src/bits_of_matcha/Backprop.cpp
 
   src/bits_of_matcha/error/Error.cpp
   src/bits_of_matcha/error/IncompatibleShapesError.cpp
@@ -141,31 +144,29 @@ set(
   src/bits_of_matcha/dataset/loaders/Tensors.cpp
   src/bits_of_matcha/dataset/loaders/Generator.cpp
   src/bits_of_matcha/dataset/loaders/Take.cpp
+  src/bits_of_matcha/dataset/loaders/Batch.cpp
   src/bits_of_matcha/dataset/loaders/Map.cpp
   src/bits_of_matcha/dataset/loaders/Csv.cpp
 
   src/bits_of_matcha/nn/Net.cpp
   src/bits_of_matcha/nn/Layer.cpp
   src/bits_of_matcha/nn/layers/Activation.cpp
-  src/bits_of_matcha/nn/layers/Affine.cpp
+  src/bits_of_matcha/nn/layers/Linear.cpp
   src/bits_of_matcha/nn/layers/Fc.cpp
   src/bits_of_matcha/nn/layers/Flatten.cpp
   src/bits_of_matcha/nn/optimizers/Sgd.cpp
+  src/bits_of_matcha/nn/callbacks/Logger.cpp
 
   src/bits_of_matcha/engine/memory/memory.cpp
   src/bits_of_matcha/engine/memory/Buffer.cpp
 
   src/bits_of_matcha/engine/tensor/Tensor.cpp
-  src/bits_of_matcha/engine/tensor/TensorCtx.cpp
   src/bits_of_matcha/engine/tensor/RefReqCounted.cpp
   src/bits_of_matcha/engine/tensor/iterations.cpp
   src/bits_of_matcha/engine/tensor/factories.cpp
 
   src/bits_of_matcha/engine/op/Op.cpp
   src/bits_of_matcha/engine/op/OpBack.cpp
-  src/bits_of_matcha/engine/autograd/AccumulateGrads.cpp
-
-  src/bits_of_matcha/engine/op/OpCtx.cpp
   src/bits_of_matcha/engine/op/OpInputs.cpp
   src/bits_of_matcha/engine/op/OpOutputs.cpp
   src/bits_of_matcha/engine/op/Ops.cpp
@@ -180,18 +181,19 @@ set(
   src/bits_of_matcha/engine/op/abstract/ElementwiseBinaryOp.cpp
 
   src/bits_of_matcha/engine/flow/Flow.cpp
-  src/bits_of_matcha/engine/flow/Module.cpp
-  src/bits_of_matcha/engine/flow/ModuleBack.cpp
-  src/bits_of_matcha/engine/flow/Tracer.cpp
+  src/bits_of_matcha/engine/flow/Graph.cpp
   src/bits_of_matcha/engine/flow/Tasks.cpp
-  src/bits_of_matcha/engine/flow/graph/Graph.cpp
-  src/bits_of_matcha/engine/flow/graph/OpDict.cpp
-  src/bits_of_matcha/engine/flow/graph/OpMask.cpp
-  src/bits_of_matcha/engine/flow/graph/TensorDict.cpp
-  src/bits_of_matcha/engine/flow/graph/TensorMask.cpp
-  src/bits_of_matcha/engine/flow/compiler/Compiler.cpp
+  src/bits_of_matcha/engine/flow/Tracer.cpp
+  src/bits_of_matcha/engine/flow/module/Module.cpp
+  src/bits_of_matcha/engine/flow/module/ModuleForw.cpp
+  src/bits_of_matcha/engine/flow/module/ModuleBack.cpp
 
-  src/bits_of_matcha/engine/utils/TexGraph.cpp
+  src/bits_of_matcha/engine/autograd/gradient.cpp
+  src/bits_of_matcha/engine/autograd/Autograd.cpp
+  src/bits_of_matcha/engine/autograd/AccumulateGrads.cpp
+  src/bits_of_matcha/engine/autograd/Autograd.cpp
+
+#  src/bits_of_matcha/engine/utils/TexGraph.cpp
 
   src/bits_of_matcha/engine/cpu/Buffer.cpp
   src/bits_of_matcha/engine/cpu/MemoryPool.cpp

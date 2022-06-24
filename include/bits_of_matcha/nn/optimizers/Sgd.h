@@ -6,11 +6,11 @@
 namespace matcha::nn {
 
 struct Sgd {
-  BinaryOp loss;
-  int epochs = 1;
   float lr = 1e-3;
 
-  void operator()(const Dataset& ds, Flow& flow);
+  void operator()(tensor& target, const tensor& grad) {
+    target -= lr * grad;
+  }
 };
 
 }

@@ -5,8 +5,10 @@
 
 namespace matcha::nn {
 
+tensor flatten(const tensor& batch);
+
 struct Flatten {
-  tensor operator()(const tensor& a);
+  tensor operator()(const tensor& batch) { return flatten(batch); }
 };
 
 }

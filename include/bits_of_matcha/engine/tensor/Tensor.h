@@ -3,7 +3,6 @@
 #include "bits_of_matcha/tensor.h"
 #include "bits_of_matcha/Frame.h"
 #include "bits_of_matcha/engine/tensor/RefReqCounted.h"
-#include "bits_of_matcha/engine/tensor/TensorCtx.h"
 #include "bits_of_matcha/engine/memory/Buffer.h"
 
 #include <iostream>
@@ -35,19 +34,17 @@ public:
 
   void* readData();
 
-  TensorCtx& ctx();
   Op* op();
   void setOp(Op* op);
 
 private:
   Frame frame_;
   Buffer* buffer_;
-  TensorCtx ctx_;
   Op* op_;
 };
 
 tensor ref(Tensor* internal);
-std::vector<tensor> ref(const std::vector<Tensor*> internals);
+std::vector<tensor> ref(const std::vector<Tensor*>& internals);
 
 Tensor* deref(const tensor& external);
 Tensor* deref(const tensor* external);

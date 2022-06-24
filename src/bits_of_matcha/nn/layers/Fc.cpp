@@ -1,32 +1,78 @@
 #include "bits_of_matcha/nn/layers/Fc.h"
+#include "bits_of_matcha/nn/activations.h"
+
+#include <sstream>
 
 
 namespace matcha::nn {
 
-UnaryOp Fc::init() {
-  struct Internal : Layer {
-    Affine affine_;
-    Activation activation_;
+Layer* Fc::init() {
+  static std::map<std::string, UnaryOp> activationFlags = {
+    {"relu", relu},
+    {"identity", identity},
+    {"none", identity},
+    {"id", identity},
+    {"exp", exp},
+//    {"sigmoid", sigmoid},
+//    {"sigmoid", softmax},
+  };
 
-    Internal(const Affine& affine, const Activation& activation)
-      : affine_(affine)
-      , activation_(activation)
-    {}
+  static std::set<std::string> bnFlags = {
+    "bn",
+    "batchnorm",
+    "batchnormalization",
+    "batchnormalize",
+  };
 
-    tensor run(const tensor& a) override {
-      return a;
+  std::transform(flags.begin(), flags.end(), flags.begin(), tolower);
+  std::stringstream ss(flags);
+  std::string flag;
+  std::set<std::string> flagSet;
+
+  bool bn = false;
+  UnaryOp activation = identity;
+
+  while (std::getline(ss, flag, ',')) {
+    if (bnFlags.contains(flag)) {
+      bn = true;
+      continue;
     }
+
+    if (activationFlags.contains(flag)) {
+      activation = activationFlags[flag];
+      continue;
+    }
+
+    throw std::invalid_argument("couldn't parse Fc configuration");
+  }
+
+  auto linear = Linear {
+    .units = units,
+    .useBias = !bn
   };
 
-  Affine affine {
-    .units = units,
-    .useBias = useBias
+
+  struct Internal : Layer {
+    tensor run(const tensor& batch) {
+      tensor z = (*linear_)(batch);
+      if (bn_);
+      return activation_(z);
+    }
+
+    std::shared_ptr<Layer> linear_;
+    bool bn_;
+    UnaryOp activation_;
   };
-  return Internal(affine, activation);
+
+  auto internal = new Internal;
+  internal->linear_ = std::move(linear.internal_);
+  internal->bn_ = bn;
+  internal->activation_ = activation;
+  return internal;
 }
 
-tensor Fc::operator()(const tensor& a) {
-  return op_(a);
+tensor Fc::operator()(const tensor& batch) {
+  return (*internal_)(batch);
 }
 
 }
