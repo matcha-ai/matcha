@@ -91,4 +91,6 @@ inline tensor stack(const Tensor& tensor, Tensors... tensors) {
   return stack(VARARG_TENSORS(tensor, tensors...));
 }
 
+tensor cast(const tensor& a, const Dtype& dtype);
+
 }

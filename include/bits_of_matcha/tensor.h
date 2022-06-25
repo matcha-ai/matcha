@@ -77,6 +77,11 @@ public:
    */
   tensor pow(const tensor& b) const;
 
+  /**
+   * @param dtype target dtype
+   * @return tensor of specified dtype
+   */
+   tensor cast(const Dtype& dtype) const;
 
 public:
   tensor();

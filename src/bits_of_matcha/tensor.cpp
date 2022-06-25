@@ -99,6 +99,10 @@ tensor tensor::pow(const tensor& b) const {
   return matcha::pow(*this, b);
 }
 
+tensor tensor::cast(const Dtype& dtype) const {
+  return matcha::cast(*this, dtype);
+}
+
 void* tensor::data() {
   return deref(this)->readData();
 }

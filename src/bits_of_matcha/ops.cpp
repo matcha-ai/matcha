@@ -26,6 +26,7 @@
 #include "bits_of_matcha/engine/ops/Sum.h"
 #include "bits_of_matcha/engine/ops/Product.h"
 #include "bits_of_matcha/engine/ops/Stack.h"
+#include "bits_of_matcha/engine/ops/Cast.h"
 
 
 using namespace matcha::engine;
@@ -333,4 +334,10 @@ tensor stack(const std::vector<tensor>& tensors) {
   return out;
 }
 
+tensor cast(const tensor& a, const Dtype& dtype) {
+  auto op = new ops::Cast(deref(a), dtype);
+  auto out = ref(op->outputs[0]);
+  engine::send(op);
+  return out;
+}
 }

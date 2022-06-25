@@ -127,6 +127,7 @@ set(
   include/bits_of_matcha/engine/ops/Uniform.h
   include/bits_of_matcha/engine/ops/Normal.h
   include/bits_of_matcha/engine/ops/Stack.h
+  include/bits_of_matcha/engine/ops/Cast.h
 )
 
 set(
@@ -243,6 +244,7 @@ set(
   src/bits_of_matcha/engine/ops/Uniform.cpp
   src/bits_of_matcha/engine/ops/Normal.cpp
   src/bits_of_matcha/engine/ops/Stack.cpp
+  src/bits_of_matcha/engine/ops/Cast.cpp
 )
 
 
