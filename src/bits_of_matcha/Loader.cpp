@@ -2,6 +2,7 @@
 #include "matcha/dataset"
 #include "matcha/tensor"
 #include "bits_of_matcha/engine/ops/LoadCsv.h"
+#include "bits_of_matcha/engine/ops/LoadImage.h"
 
 #include <filesystem>
 
@@ -25,12 +26,21 @@ Loader::operator tensor() {
   std::string ext = path.extension();
   std::transform(ext.begin(), ext.end(), ext.begin(), tolower);
   if (ext == ".csv") {
+
     auto op = new engine::ops::LoadCsv(file_);
     auto out = engine::ref(op->outputs[0]);
     engine::send(op);
     return out;
+
+  } else if (ext == ".png" || ext == ".jpg" || ext == ".jpeg") {
+
+    auto op = new engine::ops::LoadImage(file_);
+    auto out = engine::ref(op->outputs[0]);
+    engine::send(op);
+    return out;
+
   } else {
-    throw std::runtime_error("unsupported load format: " + ext);
+    throw std::runtime_error("unsupported import format: " + ext);
   }
 }
 

@@ -86,9 +86,12 @@ public:
   static tensor zeros(const Shape& shape);
   static tensor ones(const Shape& shape);
   static tensor eye(const Shape& shape);
+
   static tensor blob(const void* data, const Frame& frame);
   static tensor blob(const void* data, const Dtype& dtype, const Shape& shape);
   static tensor blob(const float* data, const Shape& shape);
+  static tensor blob(const std::vector<float>& data, const Shape& shape);
+  static tensor blob(const std::vector<float>& data);
 
   template <class... Dims>
   static inline tensor zeros(Dims... dims) { return zeros(VARARG_SHAPE(dims...)); }
@@ -140,9 +143,12 @@ static tensor full(float value, const Shape& shape) { return tensor::full(value,
 static tensor zeros(const Shape& shape) { return tensor::zeros(shape); }
 static tensor ones(const Shape& shape) { return tensor::ones(shape); }
 static tensor eye(const Shape& shape) { return tensor::eye(shape); }
+
 static tensor blob(void* data, const Frame& frame) { return tensor::blob(data, frame); }
 static tensor blob(void* data, const Dtype& dtype, const Shape& shape) { return tensor::blob(data, dtype, shape); }
 static tensor blob(float* data, const Shape& frame) { return tensor::blob(data, frame); };
+static tensor blob(const std::vector<float>& data, const Shape& shape) { return tensor::blob(data, shape); };
+static tensor blob(const std::vector<float>& data) { return tensor::blob(data); };
 
 }
 

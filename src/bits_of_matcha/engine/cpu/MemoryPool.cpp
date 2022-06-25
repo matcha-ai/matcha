@@ -1,6 +1,7 @@
 #include "bits_of_matcha/engine/cpu/MemoryPool.h"
 #include "bits_of_matcha/engine/cpu/BlockPool.h"
 #include "bits_of_matcha/engine/cpu/Buffer.h"
+#include "bits_of_matcha/print.h"
 
 #include <algorithm>
 
@@ -58,9 +59,6 @@ Buffer* MemoryPool::malloc(size_t bytes) {
 
 void MemoryPool::free(Buffer* buffer) {
   auto pool = bestFit(buffer->bytes());
-  if (pool->blockSize() != buffer->bytes()) {
-    pool = nullptr;
-  }
 
   if (pool) {
     pool->free(buffer);

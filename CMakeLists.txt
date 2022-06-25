@@ -107,6 +107,7 @@ set(
   include/bits_of_matcha/engine/ops/Pow.h
   include/bits_of_matcha/engine/ops/Exp.h
   include/bits_of_matcha/engine/ops/SaveImage.h
+  include/bits_of_matcha/engine/ops/LoadImage.h
   include/bits_of_matcha/engine/ops/SaveCsv.h
   include/bits_of_matcha/engine/ops/LoadCsv.h
   include/bits_of_matcha/engine/ops/Max.h
@@ -221,9 +222,10 @@ set(
   src/bits_of_matcha/engine/ops/Print.cpp
   src/bits_of_matcha/engine/ops/Pow.cpp
   src/bits_of_matcha/engine/ops/Exp.cpp
+  src/bits_of_matcha/engine/ops/LoadImage.cpp
   src/bits_of_matcha/engine/ops/SaveImage.cpp
-  src/bits_of_matcha/engine/ops/SaveCsv.cpp
   src/bits_of_matcha/engine/ops/LoadCsv.cpp
+  src/bits_of_matcha/engine/ops/SaveCsv.cpp
   src/bits_of_matcha/engine/ops/Max.cpp
   src/bits_of_matcha/engine/ops/MaxBetween.cpp
   src/bits_of_matcha/engine/ops/Min.cpp

@@ -19,7 +19,7 @@ Net::Net(std::initializer_list<UnaryOp> sequence)
   : Net(std::vector(sequence))
 {}
 
-void Net::fit(Dataset ds) {
+void Net::fit(Dataset ds, size_t epochs) {
   Layer::netStack_.push(this);
   trainFlow_ = function_;
   trainFlow_.build({ds.get()["x"]});
@@ -27,7 +27,6 @@ void Net::fit(Dataset ds) {
 
   initCallbacks();
 
-  int epochs = 10;
   for (int epoch = 0; epoch < epochs; epoch++) {
     epochBegin(epoch, epochs);
     int batch = 0;

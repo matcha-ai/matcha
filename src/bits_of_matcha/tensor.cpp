@@ -147,6 +147,13 @@ tensor tensor::blob(const float* data, const Shape& shape) {
   return ref(engine::blob((void*) data, Frame{Float, shape}));
 }
 
+tensor tensor::blob(const std::vector<float>& data, const Shape& shape) {
+  return blob(data.data(), shape);
+}
+
+tensor tensor::blob(const std::vector<float>& data) {
+  return blob(data, {(unsigned) data.size()});
+}
 
 }
 
