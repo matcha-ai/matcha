@@ -13,6 +13,8 @@ set(
 
   include/matcha/matcha
   include/matcha/tensor
+  include/matcha/dataset
+  include/matcha/nn
 
   include/bits_of_matcha/Dtype.h
   include/bits_of_matcha/Shape.h
@@ -21,12 +23,11 @@ set(
   include/bits_of_matcha/ops.h
   include/bits_of_matcha/Device.h
   include/bits_of_matcha/print.h
-  include/bits_of_matcha/Flow.h
-  include/bits_of_matcha/Engine.h
-  include/bits_of_matcha/Loader.h
   include/bits_of_matcha/random.h
+  include/bits_of_matcha/Flow.h
   include/bits_of_matcha/Backprop.h
-  include/bits_of_matcha/gradient.h
+  include/bits_of_matcha/Loader.h
+  include/bits_of_matcha/Engine.h
 
   include/bits_of_matcha/error/Error.h
   include/bits_of_matcha/error/IncompatibleShapesError.h
@@ -47,19 +48,40 @@ set(
   include/bits_of_matcha/dataset/loaders/Map.h
   include/bits_of_matcha/dataset/loaders/Csv.h
 
+  include/bits_of_matcha/nn/Net.h
+
+  include/bits_of_matcha/nn/initializers.h
+  include/bits_of_matcha/nn/activations.h
+
+  include/bits_of_matcha/nn/Layer.h
+  include/bits_of_matcha/nn/layers/Flatten.h
+  include/bits_of_matcha/nn/layers/Linear.h
+  include/bits_of_matcha/nn/layers/Fc.h
+
+  include/bits_of_matcha/nn/Optimizer.h
+  include/bits_of_matcha/nn/optimizers/Sgd.h
+
+  include/bits_of_matcha/nn/Loss.h
+  include/bits_of_matcha/nn/losses/CategoricalCrossentropy.h
+
+  include/bits_of_matcha/nn/Callback.h
+  include/bits_of_matcha/nn/callbacks/Logger.h
+
   include/bits_of_matcha/engine/memory/memory.h
   include/bits_of_matcha/engine/memory/Buffer.h
 
   include/bits_of_matcha/engine/tensor/Tensor.h
-  include/bits_of_matcha/engine/tensor/RefReqCounted.h
-  include/bits_of_matcha/engine/tensor/iterations.h
   include/bits_of_matcha/engine/tensor/factories.h
+  include/bits_of_matcha/engine/tensor/iterations.h
+  include/bits_of_matcha/engine/tensor/RefReqCounted.h
 
   include/bits_of_matcha/engine/op/Op.h
   include/bits_of_matcha/engine/op/OpInputs.h
   include/bits_of_matcha/engine/op/OpOutputs.h
   include/bits_of_matcha/engine/op/OpMeta.h
   include/bits_of_matcha/engine/op/Ops.h
+  include/bits_of_matcha/engine/op/BackCtx.h
+  include/bits_of_matcha/engine/op/OpBack.h
 
   include/bits_of_matcha/engine/iterations/ElementwiseBinaryCtx.h
   include/bits_of_matcha/engine/iterations/MatrixwiseBinaryCtx.h
@@ -76,12 +98,14 @@ set(
   include/bits_of_matcha/engine/flow/module/Module.h
   include/bits_of_matcha/engine/flow/module/ModuleForw.h
   include/bits_of_matcha/engine/flow/module/ModuleBack.h
+  include/bits_of_matcha/engine/flow/Tasks.h
+  include/bits_of_matcha/engine/flow/Backprop.h
 
   include/bits_of_matcha/engine/autograd/gradient.h
   include/bits_of_matcha/engine/autograd/Autograd.h
   include/bits_of_matcha/engine/autograd/AccumulateGrads.h
 
-  include/bits_of_matcha/engine/utils/TexGraph.h
+#  include/bits_of_matcha/engine/utils/TexGraph.h
 
   include/bits_of_matcha/engine/cpu/Buffer.h
   include/bits_of_matcha/engine/cpu/MemoryPool.h
@@ -139,12 +163,11 @@ set(
   src/bits_of_matcha/tensor.cpp
   src/bits_of_matcha/ops.cpp
   src/bits_of_matcha/Device.cpp
-  src/bits_of_matcha/Flow.cpp
-  src/bits_of_matcha/Engine.cpp
-  src/bits_of_matcha/Loader.cpp
   src/bits_of_matcha/random.cpp
-  src/bits_of_matcha/gradient.cpp
+  src/bits_of_matcha/Flow.cpp
   src/bits_of_matcha/Backprop.cpp
+  src/bits_of_matcha/Loader.cpp
+  src/bits_of_matcha/Engine.cpp
 
   src/bits_of_matcha/error/Error.cpp
   src/bits_of_matcha/error/IncompatibleShapesError.cpp
@@ -162,10 +185,9 @@ set(
 
   src/bits_of_matcha/nn/Net.cpp
   src/bits_of_matcha/nn/Layer.cpp
-  src/bits_of_matcha/nn/layers/Activation.cpp
+  src/bits_of_matcha/nn/layers/Flatten.cpp
   src/bits_of_matcha/nn/layers/Linear.cpp
   src/bits_of_matcha/nn/layers/Fc.cpp
-  src/bits_of_matcha/nn/layers/Flatten.cpp
   src/bits_of_matcha/nn/optimizers/Sgd.cpp
   src/bits_of_matcha/nn/callbacks/Logger.cpp
 
@@ -173,9 +195,9 @@ set(
   src/bits_of_matcha/engine/memory/Buffer.cpp
 
   src/bits_of_matcha/engine/tensor/Tensor.cpp
-  src/bits_of_matcha/engine/tensor/RefReqCounted.cpp
-  src/bits_of_matcha/engine/tensor/iterations.cpp
   src/bits_of_matcha/engine/tensor/factories.cpp
+  src/bits_of_matcha/engine/tensor/iterations.cpp
+  src/bits_of_matcha/engine/tensor/RefReqCounted.cpp
 
   src/bits_of_matcha/engine/op/Op.cpp
   src/bits_of_matcha/engine/op/OpBack.cpp

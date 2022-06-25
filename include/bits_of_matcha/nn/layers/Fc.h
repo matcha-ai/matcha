@@ -2,7 +2,6 @@
 
 #include "bits_of_matcha/nn/Layer.h"
 #include "bits_of_matcha/nn/layers/Linear.h"
-#include "bits_of_matcha/nn/layers/Activation.h"
 
 
 namespace matcha::nn {

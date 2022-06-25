@@ -4,16 +4,19 @@ namespace matcha::nn {
 }
 
 #include "bits_of_matcha/nn/Net.h"
-#include "bits_of_matcha/nn/Layer.h"
-#include "bits_of_matcha/nn/Optimizer.h"
+#include "bits_of_matcha/nn/initializers.h"
 #include "bits_of_matcha/nn/activations.h"
 
+#include "bits_of_matcha/nn/Layer.h"
 #include "bits_of_matcha/nn/layers/Flatten.h"
-#include "bits_of_matcha/nn/layers/Fc.h"
 #include "bits_of_matcha/nn/layers/Linear.h"
-#include "bits_of_matcha/nn/layers/Activation.h"
-#include "bits_of_matcha/nn/layers/Activation.h"
+#include "bits_of_matcha/nn/layers/Fc.h"
 
+#include "bits_of_matcha/nn/Optimizer.h"
 #include "bits_of_matcha/nn/optimizers/Sgd.h"
 
+#include "bits_of_matcha/nn/Loss.h"
 #include "bits_of_matcha/nn/losses/CategoricalCrossentropy.h"
+
+#include "bits_of_matcha/nn/Callback.h"
+#include "bits_of_matcha/nn/callbacks/Logger.h"

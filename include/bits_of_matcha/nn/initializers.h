@@ -1,3 +1,5 @@
+#pragma once
+
 #include "matcha/tensor"
 
 #include <cmath>
