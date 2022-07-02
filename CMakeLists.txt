@@ -76,7 +76,6 @@ set(
   include/bits_of_matcha/engine/memory/Block.h
   include/bits_of_matcha/engine/memory/Buffer.h
   include/bits_of_matcha/engine/memory/cast.h
-  include/bits_of_matcha/engine/memory/implicitCast.h
 
   include/bits_of_matcha/engine/tensor/Tensor.h
   include/bits_of_matcha/engine/tensor/factories.h
@@ -99,6 +98,7 @@ set(
 
   include/bits_of_matcha/engine/op/abstract/ElementwiseUnaryOp.h
   include/bits_of_matcha/engine/op/abstract/ElementwiseBinaryOp.h
+  include/bits_of_matcha/engine/op/abstract/ElementwiseBinaryLogicalOp.h
   include/bits_of_matcha/engine/op/abstract/AxiswiseFoldOp.h
 
   include/bits_of_matcha/engine/flow/Flow.h
@@ -161,6 +161,8 @@ set(
   include/bits_of_matcha/engine/ops/Normal.h
   include/bits_of_matcha/engine/ops/Stack.h
   include/bits_of_matcha/engine/ops/Cast.h
+
+  include/bits_of_matcha/grafana/Grafana.h
 )
 
 set(
@@ -282,6 +284,8 @@ set(
   src/bits_of_matcha/engine/ops/Normal.cpp
   src/bits_of_matcha/engine/ops/Stack.cpp
   src/bits_of_matcha/engine/ops/Cast.cpp
+
+  src/bits_of_matcha/grafana/Grafana.cpp
 )
 
 #set(BLA_VENDOR OpenBLAS)
@@ -318,6 +322,8 @@ target_link_libraries(${PROJECT_NAME} PUBLIC png)
 target_link_libraries(${PROJECT_NAME} PRIVATE pthread)
 #target_link_libraries(${PROJECT_NAME} PRIVATE ${BLAS_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} PRIVATE /usr/lib/libcblas.so)
+target_link_libraries(${PROJECT_NAME} PRIVATE dl)
+target_link_libraries(${PROJECT_NAME} PRIVATE curl)
 
 target_link_libraries(main PUBLIC ${PROJECT_NAME})
 

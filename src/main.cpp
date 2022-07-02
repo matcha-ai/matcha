@@ -4,9 +4,7 @@
 using namespace matcha;
 
 int main() {
-  tensor a = normal(10, 10) > 0;
-  print(a - (1-a));
-//  print(mean(a));
+  print(sigmoid(-100));
 }
 
 void run_op(const BinaryOp& op, const Shape& a, const Shape& b) {

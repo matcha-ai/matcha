@@ -7,12 +7,19 @@
 
 namespace matcha::engine::ops {
 
+Dtype promoteDtypesSum(Tensor* a) {
+  if (a->dtype() == Bool)
+    return Int;
+  else
+    return a->dtype();
+}
+
 Sum::Sum(Tensor* a)
-  : AxiswiseFoldOp(a)
+  : AxiswiseFoldOp(a, promoteDtypesSum(a))
 {}
 
 Sum::Sum(Tensor* a, int axis)
-  : AxiswiseFoldOp(a, axis)
+  : AxiswiseFoldOp(a, axis, promoteDtypesSum(a))
 {}
 
 OpMeta<Sum> Sum::meta {

@@ -26,7 +26,7 @@ struct ElementwiseBinaryLogicalOp : Op {
     for (auto&& in: inputs) {
       if (in->dtype() == dtype) continue;
       auto op = new ops::Cast(in, dtype);
-      incept(this, op, in);
+      engine::incept(this, op);
     }
   }
 

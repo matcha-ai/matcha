@@ -111,6 +111,87 @@ Dtype promoteDtypes(Dtype a, Dtype b) {
     }
     break;
 
+  case Byte:
+    switch (b) {
+    case Half: errHalf();
+    case Bool:
+      return Byte;
+    case Sbyte:
+      return Short;
+    case Byte:
+    case Short:
+    case Int:
+    case Long:
+    case Float:
+    case Double:
+    case Ushort:
+    case Uint:
+    case Ulong:
+      return Ulong;
+    }
+    break;
+
+  case Ushort:
+    switch (b) {
+    case Half: errHalf();
+    case Bool:
+      return Ushort;
+    case Sbyte:
+    case Short:
+      return Int;
+    case Int:
+    case Long:
+    case Float:
+    case Double:
+      return b;
+    case Byte:
+    case Ushort:
+      return Ushort;
+    case Uint:
+    case Ulong:
+      return b;
+    }
+    break;
+
+  case Uint:
+    switch (b) {
+    case Half: errHalf();
+    case Bool:
+      return Uint;
+    case Sbyte:
+    case Short:
+      return Int;
+    case Int:
+    case Long:
+      return Long;
+    case Float:
+    case Double:
+      return Double;
+    case Byte:
+    case Ushort:
+    case Uint:
+      return Uint;
+    case Ulong:
+      return Ulong;
+    }
+    break;
+
+  case Ulong:
+    switch (b) {
+    case Half: errHalf();
+    case Float:
+    case Double:
+      return Double;
+    case Sbyte:
+    case Short:
+    case Int:
+    case Long:
+      return Long;
+    default:
+      return Ulong;
+    }
+    break;
+
   case Bool:
     switch (b) {
     case Half: errHalf();

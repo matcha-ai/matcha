@@ -3,6 +3,7 @@
 #include "bits_of_matcha/engine/op/OpInputs.h"
 #include "bits_of_matcha/engine/op/OpOutputs.h"
 #include "bits_of_matcha/engine/op/OpMeta.h"
+#include "bits_of_matcha/engine/flow/Tracer.h"
 #include "bits_of_matcha/engine/tensor/Tensor.h"
 
 #include <initializer_list>

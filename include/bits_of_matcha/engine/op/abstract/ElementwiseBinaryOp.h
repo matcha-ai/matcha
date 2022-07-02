@@ -6,6 +6,7 @@
 #include "bits_of_matcha/engine/memory/implicitCast.h"
 #include "bits_of_matcha/error/IncompatibleDtypesError.h"
 #include "bits_of_matcha/engine/ops/Cast.h"
+#include "bits_of_matcha/engine/flow/Tracer.h"
 
 #include <algorithm>
 #include <numeric>
@@ -14,15 +15,6 @@
 
 
 namespace matcha::engine {
-
-inline void incept(Op* op, Op* preop, Tensor* in) {
-  if (preop->outputs.size() != 1)
-    throw std::runtime_error("pre-operation must have exactly 1 output");
-
-  auto it = std::find(op->inputs.begin(), op->inputs.end(), in);
-  *it = preop->outputs[0];
-  preop->outputs[0]->req();
-}
 
 struct ElementwiseBinaryOp : Op {
   explicit ElementwiseBinaryOp(Tensor* a, Tensor* b)
@@ -33,8 +25,20 @@ struct ElementwiseBinaryOp : Op {
     outputs.add(this, dtype, ctx_.dimsC);
     for (auto&& in: inputs) {
       if (in->dtype() == dtype) continue;
-      auto op = new ops::Cast(in, dtype);
-      incept(this, op, in);
+      auto preop = new ops::Cast(in, dtype);
+      engine::incept(this, preop);
+    }
+  }
+
+  explicit ElementwiseBinaryOp(Tensor* a, Tensor* b, Dtype dtype)
+    : Op{a, b}
+    , ctx_(a->shape(), b->shape())
+  {
+    outputs.add(this, dtype, ctx_.dimsC);
+    for (auto&& in: inputs) {
+      if (in->dtype() == dtype) continue;
+      auto preop = new ops::Cast(in, dtype);
+      engine::incept(this, preop);
     }
   }
 

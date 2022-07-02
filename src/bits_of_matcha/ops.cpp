@@ -305,17 +305,31 @@ tensor mean(const tensor& a, int axis) {
   return sum(a, axis) / n;
 }
 
-tensor std(const tensor& a) {
-  size_t n = a.size();
-  tensor mean = sum(a) / a.size();
-  return mean;
+tensor stdev(const tensor& a) {
+  return sqrt(sum(square(a - mean(a))) / a.size());
 }
 
 tensor stdev(const tensor& a, int axis) {
   if (axis < 0) axis += (int) a.rank();
   unsigned n = a.shape()[axis];
-  tensor means = sum(a, axis) / n;
-  tensor sdevs = sqrt(sum(square(a - means), 0) / n);
+  std::vector dims(a.shape().begin(), a.shape().end());
+  dims[axis] = 1;
+  tensor means = mean(a, axis).reshape(dims);
+  tensor sdevs = sqrt(sum(square(a - means), axis) / n);
+  return sdevs;
+}
+
+tensor stdevu(const tensor& a) {
+  return sqrt(sum(square(a - mean(a))) / (a.size() - 1));
+}
+
+tensor stdevu(const tensor& a, int axis) {
+  if (axis < 0) axis += (int) a.rank();
+  unsigned n = a.shape()[axis];
+  std::vector dims(a.shape().begin(), a.shape().end());
+  dims[axis] = 1;
+  tensor means = mean(a, axis).reshape(dims);
+  tensor sdevs = sqrt(sum(square(a - means), axis) / (n - 1));
   return sdevs;
 }
 

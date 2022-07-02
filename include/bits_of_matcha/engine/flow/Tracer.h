@@ -16,9 +16,12 @@ class Graph;
 std::unique_ptr<Graph> trace(const AnyOp& op, const std::vector<Frame>& frames);
 bool tracing();
 
+void incept(Op* op, Op* preop);
+
 class Tracer {
   friend std::unique_ptr<Graph> trace(const AnyOp&, const std::vector<Frame>&);
   friend bool tracing();
+  friend void incept(Op*, Op*);
 
   thread_local static std::stack<Tracer*> tracings_;
   static bool active();

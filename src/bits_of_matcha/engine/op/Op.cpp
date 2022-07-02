@@ -11,6 +11,7 @@ Op::Op(std::initializer_list<Tensor*> inputs)
 Op::Op(const std::vector<Tensor*>& inputs)
   : inputs(inputs)
 {
+  Tracer::handleNewOp(this);
   for (auto in: inputs) Tracer::handleOldTensor(in);
 }
 

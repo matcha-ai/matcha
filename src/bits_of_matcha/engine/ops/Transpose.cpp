@@ -36,7 +36,19 @@ void Transpose::run() {
     return;
   }
 
-  cpu::transpose(inputs[0]->buffer(), outputs[0]->malloc(), iter_);
+  switch (inputs[0]->dtype()) {
+  case Float: cpu::transpose<float>(inputs[0]->buffer(), outputs[0]->malloc(), iter_); break;
+  case Double: cpu::transpose<double>(inputs[0]->buffer(), outputs[0]->malloc(), iter_); break;
+  case Sbyte: cpu::transpose<int8_t>(inputs[0]->buffer(), outputs[0]->malloc(), iter_); break;
+  case Short: cpu::transpose<int16_t>(inputs[0]->buffer(), outputs[0]->malloc(), iter_); break;
+  case Int: cpu::transpose<int32_t>(inputs[0]->buffer(), outputs[0]->malloc(), iter_); break;
+  case Long: cpu::transpose<int64_t>(inputs[0]->buffer(), outputs[0]->malloc(), iter_); break;
+  case Byte: cpu::transpose<uint8_t>(inputs[0]->buffer(), outputs[0]->malloc(), iter_); break;
+  case Ushort: cpu::transpose<uint16_t>(inputs[0]->buffer(), outputs[0]->malloc(), iter_); break;
+  case Uint: cpu::transpose<uint32_t>(inputs[0]->buffer(), outputs[0]->malloc(), iter_); break;
+  case Ulong: cpu::transpose<uint64_t>(inputs[0]->buffer(), outputs[0]->malloc(), iter_); break;
+  case Bool: cpu::transpose<bool>(inputs[0]->buffer(), outputs[0]->malloc(), iter_); break;
+  }
 }
 
 TransposeBack::TransposeBack(const BackCtx& ctx)

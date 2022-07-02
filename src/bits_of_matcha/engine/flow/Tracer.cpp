@@ -13,6 +13,34 @@ bool tracing() {
   return Tracer::active();
 }
 
+void incept(Op* op, Op* preop) {
+  if (preop->inputs.size() != 1 || preop->outputs.size() != 1)
+    throw std::runtime_error("pre-operation must have 1 input and 1 output");
+
+  auto in = preop->inputs[0];
+  in->unreq();
+
+  auto it = std::find(op->inputs.begin(), op->inputs.end(), in);
+  *it = preop->outputs[0];
+  preop->outputs[0]->req();
+
+  auto* tracer = Tracer::get();
+  if (tracer) {
+    auto& graph = tracer->graph_;
+    auto& gops = graph->ops;
+    auto& gop = gops[gops.size() - 2];
+    auto& gpreop = gops[gops.size() - 1];
+    if (gop != op || gpreop != preop)
+      throw std::runtime_error("only pre-operations created inside operation constructor can be incepted");
+
+    std::swap(gop, gpreop);
+  } else {
+    preop->init();
+    preop->run();
+    delete preop;
+  }
+}
+
 std::unique_ptr<Graph> trace(const AnyOp& op, const std::vector<Frame>& frames) {
   Tracer tracer;
   tuple ins = tracer.open(frames);

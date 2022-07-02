@@ -8,14 +8,15 @@
 
 namespace matcha::engine::cpu {
 
+template <class T>
 void mm(Buffer& a, Buffer& b, Buffer& c, const MatrixwiseBinaryCtx& ctx) {
   size_t sizeA = ctx.rowsA * ctx.colsA;
   size_t sizeB = ctx.rowsB * ctx.colsB;
   size_t sizeC = ctx.rowsA * ctx.colsB;
 
-  auto valsA = a.as<float*>();
-  auto valsB = b.as<float*>();
-  auto valsC = c.as<float*>();
+  auto valsA = a.as<T*>();
+  auto valsB = b.as<T*>();
+  auto valsC = c.as<T*>();
 
   int strides = (int) ctx.prefixStridesA.size();
 
@@ -65,22 +66,42 @@ void mm(Buffer& a, Buffer& b, Buffer& c, const MatrixwiseBinaryCtx& ctx) {
 
 //        print(matA - valsA, " ", matB - valsB, " -> ", matC - valsC);
 ///*
-        cblas_sgemm(
-          CblasRowMajor,
-          CblasNoTrans,
-          CblasNoTrans,
-          (int) ctx.rowsA,
-          (int) ctx.colsB,
-          (int) ctx.colsA,
-          1,
-          matA,
-          (int) ctx.colsA,
-          matB,
-          (int) ctx.colsB,
-          0,
-          matC,
-          (int) ctx.colsB
-        );
+        if constexpr (std::is_same<T, float>()) {
+          cblas_sgemm(
+            CblasRowMajor,
+            CblasNoTrans,
+            CblasNoTrans,
+            (int) ctx.rowsA,
+            (int) ctx.colsB,
+            (int) ctx.colsA,
+            1,
+            matA,
+            (int) ctx.colsA,
+            matB,
+            (int) ctx.colsB,
+            0,
+            matC,
+            (int) ctx.colsB
+          );
+        } else if constexpr (std::is_same<T, double>()) {
+          cblas_dgemm(
+            CblasRowMajor,
+            CblasNoTrans,
+            CblasNoTrans,
+            (int) ctx.rowsA,
+            (int) ctx.colsB,
+            (int) ctx.colsA,
+            1,
+            matA,
+            (int) ctx.colsA,
+            matB,
+            (int) ctx.colsB,
+            0,
+            matC,
+            (int) ctx.colsB
+          );
+
+        }
 //        */
 
         matA += sizeA * ctx.prefixStridesA[axis];
