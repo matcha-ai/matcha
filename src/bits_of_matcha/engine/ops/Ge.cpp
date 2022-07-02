@@ -3,16 +3,15 @@
 namespace matcha::engine::ops {
 
 Ge::Ge(Tensor* a, Tensor* b)
-: ElementwiseBinaryOp(a, b)
+  : ElementwiseBinaryOp(a, b)
 {}
 
 OpMeta<Ge> Ge::meta {
-.name = "Ge",
+  .name = "Ge",
 };
 
 void Ge::run() {
-  outputs[0]->malloc();
-  runCPU(std::greater_equal<float>());
+  runCPU(std::greater_equal());
 }
 
 }

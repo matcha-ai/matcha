@@ -69,7 +69,7 @@ Csv::operator Dataset() {
 
       if (!indicesX_.empty()) {
         tensorX = new engine::Tensor(Float, {(unsigned) indicesX_.size()});
-        auto bufferX = tensorX->malloc()->as<float*>();
+        auto bufferX = tensorX->malloc().as<float*>();
 
         for (int i = 0; i < indicesX_.size(); i++) {
           bufferX[i] = std::stof(cache_[indicesX_[i]]);
@@ -78,7 +78,7 @@ Csv::operator Dataset() {
 
       if (!indicesY_.empty()) {
         tensorY = new engine::Tensor(Float, {(unsigned) indicesY_.size()});
-        auto bufferY = tensorY->malloc()->as<float*>();
+        auto bufferY = tensorY->malloc().as<float*>();
 
         for (int i = 0; i < indicesY_.size(); i++) {
           bufferY[i] = std::stof(cache_[indicesY_[i]]);

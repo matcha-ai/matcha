@@ -8,9 +8,8 @@
 namespace matcha {
 
 struct IncompatibleShapesError : public Error {
-  IncompatibleShapesError(const Shape& a, const Shape& b, const std::pair<int, int>& loci = {});
-  IncompatibleShapesError() = default;
-
+  explicit IncompatibleShapesError(const Shape& a, const Shape& b, const std::pair<int, int>& loci = {});
+  explicit IncompatibleShapesError() = default;
 };
 
 }

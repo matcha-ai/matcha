@@ -8,9 +8,9 @@ namespace matcha::engine {
 
 class Buffer;
 
-[[nodiscard]] Buffer* malloc(size_t bytes, const Device::Concrete& device = CPU);
-[[nodiscard]] Buffer* malloc(const Frame& frame, const Device::Concrete& device = CPU);
-[[nodiscard]] Buffer* malloc(const Frame* frame, const Device::Concrete& device = CPU);
+//Buffer malloc(size_t bytes, const Device::Concrete& device = CPU);
+//Buffer malloc(const Frame& frame, const Device::Concrete& device = CPU);
+//Buffer malloc(const Frame* frame, const Device::Concrete& device = CPU);
 
 }
 

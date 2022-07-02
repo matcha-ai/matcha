@@ -5,7 +5,7 @@
 
 
 namespace matcha::engine {
-class Buffer;
+class Block;
 }
 
 namespace matcha {
@@ -19,7 +19,7 @@ public:
 
     unsigned type;
 
-    bool hosts(engine::Buffer* buffer) const;
+    bool hosts(engine::Block* buffer) const;
 
     bool operator==(const Concrete& device) const;
     bool operator!=(const Concrete& device) const;

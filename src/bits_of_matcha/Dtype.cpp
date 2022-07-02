@@ -14,10 +14,14 @@ Dtype::Dtype(unsigned dtype)
     case Half:
     case Float:
     case Double:
-    case ShortShort:
+    case Sbyte:
     case Short:
     case Int:
     case Long:
+    case Byte:
+    case Ushort:
+    case Uint:
+    case Ulong:
     case Bool:
       break;
     default:
@@ -35,15 +39,24 @@ Dtype::Dtype(const std::string& dtype) {
     {"float32", Float},
     {"double", Double},
     {"float64", Double},
-    {"shortshort", ShortShort},
-    {"short short", ShortShort},
-    {"int8", ShortShort},
+    {"sbyte", Sbyte},
+    {"shortshort", Sbyte},
+    {"short short", Sbyte},
+    {"int8", Sbyte},
     {"short", Short},
     {"int16", Short},
     {"int", Int},
     {"int32", Int},
     {"long", Long},
     {"int64", Long},
+    {"byte", Byte},
+    {"uint8", Byte},
+    {"ushort", Ushort},
+    {"uint16", Ushort},
+    {"uint", Uint},
+    {"uint32", Uint},
+    {"ulong", Ulong},
+    {"uint64", Ulong},
     {"bool", Bool},
   };
 
@@ -59,10 +72,14 @@ std::string Dtype::string() const {
   case Half: return "Half";
   case Float: return "Float";
   case Double: return "Double";
-  case ShortShort: return "ShortShort";
+  case Sbyte: return "Sbyte";
   case Short: return "Short";
   case Int: return "Int";
   case Long: return "Long";
+  case Byte: return "Byte";
+  case Ushort: return "Ushort";
+  case Uint: return "Uint";
+  case Ulong: return "Ulong";
   case Bool: return "Bool";
   default:  throw std::runtime_error("unknown dtype");
   }
@@ -73,10 +90,14 @@ size_t Dtype::size() const {
   case Half: return 2;
   case Float: return 4;
   case Double: return 8;
-  case ShortShort: return 1;
+  case Sbyte: return 1;
   case Short: return 2;
   case Int: return 4;
   case Long: return 8;
+  case Byte: return 1;
+  case Ushort: return 2;
+  case Uint: return 4;
+  case Ulong: return 8;
   case Bool: return 1;
   default:  throw std::runtime_error("invalid dtype");
   }

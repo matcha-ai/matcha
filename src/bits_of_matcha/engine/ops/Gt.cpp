@@ -3,7 +3,7 @@
 namespace matcha::engine::ops {
 
 Gt::Gt(Tensor* a, Tensor* b)
-  : ElementwiseBinaryOp(a, b)
+  : ElementwiseBinaryLogicalOp(a, b)
 {}
 
 OpMeta<Gt> Gt::meta {
@@ -11,8 +11,7 @@ OpMeta<Gt> Gt::meta {
 };
 
 void Gt::run() {
-  outputs[0]->malloc();
-  runCPU(std::greater<float>());
+  runCPU(std::greater());
 }
 
 }

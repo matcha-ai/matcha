@@ -21,7 +21,7 @@ OpMeta<Argmax> Argmax::meta {
 void Argmax::run() {
   outputs[0]->malloc();
 
-  runCPU(
+  runCPU<float>(
     [](float* begin, size_t stride, float* end) {
       float buffer = std::numeric_limits<float>::min();
       float* pos;

@@ -10,10 +10,10 @@
 namespace matcha::engine::cpu {
 
 template <class Callable>
-void elementwiseUnary(Callable callable, engine::Buffer* a, engine::Buffer* b, size_t size) {
+inline void elementwiseUnary(Callable callable, Buffer& a, Buffer& b, size_t size) {
 //  return;
-  auto valsA = a->as<float*>();
-  auto valsB = b->as<float*>();
+  auto valsA = a.as<float*>();
+  auto valsB = b.as<float*>();
 
   std::transform(
     std::execution::par_unseq,

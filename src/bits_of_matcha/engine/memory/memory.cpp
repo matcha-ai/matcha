@@ -1,5 +1,5 @@
 #include "bits_of_matcha/engine/memory/memory.h"
-#include "bits_of_matcha/engine/memory/Buffer.h"
+#include "bits_of_matcha/engine/memory/Block.h"
 #include "bits_of_matcha/engine/cpu/MemoryPool.h"
 #include "bits_of_matcha/engine/cpu/Buffer.h"
 
@@ -8,21 +8,21 @@
 
 namespace matcha::engine {
 
-Buffer* malloc(size_t bytes, const Device::Concrete& device) {
-  if (device.type == CPU) {
-    return cpu::MemoryPool::the()->malloc(bytes);
-  } else {
-    throw std::runtime_error("TODO gpu memory");
-  }
-}
-
-Buffer* malloc(const Frame& frame, const Device::Concrete& device) {
-  return malloc(frame.bytes(), device);
-}
-
-Buffer* malloc(const Frame* frame, const Device::Concrete& device) {
-  return malloc(frame->bytes(), device);
-}
+//Buffer malloc(size_t bytes, const Device::Concrete& device) {
+//  if (device.type == CPU) {
+//    return cpu::MemoryPool::the()->malloc(bytes);
+//  } else {
+//    throw std::runtime_error("TODO gpu memory");
+//  }
+//}
+//
+//Block* malloc(const Frame& frame, const Device::Concrete& device) {
+//  return malloc(frame.bytes(), device);
+//}
+//
+//Block* malloc(const Frame* frame, const Device::Concrete& device) {
+//  return malloc(frame->bytes(), device);
+//}
 
 }
 

@@ -24,12 +24,12 @@ Stack::Stack(const std::vector<Tensor*>& ins)
 }
 
 void Stack::run() {
-  auto begin = outputs[0]->malloc()->as<float*>();
+  auto begin = outputs[0]->malloc().as<float*>();
   auto end = begin + outputs[0]->size();
   size_t stride = inputs[0]->size();
   int i = 0;
   for (auto it = begin; it != end; it += stride) {
-    auto source = inputs[i++]->buffer()->as<float*>();
+    auto source = inputs[i++]->buffer().as<float*>();
     std::copy(
       std::execution::par_unseq,
       source, source + stride,

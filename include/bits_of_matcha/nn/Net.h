@@ -70,9 +70,10 @@ public:
   size_t flops(const std::vector<tensor>& tensors) const;
 
 protected:
-  void initCallbacks();
+  // events
 
-  // signals
+  void trainBegin(Dataset ds);
+  void trainEnd(Dataset ds);
 
   void epochBegin(size_t epoch, size_t max);
   void epochEnd(size_t epoch, size_t max);

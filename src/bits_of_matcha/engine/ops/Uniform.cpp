@@ -18,10 +18,10 @@ OpMeta<Uniform> Uniform::meta {
 };
 
 void Uniform::run() {
-  auto a = *inputs[0]->buffer()->as<float*>();
-  auto b = *inputs[1]->buffer()->as<float*>();
+  auto a = *inputs[0]->buffer().as<float*>();
+  auto b = *inputs[1]->buffer().as<float*>();
   std::uniform_real_distribution<float> dis(a, b);
-  auto buff = outputs[0]->malloc()->as<float*>();
+  auto buff = outputs[0]->malloc().as<float*>();
   for (size_t i = 0; i < outputs[0]->size(); i++) {
     buff[i] = dis(gen_);
   }

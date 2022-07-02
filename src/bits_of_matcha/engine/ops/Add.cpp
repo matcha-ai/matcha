@@ -14,9 +14,7 @@ OpMeta<Add> Add::meta {
 };
 
 void Add::run() {
-  outputs[0]->malloc();
-//  print("add run: ", outputs[0]->buffer());
-  runCPU(std::plus<float>());
+  runCPU(std::plus());
 }
 
 

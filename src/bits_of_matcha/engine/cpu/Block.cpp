@@ -6,22 +6,22 @@
 namespace matcha::engine::cpu {
 
 
-Buffer::Buffer(size_t bytes)
-  : engine::Buffer{CPU, bytes}
+Block::Block(size_t bytes)
+  : engine::Block{CPU, bytes}
   , memory_{new uint8_t[bytes]}
 {
 }
 
-Buffer::Buffer(size_t bytes, void* memory)
-  : engine::Buffer{CPU, bytes}
+Block::Block(size_t bytes, void* memory)
+  : engine::Block{CPU, bytes}
   , memory_{(uint8_t *)memory}
 {}
 
-Buffer::~Buffer() {
+Block::~Block() {
   MemoryPool::the()->free(this);
 }
 
-void* Buffer::payload() {
+void* Block::payload() {
   return memory_;
 }
 

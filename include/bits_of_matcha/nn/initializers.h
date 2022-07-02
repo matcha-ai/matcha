@@ -14,7 +14,7 @@ struct {
       random::Uniform uni {-range, +range};
       return uni(shape);
     };
-    return g;
+    return (Generator) g;
   }
 
   MATCHA_GENERATOR_TAIL()

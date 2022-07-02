@@ -21,6 +21,10 @@ tensor Layer::operator()(const tensor& a) {
 
 void Layer::init(const tensor& a) {}
 
+bool Layer::training() const {
+  return !netStack_.empty();
+}
+
 thread_local std::stack<Net*> Layer::netStack_ {};
 
 Net* Layer::net() {

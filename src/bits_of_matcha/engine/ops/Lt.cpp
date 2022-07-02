@@ -3,7 +3,7 @@
 namespace matcha::engine::ops {
 
 Lt::Lt(Tensor* a, Tensor* b)
-  : ElementwiseBinaryOp(a, b)
+  : ElementwiseBinaryLogicalOp(a, b)
 {}
 
 OpMeta<Lt> Lt::meta {
@@ -11,8 +11,7 @@ OpMeta<Lt> Lt::meta {
 };
 
 void Lt::run() {
-  outputs[0]->malloc();
-  runCPU(std::less<float>());
+  runCPU(std::less());
 }
 
 }

@@ -11,6 +11,7 @@ namespace matcha::nn {
 #include "bits_of_matcha/nn/layers/Flatten.h"
 #include "bits_of_matcha/nn/layers/Linear.h"
 #include "bits_of_matcha/nn/layers/Fc.h"
+#include "bits_of_matcha/nn/layers/BatchNorm.h"
 
 #include "bits_of_matcha/nn/Optimizer.h"
 #include "bits_of_matcha/nn/optimizers/Sgd.h"

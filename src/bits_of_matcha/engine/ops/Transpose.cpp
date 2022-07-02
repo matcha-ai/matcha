@@ -32,7 +32,7 @@ OpMeta<Transpose> Transpose::meta {
 
 void Transpose::run() {
   if (iter_.rows == 1 || iter_.cols == 1) {
-    outputs[0]->shareBuffer(inputs[0]);
+    outputs[0]->share(inputs[0]);
     return;
   }
 
@@ -50,7 +50,7 @@ OpMeta<TransposeBack> TransposeBack::meta {
 
 void TransposeBack::run() {
   if (iter_.rows == 1 || iter_.cols == 1) {
-    outputs[0]->shareBuffer(inputs[0]);
+    outputs[0]->share(inputs[0]);
     return;
   }
 

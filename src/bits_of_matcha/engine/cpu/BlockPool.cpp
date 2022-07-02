@@ -11,16 +11,16 @@ BlockPool::BlockPool(size_t blockSize, size_t quantum)
   , blocks_{0}
 {}
 
-Buffer* BlockPool::allocate() {
+Block* BlockPool::allocate() {
   if (freeBlocks_.empty()) {
     expandBlocks();
   }
   auto freeBlock = freeBlocks_.top();
   freeBlocks_.pop();
-  return new Buffer(blockSize_, freeBlock);
+  return new Block(blockSize_, freeBlock);
 }
 
-void BlockPool::free(Buffer* buffer) {
+void BlockPool::free(Block* buffer) {
   freeBlocks_.push(buffer->payload());
 }
 

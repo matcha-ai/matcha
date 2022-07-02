@@ -18,7 +18,7 @@ random::Normal normal;
 namespace matcha::random {
 
 Generator Uniform::init() {
-  return [this] (auto shape) mutable {
+  return (Generator) [this] (auto shape) mutable {
     auto op = new engine::ops::Uniform {
       deref(a),
       deref(b),
@@ -32,7 +32,7 @@ Generator Uniform::init() {
 }
 
 Generator Normal::init() {
-  return [this] (auto shape) mutable {
+  return (Generator) [this] (auto shape) mutable {
     auto op = new engine::ops::Normal {
       deref(m),
       deref(sd),

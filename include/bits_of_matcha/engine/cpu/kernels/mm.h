@@ -1,6 +1,6 @@
 #pragma once
 
-#include "bits_of_matcha/engine/memory/Buffer.h"
+#include "bits_of_matcha/engine/memory/Block.h"
 #include "bits_of_matcha/engine/iterations/MatrixwiseBinaryCtx.h"
 
 #include <cblas.h>
@@ -8,18 +8,14 @@
 
 namespace matcha::engine::cpu {
 
-void mm(engine::Buffer* a, engine::Buffer* b, engine::Buffer* c, const MatrixwiseBinaryCtx& ctx) {
+void mm(Buffer& a, Buffer& b, Buffer& c, const MatrixwiseBinaryCtx& ctx) {
   size_t sizeA = ctx.rowsA * ctx.colsA;
   size_t sizeB = ctx.rowsB * ctx.colsB;
   size_t sizeC = ctx.rowsA * ctx.colsB;
 
-  dynamic_cast<Buffer*>(a);
-  dynamic_cast<Buffer*>(b);
-  dynamic_cast<Buffer*>(c);
-
-  auto valsA = a->as<float*>();
-  auto valsB = b->as<float*>();
-  auto valsC = c->as<float*>();
+  auto valsA = a.as<float*>();
+  auto valsB = b.as<float*>();
+  auto valsC = c.as<float*>();
 
   int strides = (int) ctx.prefixStridesA.size();
 

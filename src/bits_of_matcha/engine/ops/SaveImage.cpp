@@ -43,7 +43,7 @@ void SaveImage::dumpPng() {
   }
 
   Tensor* a = inputs[0];
-  auto buffer = a->buffer()->as<float*>();
+  auto buffer = a->buffer().as<float*>();
 
   auto [minEl, maxEl] = std::minmax_element(buffer, buffer + a->size());
   float min = *minEl, max = *maxEl;

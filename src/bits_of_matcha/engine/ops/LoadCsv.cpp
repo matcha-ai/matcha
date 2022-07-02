@@ -21,7 +21,7 @@ LoadCsv::LoadCsv(const std::string& file, const Frame& frame)
 }
 
 void LoadCsv::run() {
-  auto f = outputs[0]->malloc()->as<float*>();
+  auto f = outputs[0]->malloc().as<float*>();
   std::ifstream is(file_);
 
   std::stringstream ss;

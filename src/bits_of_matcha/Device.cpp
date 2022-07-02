@@ -1,5 +1,5 @@
 #include "bits_of_matcha/Device.h"
-#include "bits_of_matcha/engine/memory/Buffer.h"
+#include "bits_of_matcha/engine/memory/Block.h"
 
 
 namespace matcha {
@@ -34,7 +34,7 @@ bool Device::Concrete::operator!=(const Concrete& device) const {
 }
 
 
-bool Device::Concrete::hosts(engine::Buffer* buffer) const {
+bool Device::Concrete::hosts(engine::Block* buffer) const {
   if (!buffer) return false;
   return buffer->uses(*this);
 }

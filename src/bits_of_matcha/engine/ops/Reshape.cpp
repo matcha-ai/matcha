@@ -22,7 +22,7 @@ OpMeta<Reshape> Reshape::meta {
 };
 
 void Reshape::run() {
-  outputs[0]->shareBuffer(inputs[0]);
+  outputs[0]->share(inputs[0]);
 }
 
 ReshapeBack::ReshapeBack(const BackCtx& ctx)
@@ -34,7 +34,7 @@ OpMeta<ReshapeBack> ReshapeBack::meta {
 };
 
 void ReshapeBack::run() {
-  outputs[0]->shareBuffer(inputs[0]);
+  outputs[0]->share(inputs[0]);
 }
 
 }

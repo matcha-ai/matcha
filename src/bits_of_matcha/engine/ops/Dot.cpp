@@ -49,12 +49,12 @@ OpMeta<DotBack> DotBack::meta {
 
 void DotBack::run() {
 //  if (inputs[0]) {
-//    inputs[0]->malloc()->as<float*>();
+//    inputs[0]->malloc().as<float*>();
 //
 //  }
 //
 //  if (inputs[1]) {
-//    inputs[1]->malloc()->as<float*>();
+//    inputs[1]->malloc().as<float*>();
 //
 //  }
 }

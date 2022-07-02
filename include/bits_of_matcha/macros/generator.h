@@ -9,7 +9,7 @@ tensor operator()(const Shape& shape) { \
 \
 template <class... Dims>      \
 inline tensor operator()(Dims... dims) {      \
-  return operator()(VARARG_SHAPE(dims...));     \
+  return generator(VARARG_SHAPE(dims...));     \
 }                   \
 operator Generator() {                        \
   return generator;                   \

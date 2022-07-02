@@ -21,7 +21,7 @@ OpMeta<Max> Max::meta {
 void Max::run() {
   outputs[0]->malloc();
 
-  runCPU(
+  runCPU<float>(
     [](float* begin, size_t stride, float* end) {
       float buffer = std::numeric_limits<float>::min();
       if (stride != 1) {

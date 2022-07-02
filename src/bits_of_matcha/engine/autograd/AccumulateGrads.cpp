@@ -28,16 +28,16 @@ void AccumulateGrads::run() {
 //  print("accumulate: ", inputs.size());
   if (inputs.size() == 1) {
 //    print("just one");
-    outputs[0]->shareBuffer(inputs[0]);
+    outputs[0]->share(inputs[0]);
     return;
   }
 
-  auto b = outputs[0]->malloc();
+  auto& b = outputs[0]->malloc();
   cpu::fill(b, outputs[0]->size(), 0);
 
   for (auto in: inputs) {
-    auto f = in->buffer()->as<float*>();
-    auto g = b->as<float*>();
+    auto f = in->buffer().as<float*>();
+    auto g = b.as<float*>();
     std::transform(std::execution::par_unseq,
                    f, f + in->size(),
                    g,

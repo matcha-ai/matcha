@@ -25,7 +25,7 @@ void Net::fit(Dataset ds, size_t epochs) {
   trainFlow_.build({ds.get()["x"]});
   ds.reset();
 
-  initCallbacks();
+  trainBegin(ds);
 
   for (int epoch = 0; epoch < epochs; epoch++) {
     epochBegin(epoch, epochs);
@@ -47,13 +47,18 @@ void Net::fit(Dataset ds, size_t epochs) {
     }
     epochEnd(epoch, epochs);
   }
+  trainEnd(ds);
   if (Layer::netStack_.top() != this)
     throw std::runtime_error("net stack corruption");
   Layer::netStack_.pop();
 }
 
-void Net::initCallbacks() {
-  for (auto&& cb: callbacks) if (cb) cb->init(this);
+void Net::trainBegin(Dataset ds) {
+  for (auto&& cb: callbacks) if (cb) cb->onTrainBegin(*this, ds);
+}
+
+void Net::trainEnd(Dataset ds) {
+  for (auto&& cb: callbacks) if (cb) cb->onTrainEnd(*this, ds);
 }
 
 void Net::epochBegin(size_t epoch, size_t max) {

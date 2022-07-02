@@ -8,17 +8,30 @@
 
 
 namespace matcha {
-class tensor;
-using Generator = std::function<tensor (const Shape&)>;
+
+struct Generator {
+  Generator(const std::function<tensor (const Shape& shape)>& internal)
+    : internal_(internal)
+  {}
+
+  Generator() = default;
+
+  template <class... Dims>
+  inline tensor operator()(Dims... dims) const {
+    return internal_(VARARG_SHAPE(dims...));
+  }
+
+  std::function<tensor (const Shape& shape)> internal_;
+};
+
 }
 
 
 namespace matcha::random {
 
-
 struct Uniform {
-  tensor a = 0;
-  tensor b = 1;
+  tensor a = (float) 0;
+  tensor b = (float) 1;
   int seed = 42;
 
   Generator init();
@@ -26,8 +39,8 @@ struct Uniform {
 };
 
 struct Normal {
-  tensor m = 0;
-  tensor sd = 1;
+  tensor m  = (float) 0;
+  tensor sd = (float) 1;
   int seed = 42;
 
   Generator init();

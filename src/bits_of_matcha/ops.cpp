@@ -101,11 +101,7 @@ matcha::tensor operator>=(const matcha::tensor& a, const matcha::tensor& b) {
 namespace matcha {
 
 tensor add(const tensor& a, const tensor& b) {
-  auto op = new ops::Add {
-    deref(a),
-    deref(b),
-  };
-
+  auto op = new ops::Add(deref(a), deref(b));
   auto out = ref(op->outputs[0]);
   engine::send(op);
   return out;
@@ -138,7 +134,7 @@ tensor divide(const tensor& a, const tensor& b) {
 }
 
 tensor negative(const tensor& a) {
-  return -1 * a;
+  return (float) -1. * a;
 }
 
 tensor dot(const tensor& a, const tensor& b) {
@@ -189,7 +185,11 @@ tensor pow(const tensor& a, const tensor& b) {
 }
 
 tensor square(const tensor& a) {
-  return pow(a, 2);
+  return pow(a, (float) 2.);
+}
+
+tensor sqrt(const tensor& a) {
+  return pow(a, (float) .5);
 }
 
 tensor exp(const tensor& a) {
@@ -281,6 +281,44 @@ tensor argmin(const tensor& a, int axis) {
   return out;
 }
 
+tensor sum(const tensor& a) {
+  auto op = new engine::ops::Sum {deref(a)};
+  auto out = ref(op->outputs[0]);
+  engine::send(op);
+  return out;
+}
+
+tensor sum(const tensor& a, int axis) {
+  auto op = new engine::ops::Sum {deref(a), axis};
+  auto out = ref(op->outputs[0]);
+  engine::send(op);
+  return out;
+}
+
+tensor mean(const tensor& a) {
+  return sum(a) / a.size();
+}
+
+tensor mean(const tensor& a, int axis) {
+  if (axis < 0) axis += (int) a.rank();
+  unsigned n = a.shape()[axis];
+  return sum(a, axis) / n;
+}
+
+tensor std(const tensor& a) {
+  size_t n = a.size();
+  tensor mean = sum(a) / a.size();
+  return mean;
+}
+
+tensor stdev(const tensor& a, int axis) {
+  if (axis < 0) axis += (int) a.rank();
+  unsigned n = a.shape()[axis];
+  tensor means = sum(a, axis) / n;
+  tensor sdevs = sqrt(sum(square(a - means), 0) / n);
+  return sdevs;
+}
+
 tensor eq(const tensor& a, const tensor& b) {
   auto op = new ops::Eq { deref(a), deref(b) };
   auto out = ref(op->outputs[0]);
@@ -340,4 +378,34 @@ tensor cast(const tensor& a, const Dtype& dtype) {
   engine::send(op);
   return out;
 }
+
+tensor sigmoid(const tensor& a) {
+  Dtype dtype = a.dtype().size() > 4 ? Double : Float;
+  tensor one = cast(1, dtype);
+  return one / (one + exp(a));
+}
+
+tensor tanh(const tensor& a) {
+  Dtype dtype = a.dtype().size() > 4 ? Double : Float;
+  tensor two = cast(2, dtype);
+  return two * sigmoid(two * a);
+}
+
+tensor softmax(const tensor& a) {
+  tensor normed = a - max(a);
+  tensor mapped = exp(normed);
+  tensor scales = sum(mapped);
+  return mapped / scales;
+}
+
+tensor softmax(const tensor& a, int axis) {
+  std::vector<int> dims(a.shape().begin(), a.shape().end());
+  if (axis < 0) axis += (int) a.rank();
+  dims[axis] = 1;
+  tensor normed = a - max(a, axis).reshape(dims);
+  tensor mapped = exp(normed);
+  tensor scales = sum(mapped, axis).reshape(dims);
+  return mapped / scales;
+}
+
 }

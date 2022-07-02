@@ -81,7 +81,7 @@ void LoadImage::dumpData(FILE* fp) {
   Shape shape = {channels, (unsigned) height, (unsigned) width};
 
   auto t = outputs[0];
-  auto b = t->malloc()->as<float*>();
+  auto b = t->malloc().as<float*>();
 
   if (t->shape() != shape)
     throw std::runtime_error("image dimensions don't match the expected tensor shape");

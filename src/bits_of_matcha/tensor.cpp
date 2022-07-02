@@ -14,16 +14,51 @@ using namespace matcha::engine;
 
 namespace matcha {
 
-tensor::tensor()
-  : internal_(new Tensor({}))
-{
-//  std::cout <<"internal: " << internal_ << std::endl;
+tensor::tensor() : internal_(new Tensor({})) {
   deref(this)->ref();
 }
 
-tensor::tensor(float scalar)
-  : internal_(engine::full(scalar, {}))
-{
+tensor::tensor(float scalar) : internal_(engine::full(scalar, {})) {
+  deref(this)->ref();
+}
+
+tensor::tensor(double scalar) : internal_(engine::full(scalar, {})) {
+  deref(this)->ref();
+}
+
+tensor::tensor(int8_t scalar) : internal_(engine::full(scalar, {})) {
+  deref(this)->ref();
+}
+
+tensor::tensor(int16_t scalar) : internal_(engine::full(scalar, {})) {
+  deref(this)->ref();
+}
+
+tensor::tensor(int32_t scalar) : internal_(engine::full(scalar, {})) {
+  deref(this)->ref();
+}
+
+tensor::tensor(int64_t scalar) : internal_(engine::full(scalar, {})) {
+  deref(this)->ref();
+}
+
+tensor::tensor(uint8_t scalar) : internal_(engine::full(scalar, {})) {
+  deref(this)->ref();
+}
+
+tensor::tensor(uint16_t scalar) : internal_(engine::full(scalar, {})) {
+  deref(this)->ref();
+}
+
+tensor::tensor(uint32_t scalar) : internal_(engine::full(scalar, {})) {
+  deref(this)->ref();
+}
+
+tensor::tensor(uint64_t scalar) : internal_(engine::full(scalar, {})) {
+  deref(this)->ref();
+}
+
+tensor::tensor(bool scalar) : internal_(engine::full(scalar, {})) {
   deref(this)->ref();
 }
 

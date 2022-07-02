@@ -26,6 +26,8 @@ protected:
 
   Net::Params params;
 
+  bool training() const;
+
 private:
   bool initialized_ = false;
 

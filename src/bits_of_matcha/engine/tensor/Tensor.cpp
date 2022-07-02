@@ -12,7 +12,6 @@ namespace matcha::engine {
 
 Tensor::Tensor(const Frame& frame, Op* op)
   : frame_(frame)
-  , buffer_(nullptr)
   , op_(op)
 {
 //  print("created tensor ", this);
@@ -25,7 +24,7 @@ Tensor::Tensor(const Dtype& dtype, const Shape& shape, Op* op)
 
 Tensor::~Tensor() {
 //  print("destroying ", this, " (", frame_.string(), ")");
-  free();
+//  free();
 }
 
 const Frame& Tensor::frame() const {
@@ -52,16 +51,30 @@ size_t Tensor::bytes() const {
   return dtype().size() * size();
 }
 
-Buffer* Tensor::buffer() {
+Buffer& Tensor::buffer() {
   return buffer_;
 }
 
-Buffer* Tensor::malloc() {
-  if (buffer_) return buffer_;
-  buffer_ = engine::malloc(bytes());
-  buffer_->bind();
+Buffer& Tensor::malloc() {
+  buffer_.malloc(frame_);
   return buffer_;
 }
+
+Buffer& Tensor::share(Buffer& buffer) {
+  buffer_ = buffer;
+  return buffer_;
+}
+
+Buffer& Tensor::share(Tensor* tensor) {
+  buffer_ = tensor->buffer_;
+  return buffer_;
+}
+
+Buffer& Tensor::free() {
+  buffer_.free();
+  return buffer_;
+}
+
 
 Op* Tensor::op() {
   return op_;
@@ -71,28 +84,12 @@ void Tensor::setOp(Op* op) {
   op_ = op;
 }
 
-void Tensor::shareBuffer(Buffer* buffer) {
-  if (buffer == buffer_) return;
-  if (buffer_) buffer_->unbind();
-  buffer_ = buffer;
-  if (buffer_) buffer->bind();
-}
-
-void Tensor::shareBuffer(Tensor* tensor) {
-  shareBuffer(tensor->buffer());
-}
-
-void Tensor::free() {
-  if (buffer_) buffer_->unbind();
-  buffer_ = nullptr;
-}
-
 void* Tensor::readData() {
   if (tracing())
     throw std::runtime_error("reading tensor data directly inside the Flow is forbidden");
 
   if (!buffer_) return nullptr;
-  return buffer_->payload();
+  return buffer_.payload();
 }
 
 tensor ref(Tensor* internal) {

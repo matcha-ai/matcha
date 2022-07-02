@@ -47,23 +47,23 @@ MemoryPool::MemoryPool()
 }
 
 
-Buffer* MemoryPool::malloc(size_t bytes) {
+Block* MemoryPool::malloc(size_t bytes) {
   auto pool = bestFit(bytes);
 
   if (pool) {
     return pool->allocate();
   } else {
-    return new Buffer(bytes);
+    return new Block(bytes);
   }
 }
 
-void MemoryPool::free(Buffer* buffer) {
-  auto pool = bestFit(buffer->bytes());
+void MemoryPool::free(Block* block) {
+  auto pool = bestFit(block->bytes());
 
   if (pool) {
-    pool->free(buffer);
+    pool->free(block);
   } else {
-    delete (uint8_t*) buffer->payload();
+    delete (uint8_t*) block->payload();
   }
 }
 

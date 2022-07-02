@@ -6,21 +6,21 @@
 namespace matcha {
 
 template <class... Dims>
-inline Shape VARARG_SHAPE(Dims...);
+inline Shape VARARG_SHAPE(const Dims& ...);
 
 template <class... Dims>
-inline Shape::Reshape VARARG_RESHAPE(Dims...);
+inline Shape::Reshape VARARG_RESHAPE(const Dims&...);
 
 
 
 static thread_local std::vector<int> VARARG_SHAPE_BUFFER;
 
 template <class... Dims>
-inline void BUILD_VARARG_DIMS(Dims... dims);
+inline void BUILD_VARARG_DIMS(const Dims&... dims);
 
 
 template <class Dim, class... Dims>
-inline void BUILD_VARARG_DIMS(Dim dim, Dims... dims) {
+inline void BUILD_VARARG_DIMS(Dim dim, const Dims& ... dims) {
   VARARG_SHAPE_BUFFER.push_back(dim);
   BUILD_VARARG_DIMS(dims...);
 }
@@ -31,7 +31,7 @@ inline void BUILD_VARARG_DIMS() {
 }
 
 template <class... Dims>
-inline Shape VARARG_SHAPE(Dims... dims) {
+inline Shape VARARG_SHAPE(const Dims&... dims) {
   VARARG_SHAPE_BUFFER.clear();
   BUILD_VARARG_DIMS(dims...);
   std::vector<unsigned> shape;
@@ -43,8 +43,13 @@ inline Shape VARARG_SHAPE(Dims... dims) {
   return shape;
 }
 
+template <>
+inline Shape VARARG_SHAPE<>(const Shape& shape) {
+  return shape;
+}
+
 template <class... Dims>
-inline Shape::Reshape VARARG_RESHAPE(Dims... dims) {
+inline Shape::Reshape VARARG_RESHAPE(const Dims& ... dims) {
   VARARG_SHAPE_BUFFER.clear();
   BUILD_VARARG_DIMS(dims...);
   return Shape::Reshape(VARARG_SHAPE_BUFFER);

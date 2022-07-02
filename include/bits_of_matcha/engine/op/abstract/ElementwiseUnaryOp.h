@@ -12,7 +12,7 @@ namespace matcha::engine {
 
 
 struct ElementwiseUnaryOp : public Op {
-  ElementwiseUnaryOp(Tensor* a)
+  explicit ElementwiseUnaryOp(Tensor* a)
     : Op{a}
   {
     size_ = a->size();

@@ -13,10 +13,15 @@ public:
     Float,
     Double,
 
-    ShortShort,
+    Sbyte,
     Short,
     Int,
     Long,
+
+    Byte,
+    Ushort,
+    Uint,
+    Ulong,
 
     Bool,
   };
@@ -46,7 +51,7 @@ public:
   static constexpr unsigned getSystemInt() {
     switch (sizeof(int)) {
     case 1:
-      return ShortShort;
+      return Sbyte;
     case 2:
       return Short;
     default:
@@ -54,6 +59,20 @@ public:
       return Int;
     case 8:
       return Long;
+    }
+  }
+
+  static constexpr unsigned getSystemUint() {
+    switch (sizeof(int)) {
+    case 1:
+      return Byte;
+    case 2:
+      return Ushort;
+    default:
+    case 4:
+      return Uint;
+    case 8:
+      return Ulong;
     }
   }
 
@@ -67,10 +86,15 @@ enum {
   Float = Dtype::Float,
   Double = Dtype::Double,
 
-  ShortShort = Dtype::ShortShort,
+  Sbyte = Dtype::Sbyte,
   Short = Dtype::Short,
   Int = Dtype::Int,
   Long = Dtype::Long,
+
+  Byte = Dtype::Byte,
+  Ushort = Dtype::Ushort,
+  Uint = Dtype::Uint,
+  Ulong = Dtype::Ulong,
 
   Bool = Dtype::Bool,
 };

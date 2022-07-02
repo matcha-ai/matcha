@@ -135,9 +135,9 @@ struct Internal : Callback {
     std::chrono::time_point<std::chrono::steady_clock> last_;
   };
 
-  void init(Net* net) {
+  void onTrainBegin(Net& net, Dataset ds) override {
     std::cout << "fitting matcha::Net "
-              << "(" << net->params.total() << " parameters, unk FLOPs)"
+              << "(" << net.params.total() << " parameters, unk FLOPs)"
               << std::endl;
   }
 

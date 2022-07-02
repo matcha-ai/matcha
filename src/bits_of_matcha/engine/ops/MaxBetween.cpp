@@ -33,8 +33,8 @@ void MaxBetweenBack::run() {
 //  print("", inputs[0] ," -> ", outputs[0], " ", outputs[1]);
 //  print();
 //  return;
-  auto forwA = forward->inputs[0]->buffer()->as<float*>();
-  auto forwB = forward->inputs[1]->buffer()->as<float*>();
+  auto forwA = forward->inputs[0]->buffer().as<float*>();
+  auto forwB = forward->inputs[1]->buffer().as<float*>();
 
   if (outputs[0]) {
     cpu::fill(outputs[0]->malloc(), outputs[0]->size(), 0);

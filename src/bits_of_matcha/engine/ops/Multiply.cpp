@@ -16,7 +16,7 @@ OpMeta<Multiply> Multiply::meta {
 
 void Multiply::run() {
   outputs[0]->malloc();
-  runCPU(std::multiplies<float>());
+  runCPU(std::multiplies());
 }
 
 

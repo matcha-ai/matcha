@@ -3,6 +3,8 @@
 #include "bits_of_matcha/tensor.h"
 #include "bits_of_matcha/Frame.h"
 #include "bits_of_matcha/engine/tensor/RefReqCounted.h"
+#include "bits_of_matcha/engine/tensor/cast.h"
+#include "bits_of_matcha/engine/memory/Block.h"
 #include "bits_of_matcha/engine/memory/Buffer.h"
 
 #include <iostream>
@@ -10,7 +12,7 @@
 
 namespace matcha::engine {
 
-class Buffer;
+class Block;
 class Op;
 
 class Tensor : public RefReqCounted {
@@ -26,11 +28,11 @@ public:
   size_t size() const;
   size_t bytes() const;
 
-  Buffer* malloc();
-  Buffer* buffer();
-  void shareBuffer(Buffer* buffer);
-  void shareBuffer(Tensor* tensor);
-  void free();
+  Buffer& malloc();
+  Buffer& buffer();
+  Buffer& free();
+  Buffer& share(Buffer& buffer);
+  Buffer& share(Tensor* tensor);
 
   void* readData();
 
@@ -39,7 +41,7 @@ public:
 
 private:
   Frame frame_;
-  Buffer* buffer_;
+  Buffer buffer_;
   Op* op_;
 };
 

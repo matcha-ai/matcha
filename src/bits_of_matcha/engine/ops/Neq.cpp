@@ -3,7 +3,7 @@
 namespace matcha::engine::ops {
 
 Neq::Neq(Tensor* a, Tensor* b)
-  : ElementwiseBinaryOp(a, b)
+  : ElementwiseBinaryLogicalOp(a, b)
 {}
 
 OpMeta<Neq> Neq::meta {
@@ -11,8 +11,7 @@ OpMeta<Neq> Neq::meta {
 };
 
 void Neq::run() {
-  outputs[0]->malloc();
-  runCPU([](float a, float b) { return (float) a != b; });
+  runCPU(std::not_equal_to());
 }
 
 }

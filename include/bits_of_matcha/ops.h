@@ -55,12 +55,22 @@ tensor reshape(const tensor& a, const Shape::Reshape& dims);
 
 tensor pow(const tensor& a, const tensor& b);
 tensor square(const tensor& a);
+tensor sqrt(const tensor& a);
 tensor exp(const tensor& a);
 
-//void image(const tensor& a, const std::string& file);
 
 tensor sum(const tensor& a);
 tensor sum(const tensor& a, int axis);
+
+tensor mean(const tensor& a);
+tensor mean(const tensor& a, int axis);
+
+tensor stdev(const tensor& a);
+tensor stdev(const tensor& a, int axis);
+
+tensor stdevu(const tensor& a);
+tensor stdevu(const tensor& a, int axis);
+
 
 tensor max(const tensor& a);
 tensor max(const tensor& a, int axis);
@@ -92,5 +102,11 @@ inline tensor stack(const Tensor& tensor, Tensors... tensors) {
 }
 
 tensor cast(const tensor& a, const Dtype& dtype);
+
+tensor sigmoid(const tensor& a);
+tensor tanh(const tensor& a);
+
+tensor softmax(const tensor& a);
+tensor softmax(const tensor& a, int axis);
 
 }

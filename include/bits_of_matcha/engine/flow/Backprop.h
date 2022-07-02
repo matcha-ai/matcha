@@ -8,7 +8,7 @@
 namespace matcha::engine {
 
 class Tensor;
-class Buffer;
+class Block;
 class Graph;
 
 struct Backprop {

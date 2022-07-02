@@ -1,48 +1,41 @@
 #pragma once
 
-#include "bits_of_matcha/Device.h"
-#include <cinttypes>
-#include <limits>
+#include "bits_of_matcha/Frame.h"
+#include "bits_of_matcha/engine/memory/Block.h"
 
 
 namespace matcha::engine {
 
-class Tensor;
-
-
 class Buffer {
 public:
-  static Buffer* request(const Device::Concrete& device, size_t bytes);
-  static void transfer(Buffer* a, Buffer* b);
+  explicit Buffer();
+  explicit Buffer(Block* block);
+  explicit Buffer(size_t bytes);
+  Buffer(const Frame& frame);
+  Buffer(const Buffer& other);
+  Buffer(Buffer&& other);
+  ~Buffer();
 
-  Buffer(const Device::Concrete& device, size_t bytes);
+  Buffer& operator=(const Buffer& other);
+  Buffer& operator=(Buffer&& other);
 
-  virtual ~Buffer();
-  virtual void* payload() = 0;
+  bool operator==(const Buffer& other);
+  bool operator!=(const Buffer& other);
 
-  const Device::Concrete* device() const;
+  operator bool() const;
   size_t bytes() const;
 
+  void malloc(size_t bytes);
+  void malloc(const Frame& frame);
+  void free();
+
+  void* payload();
+
   template <class T>
-  inline T as() { return (T) payload(); }
-
-  bool fits(size_t bytes) const;
-  bool uses(const Device::Concrete& device) const;
-  bool writable() const;
-  bool shared() const;
-  bool bound() const;
-
-public:
-  void bind();
-  void unbind();
-
-protected:
-  Device::Concrete dev_;
-  size_t bytes_;
+  inline T as() { return reinterpret_cast<T>(payload()); }
 
 private:
-  uint16_t refs_;
+  Block* block_;
 };
-
 
 }

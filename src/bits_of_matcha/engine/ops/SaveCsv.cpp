@@ -38,7 +38,7 @@ void SaveCsv::dumpFrame(std::ostream& os) {
 
 void SaveCsv::dumpData(std::ostream& os) {
   auto t = inputs[0];
-  auto f = t->buffer()->as<float*>();
+  auto f = t->buffer().as<float*>();
 
   if (t->rank() < 2) {
     float* end = f + t->size();

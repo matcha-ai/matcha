@@ -1,12 +1,14 @@
 cmake_minimum_required(VERSION 3.17)
 project(
-  matcha VERSION 0.0
+  matcha VERSION 0.0.0
   DESCRIPTION "Attachable Machine Learning."
   LANGUAGES CXX
 )
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_FLAGS -pg)
+set(CMAKE_CXX_FLAGS -march=native)
+set(CMAKE_CXX_FLAGS -O2)
 
 set(
   PROJECT_HEADERS
@@ -30,8 +32,10 @@ set(
   include/bits_of_matcha/Engine.h
 
   include/bits_of_matcha/error/Error.h
+  include/bits_of_matcha/error/IncompatibleDtypesError.h
   include/bits_of_matcha/error/IncompatibleShapesError.h
   include/bits_of_matcha/error/BroadcastError.h
+  include/bits_of_matcha/error/ImplicitCastError.h
 
   include/bits_of_matcha/macros/generator.h
   include/bits_of_matcha/macros/dataset.h
@@ -57,6 +61,7 @@ set(
   include/bits_of_matcha/nn/layers/Flatten.h
   include/bits_of_matcha/nn/layers/Linear.h
   include/bits_of_matcha/nn/layers/Fc.h
+  include/bits_of_matcha/nn/layers/BatchNorm.h
 
   include/bits_of_matcha/nn/Optimizer.h
   include/bits_of_matcha/nn/optimizers/Sgd.h
@@ -68,10 +73,14 @@ set(
   include/bits_of_matcha/nn/callbacks/Logger.h
 
   include/bits_of_matcha/engine/memory/memory.h
+  include/bits_of_matcha/engine/memory/Block.h
   include/bits_of_matcha/engine/memory/Buffer.h
+  include/bits_of_matcha/engine/memory/cast.h
+  include/bits_of_matcha/engine/memory/implicitCast.h
 
   include/bits_of_matcha/engine/tensor/Tensor.h
   include/bits_of_matcha/engine/tensor/factories.h
+  include/bits_of_matcha/engine/tensor/cast.h
   include/bits_of_matcha/engine/tensor/iterations.h
   include/bits_of_matcha/engine/tensor/RefReqCounted.h
 
@@ -170,8 +179,10 @@ set(
   src/bits_of_matcha/Engine.cpp
 
   src/bits_of_matcha/error/Error.cpp
+  src/bits_of_matcha/error/IncompatibleDtypesError.cpp
   src/bits_of_matcha/error/IncompatibleShapesError.cpp
   src/bits_of_matcha/error/BroadcastError.cpp
+  src/bits_of_matcha/error/ImplicitCastError.cpp
 
   src/bits_of_matcha/dataset/Instance.cpp
   src/bits_of_matcha/dataset/InstanceIterator.cpp
@@ -184,18 +195,22 @@ set(
   src/bits_of_matcha/dataset/loaders/Csv.cpp
 
   src/bits_of_matcha/nn/Net.cpp
+  src/bits_of_matcha/nn/activations.cpp
   src/bits_of_matcha/nn/Layer.cpp
   src/bits_of_matcha/nn/layers/Flatten.cpp
   src/bits_of_matcha/nn/layers/Linear.cpp
   src/bits_of_matcha/nn/layers/Fc.cpp
+  src/bits_of_matcha/nn/layers/BatchNorm.cpp
   src/bits_of_matcha/nn/optimizers/Sgd.cpp
   src/bits_of_matcha/nn/callbacks/Logger.cpp
 
   src/bits_of_matcha/engine/memory/memory.cpp
+  src/bits_of_matcha/engine/memory/Block.cpp
   src/bits_of_matcha/engine/memory/Buffer.cpp
 
   src/bits_of_matcha/engine/tensor/Tensor.cpp
   src/bits_of_matcha/engine/tensor/factories.cpp
+  src/bits_of_matcha/engine/tensor/cast.cpp
   src/bits_of_matcha/engine/tensor/iterations.cpp
   src/bits_of_matcha/engine/tensor/RefReqCounted.cpp
 
@@ -229,7 +244,7 @@ set(
 
 #  src/bits_of_matcha/engine/utils/TexGraph.cpp
 
-  src/bits_of_matcha/engine/cpu/Buffer.cpp
+  src/bits_of_matcha/engine/cpu/Block.cpp
   src/bits_of_matcha/engine/cpu/MemoryPool.cpp
   src/bits_of_matcha/engine/cpu/BlockPool.cpp
 
@@ -269,11 +284,12 @@ set(
   src/bits_of_matcha/engine/ops/Cast.cpp
 )
 
+#set(BLA_VENDOR OpenBLAS)
 
 find_package(BLAS REQUIRED)
+find_package(OpenCL REQUIRED)
 find_package(libpng CONFIG REQUIRED)
 message("${BLAS_LIBRARIES}")
-
 
 add_library(${PROJECT_NAME} SHARED)
 
@@ -298,9 +314,11 @@ target_include_directories(
     include/
 )
 
-target_link_libraries(${PROJECT_NAME} PUBLIC /usr/lib/libcblas.so)
 target_link_libraries(${PROJECT_NAME} PUBLIC png)
 target_link_libraries(${PROJECT_NAME} PRIVATE pthread)
+#target_link_libraries(${PROJECT_NAME} PRIVATE ${BLAS_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} PRIVATE /usr/lib/libcblas.so)
+
 target_link_libraries(main PUBLIC ${PROJECT_NAME})
 
 

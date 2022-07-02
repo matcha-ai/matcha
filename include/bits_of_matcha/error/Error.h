@@ -5,9 +5,9 @@
 namespace matcha {
 
 struct Error : std::runtime_error {
-  Error(const std::string& message);
-  Error(const char* message);
-  Error();
+  explicit Error(const std::string& message);
+  explicit Error(const char* message);
+  explicit Error();
 };
 
 }

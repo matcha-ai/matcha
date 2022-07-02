@@ -3,6 +3,12 @@
 
 using namespace matcha;
 
+int main() {
+  tensor a = normal(10, 10) > 0;
+  print(a - (1-a));
+//  print(mean(a));
+}
+
 void run_op(const BinaryOp& op, const Shape& a, const Shape& b) {
   tensor ta = ones(a);
   tensor tb = ones(b);
@@ -69,32 +75,61 @@ void run_op_huge_broadcast(const BinaryOp& op) {
   run_op(op, {10000, 10000}, {10000, 1});
 }
 
+void run_op(const BinaryOp& op, size_t scale) {
+  auto uscale = (unsigned) scale;
+  run_op(op, {uscale}, {uscale});
+}
 
-int main() {
-  Benchmark benchmark("matcha", "/home/patz/benchmark/data");
+void run_op(const UnaryOp& op, size_t scale) {
+  auto uscale = (unsigned) scale;
+  run_op(op, Shape{uscale});
+}
 
+void run_op_square(const BinaryOp& op, size_t scale) {
+  auto uscale = (unsigned) scale;
+  run_op(op, {uscale, uscale}, {uscale, uscale});
+}
+
+
+
+void benchmark() {
+  Benchmark bm("matcha-OBLAS,march", "/home/patz/bm/data");
+  bm.linspace([] (size_t scale){ run_op(add, scale); },
+                     1, 5'000'000, 100, 10, "add");
+
+  bm.linspace([] (size_t scale){ run_op_square(dot, scale); },
+                     1, 3'000, 100, 10, "dot");
+
+  bm.linspace([] (size_t scale){ run_op(matcha::exp, scale); },
+                     1, 5'000'000, 100, 10, "exp");
+
+  return;
+//  /*
   print("add");
-  benchmark.run([] { run_op_tiny(add); }, 300, "add_tiny");
-  benchmark.run([] { run_op_small(add); }, 100, "add_small");
-  benchmark.run([] { run_op_small_scalar(add); }, 100, "add_small_scalar");
-  benchmark.run([] { run_op_small_broadcast(add); }, 100, "add_small_broadcast");
+  bm.run([] { run_op_tiny(add); }, 300, "add_tiny");
+  bm.run([] { run_op_small(add); }, 100, "add_small");
+  bm.run([] { run_op_small_scalar(add); }, 100, "add_small_scalar");
+  bm.run([] { run_op_small_broadcast(add); }, 100, "add_small_broadcast");
 
-  benchmark.run([] { run_op_big(add); }, 100, "add_big");
-  benchmark.run([] { run_op_big_scalar(add); }, 100, "add_big_scalar");
-  benchmark.run([] { run_op_big_broadcast(add); }, 100, "add_big_broadcast");
+  bm.run([] { run_op_big(add); }, 100, "add_big");
+  bm.run([] { run_op_big_scalar(add); }, 100, "add_big_scalar");
+  bm.run([] { run_op_big_broadcast(add); }, 100, "add_big_broadcast");
 
-  benchmark.run([] { run_op_huge(add); }, 20, "add_huge");
-  benchmark.run([] { run_op_huge_scalar(add); }, 20, "add_huge_scalar");
-  benchmark.run([] { run_op_huge_broadcast(add); }, 20, "add_huge_broadcast");
+  bm.run([] { run_op_huge(add); }, 20, "add_huge");
+  bm.run([] { run_op_huge_scalar(add); }, 20, "add_huge_scalar");
+  bm.run([] { run_op_huge_broadcast(add); }, 20, "add_huge_broadcast");
+//   */
 
   print("dot");
-  benchmark.run([] { run_op_tiny(dot); }, 300, "dot_tiny");
-  benchmark.run([] { run_op_small(dot); }, 100, "dot_small");
-  benchmark.run([] { run_op_big(dot); }, 100, "dot_big");
+  bm.run([] { run_op_tiny(dot); }, 300, "dot_tiny");
+  bm.run([] { run_op_small(dot); }, 100, "dot_small");
+  bm.run([] { run_op_big(dot); }, 100, "dot_big");
 
+//  /*
   print("exp");
-  benchmark.run([] { run_op_tiny(matcha::exp); }, 300, "exp_tiny");
-  benchmark.run([] { run_op_small(matcha::exp); }, 100, "exp_small");
-  benchmark.run([] { run_op_big(matcha::exp); }, 100, "exp_big");
-  benchmark.run([] { run_op_huge(matcha::exp); }, 20, "exp_huge");
+  bm.run([] { run_op_tiny(matcha::exp); }, 300, "exp_tiny");
+  bm.run([] { run_op_small(matcha::exp); }, 100, "exp_small");
+  bm.run([] { run_op_big(matcha::exp); }, 100, "exp_big");
+  bm.run([] { run_op_huge(matcha::exp); }, 20, "exp_huge");
+//   */
 }

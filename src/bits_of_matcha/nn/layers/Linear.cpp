@@ -10,13 +10,14 @@ Layer* Linear::init() {
     unsigned units_;
     bool useBias_;
     tensor kernel_, bias_;
+    Generator initializer_;
 
     void init(const tensor& a) override {
       if (a.rank() != 2) throw std::invalid_argument("expected tensor of shape [batchSize, prevLayer]");
       unsigned batch = a.shape()[0];
       unsigned prev = a.shape()[1];
 
-      kernel_ = glorot(units_, prev);
+      kernel_ = initializer_(units_, prev);
       params.add(&kernel_);
       if (useBias_) {
         bias_ = zeros(units_);
@@ -34,6 +35,7 @@ Layer* Linear::init() {
   auto internal = new Internal;
   internal->units_ = units;
   internal->useBias_ = useBias;
+  internal->initializer_ = initializer;
   return internal;
 }
 

@@ -85,7 +85,21 @@ public:
 
 public:
   tensor();
+
   tensor(float scalar);
+  tensor(double scalar);
+
+  tensor(int8_t scalar);
+  tensor(int16_t scalar);
+  tensor(int32_t scalar);
+  tensor(int64_t scalar);
+
+  tensor(uint8_t scalar);
+  tensor(uint16_t scalar);
+  tensor(uint32_t scalar);
+  tensor(uint64_t scalar);
+
+  tensor(bool scalar);
 
   static tensor full(float value, const Shape& shape);
   static tensor zeros(const Shape& shape);

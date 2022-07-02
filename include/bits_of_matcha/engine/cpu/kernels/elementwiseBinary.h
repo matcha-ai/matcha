@@ -10,22 +10,19 @@
 
 
 namespace matcha::engine {
-class Buffer;
+class Block;
 class ElementwiseBinaryCtx;
 }
 
 namespace matcha::engine::cpu {
 
-template <class Callable>
-inline void elementwiseBinary(Callable callable, engine::Buffer* a, engine::Buffer* b, engine::Buffer* c, const ElementwiseBinaryCtx& ctx) {
+template <class T = float, class Callable>
+inline void elementwiseBinary(Callable callable, Buffer& a, Buffer& b, Buffer& c, const ElementwiseBinaryCtx& ctx) {
 //  return;
-  dynamic_cast<Buffer*>(a);
-  dynamic_cast<Buffer*>(b);
-  dynamic_cast<Buffer*>(c);
 
-  auto valsA = a->as<float*>();
-  auto valsB = b->as<float*>();
-  auto valsC = c->as<float*>();
+  auto valsA = a.as<T*>();
+  auto valsB = b.as<T*>();
+  auto valsC = c.as<T*>();
 
   int strides = (int) ctx.stridesA.size();
   if (strides == 1) {

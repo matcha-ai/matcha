@@ -6,14 +6,14 @@
 
 namespace matcha::engine::cpu {
 
-class Buffer;
+class Block;
 
 
 class BlockPool {
 public:
   BlockPool(size_t blockSize, size_t quantum);
-  Buffer* allocate();
-  void free(Buffer* buffer);
+  Block* allocate();
+  void free(Block* buffer);
 
   size_t blockSize() const;
   size_t blocks() const;

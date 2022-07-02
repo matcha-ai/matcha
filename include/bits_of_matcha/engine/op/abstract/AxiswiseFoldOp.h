@@ -8,14 +8,14 @@
 namespace matcha::engine {
 
 struct AxiswiseFoldOp : Op {
-  AxiswiseFoldOp(Tensor* a)
+  explicit AxiswiseFoldOp(Tensor* a)
     : Op{a}
     , ctx_(a->shape())
   {
     outputs.add(this, a->dtype(), {});
   }
 
-  AxiswiseFoldOp(Tensor* a, int axis)
+  explicit AxiswiseFoldOp(Tensor* a, int axis)
     : Op{a}
     , ctx_(a->shape(), axis)
   {
@@ -33,9 +33,9 @@ struct AxiswiseFoldOp : Op {
 protected:
   AxiswiseFoldCtx ctx_;
 
-  template <class Callback>
+  template <class T, class Callback>
   void runCPU(const Callback& callback) {
-    cpu::axiswiseFold(
+    cpu::axiswiseFold<T, Callback>(
       callback,
       inputs[0]->buffer(),
       outputs[0]->malloc(),

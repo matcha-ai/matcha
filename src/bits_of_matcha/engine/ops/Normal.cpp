@@ -18,10 +18,10 @@ OpMeta<Normal> Normal::meta {
 };
 
 void Normal::run() {
-  auto m = *inputs[0]->buffer()->as<float*>();
-  auto sd = *inputs[1]->buffer()->as<float*>();
+  auto m = *inputs[0]->buffer().as<float*>();
+  auto sd = *inputs[1]->buffer().as<float*>();
   std::normal_distribution<float> dis(m, sd);
-  auto buff = outputs[0]->malloc()->as<float*>();
+  auto buff = outputs[0]->malloc().as<float*>();
   for (size_t i = 0; i < outputs[0]->size(); i++) {
     buff[i] = dis(gen_);
   }

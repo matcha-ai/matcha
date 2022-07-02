@@ -15,8 +15,7 @@ OpMeta<Divide> Divide::meta {
 };
 
 void Divide::run() {
-  outputs[0]->malloc();
-  runCPU(std::divides<float>());
+  runCPU(std::divides());
 }
 
 
@@ -46,8 +45,8 @@ void DivideBack::run() {
   }
   if (outputs[1]) {
     cpu::fill(outputs[1]->malloc(), outputs[1]->size(), 0);
-    auto bForw = forward->inputs[1]->buffer()->as<float*>();
-    auto bBack = outputs[1]->buffer()->as<float*>();
+    auto bForw = forward->inputs[1]->buffer().as<float*>();
+    auto bBack = outputs[1]->buffer().as<float*>();
 
     cpu::elementwiseBinaryBack(
       [=](float& a, float& b, float& c) {

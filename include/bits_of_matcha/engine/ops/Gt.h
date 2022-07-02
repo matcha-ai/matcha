@@ -1,12 +1,12 @@
 #pragma once
 
-#include "bits_of_matcha/engine/op/abstract/ElementwiseBinaryOp.h"
+#include "bits_of_matcha/engine/op/abstract/ElementwiseBinaryLogicalOp.h"
 #include "bits_of_matcha/engine/op/OpBack.h"
 
 
 namespace matcha::engine::ops {
 
-struct Gt : ElementwiseBinaryOp {
+struct Gt : ElementwiseBinaryLogicalOp {
   Gt(Tensor* a, Tensor* b);
   static OpMeta<Gt> meta;
 

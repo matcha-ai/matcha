@@ -9,6 +9,7 @@ namespace matcha::nn {
 struct Linear {
   unsigned units = 0;
   bool useBias = true;
+  Generator initializer = glorot;
 
   tensor operator()(const tensor& batch);
   std::shared_ptr<Layer> internal_{init()};

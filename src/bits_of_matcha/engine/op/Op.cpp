@@ -29,6 +29,14 @@ void Op::run() {
 void send(Op* op) {
   if (Tracer::handleNewOp(op)) {
   } else {
+    for (auto&& in: op->inputs) {
+      auto&& preop = in->op();
+      if (preop) {
+        preop->init();
+        preop->run();
+        delete preop;
+      }
+    }
     op->init();
     op->run();
     delete op;

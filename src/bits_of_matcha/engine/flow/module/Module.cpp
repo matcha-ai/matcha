@@ -20,7 +20,7 @@ std::vector<Tensor*> Module::forward(const std::vector<Tensor*>& ins) {
   result.reserve(graph_->outputs.size());
   for (auto gout: graph_->outputs) {
     auto out = new Tensor(gout->frame());
-    gout->shareBuffer(out);
+    gout->share(out);
     result.push_back(gout);
   }
 
@@ -214,7 +214,7 @@ void Module::stream(const std::vector<Tensor*>& source,
   if (source.size() != target.size())
     throw std::runtime_error("source and target count mismatch");
   for (int i = 0; i < source.size(); i++)
-    target[i]->shareBuffer(source[i]);
+    target[i]->share(source[i]);
 }
 
 }

@@ -1,15 +1,15 @@
 #pragma once
 
-#include "bits_of_matcha/engine/memory/Buffer.h"
+#include "bits_of_matcha/engine/memory/Block.h"
 
 
 namespace matcha::engine::cpu {
 
-class Buffer : public engine::Buffer {
+class Block : public engine::Block {
   public:
-    explicit Buffer(size_t bytes);
-    explicit Buffer(size_t bytes, void* memory);
-    ~Buffer() override;
+    explicit Block(size_t bytes);
+    explicit Block(size_t bytes, void* memory);
+    ~Block() override;
 
     void* payload() override;
 

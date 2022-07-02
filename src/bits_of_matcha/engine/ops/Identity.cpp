@@ -17,7 +17,7 @@ OpMeta<Identity> Identity::meta {
 };
 
 void Identity::run() {
-  outputs[0]->shareBuffer(inputs[0]);
+  outputs[0]->share(inputs[0]);
 }
 
 IdentityBack::IdentityBack(const BackCtx& ctx)
@@ -29,7 +29,7 @@ OpMeta<IdentityBack> IdentityBack::meta {
 };
 
 void IdentityBack::run() {
-  outputs[0]->shareBuffer(inputs[0]);
+  outputs[0]->share(inputs[0]);
 }
 
 }
