@@ -23,6 +23,10 @@ Dtype::Dtype(unsigned dtype)
     case Uint:
     case Ulong:
     case Bool:
+    case Cint:
+    case Cuint:
+    case Cfloat:
+    case Cdouble:
       break;
     default:
       throw std::invalid_argument("invalid dtype");
@@ -57,6 +61,30 @@ Dtype::Dtype(const std::string& dtype) {
     {"uint32", Uint},
     {"ulong", Ulong},
     {"uint64", Ulong},
+    {"cint", Cint},
+    {"cint32", Cint},
+    {"complex int", Cint},
+    {"int complex", Cint},
+    {"complex int32", Cint},
+    {"int32 complex", Cint},
+    {"cuint", Cuint},
+    {"cuint32", Cuint},
+    {"complex uint", Cuint},
+    {"uint complex", Cuint},
+    {"complex uint32", Cuint},
+    {"uint32 complex", Cuint},
+    {"cfloat", Cfloat},
+    {"cfloat32", Cfloat},
+    {"float32 complex", Cfloat},
+    {"complex float32", Cfloat},
+    {"float complex", Cfloat},
+    {"complex float", Cfloat},
+    {"cdouble", Cdouble},
+    {"cfloat64", Cdouble},
+    {"complex float64", Cdouble},
+    {"float64 complex", Cdouble},
+    {"complex double", Cdouble},
+    {"double complex", Cdouble},
     {"bool", Bool},
   };
 
@@ -80,6 +108,10 @@ std::string Dtype::string() const {
   case Ushort: return "Ushort";
   case Uint: return "Uint";
   case Ulong: return "Ulong";
+  case Cint: return "Cint";
+  case Cuint: return "Cuint";
+  case Cfloat: return "Cfloat";
+  case Cdouble: return "Cdouble";
   case Bool: return "Bool";
   default:  throw std::runtime_error("unknown dtype");
   }
@@ -98,6 +130,10 @@ size_t Dtype::size() const {
   case Ushort: return 2;
   case Uint: return 4;
   case Ulong: return 8;
+  case Cint: return 8;
+  case Cuint: return 8;
+  case Cfloat: return 8;
+  case Cdouble: return 16;
   case Bool: return 1;
   default:  throw std::runtime_error("invalid dtype");
   }

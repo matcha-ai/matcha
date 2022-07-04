@@ -49,16 +49,32 @@ void Print::dumpText(std::ostream& os) {
 }
 
 template <class Type>
+inline void dumpScalar(Type scalar, std::ostream& os) {
+  if constexpr (std::is_same<Type, bool>()) {
+    os << (scalar ? "true " : "false");
+  } else if constexpr (
+    std::is_same<Type, std::complex<int32_t>>() ||
+    std::is_same<Type, std::complex<uint32_t>>() ||
+    std::is_same<Type, std::complex<float>>() ||
+    std::is_same<Type, std::complex<double>>()
+  ) {
+    if (std::signbit(scalar.imag())) {
+      os << scalar.real() << "-" << -scalar.imag() << "i";
+    } else {
+      os << scalar.real() << "+" << scalar.imag() << "i";
+    }
+  } else {
+    os << scalar;
+  }
+}
+
+template <class Type>
 void dumpTensorData(Tensor* t, std::ostream& os) {
 //  print("buffer is now: ", buffer());
   auto data = t->buffer().as<Type*>();
 
   if (t->rank() == 0) {
-    if constexpr (std::is_same<Type, bool>()) {
-      os << (data[0] ? "true " : "false");
-    } else {
-      os << data[0];
-    }
+    dumpScalar(data[0], os);
     return;
   }
 
@@ -71,7 +87,7 @@ void dumpTensorData(Tensor* t, std::ostream& os) {
   } else {
     for (size_t i = 0; i < t->size(); i++) {
       std::stringstream ss;
-      ss << data[i];
+      dumpScalar(data[i], ss);
       size_t w = ss.str().size();
       cellW = std::max(cellW, w);
     }
@@ -117,14 +133,10 @@ void dumpTensorData(Tensor* t, std::ostream& os) {
         Type val = data[matrix * iter.size + row * iter.cols + col];
         std::string temp;
 
-        if constexpr (std::is_same<Type, bool>()) {
-          temp = val ? "true " : "false";
-        } else {
-          std::stringstream ss;
-          ss << val;
-          temp = ss.str();
-          temp += std::string(cellW - temp.size(), ' ');
-        }
+        std::stringstream ss;
+        dumpScalar(val, ss);
+        temp = ss.str();
+        temp += std::string(cellW - temp.size(), ' ');
         os << temp;
       }
     }
@@ -174,6 +186,10 @@ void Print::dumpTensor(std::ostream& os) {
   case Uint: dumpTensorData<uint32_t>(t, os); break;
   case Ulong: dumpTensorData<uint64_t>(t, os); break;
   case Bool: dumpTensorData<bool>(t, os); break;
+  case Cint: dumpTensorData<std::complex<int32_t>>(t, os); break;
+  case Cuint: dumpTensorData<std::complex<uint32_t>>(t, os); break;
+  case Cfloat: dumpTensorData<std::complex<float>>(t, os); break;
+  case Cdouble: dumpTensorData<std::complex<double>>(t, os); break;
   default: throw std::runtime_error("invalid dtype");
   }
 }

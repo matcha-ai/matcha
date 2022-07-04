@@ -3,7 +3,7 @@
 namespace matcha::engine::ops {
 
 Ge::Ge(Tensor* a, Tensor* b)
-  : ElementwiseBinaryOp(a, b)
+  : ElementwiseBinaryLogicalOp(a, b)
 {}
 
 OpMeta<Ge> Ge::meta {
@@ -11,7 +11,7 @@ OpMeta<Ge> Ge::meta {
 };
 
 void Ge::run() {
-  runCPU(std::greater_equal());
+  runCPU([](auto a, auto b) { return a >= b; });
 }
 
 }

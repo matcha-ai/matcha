@@ -15,7 +15,7 @@ OpMeta<MinBetween> MinBetween::meta {
 
 void MinBetween::run() {
   outputs[0]->malloc();
-  runCPU([] (float a, float b) { return a < b ? a : b; });
+  runCPU([] (auto a, auto b) { return a < b ? a : b; });
 }
 
 

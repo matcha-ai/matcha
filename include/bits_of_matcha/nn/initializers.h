@@ -1,6 +1,7 @@
 #pragma once
 
-#include "matcha/tensor"
+#include "bits_of_matcha/ops.h"
+#include "bits_of_matcha/random.h"
 
 #include <cmath>
 

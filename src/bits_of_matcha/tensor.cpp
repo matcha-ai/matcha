@@ -62,6 +62,22 @@ tensor::tensor(bool scalar) : internal_(engine::full(scalar, {})) {
   deref(this)->ref();
 }
 
+tensor::tensor(std::complex<int32_t> scalar) : internal_(engine::full(scalar, {})) {
+  deref(this)->ref();
+}
+
+tensor::tensor(std::complex<uint32_t> scalar) : internal_(engine::full(scalar, {})) {
+  deref(this)->ref();
+}
+
+tensor::tensor(std::complex<float> scalar) : internal_(engine::full(scalar, {})) {
+  deref(this)->ref();
+}
+
+tensor::tensor(std::complex<double> scalar) : internal_(engine::full(scalar, {})) {
+  deref(this)->ref();
+}
+
 tensor& tensor::operator=(const tensor& other) {
   auto temp = identity(other);
   if (internal_) deref(this)->unref();

@@ -64,7 +64,7 @@ Buffer& Buffer::operator=(const Buffer& other) {
   if (block_ == other.block_) return *this;
   if (block_) block_->unbind();
   block_ = other.block_;
-  block_->bind();
+  if (block_) block_->bind();
   return *this;
 }
 

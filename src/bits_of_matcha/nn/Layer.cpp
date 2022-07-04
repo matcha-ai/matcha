@@ -13,7 +13,7 @@ tensor Layer::operator()(const tensor& a) {
     initialized_ = true;
     init(a);
   }
-  if (net()) {
+  if (training()) {
     net()->params.add(params);
   }
   return run(a);

@@ -66,6 +66,7 @@ Buffer& Tensor::share(Buffer& buffer) {
 }
 
 Buffer& Tensor::share(Tensor* tensor) {
+  if (!tensor) throw std::runtime_error("can't share buffer: tensor is null");
   buffer_ = tensor->buffer_;
   return buffer_;
 }

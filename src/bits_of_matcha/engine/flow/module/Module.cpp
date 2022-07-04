@@ -15,6 +15,7 @@ Module::Module(std::unique_ptr<Graph>&& graph)
   graph_ = std::move(graph);
 }
 
+static int i = 0;
 std::vector<Tensor*> Module::forward(const std::vector<Tensor*>& ins) {
   std::vector<Tensor*> result;
   result.reserve(graph_->outputs.size());
@@ -32,7 +33,9 @@ void Module::forward(const std::vector<Tensor*>& ins,
                      std::vector<Tensor*>& outs)
 {
   stream(ins, graph_->inputs);
-  for (auto op: graph_->ops) op->run();
+  for (auto op: graph_->ops) {
+    op->run();
+  }
   stream(graph_->outputs, outs);
 }
 
@@ -40,7 +43,7 @@ std::vector<Tensor*> Module::forward(const std::vector<Tensor*>& inputs,
                                      Partials& partials,
                                      const std::vector<Tensor*>& wrt)
 {
-std::vector<Tensor*> result;
+  std::vector<Tensor*> result;
   result.reserve(graph_->outputs.size());
   for (auto gout: graph_->outputs) {
     auto out = new Tensor(gout->frame());

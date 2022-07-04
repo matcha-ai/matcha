@@ -1,10 +1,21 @@
-#include <matcha/matcha>
+#include <matcha>
 #include "/home/patz/benchmark/lib/benchmark.h"
 
 using namespace matcha;
+using namespace std::complex_literals;
+
+auto foo = (Flow) [] (tensor a) {
+  return a * 2;
+};
 
 int main() {
-  print(sigmoid(-100));
+  tensor w = (float) 3;
+  Backprop backprop {&w};
+
+  tensor y = 2 * w;
+  for (auto&& [t, g]: backprop(y)) {
+    print(g);
+  }
 }
 
 void run_op(const BinaryOp& op, const Shape& a, const Shape& b) {

@@ -82,6 +82,34 @@ Tensor* full(uint64_t value, const Shape& shape) {
   return tensor;
 }
 
+Tensor* full(std::complex<int32_t> value, const Shape& shape) {
+  auto tensor = new Tensor(Cint, shape);
+  cpu::fill(tensor->malloc(), tensor->size(), value);
+
+  return tensor;
+}
+
+Tensor* full(std::complex<uint32_t> value, const Shape& shape) {
+  auto tensor = new Tensor(Cuint, shape);
+  cpu::fill(tensor->malloc(), tensor->size(), value);
+
+  return tensor;
+}
+
+Tensor* full(std::complex<float> value, const Shape& shape) {
+  auto tensor = new Tensor(Cfloat, shape);
+  cpu::fill(tensor->malloc(), tensor->size(), value);
+
+  return tensor;
+}
+
+Tensor* full(std::complex<double> value, const Shape& shape) {
+  auto tensor = new Tensor(Cdouble, shape);
+  cpu::fill(tensor->malloc(), tensor->size(), value);
+
+  return tensor;
+}
+
 Tensor* full(bool value, const Shape& shape) {
   auto tensor = new Tensor(Bool, shape);
   cpu::fill(tensor->malloc(), tensor->size(), value);

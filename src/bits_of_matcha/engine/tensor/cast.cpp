@@ -28,6 +28,12 @@ Dtype promoteDtypes(Dtype a, Dtype b) {
     case Ulong:
     case Double:
       return Double;
+
+    case Cint:
+    case Cuint:
+    case Cfloat:
+    case Cdouble:
+      return Cdouble;
     }
     break;
 
@@ -53,6 +59,14 @@ Dtype promoteDtypes(Dtype a, Dtype b) {
     case Uint:
     case Ulong:
       return Long;
+
+    case Cint:
+      return Cint;
+    case Cuint:
+      return Cint;
+    case Cfloat:
+    case Cdouble:
+      return Cdouble;
     }
     break;
 
@@ -75,6 +89,13 @@ Dtype promoteDtypes(Dtype a, Dtype b) {
     case Uint:
     case Ulong:
       return Long;
+    case Cint:
+    case Cuint:
+      return Cint;
+    case Cfloat:
+    case Cdouble:
+      return Cdouble;
+
     }
     break;
 
@@ -97,6 +118,12 @@ Dtype promoteDtypes(Dtype a, Dtype b) {
     case Uint:
     case Ulong:
       return Long;
+    case Cint:
+    case Cuint:
+      return Cint;
+    case Cfloat:
+    case Cdouble:
+      return Cdouble;
     }
     break;
 
@@ -108,6 +135,12 @@ Dtype promoteDtypes(Dtype a, Dtype b) {
       return Double;
     default:
       return Long;
+    case Cint:
+    case Cuint:
+      return Cint;
+    case Cfloat:
+    case Cdouble:
+      return Cdouble;
     }
     break;
 
@@ -128,6 +161,11 @@ Dtype promoteDtypes(Dtype a, Dtype b) {
     case Uint:
     case Ulong:
       return Ulong;
+    case Cint:
+    case Cuint:
+    case Cfloat:
+    case Cdouble:
+      return b;
     }
     break;
 
@@ -149,6 +187,11 @@ Dtype promoteDtypes(Dtype a, Dtype b) {
       return Ushort;
     case Uint:
     case Ulong:
+      return b;
+    case Cint:
+    case Cuint:
+    case Cfloat:
+    case Cdouble:
       return b;
     }
     break;
@@ -173,6 +216,12 @@ Dtype promoteDtypes(Dtype a, Dtype b) {
       return Uint;
     case Ulong:
       return Ulong;
+    case Cuint:
+    case Cint:
+      return b;
+    case Cfloat:
+    case Cdouble:
+      return Cdouble;
     }
     break;
 
@@ -187,10 +236,63 @@ Dtype promoteDtypes(Dtype a, Dtype b) {
     case Int:
     case Long:
       return Long;
+    case Cint:
+      return Cint;
+    case Cuint:
+      return Cuint;
+    case Cfloat:
+    case Cdouble:
+      return Cdouble;
     default:
       return Ulong;
     }
     break;
+
+  case Cint:
+    switch (b) {
+    case Float:
+    case Double:
+    case Cfloat:
+    case Cdouble:
+      return Cdouble;
+    default:
+      return Cint;
+    }
+    break;
+
+  case Cuint:
+    switch (b) {
+    case Float:
+    case Double:
+    case Cfloat:
+    case Cdouble:
+      return Cdouble;
+    case Cint:
+    case Int:
+    case Short:
+    case Sbyte:
+      return Cint;
+    default:
+      return Cuint;
+    }
+    break;
+
+  case Cfloat:
+    switch (b) {
+    case Double:
+    case Cdouble:
+    case Cint:
+    case Int:
+    case Uint:
+    case Cuint:
+      return Cdouble;
+    default:
+      return Cfloat;
+    }
+    break;
+
+  case Cdouble:
+    return Cdouble;
 
   case Bool:
     switch (b) {

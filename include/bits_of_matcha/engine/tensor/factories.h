@@ -28,6 +28,11 @@ Tensor* full(uint16_t value, const Shape& shape);
 Tensor* full(uint32_t value, const Shape& shape);
 Tensor* full(uint64_t value, const Shape& shape);
 
+Tensor* full(std::complex<int32_t> value, const Shape& shape);
+Tensor* full(std::complex<uint32_t> value, const Shape& shape);
+Tensor* full(std::complex<float> value, const Shape& shape);
+Tensor* full(std::complex<double> value, const Shape& shape);
+
 Tensor* full(bool value, const Shape& shape);
 
 Tensor* zeros(const Shape& shape);

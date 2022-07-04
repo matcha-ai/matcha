@@ -1,5 +1,6 @@
 #include "bits_of_matcha/nn/Net.h"
 #include "bits_of_matcha/nn/Layer.h"
+#include "bits_of_matcha/Backprop.h"
 
 
 namespace matcha::nn {

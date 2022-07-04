@@ -8,6 +8,7 @@
 #include "bits_of_matcha/engine/memory/Buffer.h"
 
 #include <iostream>
+#include <complex>
 
 
 namespace matcha::engine {

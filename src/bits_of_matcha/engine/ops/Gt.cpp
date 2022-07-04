@@ -11,7 +11,7 @@ OpMeta<Gt> Gt::meta {
 };
 
 void Gt::run() {
-  runCPU(std::greater());
+  runCPU([](auto a, auto b) { return a > b; });
 }
 
 }

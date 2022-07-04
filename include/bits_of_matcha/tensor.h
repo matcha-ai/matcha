@@ -5,6 +5,7 @@
 #include "bits_of_matcha/savers/SaveSpec.h"
 
 #include <iostream>
+#include <complex>
 
 #define MATCHA_TENSOR_API alignas(void*)
 
@@ -98,6 +99,11 @@ public:
   tensor(uint16_t scalar);
   tensor(uint32_t scalar);
   tensor(uint64_t scalar);
+
+  tensor(std::complex<int32_t> scalar);
+  tensor(std::complex<uint32_t> scalar);
+  tensor(std::complex<float> scalar);
+  tensor(std::complex<double> scalar);
 
   tensor(bool scalar);
 

@@ -23,6 +23,11 @@ public:
     Uint,
     Ulong,
 
+    Cint,
+    Cuint,
+    Cfloat,
+    Cdouble,
+
     Bool,
   };
 
@@ -95,6 +100,11 @@ enum {
   Ushort = Dtype::Ushort,
   Uint = Dtype::Uint,
   Ulong = Dtype::Ulong,
+
+  Cint = Dtype::Cint,
+  Cuint = Dtype::Cuint,
+  Cfloat = Dtype::Cfloat,
+  Cdouble = Dtype::Cdouble,
 
   Bool = Dtype::Bool,
 };

@@ -108,6 +108,26 @@ protected:
                                       a->buffer(), b->buffer(), c->malloc(),
                                       ctx_);
       break;
+    case Cint:
+      cpu::elementwiseBinary<std::complex<int32_t>>(callable,
+                                          a->buffer(), b->buffer(), c->malloc(),
+                                          ctx_);
+      break;
+    case Cuint:
+      cpu::elementwiseBinary<std::complex<uint32_t>>(callable,
+                                                     a->buffer(), b->buffer(), c->malloc(),
+                                                     ctx_);
+      break;
+    case Cfloat:
+      cpu::elementwiseBinary<std::complex<float>>(callable,
+                                                  a->buffer(), b->buffer(), c->malloc(),
+                                                  ctx_);
+      break;
+    case Cdouble:
+      cpu::elementwiseBinary<std::complex<double>>(callable,
+                                                   a->buffer(), b->buffer(), c->malloc(),
+                                                   ctx_);
+      break;
     }
   }
 };

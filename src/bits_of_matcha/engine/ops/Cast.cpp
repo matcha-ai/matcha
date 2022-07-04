@@ -10,6 +10,10 @@ Cast::Cast(Tensor* a, const Dtype& dtype)
   outputs.add(this, dtype, a->shape());
 }
 
+OpMeta<Cast> Cast::meta {
+  .name = "Cast",
+};
+
 void Cast::run() {
   engine::cast(inputs[0]->buffer(), outputs[0]->malloc(),
                inputs[0]->dtype(), outputs[0]->dtype(), outputs[0]->size());

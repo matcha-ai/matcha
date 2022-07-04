@@ -1,8 +1,0 @@
-#pragma once
-
-
-namespace matcha {}
-namespace matcha::dataset {}
-
-#include "bits_of_matcha/dataset/Dataset.h"
-#include "bits_of_matcha/dataset/loaders/Csv.h"

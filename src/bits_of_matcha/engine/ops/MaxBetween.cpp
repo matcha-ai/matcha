@@ -15,7 +15,7 @@ OpMeta<MaxBetween> MaxBetween::meta {
 
 void MaxBetween::run() {
   outputs[0]->malloc();
-  runCPU([] (float a, float b) { return a > b ? a : b; });
+  runCPU([] (auto a, auto b) { return a > b ? a : b; });
 }
 
 

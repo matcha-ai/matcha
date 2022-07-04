@@ -11,7 +11,7 @@ OpMeta<Le> Le::meta {
 };
 
 void Le::run() {
-  runCPU(std::less_equal());
+  runCPU([](auto a, auto b) { return a <= b; });
 }
 
 }

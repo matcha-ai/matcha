@@ -5,6 +5,7 @@
 #include <execution>
 #include <numeric>
 #include <algorithm>
+#include <complex>
 
 
 namespace matcha::engine::cpu {
@@ -18,6 +19,18 @@ inline void cast(Buffer& in, Buffer& out, size_t size) {
     std::execution::par_unseq,
     beginA, endA, beginB,
     [](InType x) {return (OutType) x;}
+  );
+}
+
+template <class InType = std::complex<int32_t>, class OutType>
+inline void ccast(Buffer& in, Buffer& out, size_t size) {
+  auto beginA = in.as<InType*>();
+  auto endA = beginA + size;
+  auto beginB = out.as<OutType*>();
+  std::transform(
+    std::execution::par_unseq,
+    beginA, endA, beginB,
+    [](InType x) {return (OutType) x.real();}
   );
 }
 

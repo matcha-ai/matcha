@@ -11,7 +11,7 @@ OpMeta<Lt> Lt::meta {
 };
 
 void Lt::run() {
-  runCPU(std::less());
+  runCPU([](auto a, auto b) { return a < b; });
 }
 
 }

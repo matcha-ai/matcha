@@ -5,7 +5,8 @@
 #include "bits_of_matcha/nn/Callback.h"
 #include "bits_of_matcha/nn/callbacks/Logger.h"
 #include "bits_of_matcha/dataset/Dataset.h"
-#include "matcha/tensor"
+#include "bits_of_matcha/ops.h"
+#include "bits_of_matcha/random.h"
 
 
 namespace matcha::nn {

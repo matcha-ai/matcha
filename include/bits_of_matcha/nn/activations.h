@@ -1,4 +1,4 @@
-#include "matcha/tensor"
+#include "bits_of_matcha/ops.h"
 
 
 namespace matcha::nn {
