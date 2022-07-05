@@ -30,7 +30,7 @@ OpMeta<Divide> Divide::meta {
 };
 
 void Divide::run() {
-  runCPU(std::divides());
+  runCpu(std::divides());
 }
 
 

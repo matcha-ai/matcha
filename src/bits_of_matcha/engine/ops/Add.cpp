@@ -14,7 +14,7 @@ OpMeta<Add> Add::meta {
 };
 
 void Add::run() {
-  runCPU(std::plus());
+  runCpu(std::plus());
 }
 
 

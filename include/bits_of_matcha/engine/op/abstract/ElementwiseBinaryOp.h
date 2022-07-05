@@ -46,90 +46,164 @@ protected:
   ElementwiseBinaryCtx ctx_;
 
   template <class Callable>
-  void runCPU(Callable callable) {
+  inline void runCpu(const Callable& callable) {
+    Dtype dtype = outputs[0]->dtype();
+    switch (dtype) {
+
+    case Float: return runCpuTyped<float>(callable);
+    case Double: return runCpuTyped<double>(callable);
+
+    case Sbyte: return runCpuTyped<int8_t>(callable);
+    case Short: return runCpuTyped<int16_t>(callable);
+    case Int: return runCpuTyped<int32_t>(callable);
+    case Long: return runCpuTyped<int64_t>(callable);
+
+    case Byte: return runCpuTyped<uint8_t>(callable);
+    case Ushort: return runCpuTyped<uint16_t>(callable);
+    case Uint: return runCpuTyped<uint32_t>(callable);
+    case Ulong: return runCpuTyped<uint64_t>(callable);
+
+    case Cint: return runCpuTyped<std::complex<int32_t>>(callable);
+    case Cuint: return runCpuTyped<std::complex<uint32_t>>(callable);
+    case Cfloat: return runCpuTyped<std::complex<float>>(callable);
+    case Cdouble: return runCpuTyped<std::complex<double>>(callable);
+
+    case Bool: return runCpuTyped<bool>(callable);
+
+    }
+  }
+
+  template <class Callable>
+  inline void runCpuReal(const Callable& callable) {
+    Dtype dtype = outputs[0]->dtype();
+    switch (dtype) {
+
+    case Float: return runCpuTyped<float>(callable);
+    case Double: return runCpuTyped<double>(callable);
+
+    case Sbyte: return runCpuTyped<int8_t>(callable);
+    case Short: return runCpuTyped<int16_t>(callable);
+    case Int: return runCpuTyped<int32_t>(callable);
+    case Long: return runCpuTyped<int64_t>(callable);
+
+    case Byte: return runCpuTyped<uint8_t>(callable);
+    case Ushort: return runCpuTyped<uint16_t>(callable);
+    case Uint: return runCpuTyped<uint32_t>(callable);
+    case Ulong: return runCpuTyped<uint64_t>(callable);
+
+    case Bool: return runCpuTyped<bool>(callable);
+
+    }
+  }
+
+  template <class Callable>
+  inline void runCpuFloating(const Callable& callable) {
+    Dtype dtype = outputs[0]->dtype();
+    switch (dtype) {
+
+    case Float: return runCpuTyped<float>(callable);
+    case Double: return runCpuTyped<double>(callable);
+
+    case Cfloat: return runCpuTyped<std::complex<float>>(callable);
+    case Cdouble: return runCpuTyped<std::complex<double>>(callable);
+
+    }
+  }
+
+  template <class Callable>
+  inline void runCpuFloatingReal(const Callable& callable) {
+    Dtype dtype = outputs[0]->dtype();
+    switch (dtype) {
+
+    case Float: return runCpuTyped<float>(callable);
+    case Double: return runCpuTyped<double>(callable);
+
+    }
+  }
+
+  template <class Callable>
+  inline void runCpuSignedReal(const Callable& callable) {
+    Dtype dtype = outputs[0]->dtype();
+    switch (dtype) {
+
+    case Sbyte: return runCpuTyped<int8_t>(callable);
+    case Short: return runCpuTyped<int16_t>(callable);
+    case Int: return runCpuTyped<int32_t>(callable);
+    case Long: return runCpuTyped<int64_t>(callable);
+
+    }
+  }
+
+  template <class Callable>
+  inline void runCpuUnsignedReal(const Callable& callable) {
+    Dtype dtype = outputs[0]->dtype();
+    switch (dtype) {
+
+    case Byte: return runCpuTyped<uint8_t>(callable);
+    case Ushort: return runCpuTyped<uint16_t>(callable);
+    case Uint: return runCpuTyped<uint32_t>(callable);
+    case Ulong: return runCpuTyped<uint64_t>(callable);
+
+    case Bool: return runCpuTyped<bool>(callable);
+    }
+  }
+
+  template <class Callable>
+  inline void runCpuComplex(const Callable& callable) {
+    Dtype dtype = outputs[0]->dtype();
+    switch (dtype) {
+
+    case Cint: return runCpuTyped<std::complex<int32_t>>(callable);
+    case Cuint: return runCpuTyped<std::complex<uint32_t>>(callable);
+    case Cfloat: return runCpuTyped<std::complex<float>>(callable);
+    case Cdouble: return runCpuTyped<std::complex<double>>(callable);
+
+    }
+  }
+
+  template <class Callable>
+  inline void runCpuFloatingComplex(const Callable& callable) {
+    Dtype dtype = outputs[0]->dtype();
+    switch (dtype) {
+
+    case Cfloat: return runCpuTyped<std::complex<float>>(callable);
+    case Cdouble: return runCpuTyped<std::complex<double>>(callable);
+
+    }
+  }
+
+  template <class Callable>
+  inline void runCpuSignedComplex(const Callable& callable) {
+    Dtype dtype = outputs[0]->dtype();
+    switch (dtype) {
+
+    case Cint: return runCpuTyped<std::complex<int32_t>>(callable);
+
+    }
+  }
+
+  template <class Callable>
+  inline void runCpuUnsignedComplex(const Callable& callable) {
+    Dtype dtype = outputs[0]->dtype();
+    switch (dtype) {
+
+    case Cuint: return runCpuTyped<std::complex<uint32_t>>(callable);
+
+    }
+  }
+
+private:
+  template <class Type, class Callable>
+  inline void runCpuTyped(const Callable& callable) {
     auto a = inputs[0];
     auto b = inputs[1];
     auto c = outputs[0];
 
-    switch (a->dtype()) {
-    case Half:
-    case Bool:
-      cpu::elementwiseBinary<bool>(callable,
-                                   a->buffer(), b->buffer(), c->malloc(),
-                                   ctx_);
-      break;
-    case Float:
-      cpu::elementwiseBinary<float>(callable,
-                                    a->buffer(), b->buffer(), c->malloc(),
-                                    ctx_);
-      break;
-    case Double:
-      cpu::elementwiseBinary<double>(callable,
-                                     a->buffer(), b->buffer(), c->malloc(),
-                                     ctx_);
-      break;
-    case Sbyte:
-      cpu::elementwiseBinary<int8_t>(callable,
-                                     a->buffer(), b->buffer(), c->malloc(),
-                                     ctx_);
-      break;
-    case Short:
-      cpu::elementwiseBinary<int16_t>(callable,
-                                      a->buffer(), b->buffer(), c->malloc(),
-                                      ctx_);
-      break;
-    case Int:
-      cpu::elementwiseBinary<int32_t>(callable,
-                                      a->buffer(), b->buffer(), c->malloc(),
-                                      ctx_);
-      break;
-    case Long:
-      cpu::elementwiseBinary<int64_t>(callable,
-                                      a->buffer(), b->buffer(), c->malloc(),
-                                      ctx_);
-      break;
-    case Byte:
-      cpu::elementwiseBinary<uint8_t>(callable,
-                                     a->buffer(), b->buffer(), c->malloc(),
-                                     ctx_);
-      break;
-    case Ushort:
-      cpu::elementwiseBinary<uint16_t>(callable,
-                                      a->buffer(), b->buffer(), c->malloc(),
-                                      ctx_);
-      break;
-    case Uint:
-      cpu::elementwiseBinary<uint32_t>(callable,
-                                      a->buffer(), b->buffer(), c->malloc(),
-                                      ctx_);
-      break;
-    case Ulong:
-      cpu::elementwiseBinary<uint64_t>(callable,
-                                      a->buffer(), b->buffer(), c->malloc(),
-                                      ctx_);
-      break;
-    case Cint:
-      cpu::elementwiseBinary<std::complex<int32_t>>(callable,
-                                          a->buffer(), b->buffer(), c->malloc(),
-                                          ctx_);
-      break;
-    case Cuint:
-      cpu::elementwiseBinary<std::complex<uint32_t>>(callable,
-                                                     a->buffer(), b->buffer(), c->malloc(),
-                                                     ctx_);
-      break;
-    case Cfloat:
-      cpu::elementwiseBinary<std::complex<float>>(callable,
-                                                  a->buffer(), b->buffer(), c->malloc(),
-                                                  ctx_);
-      break;
-    case Cdouble:
-      cpu::elementwiseBinary<std::complex<double>>(callable,
-                                                   a->buffer(), b->buffer(), c->malloc(),
-                                                   ctx_);
-      break;
-    }
+    cpu::elementwiseBinary<Type>(callable,
+                                 a->buffer(), b->buffer(), c->malloc(),
+                                 ctx_);
   }
+
 };
 
 

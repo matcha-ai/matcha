@@ -11,7 +11,10 @@ OpMeta<Ge> Ge::meta {
 };
 
 void Ge::run() {
-  runCPU([](auto a, auto b) { return a >= b; });
+  if (isReal(inputs[0]))
+    runCpuReal(std::greater_equal());
+  else
+    runCpuComplex([](auto a, auto b) { return a.real() >= b.real(); });
 }
 
 }

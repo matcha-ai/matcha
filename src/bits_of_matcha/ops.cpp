@@ -35,6 +35,11 @@ matcha::tensor operator+(const matcha::tensor& a, const matcha::tensor& b) {
   return add(a, b);
 }
 
+matcha::tensor operator+(const matcha::tensor& a) {
+  if (a.dtype() == matcha::Bool) return a.cast(matcha::Byte);
+  return a;
+}
+
 matcha::tensor& operator+=(matcha::tensor& a, const matcha::tensor& b) {
   a = a + b;
   return a;
@@ -185,11 +190,11 @@ tensor pow(const tensor& a, const tensor& b) {
 }
 
 tensor square(const tensor& a) {
-  return pow(a, (float) 2.);
+  return pow(a, 2.);
 }
 
 tensor sqrt(const tensor& a) {
-  return pow(a, (float) .5);
+  return pow(a, .5);
 }
 
 tensor exp(const tensor& a) {

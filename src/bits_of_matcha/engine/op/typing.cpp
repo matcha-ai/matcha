@@ -1,4 +1,4 @@
-#include "bits_of_matcha/engine/tensor/cast.h"
+#include "bits_of_matcha/engine/op/typing.h"
 #include "bits_of_matcha/engine/tensor/Tensor.h"
 
 
@@ -21,24 +21,30 @@ Dtype promoteDtypes(Dtype a, Dtype b) {
     case Short:
     case Ushort:
     case Float:
-      return Float;
     case Int:
     case Uint:
     case Long:
     case Ulong:
+      return Float;
     case Double:
       return Double;
-
     case Cint:
     case Cuint:
     case Cfloat:
+      return Cfloat;
     case Cdouble:
       return Cdouble;
     }
     break;
 
   case Double:
-    return Double;
+    switch (b) {
+    case Cdouble:
+      return Cdouble;
+    default:
+      return Double;
+    }
+    break;
 
   case Sbyte:
     switch (b) {
@@ -65,6 +71,7 @@ Dtype promoteDtypes(Dtype a, Dtype b) {
     case Cuint:
       return Cint;
     case Cfloat:
+      return Cfloat;
     case Cdouble:
       return Cdouble;
     }
@@ -93,6 +100,7 @@ Dtype promoteDtypes(Dtype a, Dtype b) {
     case Cuint:
       return Cint;
     case Cfloat:
+      return Cfloat;
     case Cdouble:
       return Cdouble;
 
@@ -110,6 +118,7 @@ Dtype promoteDtypes(Dtype a, Dtype b) {
     case Long:
       return Long;
     case Float:
+      return Float;
     case Double:
       return Double;
     case Byte:
@@ -122,6 +131,7 @@ Dtype promoteDtypes(Dtype a, Dtype b) {
     case Cuint:
       return Cint;
     case Cfloat:
+      return Cfloat;
     case Cdouble:
       return Cdouble;
     }
@@ -131,6 +141,7 @@ Dtype promoteDtypes(Dtype a, Dtype b) {
     switch (b) {
     case Half: errHalf();
     case Float:
+      return Float;
     case Double:
       return Double;
     default:
@@ -139,6 +150,7 @@ Dtype promoteDtypes(Dtype a, Dtype b) {
     case Cuint:
       return Cint;
     case Cfloat:
+      return Cfloat;
     case Cdouble:
       return Cdouble;
     }
@@ -160,7 +172,6 @@ Dtype promoteDtypes(Dtype a, Dtype b) {
     case Ushort:
     case Uint:
     case Ulong:
-      return Ulong;
     case Cint:
     case Cuint:
     case Cfloat:
@@ -187,7 +198,6 @@ Dtype promoteDtypes(Dtype a, Dtype b) {
       return Ushort;
     case Uint:
     case Ulong:
-      return b;
     case Cint:
     case Cuint:
     case Cfloat:
@@ -203,11 +213,11 @@ Dtype promoteDtypes(Dtype a, Dtype b) {
       return Uint;
     case Sbyte:
     case Short:
-      return Int;
     case Int:
     case Long:
       return Long;
     case Float:
+      return Float;
     case Double:
       return Double;
     case Byte:
@@ -220,6 +230,7 @@ Dtype promoteDtypes(Dtype a, Dtype b) {
     case Cint:
       return b;
     case Cfloat:
+      return Cfloat;
     case Cdouble:
       return Cdouble;
     }
@@ -229,6 +240,7 @@ Dtype promoteDtypes(Dtype a, Dtype b) {
     switch (b) {
     case Half: errHalf();
     case Float:
+      return Float;
     case Double:
       return Double;
     case Sbyte:
@@ -241,6 +253,7 @@ Dtype promoteDtypes(Dtype a, Dtype b) {
     case Cuint:
       return Cuint;
     case Cfloat:
+      return Cfloat;
     case Cdouble:
       return Cdouble;
     default:
@@ -251,8 +264,9 @@ Dtype promoteDtypes(Dtype a, Dtype b) {
   case Cint:
     switch (b) {
     case Float:
-    case Double:
     case Cfloat:
+      return Cfloat;
+    case Double:
     case Cdouble:
       return Cdouble;
     default:
@@ -263,8 +277,9 @@ Dtype promoteDtypes(Dtype a, Dtype b) {
   case Cuint:
     switch (b) {
     case Float:
-    case Double:
     case Cfloat:
+      return Cfloat;
+    case Double:
     case Cdouble:
       return Cdouble;
     case Cint:
@@ -281,10 +296,6 @@ Dtype promoteDtypes(Dtype a, Dtype b) {
     switch (b) {
     case Double:
     case Cdouble:
-    case Cint:
-    case Int:
-    case Uint:
-    case Cuint:
       return Cdouble;
     default:
       return Cfloat;
@@ -307,6 +318,132 @@ Dtype promoteDtypes(Dtype a, Dtype b) {
 
 Dtype promoteDtypes(Tensor* a, Tensor* b) {
   return promoteDtypes(a->dtype(), b->dtype());
+}
+
+bool isReal(Dtype dtype) {
+  switch (dtype) {
+  case Cint:
+  case Cuint:
+  case Cfloat:
+  case Cdouble:
+    return false;
+  default:
+    return true;
+  }
+}
+
+bool isComplex(Dtype dtype) {
+  switch (dtype) {
+  case Cint:
+  case Cuint:
+  case Cfloat:
+  case Cdouble:
+    return true;
+  default:
+    return false;
+  }
+}
+
+bool isFloating(Dtype dtype) {
+  switch (dtype) {
+  case Float:
+  case Double:
+  case Cfloat:
+  case Cdouble:
+    return true;
+  default:
+    return false;
+  }
+}
+
+bool isSigned(Dtype dtype) {
+  switch (dtype) {
+  case Sbyte:
+  case Short:
+  case Int:
+  case Long:
+  case Cint:
+    return true;
+  default:
+    return false;
+  }
+}
+
+bool isUnsigned(Dtype dtype) {
+  switch (dtype) {
+  case Bool:
+  case Byte:
+  case Ushort:
+  case Uint:
+  case Ulong:
+  case Cuint:
+    return true;
+  default:
+    return false;
+  }
+}
+
+bool isFloatingReal(Dtype dtype) {
+  switch (dtype) {
+  case Float:
+  case Double:
+    return true;
+  default:
+    return false;
+  }
+}
+
+bool isSignedReal(Dtype dtype) {
+  switch (dtype) {
+  case Sbyte:
+  case Short:
+  case Int:
+  case Long:
+    return true;
+  default:
+    return false;
+  }
+}
+
+bool isUnsignedReal(Dtype dtype) {
+  switch (dtype) {
+  case Bool:
+  case Byte:
+  case Ushort:
+  case Uint:
+  case Ulong:
+    return true;
+  default:
+    return false;
+  }
+}
+
+bool isFloatingComplex(Dtype dtype) {
+  switch (dtype) {
+  case Cfloat:
+  case Cdouble:
+    return true;
+  default:
+    return false;
+  }
+}
+
+bool isSignedComplex(Dtype dtype) {
+  switch (dtype) {
+  case Cint:
+    return true;
+  default:
+    return false;
+  }
+}
+
+bool isUnsignedComplex(Dtype dtype) {
+  switch (dtype) {
+  case Cuint:
+    return true;
+  default:
+    return false;
+  }
 }
 
 }

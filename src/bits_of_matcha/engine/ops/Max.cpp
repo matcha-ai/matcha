@@ -18,24 +18,40 @@ OpMeta<Max> Max::meta {
   .name = "Max",
 };
 
-void Max::run() {
-  outputs[0]->malloc();
-
-  runCPU<float>(
-    [](float* begin, size_t stride, float* end) {
-      float buffer = std::numeric_limits<float>::min();
-      if (stride != 1) {
-        for (float* iter = begin; iter != end; iter += stride) {
-          buffer = std::max(buffer, *iter);
-        }
-      } else {
-        auto result = std::max_element(std::execution::par_unseq, begin, end);
-        buffer = *result;
+template <class T>
+inline T foo(T* begin, size_t stride, T* end) {
+  T buffer = std::numeric_limits<T>::min();
+  if (stride != 1) {
+    for (T* iter = begin; iter != end; iter += stride) {
+      if (*iter > buffer) {
+        buffer = *iter;
       }
-
-      return buffer;
     }
-  );
+  } else {
+    auto result = std::max_element(std::execution::par_unseq, begin, end);
+  }
+
+  return buffer;
+}
+
+template <class T>
+inline std::complex<T> fooc(std::complex<T>* begin, size_t stride, std::complex<T>* end) {
+  std::complex<T> buffer = std::numeric_limits<T>::min();
+  std::complex<T>* pos;
+  for (auto iter = begin; iter != end; iter += stride) {
+    if (iter->real() < buffer.real()) {
+      buffer = *iter;
+    }
+  }
+
+  return buffer;
+}
+
+void Max::run() {
+  if (isReal(inputs[0]))
+    runCpuReal([](auto a, auto b, auto c) { return foo(a, b, c); });
+  else
+    runCpuComplex([](auto a, auto b, auto c) { return fooc(a, b, c); });
 }
 
 }

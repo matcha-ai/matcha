@@ -101,6 +101,42 @@ void mm(Buffer& a, Buffer& b, Buffer& c, const MatrixwiseBinaryCtx& ctx) {
             (int) ctx.colsB
           );
 
+        } else if constexpr (std::is_same<T, std::complex<float>>()) {
+          cblas_cgemm(
+            CblasRowMajor,
+            CblasNoTrans,
+            CblasNoTrans,
+            (int) ctx.rowsA,
+            (int) ctx.colsB,
+            (int) ctx.colsA,
+            1,
+            matA,
+            (int) ctx.colsA,
+            matB,
+            (int) ctx.colsB,
+            0,
+            matC,
+            (int) ctx.colsB
+          );
+
+        } else if constexpr (std::is_same<T, std::complex<double>>()) {
+          cblas_zgemm(
+            CblasRowMajor,
+            CblasNoTrans,
+            CblasNoTrans,
+            (int) ctx.rowsA,
+            (int) ctx.colsB,
+            (int) ctx.colsA,
+            1,
+            matA,
+            (int) ctx.colsA,
+            matB,
+            (int) ctx.colsB,
+            0,
+            matC,
+            (int) ctx.colsB
+          );
+
         }
 //        */
 

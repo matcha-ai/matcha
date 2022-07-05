@@ -24,6 +24,7 @@ using AnyOp = std::variant<UnaryOp, BinaryOp, TernaryOp, NaryOp>;
 }
 
 matcha::tensor operator+(const matcha::tensor& a, const matcha::tensor& b);
+matcha::tensor operator+(const matcha::tensor& a);
 matcha::tensor& operator+=(matcha::tensor& a, const matcha::tensor& b);
 matcha::tensor operator-(const matcha::tensor& a, const matcha::tensor& b);
 matcha::tensor& operator-=(matcha::tensor& a, const matcha::tensor& b);

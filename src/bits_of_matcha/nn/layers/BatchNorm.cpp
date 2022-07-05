@@ -12,10 +12,10 @@ Layer* BatchNorm::init() {
     tensor gamma, beta;
 
     void init(const tensor& batch) override {
-      gamma = (float) 1;
+      gamma = 1.;
       params.add(&gamma);
 
-      beta = (float) 0;
+      beta = 0.;
       params.add(&beta);
     }
 

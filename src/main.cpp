@@ -5,15 +5,20 @@ using namespace matcha;
 using namespace std::complex_literals;
 
 auto foo = (Flow) [] (tensor a) {
-  return a * 2;
+  a = softmax(a);
+  return a;
 };
 
 int main() {
-  tensor w = (float) 3;
-  Backprop backprop {&w};
+  tensor a = normal(3, 3) * 10;
+  tensor b = normal(3, 3);
+  Backprop backprop {&a, &b};
 
-  tensor y = 2 * w;
-  for (auto&& [t, g]: backprop(y)) {
+  tensor c = foo(a);
+  print(c);
+  print("---");
+
+  for (auto&& [t, g]: backprop(c)) {
     print(g);
   }
 }

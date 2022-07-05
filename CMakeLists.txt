@@ -13,10 +13,7 @@ set(CMAKE_CXX_FLAGS -O2)
 set(
   PROJECT_HEADERS
 
-  include/matcha/matcha
-  include/matcha/tensor
-  include/matcha/dataset
-  include/matcha/nn
+  include/matcha
 
   include/bits_of_matcha/Dtype.h
   include/bits_of_matcha/Shape.h
@@ -79,7 +76,7 @@ set(
 
   include/bits_of_matcha/engine/tensor/Tensor.h
   include/bits_of_matcha/engine/tensor/factories.h
-  include/bits_of_matcha/engine/tensor/cast.h
+  include/bits_of_matcha/engine/op/typing.h
   include/bits_of_matcha/engine/tensor/iterations.h
   include/bits_of_matcha/engine/tensor/RefReqCounted.h
 
@@ -212,7 +209,7 @@ set(
 
   src/bits_of_matcha/engine/tensor/Tensor.cpp
   src/bits_of_matcha/engine/tensor/factories.cpp
-  src/bits_of_matcha/engine/tensor/cast.cpp
+  src/bits_of_matcha/engine/op/typing.cpp
   src/bits_of_matcha/engine/tensor/iterations.cpp
   src/bits_of_matcha/engine/tensor/RefReqCounted.cpp
 

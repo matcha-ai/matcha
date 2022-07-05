@@ -10,19 +10,19 @@ Backprop::Backprop(std::initializer_list<tensor*> wrt)
 {}
 
 Backprop::Backprop(const std::vector<tensor*>& wrt)
-  : interal_(nullptr)
+  : internal_(nullptr)
   , wrt_(wrt)
 {
   auto tracer = new engine::Tracer;
-  interal_ = tracer;
+  internal_ = tracer;
   tracer->open({});
 }
 
 std::map<tensor*, tensor> Backprop::operator()(const tensor& root) {
-  auto tracer = (engine::Tracer*) interal_;
+  auto tracer = (engine::Tracer*) internal_;
   auto graph = tracer->close({root});
   delete tracer;
-  interal_ = nullptr;
+  internal_ = nullptr;
 
   auto module = new engine::Module(std::move(graph));
 
@@ -47,7 +47,7 @@ std::map<tensor*, tensor> Backprop::operator()(const tensor& root) {
 }
 
 Backprop::~Backprop() {
-  auto tracer = (engine::Tracer*) interal_;
+  auto tracer = (engine::Tracer*) internal_;
   if (!tracer) return;
   auto graph = tracer->close({});
   auto module = new engine::Module(std::move(graph));

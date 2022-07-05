@@ -11,7 +11,10 @@ OpMeta<Gt> Gt::meta {
 };
 
 void Gt::run() {
-  runCPU([](auto a, auto b) { return a > b; });
+  if (isReal(inputs[0]))
+    runCpuReal(std::greater());
+  else
+    runCpuComplex([](auto a, auto b) { return a.real() > b.real(); });
 }
 
 }

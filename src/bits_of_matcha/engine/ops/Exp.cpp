@@ -15,7 +15,7 @@ OpMeta<Exp> Exp::meta {
 };
 
 void Exp::run() {
-  runCPU([](float x) { return std::exp(x); });
+  runCpu([](auto x) { return std::exp(x); });
 }
 
 
@@ -24,7 +24,7 @@ ExpBack::ExpBack(const BackCtx& ctx)
 {}
 
 void ExpBack::run() {
-  cpu::elementwiseUnary(
+  cpu::elementwiseUnary<float>(
     [](float x) { return std::exp(x); },
     inputs[0]->buffer(),
     outputs[0]->malloc(),

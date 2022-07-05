@@ -24,7 +24,6 @@ OpMeta<AccumulateGrads> AccumulateGrads::meta {
 };
 
 void AccumulateGrads::run() {
-//  print("running accumulate grads");
 //  print("accumulate: ", inputs.size());
   if (inputs.size() == 1) {
 //    print("just one");

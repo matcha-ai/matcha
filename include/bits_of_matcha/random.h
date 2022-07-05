@@ -30,8 +30,8 @@ struct Generator {
 namespace matcha::random {
 
 struct Uniform {
-  tensor a = (float) 0;
-  tensor b = (float) 1;
+  tensor a = 0.;
+  tensor b = 1.;
   int seed = 42;
 
   Generator init();
@@ -39,8 +39,8 @@ struct Uniform {
 };
 
 struct Normal {
-  tensor m  = (float) 0;
-  tensor sd = (float) 1;
+  tensor m  = 0.;
+  tensor sd = 1.;
   int seed = 42;
 
   Generator init();

@@ -12,6 +12,7 @@ Dtype::Dtype(unsigned dtype)
 {
   switch (dtype_) {
     case Half:
+      throw std::runtime_error("Half is not yet supported");
     case Float:
     case Double:
     case Sbyte:

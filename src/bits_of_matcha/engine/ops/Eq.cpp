@@ -12,7 +12,7 @@ OpMeta<Eq> Eq::meta {
 };
 
 void Eq::run() {
-  runCPU(std::equal_to());
+  runCpu(std::equal_to());
 }
 
 }

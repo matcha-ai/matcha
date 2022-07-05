@@ -11,7 +11,7 @@ OpMeta<Neq> Neq::meta {
 };
 
 void Neq::run() {
-  runCPU(std::not_equal_to());
+  runCpu(std::not_equal_to());
 }
 
 }

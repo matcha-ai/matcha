@@ -14,8 +14,12 @@ OpMeta<MinBetween> MinBetween::meta {
 };
 
 void MinBetween::run() {
-  outputs[0]->malloc();
-  runCPU([] (auto a, auto b) { return a < b ? a : b; });
+  Dtype dtype = outputs[0]->dtype();
+
+  if (isReal(dtype))
+    runCpuReal([](auto a, auto b) { return a < b ? a : b; });
+  else
+    runCpuComplex([](auto a, auto b) { return a.real() < b.real() ? a : b; });
 }
 
 

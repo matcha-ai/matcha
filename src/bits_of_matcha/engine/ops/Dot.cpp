@@ -11,13 +11,8 @@ Dot::Dot(Tensor* a, Tensor* b)
   , iter_(a->shape(), b->shape())
 {
   Dtype dtype = promoteDtypes(a, b);
-  switch (dtype) {
-  case Float:
-  case Double:
-    break;
-  default:
-    throw std::runtime_error("Dot: dtype " + dtype.string() + " is not supported");
-  }
+  if (!isFloatingReal(dtype))
+    throw std::runtime_error("Dot: input dtypes must be floating real");
 
   for (auto&& in: inputs) {
     if (in->dtype() == dtype) continue;

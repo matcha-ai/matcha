@@ -41,7 +41,7 @@ public:
 
 private:
   std::vector<tensor*> wrt_;
-  void* interal_;
+  void* internal_;
 };
 
 }

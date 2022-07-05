@@ -3,7 +3,6 @@
 #include "bits_of_matcha/tensor.h"
 #include "bits_of_matcha/Frame.h"
 #include "bits_of_matcha/engine/tensor/RefReqCounted.h"
-#include "bits_of_matcha/engine/tensor/cast.h"
 #include "bits_of_matcha/engine/memory/Block.h"
 #include "bits_of_matcha/engine/memory/Buffer.h"
 

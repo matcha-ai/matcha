@@ -155,16 +155,10 @@ void dumpTensorData(Tensor* t, std::ostream& os) {
 }
 
 void Print::dumpTensor(std::ostream& os) {
-//  os << this << " tensorrrr" << std::endl;
-//  print(frame_.string());
-//  print(buffer());
-//  os << this << " ";
-//  os << "done";
-//  return;
   auto t = inputs[0];
 
   if (t->frame().null()) {
-    os << "NullTensor";
+    os << "[]";
     return;
   }
 

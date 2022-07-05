@@ -22,7 +22,7 @@ tensor::tensor(float scalar) : internal_(engine::full(scalar, {})) {
   deref(this)->ref();
 }
 
-tensor::tensor(double scalar) : internal_(engine::full(scalar, {})) {
+tensor::tensor(double scalar) : internal_(engine::full((float) scalar, {})) {
   deref(this)->ref();
 }
 
@@ -74,7 +74,7 @@ tensor::tensor(std::complex<float> scalar) : internal_(engine::full(scalar, {}))
   deref(this)->ref();
 }
 
-tensor::tensor(std::complex<double> scalar) : internal_(engine::full(scalar, {})) {
+tensor::tensor(std::complex<double> scalar) : internal_(engine::full(std::complex<float>(scalar), {})) {
   deref(this)->ref();
 }
 
