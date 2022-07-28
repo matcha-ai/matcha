@@ -12,11 +12,4 @@ struct Exp : ElementwiseUnaryOp {
   void run() override;
 };
 
-struct ExpBack : OpBack {
-  ExpBack(const BackCtx& ctx);
-  static OpMeta<ExpBack> meta;
-
-  void run() override;
-};
-
 }

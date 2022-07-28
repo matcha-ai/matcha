@@ -11,15 +11,16 @@ namespace matcha::engine {
 class Op;
 class OpBack;
 class BackCtx;
+class BackOps;
 
-class Ops {
+class Ops final {
 public:
   Ops() = delete;
 
   struct Entry {
     std::function<std::string ()> name;
     std::function<std::string (Op* op)> label;
-    std::function<Op* (const BackCtx&)> back;
+    std::function<BackOps (const BackCtx&)> back;
     std::function<bool (Op* op)> sideEffect;
 
     ~Entry();
@@ -28,7 +29,7 @@ public:
 
   static std::string name(Op* op);
   static std::string label(Op* op);
-  static Op* back(const BackCtx& ctx);
+  static BackOps back(const BackCtx& ctx);
   static bool isSideEffect(Op* op);
 
 private:
@@ -45,7 +46,7 @@ namespace matcha::engine::ops {
 
 std::string name(Op* op);
 std::string label(Op* op);
-Op* back(const BackCtx& ctx);
+BackOps back(const BackCtx& ctx);
 bool isSideEffect(Op* op);
 
 }

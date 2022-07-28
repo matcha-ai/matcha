@@ -1,7 +1,7 @@
 #pragma once
 
 #include "bits_of_matcha/ops.h"
-#include "bits_of_matcha/engine/flow/Graph.h"
+#include "bits_of_matcha/engine/chain/Chain.h"
 
 #include <stack>
 #include <vector>
@@ -11,15 +11,15 @@
 
 namespace matcha::engine {
 
-class Graph;
+class Chain;
 
-std::unique_ptr<Graph> trace(const AnyOp& op, const std::vector<Frame>& frames);
+Chain trace(const AnyOp& op, const std::vector<Frame>& frames);
 bool tracing();
 
 void incept(Op* op, Op* preop);
 
-class Tracer {
-  friend std::unique_ptr<Graph> trace(const AnyOp&, const std::vector<Frame>&);
+class Tracer final {
+  friend Chain trace(const AnyOp&, const std::vector<Frame>&);
   friend bool tracing();
   friend void incept(Op*, Op*);
 
@@ -27,7 +27,7 @@ class Tracer {
   static bool active();
   static Tracer* get();
 
-  std::unique_ptr<Graph> graph_;
+  Chain chain_;
   std::set<Tensor*> addedTensors_;
 
 public:
@@ -35,7 +35,7 @@ public:
   ~Tracer();
 
   tuple open(const std::vector<Frame>& frames);
-  std::unique_ptr<Graph> close(const tuple& outputs);
+  Chain close(const tuple& outputs);
 
 private:
   bool addNewOp(Op* op);

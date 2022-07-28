@@ -9,26 +9,22 @@ Identity::Identity(Tensor* a)
   outputs.add(this, a->frame());
 }
 
+Identity::Identity(Tensor* a, Tensor* target)
+  : Op{a}
+{
+  if (a->frame() != target->frame())
+    throw std::runtime_error("frame mismatch");
+  outputs.add(this, target);
+}
+
 OpMeta<Identity> Identity::meta {
   .name = "Identity",
   .back = [](auto& ctx) {
-    return new IdentityBack(ctx);
+    return new Identity(ctx.vals[0]);
   },
 };
 
 void Identity::run() {
-  outputs[0]->share(inputs[0]);
-}
-
-IdentityBack::IdentityBack(const BackCtx& ctx)
-  : OpBack(ctx)
-{}
-
-OpMeta<IdentityBack> IdentityBack::meta {
-  .name = "IdentityBack"
-};
-
-void IdentityBack::run() {
   outputs[0]->share(inputs[0]);
 }
 

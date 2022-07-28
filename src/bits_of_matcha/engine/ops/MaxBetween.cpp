@@ -10,7 +10,7 @@ MaxBetween::MaxBetween(Tensor* a, Tensor* b)
 
 OpMeta<MaxBetween> MaxBetween::meta {
   .name = "MaxBetween",
-  .back = [](auto ctx) { return new MaxBetweenBack(ctx); }
+  .back = [](auto& ctx) { return new MaxBetweenBack(ctx); },
 };
 
 void MaxBetween::run() {
@@ -24,8 +24,7 @@ void MaxBetween::run() {
 
 
 MaxBetweenBack::MaxBetweenBack(const BackCtx& ctx)
-  : OpBack(ctx)
-  , iter_(forward->inputs[0]->shape(), forward->inputs[1]->shape())
+  : ElementwiseBinaryOpBack(ctx)
 {}
 
 OpMeta<MaxBetweenBack> MaxBetweenBack::meta {
@@ -37,8 +36,8 @@ void MaxBetweenBack::run() {
 //  print("", inputs[0] ," -> ", outputs[0], " ", outputs[1]);
 //  print();
 //  return;
-  auto forwA = forward->inputs[0]->buffer().as<float*>();
-  auto forwB = forward->inputs[1]->buffer().as<float*>();
+  auto forwA = forward_->inputs[0]->buffer().as<float*>();
+  auto forwB = forward_->inputs[1]->buffer().as<float*>();
 
   if (outputs[0]) {
     cpu::fill(outputs[0]->malloc(), outputs[0]->size(), 0);
@@ -50,7 +49,7 @@ void MaxBetweenBack::run() {
         }
       },
       outputs[0]->buffer(),
-      forward->inputs[1]->buffer(),
+      forward_->inputs[1]->buffer(),
       inputs[0]->buffer(),
       iter_
     );
@@ -64,7 +63,7 @@ void MaxBetweenBack::run() {
           b += c;
         }
       },
-      forward->inputs[0]->buffer(),
+      forward_->inputs[0]->buffer(),
       outputs[1]->buffer(),
       inputs[0]->buffer(),
       iter_

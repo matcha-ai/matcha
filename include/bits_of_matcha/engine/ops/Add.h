@@ -1,26 +1,23 @@
 #pragma once
 
 #include "bits_of_matcha/engine/op/abstract/ElementwiseBinaryOp.h"
-#include "bits_of_matcha/engine/op/OpBack.h"
+#include "bits_of_matcha/engine/op/abstract/ElementwiseBinaryOpBack.h"
 
 
 namespace matcha::engine::ops {
 
 struct Add : ElementwiseBinaryOp {
-  Add(Tensor* a, Tensor* b);
+  explicit Add(Tensor* a, Tensor* b);
   static OpMeta<Add> meta;
 
   void run() override;
 };
 
-struct AddBack : OpBack {
-  AddBack(const BackCtx& ctx);
+struct AddBack : ElementwiseBinaryOpBack {
+  explicit AddBack(const BackCtx& ctx);
   static OpMeta<AddBack> meta;
 
   void run() override;
-
-protected:
-  ElementwiseBinaryCtx iter_;
 };
 
 

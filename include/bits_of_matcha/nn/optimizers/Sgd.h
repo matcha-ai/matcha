@@ -8,8 +8,8 @@ namespace matcha::nn {
 struct Sgd {
   float lr = 1e-3;
 
-  void operator()(tensor& target, const tensor& grad) {
-    target -= lr * grad;
+  void operator()(tensor& target, const tensor& grad) const {
+//    target -= lr * grad;
   }
 };
 

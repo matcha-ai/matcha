@@ -27,7 +27,7 @@ Take::operator Dataset() {
     }
 
     size_t size() const override {
-      return std::min(limit_, dataset_.size());
+      return std::min(limit_, dataset_.size() - offset_);
     }
 
     size_t tell() const override {

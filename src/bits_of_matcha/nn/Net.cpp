@@ -35,20 +35,27 @@ void Net::fit(Dataset ds, size_t epochs) {
       batchBegin(batch, ds.size());
       tensor x = i["x"];
       tensor t = i["y"];
+
       Backprop backprop(params);
-//      print(88 * (x.reshape(28, 28) != 0), "\n\n");
+//      print(88 * (x.reshape(-1, 28, 28) != 0), "\n\n");
+//      print("---");
       tensor y = trainFlow_(x);
-//      print(y);
+//      print(argmax(y, -1).reshape(1, -1));
       tensor l = loss(t, y);
-//      for (auto&& [param, grad]: backprop(l)) {
-//        optimizer(*param, grad);
-//      }
-      batchEnd(batch, (int) ds.size());
+
+      auto gradients = backprop(l);
+      propagateForward(i, l);
+
+      for (auto&& [param, grad]: gradients) {
+        optimizer(*param, grad);
+      }
+      propagateBackward(gradients);
+      batchEnd();
       batch++;
     }
-    epochEnd(epoch, epochs);
+    epochEnd();
   }
-  trainEnd(ds);
+  trainEnd();
   if (Layer::netStack_.top() != this)
     throw std::runtime_error("net stack corruption");
   Layer::netStack_.pop();
@@ -58,24 +65,32 @@ void Net::trainBegin(Dataset ds) {
   for (auto&& cb: callbacks) if (cb) cb->onTrainBegin(*this, ds);
 }
 
-void Net::trainEnd(Dataset ds) {
-  for (auto&& cb: callbacks) if (cb) cb->onTrainEnd(*this, ds);
+void Net::trainEnd() {
+  for (auto&& cb: callbacks) if (cb) cb->onTrainEnd();
 }
 
 void Net::epochBegin(size_t epoch, size_t max) {
   for (auto&& cb: callbacks) if (cb) cb->onEpochBegin(epoch, max);
 }
 
-void Net::epochEnd(size_t epoch, size_t max) {
-  for (auto&& cb: callbacks) if (cb) cb->onEpochEnd(epoch, max);
+void Net::epochEnd() {
+  for (auto&& cb: callbacks) if (cb) cb->onEpochEnd();
 }
 
 void Net::batchBegin(size_t batch, size_t max) {
   for (auto&& cb: callbacks) if (cb) cb->onBatchBegin(batch, max);
 }
 
-void Net::batchEnd(size_t batch, size_t max) {
-  for (auto&& cb: callbacks) if (cb) cb->onBatchEnd(batch, max);
+void Net::batchEnd() {
+  for (auto&& cb: callbacks) if (cb) cb->onBatchEnd();
+}
+
+void Net::propagateForward(const Instance& instance, const tensor& l) {
+  for (auto&& cb: callbacks) if (cb) cb->onPropagateForward(instance, l);
+}
+
+void Net::propagateBackward(const std::map<tensor*, tensor>& gradients) {
+  for (auto&& cb: callbacks) if (cb) cb->onPropagateBackward(gradients);
 }
 
 void Net::Params::add(tensor* tensor) {

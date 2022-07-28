@@ -1,7 +1,7 @@
 #pragma once
 
 #include "bits_of_matcha/engine/op/abstract/ElementwiseBinaryOp.h"
-#include "bits_of_matcha/engine/op/OpBack.h"
+#include "bits_of_matcha/engine/op/abstract/ElementwiseBinaryOpBack.h"
 
 
 namespace matcha::engine::ops {
@@ -13,14 +13,11 @@ struct Multiply : ElementwiseBinaryOp {
   void run() override;
 };
 
-struct MultiplyBack : OpBack {
+struct MultiplyBack : ElementwiseBinaryOpBack {
   MultiplyBack(const BackCtx& ctx);
   static OpMeta<MultiplyBack> meta;
 
   void run() override;
-
-protected:
-  ElementwiseBinaryCtx iter_;
 };
 
 

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "bits_of_matcha/engine/op/abstract/ElementwiseBinaryOp.h"
-#include "bits_of_matcha/engine/op/OpBack.h"
+#include "bits_of_matcha/engine/op/abstract/ElementwiseBinaryOpBack.h"
 
 
 namespace matcha::engine::ops {
@@ -13,14 +13,11 @@ struct MaxBetween : ElementwiseBinaryOp {
   void run() override;
 };
 
-struct MaxBetweenBack : OpBack {
+struct MaxBetweenBack : ElementwiseBinaryOpBack {
   MaxBetweenBack(const BackCtx& ctx);
   static OpMeta<MaxBetweenBack> meta;
 
   void run() override;
-
-protected:
-  ElementwiseBinaryCtx iter_;
 };
 
 

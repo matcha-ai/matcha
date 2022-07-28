@@ -1,26 +1,101 @@
 #include <matcha>
 #include "/home/patz/benchmark/lib/benchmark.h"
 
+void net();
+
 using namespace matcha;
 using namespace std::complex_literals;
 
-auto foo = (Flow) [] (tensor a) {
-  a = softmax(a);
-  return a;
+tensor foo(tensor a) {
+  a = a.cast(Float);
+  tensor b = 2 * a;
+  tensor c = b.pow(2);
+  tensor d = exp(c/10);
+  tensor nothing = a + b + c + d;
+  nothing *= 23;
+  return d;
 };
 
+
 int main() {
-  tensor a = normal(3, 3) * 10;
-  tensor b = normal(3, 3);
-  Backprop backprop {&a, &b};
+  Flow flow(foo);
+  Dataset mnist = load("mnist_test.csv");
+  mnist = mnist.take(1);
+  for (int i = 0; i < 3; i++)
+    mnist = mnist.cat(mnist);
 
-  tensor c = foo(a);
-  print(c);
-  print("---");
+  for (auto i: mnist) {
+    tensor x = i["x"].reshape(1, -1);
+    tensor w = ones(x.shape());
+    Backprop backprop {&w};
 
-  for (auto&& [t, g]: backprop(c)) {
-    print(g);
+    print(flow(flow(flow(x))));
+    for (auto&& [t, g]: backprop(w))
+      print(g);
+
+    break;
   }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+void net() {
+  Net net {
+    nn::Flatten{},
+    nn::Fc{400},
+    nn::Fc{100, "relu"},
+    nn::Fc{50, "relu"},
+    nn::Fc{10, "softmax"},
+  };
+
+  net.loss = mse;
+//  net.callbacks.clear();
+
+//  Dataset mnist = load("mnist_train.csv");
+  Dataset mnist = (Dataset) []() {
+    Instance i;
+    i["x"] = ones(28, 28);
+    i["y"] = cast(1, Int).reshape(1, 1);
+    return i;
+  };
+  mnist = mnist.take(1000);
+  mnist = mnist.cat(mnist).cat(mnist).cat(mnist);
+  net.fit(mnist.batch(100));
 }
 
 void run_op(const BinaryOp& op, const Shape& a, const Shape& b) {

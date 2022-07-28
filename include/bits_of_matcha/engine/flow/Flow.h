@@ -9,9 +9,10 @@ namespace matcha::engine {
 
 class Module;
 class Tensor;
+class Chain;
 class Op;
 
-class Flow {
+class Flow final {
 public:
   explicit Flow(const AnyOp& preimage);
   explicit Flow();
@@ -28,6 +29,8 @@ private:
   Module* module(const std::vector<Frame>& frames);
   Module* module(const std::vector<Tensor*>& tensors);
   std::string getId(const std::vector<Frame>& frames);
+
+  static void optimizer(Chain& chain);
 
 private:
   AnyOp preimage_;

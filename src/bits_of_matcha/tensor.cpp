@@ -86,6 +86,9 @@ tensor& tensor::operator=(const tensor& other) {
 }
 
 tensor& tensor::operator=(tensor&& other) {
+  if (internal_ == other.internal_) return *this;
+  auto internal = (engine::Tensor*) internal_;
+  internal->unref();
   internal_ = other.internal_;
   other.internal_ = nullptr;
   return *this;
@@ -170,7 +173,7 @@ void tensor::save(const std::string& file, SaveSpec spec) {
   } else {
     throw std::runtime_error("unsupported export format: " + ext);
   }
-  engine::send(op);
+  engine::dispatch(op);
 }
 
 
@@ -210,10 +213,11 @@ tensor tensor::blob(const std::vector<float>& data) {
   return blob(data, {(unsigned) data.size()});
 }
 
-}
-
 std::ostream& operator<<(std::ostream& os, const matcha::tensor& t) {
   auto op = new ops::Print(deref(t), false, os);
-  send(op);
+  dispatch(op);
   return os;
 }
+
+}
+

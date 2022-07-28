@@ -7,6 +7,7 @@
 #include "bits_of_matcha/dataset/loaders/Take.h"
 #include "bits_of_matcha/dataset/loaders/Batch.h"
 #include "bits_of_matcha/dataset/loaders/Map.h"
+#include "bits_of_matcha/dataset/loaders/Cat.h"
 
 
 using namespace matcha::engine;
@@ -91,6 +92,10 @@ Dataset Dataset::batch(size_t limit) const {
 
 Dataset Dataset::map(const std::function<Instance (const Instance&)>& function) const {
   return dataset::Map(*this, function);
+}
+
+Dataset Dataset::cat(const Dataset& ds) const {
+  return dataset::Cat({*this, ds});
 }
 
 Dataset::Dataset(void* internal)

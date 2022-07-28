@@ -21,7 +21,7 @@ OpMeta<Argmax> Argmax::meta {
 template <class T>
 inline T foo(T* begin, size_t stride, T* end) {
   T buffer = std::numeric_limits<T>::min();
-  T* pos;
+  T* pos = begin;
   if (stride != 1) {
     for (T* iter = begin; iter != end; iter += stride) {
       if (*iter > buffer) {

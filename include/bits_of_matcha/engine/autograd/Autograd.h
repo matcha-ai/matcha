@@ -1,24 +1,24 @@
 #pragma once
 
-#include "bits_of_matcha/engine/tensor/Tensor.h"
+#include "bits_of_matcha/engine/op/Op.h"
 
-#include <memory>
-#include <vector>
+namespace matcha::engine {
+class Module;
+class Chain;
+}
 
 namespace matcha::engine {
 
-struct Graph;
+struct Autograd final : Op {
+  explicit Autograd(std::unique_ptr<Module> module, const std::vector<Tensor*>& wrt);
+  explicit Autograd(Chain graph, const std::vector<Tensor*>& wrt);
+  static OpMeta<Autograd> meta;
 
-std::unique_ptr<Graph> autograd(const std::unique_ptr<Graph>& graph, const std::vector<Tensor*>& wrt);
+  void run() override;
 
-class Autograd {
-  friend std::unique_ptr<Graph> autograd(const std::unique_ptr<Graph>&);
-
-  explicit Autograd(const std::unique_ptr<Graph>& graph);
-  void run();
-
-  const std::unique_ptr<Graph>& graph_;
-  std::unique_ptr<Graph> adjoint_;
+private:
+  std::unique_ptr<Module> module_;
+  std::vector<Tensor*> wrt_;
 };
 
 }

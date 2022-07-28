@@ -10,7 +10,7 @@ Add::Add(Tensor* a, Tensor* b)
 
 OpMeta<Add> Add::meta {
   .name = "Add",
-  .back = [](auto ctx) { return new AddBack(ctx); }
+  .back = [](auto& ctx) { return new AddBack(ctx); },
 };
 
 void Add::run() {
@@ -19,8 +19,7 @@ void Add::run() {
 
 
 AddBack::AddBack(const BackCtx& ctx)
-  : OpBack(ctx)
-  , iter_(forward->inputs[0]->shape(), forward->inputs[1]->shape())
+  : ElementwiseBinaryOpBack(ctx)
 {}
 
 OpMeta<AddBack> AddBack::meta {
@@ -28,10 +27,6 @@ OpMeta<AddBack> AddBack::meta {
 };
 
 void AddBack::run() {
-//  print("AddBack");
-//  print("", inputs[0] ," -> ", outputs[0], " ", outputs[1]);
-//  print();
-//  return;
   if (outputs[0]) {
     cpu::fill(outputs[0]->malloc(), outputs[0]->size(), (float) 0);
 
@@ -40,7 +35,7 @@ void AddBack::run() {
         a += c;
       },
       outputs[0]->buffer(),
-      forward->inputs[1]->buffer(),
+      forward_->inputs[1]->buffer(),
       inputs[0]->buffer(),
       iter_
     );
@@ -52,7 +47,7 @@ void AddBack::run() {
       [](float& a, float& b, float& c) {
         b += c;
       },
-      forward->inputs[0]->buffer(),
+      forward_->inputs[0]->buffer(),
       outputs[1]->buffer(),
       inputs[0]->buffer(),
       iter_

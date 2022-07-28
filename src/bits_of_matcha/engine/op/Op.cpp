@@ -1,5 +1,5 @@
 #include "bits_of_matcha/engine/op/Op.h"
-#include "bits_of_matcha/engine/flow/Tracer.h"
+#include "bits_of_matcha/engine/chain/Tracer.h"
 
 
 namespace matcha::engine {
@@ -19,15 +19,13 @@ Op::~Op() {
 //  print("deleting op");
 }
 
-void Op::init() {
-  for (auto out: outputs) out->malloc();
-}
+void Op::init() {}
 
 void Op::run() {
 
 }
 
-void send(Op* op) {
+void dispatch(Op* op) {
   if (!tracing()) {
     op->init();
     op->run();

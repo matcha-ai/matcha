@@ -13,11 +13,4 @@ struct Reshape : Op {
   void run() override;
 };
 
-struct ReshapeBack : OpBack {
-  ReshapeBack(const BackCtx& ctx);
-  static OpMeta<ReshapeBack> meta;
-
-  void run() override;
-};
-
 }

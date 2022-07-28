@@ -42,7 +42,7 @@ std::string Ops::label(Op* op) {
   return get(op).label(op);
 }
 
-Op* Ops::back(const BackCtx& ctx) {
+BackOps Ops::back(const BackCtx& ctx) {
   auto op = ctx.forward;
   auto& entry = get(op);
   return entry.back(ctx);
@@ -61,7 +61,7 @@ namespace matcha::engine::ops {
 
 std::string name(Op* op) { return Ops::name(op); }
 std::string label(Op* op) { return Ops::label(op); }
-Op* back(const BackCtx& ctx) { return Ops::back(ctx); }
+BackOps back(const BackCtx& ctx) { return Ops::back(ctx); }
 bool isSideEffect(Op* op) { return Ops::isSideEffect(op); }
 
 }

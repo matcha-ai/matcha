@@ -25,9 +25,6 @@ Transpose::Transpose(Tensor* a)
 
 OpMeta<Transpose> Transpose::meta {
   .name = "Transpose",
-  .back = [](auto& ctx) {
-    return new TransposeBack(ctx);
-  },
 };
 
 void Transpose::run() {
@@ -50,24 +47,5 @@ void Transpose::run() {
   case Bool: cpu::transpose<bool>(inputs[0]->buffer(), outputs[0]->malloc(), iter_); break;
   }
 }
-
-TransposeBack::TransposeBack(const BackCtx& ctx)
-  : OpBack(ctx)
-  , iter_(outputs[0]->shape())
-{}
-
-OpMeta<TransposeBack> TransposeBack::meta {
-  .name = "TransposeBack",
-};
-
-void TransposeBack::run() {
-  if (iter_.rows == 1 || iter_.cols == 1) {
-    outputs[0]->share(inputs[0]);
-    return;
-  }
-
-  cpu::transpose(inputs[0]->buffer(), outputs[0]->malloc(), iter_);
-}
-
 
 }

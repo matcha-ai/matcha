@@ -47,6 +47,7 @@ set(
   include/bits_of_matcha/dataset/loaders/Take.h
   include/bits_of_matcha/dataset/loaders/Batch.h
   include/bits_of_matcha/dataset/loaders/Map.h
+  include/bits_of_matcha/dataset/loaders/Cat.h
   include/bits_of_matcha/dataset/loaders/Csv.h
 
   include/bits_of_matcha/nn/Net.h
@@ -98,20 +99,19 @@ set(
   include/bits_of_matcha/engine/op/abstract/ElementwiseBinaryLogicalOp.h
   include/bits_of_matcha/engine/op/abstract/AxiswiseFoldOp.h
 
+  include/bits_of_matcha/engine/chain/Chain.h
+  include/bits_of_matcha/engine/chain/Tracer.h
+  include/bits_of_matcha/engine/chain/optimizers/reduceToEffects.h
+  include/bits_of_matcha/engine/chain/optimizers/contractIdentities.h
+
   include/bits_of_matcha/engine/flow/Flow.h
-  include/bits_of_matcha/engine/flow/Graph.h
-  include/bits_of_matcha/engine/flow/Tracer.h
-  include/bits_of_matcha/engine/flow/module/Module.h
-  include/bits_of_matcha/engine/flow/module/ModuleForw.h
-  include/bits_of_matcha/engine/flow/module/ModuleBack.h
-  include/bits_of_matcha/engine/flow/Tasks.h
-  include/bits_of_matcha/engine/flow/Backprop.h
+  include/bits_of_matcha/engine/flow/Module.h
+  include/bits_of_matcha/engine/flow/ModuleForw.h
 
-  include/bits_of_matcha/engine/autograd/gradient.h
-  include/bits_of_matcha/engine/autograd/Autograd.h
   include/bits_of_matcha/engine/autograd/AccumulateGrads.h
+  include/bits_of_matcha/engine/autograd/GradientTape.h
 
-#  include/bits_of_matcha/engine/utils/TexGraph.h
+  #  include/bits_of_matcha/engine/utils/TexGraph.h
 
   include/bits_of_matcha/engine/cpu/Buffer.h
   include/bits_of_matcha/engine/cpu/MemoryPool.h
@@ -126,6 +126,7 @@ set(
 
   include/bits_of_matcha/engine/dataset/Dataset.h
 
+  include/bits_of_matcha/engine/autograd/Autograd.h
   include/bits_of_matcha/engine/ops/Add.h
   include/bits_of_matcha/engine/ops/Multiply.h
   include/bits_of_matcha/engine/ops/Divide.h
@@ -158,6 +159,7 @@ set(
   include/bits_of_matcha/engine/ops/Normal.h
   include/bits_of_matcha/engine/ops/Stack.h
   include/bits_of_matcha/engine/ops/Cast.h
+  include/bits_of_matcha/engine/ops/Assign.h
 
   include/bits_of_matcha/grafana/Grafana.h
 )
@@ -191,6 +193,7 @@ set(
   src/bits_of_matcha/dataset/loaders/Take.cpp
   src/bits_of_matcha/dataset/loaders/Batch.cpp
   src/bits_of_matcha/dataset/loaders/Map.cpp
+  src/bits_of_matcha/dataset/loaders/Cat.cpp
   src/bits_of_matcha/dataset/loaders/Csv.cpp
 
   src/bits_of_matcha/nn/Net.cpp
@@ -218,6 +221,7 @@ set(
   src/bits_of_matcha/engine/op/OpInputs.cpp
   src/bits_of_matcha/engine/op/OpOutputs.cpp
   src/bits_of_matcha/engine/op/Ops.cpp
+  src/bits_of_matcha/engine/op/BackCtx.cpp
 
   src/bits_of_matcha/engine/iterations/ElementwiseBinaryCtx.cpp
   src/bits_of_matcha/engine/iterations/MatrixwiseBinaryCtx.cpp
@@ -228,20 +232,19 @@ set(
   src/bits_of_matcha/engine/op/abstract/ElementwiseUnaryOp.cpp
   src/bits_of_matcha/engine/op/abstract/ElementwiseBinaryOp.cpp
 
+  src/bits_of_matcha/engine/chain/Chain.cpp
+  src/bits_of_matcha/engine/chain/Tracer.cpp
+  src/bits_of_matcha/engine/chain/optimizers/reduceToEffects.cpp
+  src/bits_of_matcha/engine/chain/optimizers/contractIdentities.cpp
+
   src/bits_of_matcha/engine/flow/Flow.cpp
-  src/bits_of_matcha/engine/flow/Graph.cpp
-  src/bits_of_matcha/engine/flow/Tasks.cpp
-  src/bits_of_matcha/engine/flow/Tracer.cpp
-  src/bits_of_matcha/engine/flow/module/Module.cpp
-  src/bits_of_matcha/engine/flow/module/ModuleForw.cpp
-  src/bits_of_matcha/engine/flow/module/ModuleBack.cpp
+  src/bits_of_matcha/engine/flow/Module.cpp
+  src/bits_of_matcha/engine/flow/ModuleForw.cpp
 
-  src/bits_of_matcha/engine/autograd/gradient.cpp
-  src/bits_of_matcha/engine/autograd/Autograd.cpp
   src/bits_of_matcha/engine/autograd/AccumulateGrads.cpp
-  src/bits_of_matcha/engine/autograd/Autograd.cpp
+  src/bits_of_matcha/engine/autograd/GradientTape.cpp
 
-#  src/bits_of_matcha/engine/utils/TexGraph.cpp
+  #  src/bits_of_matcha/engine/utils/TexGraph.cpp
 
   src/bits_of_matcha/engine/cpu/Block.cpp
   src/bits_of_matcha/engine/cpu/MemoryPool.cpp
@@ -249,6 +252,7 @@ set(
 
   src/bits_of_matcha/engine/dataset/Dataset.cpp
 
+  src/bits_of_matcha/engine/autograd/Autograd.cpp
   src/bits_of_matcha/engine/ops/Add.cpp
   src/bits_of_matcha/engine/ops/Multiply.cpp
   src/bits_of_matcha/engine/ops/Divide.cpp
@@ -281,6 +285,7 @@ set(
   src/bits_of_matcha/engine/ops/Normal.cpp
   src/bits_of_matcha/engine/ops/Stack.cpp
   src/bits_of_matcha/engine/ops/Cast.cpp
+  src/bits_of_matcha/engine/ops/Assign.cpp
 
   src/bits_of_matcha/grafana/Grafana.cpp
 )

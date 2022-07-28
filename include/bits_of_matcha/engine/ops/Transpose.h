@@ -17,15 +17,4 @@ private:
   MatrixwiseUnaryCtx iter_;
 };
 
-struct TransposeBack : OpBack {
-  TransposeBack(const BackCtx& ctx);
-  static OpMeta<TransposeBack> meta;
-
-  void run() override;
-
-public:
-  MatrixwiseUnaryCtx iter_;
-};
-
-
 }

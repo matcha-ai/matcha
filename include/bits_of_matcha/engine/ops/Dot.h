@@ -18,12 +18,4 @@ private:
   MatrixwiseBinaryCtx iter_;
 };
 
-
-struct DotBack : OpBack {
-  DotBack(const BackCtx& ctx);
-  static OpMeta<DotBack> meta;
-
-  void run() override;
-};
-
 }

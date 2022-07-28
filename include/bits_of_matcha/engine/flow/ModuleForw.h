@@ -12,19 +12,13 @@ struct ModuleForw : Op {
   ModuleForw(Module* module, const std::vector<Tensor*>& ins);
   static OpMeta<ModuleForw> meta;
 
-  static bool isModuleForw(Op* op);
-  static ModuleForw asModuleForw(Op* op);
-
   void run() override;
 
-  using Partial = std::pair<Tensor*, std::vector<Tensor*>>;
-  void forward(std::map<Tensor*, Partial>& partials);
+  auto module() -> Module&;
+  auto module() const -> const Module&;
 
 private:
   Module* module_;
-
-  friend class Module;
-  friend class ModuleBack;
 };
 
 }

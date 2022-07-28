@@ -11,7 +11,16 @@ class Tensor;
 struct BackCtx {
   Op* forward;
   std::vector<Tensor*> vals;
-  std::vector<Tensor*> wrts;
+  std::vector<bool> wrts;
+};
+
+struct BackOps {
+  BackOps(Op* op);
+  BackOps(const std::vector<Op*>& ops, const std::vector<Tensor*>& outputs);
+  BackOps() = default;
+
+  std::vector<Op*> ops;
+  std::vector<Tensor*> outputs;
 };
 
 }

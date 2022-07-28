@@ -1,4 +1,4 @@
-#include "bits_of_matcha/engine/flow/Tracer.h"
+#include "bits_of_matcha/engine/chain/Tracer.h"
 #include "bits_of_matcha/engine/tensor/Tensor.h"
 #include "bits_of_matcha/engine/op/Op.h"
 #include "bits_of_matcha/tensor.h"
@@ -26,14 +26,14 @@ void incept(Op* op, Op* preop) {
 
   auto* tracer = Tracer::get();
   if (tracer) {
-    auto& graph = tracer->graph_;
-    auto& gops = graph->ops;
-    auto& gop = gops[gops.size() - 2];
-    auto& gpreop = gops[gops.size() - 1];
-    if (gop != op || gpreop != preop)
+    auto& chain = tracer->chain_;
+    auto& cops = chain.ops;
+    auto& cop = cops[cops.size() - 2];
+    auto& cpreop = cops[cops.size() - 1];
+    if (cop != op || cpreop != preop)
       throw std::runtime_error("only pre-operations created inside operation constructor can be incepted");
 
-    std::swap(gop, gpreop);
+    std::swap(cop, cpreop);
   } else {
     preop->init();
     preop->run();
@@ -41,7 +41,7 @@ void incept(Op* op, Op* preop) {
   }
 }
 
-std::unique_ptr<Graph> trace(const AnyOp& op, const std::vector<Frame>& frames) {
+Chain trace(const AnyOp& op, const std::vector<Frame>& frames) {
   Tracer tracer;
   tuple ins = tracer.open(frames);
   tuple outs;
@@ -74,30 +74,29 @@ Tracer::~Tracer() {}
 
 tuple Tracer::open(const std::vector<Frame>& frames) {
   ops::Print::claimCout();
-  graph_ = std::make_unique<Graph>();
   tracings_.push(this);
   tuple inputs;
   inputs.reserve(frames.size());
   for (auto& frame: frames) {
     auto in = new Tensor(frame);
-    graph_->inputs.push_back(in);
+    chain_.inputs.push_back(in);
     inputs.push_back(ref(in));
   }
   return inputs;
 }
 
-std::unique_ptr<Graph> Tracer::close(const tuple& outputs) {
+Chain Tracer::close(const tuple& outputs) {
   ops::Print::unclaimCout();
   for (auto& output: outputs) {
     auto out = deref(output);
-    graph_->outputs.push_back(out);
+    chain_.outputs.push_back(out);
   }
 
   if (tracings_.top() != this)
     throw std::runtime_error("tracing stack got corrupted");
 
   tracings_.pop();
-  return std::move(graph_);
+  return std::move(chain_);
 }
 
 bool Tracer::handleNewOp(Op* op) {
@@ -119,14 +118,14 @@ bool Tracer::handleOldTensor(Tensor* tensor) {
 }
 
 bool Tracer::addNewOp(Op* op) {
-  graph_->ops.push_back(op);
+  chain_.ops.push_back(op);
   return true;
 }
 
 bool Tracer::addNewTensor(Tensor* tensor) {
   if (addedTensors_.contains(tensor)) return true;
   addedTensors_.insert(tensor);
-  graph_->tensors.push_back(tensor);
+  chain_.tensors.push_back(tensor);
   tensor->req();
   return true;
 }
@@ -134,7 +133,7 @@ bool Tracer::addNewTensor(Tensor* tensor) {
 bool Tracer::addOldTensor(Tensor* tensor) {
   if (addedTensors_.contains(tensor)) return true;
   addedTensors_.insert(tensor);
-  graph_->tensors.push_back(tensor);
+  chain_.tensors.push_back(tensor);
   tensor->req();
   return true;
 }

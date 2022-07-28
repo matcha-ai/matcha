@@ -6,16 +6,10 @@
 
 namespace matcha::engine::ops {
 
-struct Identity : Op {
-  Identity(Tensor* a);
+struct Identity final : Op {
+  explicit Identity(Tensor* a);
+  explicit Identity(Tensor* a, Tensor* target);
   static OpMeta<Identity> meta;
-
-  void run() override;
-};
-
-struct IdentityBack : OpBack {
-  IdentityBack(const BackCtx& ctx);
-  static OpMeta<IdentityBack> meta;
 
   void run() override;
 };

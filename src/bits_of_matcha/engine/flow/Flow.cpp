@@ -1,9 +1,11 @@
 #include "bits_of_matcha/engine/flow/Flow.h"
-#include "bits_of_matcha/engine/flow/Tracer.h"
+#include "bits_of_matcha/engine/chain/Tracer.h"
 #include "bits_of_matcha/engine/tensor/Tensor.h"
 #include "bits_of_matcha/engine/tensor/factories.h"
-#include "bits_of_matcha/engine/flow/module/Module.h"
-#include "bits_of_matcha/engine/flow/module/ModuleForw.h"
+#include "bits_of_matcha/engine/flow/Module.h"
+#include "bits_of_matcha/engine/flow/ModuleForw.h"
+#include "bits_of_matcha/engine/chain/optimizers/reduceToEffects.h"
+#include "bits_of_matcha/engine/chain/optimizers/contractIdentities.h"
 
 namespace matcha::engine {
 
@@ -39,12 +41,11 @@ std::vector<Tensor*> Flow::call(const std::vector<Tensor*>& ins) {
   if (tracing()) {
     auto mop = new ModuleForw(m, ins);
     auto outs = mop->outputs;
-    send(mop);
+    dispatch(mop);
     return outs.stdVector();
   } else {
     lastCalledModule_ = m;
-    auto outs = m->forward(ins);
-    return outs;
+    return m->run(ins);
   }
 }
 
@@ -69,10 +70,19 @@ Module* Flow::module(const std::vector<Frame>& frames) {
   }
 
   if (!hasPreimage()) throw std::runtime_error("missing Flow preimage");
-  auto graph = trace(preimage_, frames);
-  auto m = new Module(std::move(graph));
+  auto m = new Module(preimage_, frames);
+  m->pass(optimizer);
+
   modules_[id] = m;
+
   return m;
+}
+
+void Flow::optimizer(Chain& chain) {
+  reduceToEffects(chain);
+//  print(chain);
+  contractIdentities(chain);
+//  print(chain);
 }
 
 void Flow::build(const std::vector<Frame>& frames) {

@@ -19,7 +19,7 @@ class Instance;
 
 namespace matcha {
 
-class Engine {
+class Engine final {
 public:
   static tensor ref(engine::Tensor* internal);
   static engine::Tensor* deref(const tensor& external);

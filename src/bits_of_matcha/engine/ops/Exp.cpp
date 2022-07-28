@@ -11,25 +11,11 @@ Exp::Exp(Tensor* a)
 
 OpMeta<Exp> Exp::meta {
   .name = "Exp",
-  .back = [](auto& ctx) { return new ExpBack(ctx); }
+  .back = [](auto& ctx) { return new Exp(ctx.vals[0]); },
 };
 
 void Exp::run() {
   runCpu([](auto x) { return std::exp(x); });
-}
-
-
-ExpBack::ExpBack(const BackCtx& ctx)
-  : OpBack(ctx)
-{}
-
-void ExpBack::run() {
-  cpu::elementwiseUnary<float>(
-    [](float x) { return std::exp(x); },
-    inputs[0]->buffer(),
-    outputs[0]->malloc(),
-    inputs[0]->size()
-  );
 }
 
 }

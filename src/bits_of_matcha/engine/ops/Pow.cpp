@@ -18,7 +18,6 @@ Pow::Pow(Tensor* a, Tensor* b)
 
 OpMeta<Pow> Pow::meta {
   .name = "Pow",
-  .back = [](auto ctx) { return new PowBack(ctx); }
 };
 
 

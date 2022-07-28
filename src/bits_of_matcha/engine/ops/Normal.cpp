@@ -14,7 +14,7 @@ Normal::Normal(Tensor* m, Tensor* sd, const Shape& shape, size_t seed)
 }
 
 OpMeta<Normal> Normal::meta {
-  .name = "Normal"
+  .name = "Normal",
 };
 
 void Normal::run() {

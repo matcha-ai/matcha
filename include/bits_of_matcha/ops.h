@@ -72,6 +72,14 @@ tensor stdev(const tensor& a, int axis);
 tensor stdevu(const tensor& a);
 tensor stdevu(const tensor& a, int axis);
 
+tensor mse(const tensor& gold, const tensor& pred);
+tensor rmse(const tensor& gold, const tensor& pred);
+
+tensor l2norm(const tensor& a);
+tensor l2norm(const tensor& a, int axis);
+
+tensor norm(const tensor& a);
+tensor norm(const tensor& a, int axis);
 
 tensor max(const tensor& a);
 tensor max(const tensor& a, int axis);

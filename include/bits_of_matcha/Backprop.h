@@ -5,42 +5,28 @@
 #include <vector>
 #include <map>
 
+#define MATCHA_BACKPROP_API alignas(void*)
+
 namespace matcha {
 
 /**
- * @brief Dynamic backpropagation controller
+ * @brief Back-propagation controller
  */
-class Backprop {
+class MATCHA_BACKPROP_API Backprop {
 public:
-  /**
-   * @param wrt target gradient tensors
-   */
-  Backprop(std::initializer_list<tensor*> wrt);
+  explicit Backprop(std::initializer_list<tensor*> wrt);
+  explicit Backprop(const std::vector<tensor*>& wrt);
 
-  /**
-   * @param wrt target gradient tensors
-   */
-  Backprop(const std::vector<tensor*>& wrt);
-
-  /**
-   * @param wrt target gradient tensors
-   */
-  template <class Wrt>
-  Backprop(const Wrt& wrt)
-    : Backprop(std::vector(std::begin(wrt), std::end(wrt)))
+  template <class Iterable>
+  explicit Backprop(const Iterable& wrt)
+    : Backprop(std::vector<tensor*>(std::begin(wrt), std::end(wrt)))
   {}
 
-  /**
-   * @param root tensor to backpropagate from
-   * @return gradients w.r.t. wrt tensors
-   * @see Backprop::Backprop
-   */
   std::map<tensor*, tensor> operator()(const tensor& root);
 
   ~Backprop();
 
 private:
-  std::vector<tensor*> wrt_;
   void* internal_;
 };
 

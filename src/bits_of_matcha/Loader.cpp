@@ -31,14 +31,14 @@ Loader::operator tensor() {
 
     auto op = new engine::ops::LoadCsv(file_);
     auto out = engine::ref(op->outputs[0]);
-    engine::send(op);
+    engine::dispatch(op);
     return out;
 
   } else if (ext == ".png" || ext == ".jpg" || ext == ".jpeg") {
 
     auto op = new engine::ops::LoadImage(file_);
     auto out = engine::ref(op->outputs[0]);
-    engine::send(op);
+    engine::dispatch(op);
     return out;
 
   } else {

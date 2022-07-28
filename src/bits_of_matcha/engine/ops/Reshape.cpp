@@ -16,24 +16,10 @@ Reshape::Reshape(Tensor* a, const Shape::Reshape& dims)
 
 OpMeta<Reshape> Reshape::meta {
   .name = "Reshape",
-  .back = [](auto& ctx) {
-    return new ReshapeBack(ctx);
-  },
+  .back = [](auto& ctx) { return new Reshape(ctx.vals[0], ctx.forward->inputs[0]->shape()); }
 };
 
 void Reshape::run() {
-  outputs[0]->share(inputs[0]);
-}
-
-ReshapeBack::ReshapeBack(const BackCtx& ctx)
-  : OpBack(ctx)
-{}
-
-OpMeta<ReshapeBack> ReshapeBack::meta {
-  .name = "ReshapeBack"
-};
-
-void ReshapeBack::run() {
   outputs[0]->share(inputs[0]);
 }
 

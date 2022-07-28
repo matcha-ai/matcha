@@ -6,7 +6,7 @@
 #include "bits_of_matcha/engine/memory/implicitCast.h"
 #include "bits_of_matcha/error/IncompatibleDtypesError.h"
 #include "bits_of_matcha/engine/ops/Cast.h"
-#include "bits_of_matcha/engine/flow/Tracer.h"
+#include "bits_of_matcha/engine/chain/Tracer.h"
 
 #include <algorithm>
 #include <numeric>

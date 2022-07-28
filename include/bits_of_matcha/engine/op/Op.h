@@ -3,7 +3,7 @@
 #include "bits_of_matcha/engine/op/OpInputs.h"
 #include "bits_of_matcha/engine/op/OpOutputs.h"
 #include "bits_of_matcha/engine/op/OpMeta.h"
-#include "bits_of_matcha/engine/flow/Tracer.h"
+#include "bits_of_matcha/engine/chain/Tracer.h"
 #include "bits_of_matcha/engine/tensor/Tensor.h"
 #include "bits_of_matcha/engine/op/typing.h"
 
@@ -28,6 +28,6 @@ struct Op {
 
 };
 
-void send(Op* op);
+void dispatch(Op* op);
 
 }

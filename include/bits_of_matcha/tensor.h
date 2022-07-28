@@ -12,17 +12,19 @@
 
 namespace matcha {
 
+class View;
+
 /**
  * multidimensional array
  * matcha primitive
  */
-class MATCHA_TENSOR_API tensor {
+class MATCHA_TENSOR_API tensor final {
 public:
 
   /**
    * @return the tensor frame
    */
-   const Frame& frame() const;
+  const Frame& frame() const;
 
   /**
    * @return the tensor dtype
@@ -82,7 +84,10 @@ public:
    * @param dtype target dtype
    * @return tensor of specified dtype
    */
-   tensor cast(const Dtype& dtype) const;
+  tensor cast(const Dtype& dtype) const;
+
+  View operator[](const Shape::Range& range);
+  View operator[](const tensor& idx);
 
 public:
   tensor();
@@ -175,6 +180,7 @@ static tensor blob(float* data, const Shape& frame) { return tensor::blob(data, 
 static tensor blob(const std::vector<float>& data, const Shape& shape) { return tensor::blob(data, shape); };
 static tensor blob(const std::vector<float>& data) { return tensor::blob(data); };
 
+std::ostream& operator<<(std::ostream& os, const matcha::tensor& t);
 }
 
-std::ostream& operator<<(std::ostream& os, const matcha::tensor& t);
+//std::ostream& operator<<(std::ostream& os, const matcha::tensor& t);

@@ -10,7 +10,6 @@ MinBetween::MinBetween(Tensor* a, Tensor* b)
 
 OpMeta<MinBetween> MinBetween::meta {
   .name = "MinBetween",
-  .back = [](auto ctx) { return new MinBetweenBack(ctx); }
 };
 
 void MinBetween::run() {

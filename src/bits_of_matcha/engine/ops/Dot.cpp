@@ -1,5 +1,7 @@
 #include "bits_of_matcha/engine/ops/Dot.h"
 #include "bits_of_matcha/engine/ops/Cast.h"
+#include "bits_of_matcha/engine/ops/Transpose.h"
+#include "bits_of_matcha/engine/ops/Sum.h"
 #include "bits_of_matcha/engine/cpu/kernels/mm.h"
 #include "bits_of_matcha/error/IncompatibleShapesError.h"
 
@@ -37,8 +39,29 @@ Dot::Dot(Tensor* a, Tensor* b)
 
 OpMeta<Dot> Dot::meta {
   .name = "Dot",
-  .back = [](auto& ctx) {
-    return new DotBack(ctx);
+  .back = [](const BackCtx& ctx) {
+    BackOps bops;
+    auto a = ctx.forward->inputs[0];
+    auto b = ctx.forward->inputs[1];
+    auto c = ctx.vals[0];
+
+    if (ctx.wrts[0]) {
+      auto bt = new Transpose(b);
+      auto da = new Dot(c, bt->outputs[0]);
+      bops.ops.push_back(bt);
+      bops.ops.push_back(da);
+      bops.outputs.push_back(da->outputs[0]);
+    }
+    if (ctx.wrts[1]) {
+      auto ct = new Transpose(c);
+      auto dbt = new Dot(ct->outputs[0], a);
+      auto db = new Transpose(dbt->outputs[0]);
+      bops.ops.push_back(ct);
+      bops.ops.push_back(dbt);
+      bops.ops.push_back(db);
+      bops.outputs.push_back(db->outputs[0]);
+    }
+    return bops;
   },
 };
 
@@ -49,26 +72,6 @@ void Dot::run() {
   case Double:
     cpu::mm<double>(inputs[0]->buffer(), inputs[1]->buffer(), outputs[0]->malloc(), iter_); break;
   }
-}
-
-DotBack::DotBack(const BackCtx& ctx)
-  : OpBack(ctx)
-{}
-
-OpMeta<DotBack> DotBack::meta {
-  .name = "DotBack",
-};
-
-void DotBack::run() {
-//  if (inputs[0]) {
-//    inputs[0]->malloc().as<float*>();
-//
-//  }
-//
-//  if (inputs[1]) {
-//    inputs[1]->malloc().as<float*>();
-//
-//  }
 }
 
 }

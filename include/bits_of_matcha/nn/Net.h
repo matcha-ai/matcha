@@ -4,6 +4,7 @@
 #include "bits_of_matcha/nn/Optimizer.h"
 #include "bits_of_matcha/nn/Callback.h"
 #include "bits_of_matcha/nn/callbacks/Logger.h"
+#include "bits_of_matcha/nn/optimizers/Sgd.h"
 #include "bits_of_matcha/dataset/Dataset.h"
 #include "bits_of_matcha/ops.h"
 #include "bits_of_matcha/random.h"
@@ -59,28 +60,28 @@ public:
   };
 
   Params params;
-  Optimizer optimizer;
+
+  Optimizer optimizer = Sgd{};
   Loss loss;
 
   std::vector<std::shared_ptr<Callback>> callbacks = {
     Logger(),
   };
 
-  size_t flops() const;
-  size_t flops(const std::vector<Frame>& frames) const;
-  size_t flops(const std::vector<tensor>& tensors) const;
-
 protected:
   // events
 
   void trainBegin(Dataset ds);
-  void trainEnd(Dataset ds);
+  void trainEnd();
 
   void epochBegin(size_t epoch, size_t max);
-  void epochEnd(size_t epoch, size_t max);
+  void epochEnd();
 
   void batchBegin(size_t batch, size_t max);
-  void batchEnd(size_t batch, size_t max);
+  void batchEnd();
+
+  void propagateForward(const Instance& instance, const tensor& loss);
+  void propagateBackward(const std::map<tensor*, tensor>& gradients);
 
 private:
   AnyOp function_;

@@ -158,7 +158,7 @@ struct Internal : Callback {
     };
   }
 
-  void onEpochEnd(size_t epoch, size_t max) override {
+  void onEpochEnd() override {
     updater_.detach();
     size_t epadding = std::to_string(epochs_).size();
     auto estring = std::to_string(epoch_);
@@ -176,11 +176,33 @@ struct Internal : Callback {
     update();
   }
 
-  void onBatchEnd(size_t batch, size_t max) override {
+  void onBatchEnd() override {
     auto eduration = std::chrono::steady_clock::now() - epochBeginTime_;
     auto bduration = std::chrono::steady_clock::now() - batchBeginTime_;
     usEpoch_ = std::chrono::duration_cast<std::chrono::microseconds>(eduration).count();
     usBatch_ = std::chrono::duration_cast<std::chrono::microseconds>(bduration).count();
+  }
+
+  void onPropagateForward(const Instance& instance, const tensor& loss) override {
+    std::stringstream buff;
+    loss_ = loss;
+    buff << loss;
+    float len = (float) buff.str().size();
+
+//    float coef = std::min(100.0 / batches_, .05);
+    float coef = .1;
+    if (batch_ < 10)
+      lossLen_ -= (float) 1. / (float) (batch_ + 1) * (lossLen_ - len);
+    else
+      lossLen_ = lossLen_ * (1 - coef) + len * coef;
+  }
+
+  void onPropagateBackward(const std::map<tensor*, tensor>& grads) override {
+    if (grads.empty()) return;
+    std::vector<tensor> gflows;
+    for (auto&& [t, g]: grads) gflows.push_back(l2norm(g) / g.size());
+    gflowM_ = mean(stack(gflows));
+    gflowSd_ = stdevu(stack(gflows));
   }
 
   void update() {
@@ -222,6 +244,19 @@ struct Internal : Callback {
     }
 
     line << (std::string) eta_;
+
+    if (batch_ != 0) {
+      std::stringstream buff;
+      buff << loss_;
+      line << " ::  loss "
+           << buff.str();
+      size_t padding = (size_t) lossLen_ + 2;
+      if (padding > buff.str().length())
+        line << std::string(padding - buff.str().length(), ' ');
+      line <<  " ";
+      line << " ::  grads " << gflowSd_ << " +- " << gflowSd_ << " ";
+    }
+
     line.flush();
   }
 
@@ -238,6 +273,10 @@ struct Internal : Callback {
   size_t usBatch_;
   size_t lastEtaBatch_;
   float sEta_;
+  tensor loss_;
+  float lossLen_;
+  tensor gflowM_;
+  tensor gflowSd_;
 
   Interval<std::string> eta_;
 

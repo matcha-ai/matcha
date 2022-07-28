@@ -26,7 +26,7 @@ Generator Uniform::init() {
       (size_t) rand()
     };
     auto out = ref(op->outputs[0]);
-    engine::send(op);
+    engine::dispatch(op);
     return out;
   };
 }
@@ -40,7 +40,7 @@ Generator Normal::init() {
       (size_t) rand()
     };
     auto out = ref(op->outputs[0]);
-    engine::send(op);
+    engine::dispatch(op);
     return out;
   };
 }

@@ -26,7 +26,7 @@ Divide::Divide(Tensor* a, Tensor* b)
 
 OpMeta<Divide> Divide::meta {
   .name = "Divide",
-  .back = [](auto ctx) { return new DivideBack(ctx); }
+  .back = [](auto& ctx) { return new DivideBack(ctx); },
 };
 
 void Divide::run() {
@@ -35,8 +35,7 @@ void Divide::run() {
 
 
 DivideBack::DivideBack(const BackCtx& ctx)
-  : OpBack(ctx)
-  , iter_(forward->inputs[0]->shape(), forward->inputs[1]->shape())
+  : ElementwiseBinaryOpBack(ctx)
 {
 }
 
@@ -46,21 +45,21 @@ OpMeta<DivideBack> DivideBack::meta {
 
 void DivideBack::run() {
   if (outputs[0]) {
-    cpu::fill(outputs[0]->malloc(), outputs[0]->size(), 0);
+    cpu::fill<float>(outputs[0]->malloc(), outputs[0]->size(), 0);
 
     cpu::elementwiseBinaryBack(
       [](float& a, float& b, float& c) {
         a += c / b;
       },
       outputs[0]->buffer(),
-      forward->inputs[1]->buffer(),
+      forward_->inputs[1]->buffer(),
       inputs[0]->buffer(),
       iter_
     );
   }
   if (outputs[1]) {
-    cpu::fill(outputs[1]->malloc(), outputs[1]->size(), 0);
-    auto bForw = forward->inputs[1]->buffer().as<float*>();
+    cpu::fill<float>(outputs[1]->malloc(), outputs[1]->size(), 0);
+    auto bForw = forward_->inputs[1]->buffer().as<float*>();
     auto bBack = outputs[1]->buffer().as<float*>();
 
     cpu::elementwiseBinaryBack(
@@ -71,7 +70,7 @@ void DivideBack::run() {
         bf *= bf;
         b -= a * c / bf;
       },
-      forward->inputs[0]->buffer(),
+      forward_->inputs[0]->buffer(),
       outputs[1]->buffer(),
       inputs[0]->buffer(),
       iter_

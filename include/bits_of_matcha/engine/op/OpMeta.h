@@ -2,6 +2,7 @@
 
 #include "bits_of_matcha/engine/op/Ops.h"
 #include "bits_of_matcha/engine/op/BackCtx.h"
+#include "bits_of_matcha/engine/chain/Chain.h"
 #include "bits_of_matcha/print.h"
 
 #include <string>
@@ -18,7 +19,7 @@ template <class T>
 struct OpMeta {
   std::string name;
   std::function<std::string (T*)> label = [&](auto) { return name; };
-  std::function<Op* (const BackCtx&)> back = [](auto) { return nullptr; };
+  std::function<BackOps (const BackCtx&)> back = [](auto&) { return BackOps{}; };
   bool sideEffect = false;
   std::function<void (T*)> save;
   std::function<void (T*)> load;

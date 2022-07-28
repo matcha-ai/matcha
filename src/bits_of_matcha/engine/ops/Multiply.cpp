@@ -11,7 +11,7 @@ Multiply::Multiply(Tensor* a, Tensor* b)
 
 OpMeta<Multiply> Multiply::meta {
   .name = "Multiply",
-  .back = [](auto ctx) { return new MultiplyBack(ctx); }
+  .back = [](auto& ctx) { return new MultiplyBack(ctx); },
 };
 
 void Multiply::run() {
@@ -21,8 +21,7 @@ void Multiply::run() {
 
 
 MultiplyBack::MultiplyBack(const BackCtx& ctx)
-  : OpBack(ctx)
-  , iter_(forward->inputs[0]->shape(), forward->inputs[1]->shape())
+  : ElementwiseBinaryOpBack(ctx)
 {
 }
 
@@ -42,7 +41,7 @@ void MultiplyBack::run() {
         a += b * c;
       },
       outputs[0]->buffer(),
-      forward->inputs[1]->buffer(),
+      forward_->inputs[1]->buffer(),
       inputs[0]->buffer(),
       iter_
     );
@@ -54,7 +53,7 @@ void MultiplyBack::run() {
       [](float& a, float& b, float& c) {
         b += a * c;
       },
-      forward->inputs[0]->buffer(),
+      forward_->inputs[0]->buffer(),
       outputs[1]->buffer(),
       inputs[0]->buffer(),
       iter_
