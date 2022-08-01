@@ -46,7 +46,7 @@ Buffer::Buffer(const Buffer& other) {
   if (block_) block_->bind();
 }
 
-Buffer::Buffer(Buffer&& other) {
+Buffer::Buffer(Buffer&& other) noexcept {
   block_ = other.block_;
   other.block_ = nullptr;
 }
@@ -68,8 +68,9 @@ Buffer& Buffer::operator=(const Buffer& other) {
   return *this;
 }
 
-Buffer& Buffer::operator=(Buffer&& other) {
+Buffer& Buffer::operator=(Buffer&& other) noexcept {
   if (block_ == other.block_) return *this;
+  if (block_) block_->unbind();
   block_ = other.block_;
   other.block_ = nullptr;
   return *this;

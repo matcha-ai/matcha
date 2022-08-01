@@ -1,7 +1,9 @@
 #include "bits_of_matcha/Backprop.h"
 #include "bits_of_matcha/engine/chain/Tracer.h"
-#include "bits_of_matcha/engine/flow/Module.h"
-#include "bits_of_matcha/engine/autograd/Autograd.h"
+#include "bits_of_matcha/engine/chain/Module.h"
+#include "bits_of_matcha/engine/autograd/backprop.h"
+#include "bits_of_matcha/engine/chain/passes/check.h"
+#include "bits_of_matcha/engine/chain/executors/SinglecoreExecutor.h"
 
 namespace matcha {
 
@@ -29,10 +31,14 @@ std::map<tensor*, tensor> Backprop::operator()(const tensor& root) {
     throw std::runtime_error("you must schedule a new Autograd first");
 
   auto internal = (Internal*) internal_;
-  auto graph = internal->tracer_.close({root});
+  auto chain = internal->tracer_.close({root});
 
-  auto& wrt = internal->wrt_;
-  auto op = new engine::Autograd(std::move(graph), engine::deref(wrt));
+  auto&& wrt = internal->wrt_;
+  engine::backprop(chain, engine::deref(wrt));
+//  check(chain);
+
+  auto executor = std::make_shared<engine::SinglecoreExecutor>(std::move(chain));
+  auto op = new engine::Module({}, std::move(executor));
 
   if (op->outputs.size() != wrt.size())
     throw std::runtime_error("can't pair gradients");
@@ -50,9 +56,9 @@ std::map<tensor*, tensor> Backprop::operator()(const tensor& root) {
 Backprop::~Backprop() {
   if (!internal_) return;
   auto internal = (Internal*) internal_;
-  auto graph = internal->tracer_.close({});
-  auto module = new engine::Module(std::move(graph));
-  module->run({});
+  auto chain = internal->tracer_.close({});
+  auto executor = std::make_shared<engine::SinglecoreExecutor>(std::move(chain));
+  executor->run({});
 
   delete internal;
 }

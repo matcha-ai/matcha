@@ -4,6 +4,6 @@
 
 namespace matcha::engine {
 
-void unfold(Chain& chain);
+void flatten(Chain& chain);
 
 }

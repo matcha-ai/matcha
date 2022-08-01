@@ -2,7 +2,7 @@
 #include "bits_of_matcha/dataset/Dataset.h"
 #include "bits_of_matcha/dataset/loaders/Csv.h"
 #include "bits_of_matcha/ops.h"
-#include "bits_of_matcha/Flow.h"
+//#include "bits_of_matcha/Flow.h"
 #include "bits_of_matcha/engine/ops/LoadCsv.h"
 #include "bits_of_matcha/engine/ops/LoadImage.h"
 
@@ -46,8 +46,8 @@ Loader::operator tensor() {
   }
 }
 
-Loader::operator Flow() {
-  return {};
-}
+//Loader::operator Flow() {
+//  return {};
+//}
 
 }

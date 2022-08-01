@@ -13,7 +13,7 @@ class Loader {
 public:
   operator Dataset();
   operator tensor();
-  operator Flow();
+//  operator Flow();
 
 private:
   explicit Loader(const std::string& file);

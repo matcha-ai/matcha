@@ -1,16 +1,17 @@
 #include "bits_of_matcha/nn/Net.h"
 #include "bits_of_matcha/nn/Layer.h"
 #include "bits_of_matcha/Backprop.h"
+#include "bits_of_matcha/decorators.h"
 
 
 namespace matcha::nn {
 
-Net::Net(const AnyOp& function)
-  : function_(function)
+Net::Net(const fn& function)
+  : forward_(function)
 {}
 
 Net::Net(const std::vector<UnaryOp>& sequence) {
-  function_ = [sequence] (tensor feed) {
+  forward_ = [sequence] (tensor feed) {
     for (auto& op: sequence) feed = op(feed);
     return feed;
   };
@@ -22,8 +23,9 @@ Net::Net(std::initializer_list<UnaryOp> sequence)
 
 void Net::fit(Dataset ds, size_t epochs) {
   Layer::netStack_.push(this);
-  trainFlow_ = function_;
-  trainFlow_.build({ds.get()["x"]});
+//  forward_ = jit(forward_);
+//  trainFlow_ = function_;
+//  trainFlow_.build({ds.get()["x"]});
   ds.reset();
 
   trainBegin(ds);
@@ -39,17 +41,18 @@ void Net::fit(Dataset ds, size_t epochs) {
       Backprop backprop(params);
 //      print(88 * (x.reshape(-1, 28, 28) != 0), "\n\n");
 //      print("---");
-      tensor y = trainFlow_(x);
+      tensor y = forward_(x);
 //      print(argmax(y, -1).reshape(1, -1));
       tensor l = loss(t, y);
 
       auto gradients = backprop(l);
-      propagateForward(i, l);
 
+      propagateForward(i, l);
       for (auto&& [param, grad]: gradients) {
         optimizer(*param, grad);
       }
       propagateBackward(gradients);
+
       batchEnd();
       batch++;
     }

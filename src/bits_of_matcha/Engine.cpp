@@ -4,6 +4,7 @@
 #include "bits_of_matcha/dataset/InstanceIterator.h"
 #include "bits_of_matcha/engine/dataset/Dataset.h"
 #include "bits_of_matcha/print.h"
+#include "bits_of_matcha/fn.h"
 
 
 namespace matcha {

@@ -1,29 +1,34 @@
 #include "bits_of_matcha/engine/chain/passes/flatten.h"
+#include "bits_of_matcha/engine/chain/passes/check.h"
+#include "bits_of_matcha/engine/chain/Module.h"
 #include "bits_of_matcha/engine/op/Op.h"
-#include "bits_of_matcha/engine/flow/Module.h"
-#include "bits_of_matcha/engine/flow/ModuleForw.h"
 #include "bits_of_matcha/engine/ops/Identity.h"
 
 
 namespace matcha::engine {
 
-void unfold(Chain& chain) {
+void flatten(Chain& chain) {
   std::vector<Op*> ops;
   for (auto&& op: chain.ops) {
-    if (typeid(*op) != typeid(ModuleForw)) {
+
+    // keep normal Op
+    if (typeid(*op) != typeid(Module)) {
       ops.push_back(op);
       continue;
     }
 
-    // unfold recursively
-    auto c = copy(dynamic_cast<ModuleForw*>(op)->module().chain());
-    unfold(c);
+    // flatten Module recursively
+//    std::cerr << "ORIGINAL:" << std::endl;
+//    check(dynamic_cast<ModuleForw*>(op)->module().chain());
+    auto c = copy(dynamic_cast<Module*>(op)->chain());
+//    std::cerr << "COPY:" << std::endl;
+//    check(c);
+    flatten(c);
 
     // relink chain inputs
     for (int i = 0; i < c.inputs.size(); i++) {
-      auto& cin = c.inputs[i];
-      auto& oin = op->inputs[i];
-//      std::cout << cin->frame() << " " << oin->frame() << std::endl;
+      auto cin = c.inputs[i];
+      auto oin = op->inputs[i];
 
       auto id = new ops::Identity(oin, cin);
       ops.push_back(id);
@@ -39,19 +44,23 @@ void unfold(Chain& chain) {
     for (int i = 0; i < c.outputs.size(); i++) {
       auto& cout = c.outputs[i];
       auto& oout = op->outputs[i];
-//      std::cout << cout->frame() << " " << oout->frame() << std::endl;
 
       auto id = new ops::Identity(cout, oout);
       ops.push_back(id);
+      oout = nullptr;
 
     }
+    delete op;
+
     // don't deallocate the copies
-    c.ops = {};
-    c.tensors = {};
+    c.ops.clear();
+    c.tensors.clear();
+    c.inputs.clear();
+    c.outputs.clear();
   }
   chain.ops = ops;
-//  std::cerr << "unfolding done" << std::endl;
-//  exit(0);
+//  std::cerr << "FLATTENED:" << std::endl;
+//  check(chain);
 }
 
 }

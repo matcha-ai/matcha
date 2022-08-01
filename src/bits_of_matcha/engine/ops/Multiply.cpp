@@ -37,7 +37,7 @@ void MultiplyBack::run() {
 
     cpu::elementwiseBinaryBack(
       [](float& a, float& b, float& c) {
-//        print(a, b, c);
+        print(a, b, c);
         a += b * c;
       },
       outputs[0]->buffer(),

@@ -4,19 +4,23 @@
 #include "bits_of_matcha/engine/tensor/factories.h"
 #include "bits_of_matcha/engine/flow/Module.h"
 #include "bits_of_matcha/engine/flow/ModuleForw.h"
-#include "bits_of_matcha/engine/chain/optimizers/reduceToEffects.h"
-#include "bits_of_matcha/engine/chain/optimizers/contractIdentities.h"
+#include "bits_of_matcha/engine/chain/passes/reduceToEffects.h"
+#include "bits_of_matcha/engine/chain/passes/contractIdentities.h"
+#include "bits_of_matcha/engine/chain/passes/flatten.h"
+#include "bits_of_matcha/engine/chain/passes/check.h"
 
 namespace matcha::engine {
 
 Flow::Flow(const AnyOp& preimage)
   : preimage_(preimage)
+  , refs_(0)
 {}
 
 Flow::Flow()
   : lastCalledModule_(nullptr)
-{
-}
+  , refs_(0)
+{}
+
 
 bool Flow::hasPreimage() const {
   if (std::holds_alternative<UnaryOp>(preimage_)) {
@@ -38,13 +42,13 @@ void Flow::setPreimage(const AnyOp& op) {
 
 std::vector<Tensor*> Flow::call(const std::vector<Tensor*>& ins) {
   auto m = module(ins);
+  lastCalledModule_ = m;
   if (tracing()) {
     auto mop = new ModuleForw(m, ins);
-    auto outs = mop->outputs;
+    auto outs = mop->outputs.stdVector();
     dispatch(mop);
-    return outs.stdVector();
+    return outs;
   } else {
-    lastCalledModule_ = m;
     return m->run(ins);
   }
 }
@@ -55,14 +59,14 @@ std::string Flow::getId(const std::vector<Frame>& frames) {
   return buffer;
 }
 
-Module* Flow::module(const std::vector<Tensor*>& tensors) {
+std::shared_ptr<Module> Flow::module(const std::vector<Tensor*>& tensors) {
   std::vector<Frame> frames;
   frames.reserve(tensors.size());
   for (auto tensor: tensors) frames.push_back(tensor->frame());
   return module(frames);
 }
 
-Module* Flow::module(const std::vector<Frame>& frames) {
+std::shared_ptr<Module> Flow::module(const std::vector<Frame>& frames) {
   std::string id = getId(frames);
   try {
     return modules_.at(id);
@@ -70,7 +74,7 @@ Module* Flow::module(const std::vector<Frame>& frames) {
   }
 
   if (!hasPreimage()) throw std::runtime_error("missing Flow preimage");
-  auto m = new Module(preimage_, frames);
+  auto m = std::make_shared<Module>(preimage_, frames);
   m->pass(optimizer);
 
   modules_[id] = m;
@@ -79,14 +83,27 @@ Module* Flow::module(const std::vector<Frame>& frames) {
 }
 
 void Flow::optimizer(Chain& chain) {
+//  check(chain);
+//  flatten(chain);
+//  check(chain);
   reduceToEffects(chain);
-//  print(chain);
   contractIdentities(chain);
-//  print(chain);
 }
 
 void Flow::build(const std::vector<Frame>& frames) {
   module(frames);
+}
+
+void Flow::ref() {
+  refs_++;
+}
+
+void Flow::unref() {
+  if (refs_ == 0)
+    throw std::runtime_error("refs are already 0");
+  refs_--;
+  if (refs_ == 0)
+    delete this;
 }
 
 

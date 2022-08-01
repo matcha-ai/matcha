@@ -13,11 +13,11 @@ public:
   explicit Buffer(size_t bytes);
   Buffer(const Frame& frame);
   Buffer(const Buffer& other);
-  Buffer(Buffer&& other);
+  Buffer(Buffer&& other) noexcept;
   ~Buffer();
 
   Buffer& operator=(const Buffer& other);
-  Buffer& operator=(Buffer&& other);
+  Buffer& operator=(Buffer&& other) noexcept;
 
   bool operator==(const Buffer& other);
   bool operator!=(const Buffer& other);

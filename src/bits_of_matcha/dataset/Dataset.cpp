@@ -24,7 +24,7 @@ Dataset::Dataset(const Dataset& other)
   if (internal_) deref(this)->ref();
 }
 
-Dataset::Dataset(Dataset&& other)
+Dataset::Dataset(Dataset&& other) noexcept
   : internal_(other.internal_)
 {
   other.internal_ = nullptr;
@@ -37,7 +37,9 @@ Dataset& Dataset::operator=(const Dataset& other) {
   return *this;
 }
 
-Dataset& Dataset::operator=(Dataset&& other) {
+Dataset& Dataset::operator=(Dataset&& other) noexcept {
+  if (internal_ == other.internal_) return *this;
+  if (internal_) deref(this)->unref();
   internal_ = other.internal_;
   other.internal_ = nullptr;
   return *this;

@@ -5,14 +5,14 @@
 
 namespace matcha::engine {
 
-Tensor* getRoot(const std::unique_ptr<Module>& module) {
+Tensor* getRoot(const std::shared_ptr<Module>& module) {
   auto& chain = module->chain();
   if (chain.outputs.size() != 1)
     throw std::runtime_error("chain to be differentiated must have exactly one output");
   return chain.outputs[0];
 }
 
-Autograd::Autograd(std::unique_ptr<Module> module, const std::vector<Tensor*>& wrt)
+Autograd::Autograd(std::shared_ptr<Module> module, const std::vector<Tensor*>& wrt)
   : Op{getRoot(module)}
   , module_(std::move(module))
   , wrt_(wrt)
@@ -21,8 +21,9 @@ Autograd::Autograd(std::unique_ptr<Module> module, const std::vector<Tensor*>& w
     outputs.add(this, Float, w->shape());
 }
 
+
 Autograd::Autograd(Chain chain, const std::vector<Tensor*>& wrt)
-  : Autograd(std::make_unique<Module>(std::move(chain)), wrt)
+  : Autograd(std::make_shared<Module>(std::move(chain)), wrt)
 {}
 
 OpMeta<Autograd> Autograd::meta {

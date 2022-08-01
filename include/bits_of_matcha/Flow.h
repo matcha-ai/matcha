@@ -2,6 +2,7 @@
 
 #include "bits_of_matcha/tensor.h"
 #include "bits_of_matcha/ops.h"
+#include "bits_of_matcha/fn.h"
 #include "bits_of_matcha/savers/SaveSpec.h"
 #include <map>
 #include <set>
@@ -46,7 +47,13 @@ protected:
 
 public:
   Flow();
-  ~Flow() = default;
+  ~Flow();
+
+  Flow(const Flow& other);
+  Flow(Flow&& other) noexcept;
+
+  Flow& operator=(const Flow& other);
+  Flow& operator=(Flow&& other) noexcept;
 
 private:
   void* internal_;

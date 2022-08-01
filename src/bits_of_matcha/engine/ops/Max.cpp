@@ -20,8 +20,8 @@ OpMeta<Max> Max::meta {
 
 template <class T>
 inline T foo(T* begin, size_t stride, T* end) {
-  T buffer = std::numeric_limits<T>::min();
-  if (stride != 1) {
+  T buffer = std::numeric_limits<T>::lowest();
+  if (stride != 1 or true) {
     for (T* iter = begin; iter != end; iter += stride) {
       if (*iter > buffer) {
         buffer = *iter;
@@ -36,7 +36,7 @@ inline T foo(T* begin, size_t stride, T* end) {
 
 template <class T>
 inline std::complex<T> fooc(std::complex<T>* begin, size_t stride, std::complex<T>* end) {
-  std::complex<T> buffer = std::numeric_limits<T>::min();
+  std::complex<T> buffer = std::numeric_limits<T>::lowest();
   std::complex<T>* pos;
   for (auto iter = begin; iter != end; iter += stride) {
     if (iter->real() < buffer.real()) {

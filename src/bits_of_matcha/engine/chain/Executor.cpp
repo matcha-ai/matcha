@@ -19,7 +19,7 @@ void stream(const std::vector<Tensor*>& source, std::vector<Tensor*>& target) {
 
 auto Executor::run(const std::vector<Tensor*>& ins) -> std::vector<Tensor*> {
   stream(ins, chain_.inputs);
-  run();
+  runInternal();
   std::vector<Tensor*> outputs;
   for (auto&& cout: chain_.outputs) {
     auto out = new Tensor(cout->frame());
@@ -31,9 +31,11 @@ auto Executor::run(const std::vector<Tensor*>& ins) -> std::vector<Tensor*> {
 
 void Executor::run(const std::vector<Tensor*>& ins, std::vector<Tensor*>& outs) {
   stream(ins, chain_.inputs);
-  run();
+  runInternal();
   stream(chain_.outputs, outs);
 }
 
+auto Executor::chain() -> Chain& { return chain_; }
+auto Executor::chain() const -> const Chain& { return chain_; }
 
 }

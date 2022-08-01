@@ -57,4 +57,7 @@ std::vector<Tensor*> deref(const std::vector<tensor*>& externals);
 Tensor* unref(tensor& external);
 Tensor* unref(tensor* external);
 
+std::vector<Tensor*> unref(std::vector<tensor>& externals);
+std::vector<Tensor*> unref(std::vector<tensor*>& externals);
+
 }

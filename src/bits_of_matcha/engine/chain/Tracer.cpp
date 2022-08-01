@@ -14,6 +14,18 @@ bool tracing() {
 }
 
 void incept(Op* op, Op* preop) {
+  auto in = preop->inputs[0];
+
+  auto it = std::find(op->inputs.begin(), op->inputs.end(), in);
+  *it = preop->outputs[0];
+  in->unreq();
+  preop->outputs[0]->req();
+
+  dispatch(preop);
+  if (tracing()) {
+    Tracer::handleNewTensor(preop->outputs[0]);
+  }
+  /*
   if (preop->inputs.size() != 1 || preop->outputs.size() != 1)
     throw std::runtime_error("pre-operation must have 1 input and 1 output");
 
@@ -22,7 +34,9 @@ void incept(Op* op, Op* preop) {
 
   auto it = std::find(op->inputs.begin(), op->inputs.end(), in);
   *it = preop->outputs[0];
+
   preop->outputs[0]->req();
+//  preop->outputs[0]->req();
 
   auto* tracer = Tracer::get();
   if (tracer) {
@@ -30,33 +44,22 @@ void incept(Op* op, Op* preop) {
     auto& cops = chain.ops;
     auto& cop = cops[cops.size() - 2];
     auto& cpreop = cops[cops.size() - 1];
-    if (cop != op || cpreop != preop)
-      throw std::runtime_error("only pre-operations created inside operation constructor can be incepted");
+//    if (cop != op || cpreop != preop)
+//      throw std::runtime_error("only pre-operations created inside operation constructor can be incepted");
 
-    std::swap(cop, cpreop);
+//    std::swap(cop, cpreop);
   } else {
     preop->init();
     preop->run();
     delete preop;
   }
+   */
 }
 
-Chain trace(const AnyOp& op, const std::vector<Frame>& frames) {
+Chain trace(const fn& function, const std::vector<Frame>& frames) {
   Tracer tracer;
   tuple ins = tracer.open(frames);
-  tuple outs;
-
-  if (std::holds_alternative<UnaryOp>(op)) {
-    outs = {std::get<UnaryOp>(op)(ins[0])};
-  } else if (std::holds_alternative<BinaryOp>(op)) {
-    outs = {std::get<BinaryOp>(op)(ins[0], ins[1])};
-  } else if (std::holds_alternative<TernaryOp>(op)) {
-    outs = {std::get<TernaryOp>(op)(ins[0], ins[1], ins[2])};
-  } else if (std::holds_alternative<NaryOp>(op)) {
-    outs = std::get<NaryOp>(op)(ins);
-  } else {
-    throw std::runtime_error("unexpected op variant");
-  }
+  tuple outs = function(ins);
   return tracer.close(outs);
 }
 

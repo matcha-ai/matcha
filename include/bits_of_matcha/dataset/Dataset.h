@@ -39,9 +39,9 @@ public:
 
 public:
   Dataset(const Dataset& other);
-  Dataset(Dataset&& other);
+  Dataset(Dataset&& other) noexcept;
   Dataset& operator=(const Dataset& other);
-  Dataset& operator=(Dataset&& other);
+  Dataset& operator=(Dataset&& other) noexcept;
 
 private:
   friend class Engine;

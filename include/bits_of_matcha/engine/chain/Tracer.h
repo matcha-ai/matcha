@@ -1,6 +1,6 @@
 #pragma once
 
-#include "bits_of_matcha/ops.h"
+#include "bits_of_matcha/fn.h"
 #include "bits_of_matcha/engine/chain/Chain.h"
 
 #include <stack>
@@ -13,13 +13,13 @@ namespace matcha::engine {
 
 class Chain;
 
-Chain trace(const AnyOp& op, const std::vector<Frame>& frames);
+Chain trace(const fn& function, const std::vector<Frame>& frames);
 bool tracing();
 
 void incept(Op* op, Op* preop);
 
 class Tracer final {
-  friend Chain trace(const AnyOp&, const std::vector<Frame>&);
+  friend Chain trace(const fn&, const std::vector<Frame>&);
   friend bool tracing();
   friend void incept(Op*, Op*);
 

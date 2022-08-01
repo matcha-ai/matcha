@@ -10,14 +10,14 @@ class Chain;
 namespace matcha::engine {
 
 struct Autograd final : Op {
-  explicit Autograd(std::unique_ptr<Module> module, const std::vector<Tensor*>& wrt);
+  explicit Autograd(std::shared_ptr<Module> module, const std::vector<Tensor*>& wrt);
   explicit Autograd(Chain graph, const std::vector<Tensor*>& wrt);
   static OpMeta<Autograd> meta;
 
   void run() override;
 
 private:
-  std::unique_ptr<Module> module_;
+  std::shared_ptr<Module> module_;
   std::vector<Tensor*> wrt_;
 };
 

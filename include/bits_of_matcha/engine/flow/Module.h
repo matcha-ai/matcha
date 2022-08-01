@@ -13,32 +13,27 @@
 
 namespace matcha::engine {
 
+class Executor;
 
 class Module final {
 public:
   explicit Module(Chain graph);
   explicit Module(const AnyOp& preimage, const std::vector<Frame>& frames);
+  ~Module();
 
   auto chain() -> Chain&;
   auto chain() const -> const Chain&;
 
   void pass(const Pass& pass);
 
-public:
   void run(const std::vector<Tensor*>& ins, std::vector<Tensor*>& outs);
   auto run(const std::vector<Tensor*>& ins) -> std::vector<Tensor*>;
 
 private:
   Chain chain_;
+  Executor* executor_;
+  Executor* executor();
 
-  friend class ModuleForw;
-  friend class ModuleBack;
-
-private:
-  void stream(const std::vector<Tensor*>& source,
-              std::vector<Tensor*>& target);
-
-  void runOp(Op* op);
 };
 
 }

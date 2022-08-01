@@ -1,5 +1,7 @@
 #pragma once
 
+#include "bits_of_matcha/ops.h"
+
 #include <cstddef>
 
 
@@ -15,6 +17,7 @@ class Flow;
 class Dataset;
 class InstanceIterator;
 class Instance;
+class fn;
 }
 
 namespace matcha {
@@ -34,6 +37,7 @@ public:
   static engine::Dataset* unref(Dataset* external);
 
   static InstanceIterator makeInstanceIterator(engine::Dataset* ds, size_t pos);
+
 };
 
 }

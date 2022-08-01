@@ -3,13 +3,14 @@
 #include "bits_of_matcha/engine/op/Op.h"
 #include "bits_of_matcha/engine/ops/Cast.h"
 #include "bits_of_matcha/engine/iterations/ElementwiseBinaryCtx.h"
+#include "bits_of_matcha/engine/utils/stdVector.h"
 
 
 namespace matcha::engine {
 
 struct ElementwiseBinaryOpBack : Op {
   explicit ElementwiseBinaryOpBack(const BackCtx& ctx)
-    : Op{ctx.vals}
+    : Op{cat(ctx.vals, ctx.forward->outputs.stdVector(), ctx.forward->inputs.stdVector())}
     , forward_(ctx.forward)
     , iter_(forward_->inputs[0]->shape(), forward_->inputs[1]->shape())
   {

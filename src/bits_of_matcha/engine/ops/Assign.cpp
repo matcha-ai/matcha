@@ -5,9 +5,10 @@
 
 namespace matcha::engine::ops {
 
-Assign::Assign(Tensor* target, Tensor* source)
-  : Op{target, source}
-  , iter_(target->shape(), source->shape())
+Assign::Assign(Tensor* source, Tensor* target)
+  : Op{source}
+  , iter_(source->shape(), target->shape())
+  , target_(target)
 {
   if (Shape(iter_.dimsC) != target->shape())
     throw std::invalid_argument("can't broadcast shapes for assignment");
@@ -16,6 +17,18 @@ Assign::Assign(Tensor* target, Tensor* source)
     auto cast = new Cast(source, target->dtype());
     incept(this, cast);
   }
+  target_->req();
+}
+
+Assign::Assign(const Assign& other)
+  : Op(other)
+{
+  target_ = other.target_;
+  target_->req();
+}
+
+Assign::~Assign() {
+  target_->unreq();
 }
 
 OpMeta<Assign> Assign::meta {
@@ -24,9 +37,16 @@ OpMeta<Assign> Assign::meta {
 };
 
 void Assign::run() {
-  auto a = inputs[1];
-  auto b = inputs[0];
-  auto c = inputs[1];
+  auto a = inputs[0];
+  auto b = target_;
+  auto c = target_;
+
+  if (a->frame() == b->frame()) {
+    b->share(a);
+    return;
+  }
+
+  target_->malloc();
 
   switch (inputs[0]->dtype()) {
   case Float:

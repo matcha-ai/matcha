@@ -16,8 +16,8 @@ namespace matcha::engine {
 class Tensor;
 
 struct Op {
-  Op(std::initializer_list<Tensor*> inputs);
-  Op(const std::vector<Tensor*>& inputs);
+  explicit Op(std::initializer_list<Tensor*> inputs);
+  explicit Op(const std::vector<Tensor*>& inputs);
   virtual ~Op();
 
   OpInputs inputs;

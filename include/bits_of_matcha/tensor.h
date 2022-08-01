@@ -136,7 +136,8 @@ public:
   tensor(const tensor& other);
   tensor(tensor&& other) noexcept;
   tensor& operator=(const tensor& other);
-  tensor& operator=(tensor&& other);
+  tensor& operator=(tensor&& other) noexcept;
+  tensor& assign(const tensor& other);
   ~tensor();
 
 

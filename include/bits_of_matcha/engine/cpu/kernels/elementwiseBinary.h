@@ -18,7 +18,6 @@ namespace matcha::engine::cpu {
 
 template <class T = float, class Callable>
 inline void elementwiseBinary(Callable callable, Buffer& a, Buffer& b, Buffer& c, const ElementwiseBinaryCtx& ctx) {
-//  return;
 
   auto valsA = a.as<T*>();
   auto valsB = b.as<T*>();

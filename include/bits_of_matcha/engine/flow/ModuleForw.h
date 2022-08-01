@@ -9,7 +9,7 @@ namespace matcha::engine {
 class Module;
 
 struct ModuleForw : Op {
-  ModuleForw(Module* module, const std::vector<Tensor*>& ins);
+  ModuleForw(std::shared_ptr<Module> module, const std::vector<Tensor*>& ins);
   static OpMeta<ModuleForw> meta;
 
   void run() override;
@@ -18,7 +18,7 @@ struct ModuleForw : Op {
   auto module() const -> const Module&;
 
 private:
-  Module* module_;
+  std::shared_ptr<Module> module_;
 };
 
 }

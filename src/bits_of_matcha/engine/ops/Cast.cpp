@@ -1,5 +1,6 @@
 #include "bits_of_matcha/engine/ops/Cast.h"
 #include "bits_of_matcha/engine/memory/cast.h"
+#include "bits_of_matcha/engine/op/BackCtx.h"
 
 
 namespace matcha::engine::ops {
@@ -12,6 +13,9 @@ Cast::Cast(Tensor* a, const Dtype& dtype)
 
 OpMeta<Cast> Cast::meta {
   .name = "Cast",
+  .back = [](const BackCtx& ctx) {
+    return new Cast(ctx.vals[0], Float);
+  },
 };
 
 void Cast::run() {

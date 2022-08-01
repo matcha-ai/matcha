@@ -6,13 +6,17 @@
 namespace matcha::engine::ops {
 
 struct Assign : Op {
-  explicit Assign(Tensor* target, Tensor* source);
+  explicit Assign(Tensor* source, Tensor* target);
+  Assign(const Assign& other);
+  ~Assign();
+
   static OpMeta<Assign> meta;
 
   void run() override;
 
 private:
   ElementwiseBinaryCtx iter_;
+  Tensor* target_;
 };
 
 }

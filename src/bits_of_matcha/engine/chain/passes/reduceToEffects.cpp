@@ -1,4 +1,4 @@
-#include "bits_of_matcha/engine/chain/optimizers/reduceToEffects.h"
+#include "bits_of_matcha/engine/chain/passes/reduceToEffects.h"
 #include "bits_of_matcha/engine/op/Op.h"
 
 

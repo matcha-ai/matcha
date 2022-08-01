@@ -11,11 +11,14 @@ public:
   explicit Executor(Chain&& chain);
   virtual ~Executor() = default;
 
+  auto chain() -> Chain&;
+  auto chain() const -> const Chain&;
+
   virtual auto run(const std::vector<Tensor*>& ins, std::vector<Tensor*>& outs) -> void;
   virtual auto run(const std::vector<Tensor*>& ins) -> std::vector<Tensor*>;
 
 protected:
-  virtual void run() = 0;
+  virtual void runInternal() = 0;
 
   Chain chain_;
 };

@@ -28,6 +28,7 @@ void Ops::add(std::type_index op, Entry* entry) {
 }
 
 Ops::Entry& Ops::get(Op* op) {
+  op->init();
   std::type_index idx(typeid(*op));
   auto entry = entriesByType()[idx];
   if (!entry) throw std::out_of_range("unknown Op");
@@ -52,6 +53,10 @@ bool Ops::isSideEffect(Op* op) {
   return get(op).sideEffect(op);
 }
 
+Op* Ops::copy(Op* op) {
+  return get(op).copy(op);
+}
+
 Ops::Entry::~Entry() {
 }
 
@@ -63,5 +68,6 @@ std::string name(Op* op) { return Ops::name(op); }
 std::string label(Op* op) { return Ops::label(op); }
 BackOps back(const BackCtx& ctx) { return Ops::back(ctx); }
 bool isSideEffect(Op* op) { return Ops::isSideEffect(op); }
+Op* copy(Op* op) { return Ops::copy(op); }
 
 }

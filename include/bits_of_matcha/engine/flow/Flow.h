@@ -3,6 +3,7 @@
 #include "bits_of_matcha/ops.h"
 
 #include <set>
+#include <memory>
 
 
 namespace matcha::engine {
@@ -16,6 +17,7 @@ class Flow final {
 public:
   explicit Flow(const AnyOp& preimage);
   explicit Flow();
+  ~Flow() = default;
 
   bool hasPreimage() const;
   void setPreimage(const AnyOp& op);
@@ -25,17 +27,24 @@ public:
 
   std::vector<Tensor*> call(const std::vector<Tensor*>& ins);
 
+  void ref();
+  void unref();
+  unsigned refs() const;
+
 private:
-  Module* module(const std::vector<Frame>& frames);
-  Module* module(const std::vector<Tensor*>& tensors);
+  std::shared_ptr<Module> module(const std::vector<Frame>& frames);
+  std::shared_ptr<Module> module(const std::vector<Tensor*>& tensors);
   std::string getId(const std::vector<Frame>& frames);
 
   static void optimizer(Chain& chain);
 
 private:
   AnyOp preimage_;
-  std::unordered_map<std::string, Module*> modules_;
-  Module* lastCalledModule_;
+  std::unordered_map<std::string, std::shared_ptr<Module>> modules_;
+  std::shared_ptr<Module> lastCalledModule_;
+
+private:
+  unsigned refs_;
 };
 
 }

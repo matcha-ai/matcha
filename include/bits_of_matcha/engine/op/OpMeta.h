@@ -23,6 +23,7 @@ struct OpMeta {
   bool sideEffect = false;
   std::function<void (T*)> save;
   std::function<void (T*)> load;
+  std::function<T* (T*)> copy = [](T* op) { return new T(*op); };
 
   struct RegisterCtx {
     explicit RegisterCtx(OpMeta* meta) {
@@ -32,6 +33,7 @@ struct OpMeta {
         .label = [meta] (Op* op) { return meta->label(dynamic_cast<T*>(op)); },
         .back = meta->back,
         .sideEffect = [meta] (Op* op) { return meta->sideEffect; },
+        .copy = [meta] (Op* op) { return meta->copy(dynamic_cast<T*>(op)); },
       };
 
       Ops::add(typeid(T), entry);

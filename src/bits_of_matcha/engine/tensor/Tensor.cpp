@@ -15,7 +15,7 @@ Tensor::Tensor(const Frame& frame, Op* op)
   , op_(op)
 {
 //  print("created tensor ", this);
-  Tracer::handleNewTensor(this);
+//  Tracer::handleNewTensor(this);
 }
 
 Tensor::Tensor(const Dtype& dtype, const Shape& shape, Op* op)
@@ -134,6 +134,22 @@ std::vector<Tensor*> deref(const std::vector<tensor*>& externals) {
   result.reserve(externals.size());
   for (auto&& external: externals)
     result.push_back(deref(external));
+  return result;
+}
+
+std::vector<Tensor*> unref(std::vector<tensor>& externals) {
+  std::vector<Tensor*> result;
+  result.reserve(externals.size());
+  for (auto&& external: externals)
+    result.push_back(unref(external));
+  return result;
+}
+
+std::vector<Tensor*> unref(std::vector<tensor*>& externals) {
+  std::vector<Tensor*> result;
+  result.reserve(externals.size());
+  for (auto&& external: externals)
+    result.push_back(unref(external));
   return result;
 }
 

@@ -8,7 +8,7 @@ project(
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_FLAGS -pg)
 set(CMAKE_CXX_FLAGS -march=native)
-set(CMAKE_CXX_FLAGS -O2)
+#set(CMAKE_CXX_FLAGS -O2)
 
 set(
   PROJECT_HEADERS
@@ -20,6 +20,7 @@ set(
   include/bits_of_matcha/Frame.h
   include/bits_of_matcha/tensor.h
   include/bits_of_matcha/ops.h
+  include/bits_of_matcha/decorators.h
   include/bits_of_matcha/Device.h
   include/bits_of_matcha/print.h
   include/bits_of_matcha/random.h
@@ -101,17 +102,36 @@ set(
 
   include/bits_of_matcha/engine/chain/Chain.h
   include/bits_of_matcha/engine/chain/Tracer.h
-  include/bits_of_matcha/engine/chain/optimizers/reduceToEffects.h
-  include/bits_of_matcha/engine/chain/optimizers/contractIdentities.h
+  include/bits_of_matcha/engine/chain/Executor.h
+  include/bits_of_matcha/engine/chain/Module.h
+  include/bits_of_matcha/engine/chain/Pass.h
 
-  include/bits_of_matcha/engine/flow/Flow.h
-  include/bits_of_matcha/engine/flow/Module.h
-  include/bits_of_matcha/engine/flow/ModuleForw.h
+  include/bits_of_matcha/engine/chain/passes/reduceToEffects.h
+  include/bits_of_matcha/engine/chain/passes/contractIdentities.h
+  include/bits_of_matcha/engine/chain/passes/initialize.h
+  include/bits_of_matcha/engine/chain/passes/flatten.h
+  include/bits_of_matcha/engine/chain/passes/foldConstants.h
+  include/bits_of_matcha/engine/chain/passes/check.h
+
+  include/bits_of_matcha/engine/chain/executors/SinglecoreExecutor.h
+
+#  include/bits_of_matcha/engine/flow/Flow.h
+#  include/bits_of_matcha/engine/flow/Module.h
+#  include/bits_of_matcha/engine/flow/ModuleForw.h
+
+  include/bits_of_matcha/engine/decorator/Decorator.h
+  include/bits_of_matcha/engine/decorator/TracingDecorator.h
+  include/bits_of_matcha/engine/decorator/JitDecorator.h
 
   include/bits_of_matcha/engine/autograd/AccumulateGrads.h
-  include/bits_of_matcha/engine/autograd/GradientTape.h
+#  include/bits_of_matcha/engine/autograd/GradientTape.h
+  include/bits_of_matcha/engine/autograd/Partials.h
+#  include/bits_of_matcha/engine/autograd/Autograd.h
+  include/bits_of_matcha/engine/autograd/backprop.h
 
   #  include/bits_of_matcha/engine/utils/TexGraph.h
+  include/bits_of_matcha/engine/utils/stdVector.h
+  include/bits_of_matcha/engine/utils/IdentifierTranslator.h
 
   include/bits_of_matcha/engine/cpu/Buffer.h
   include/bits_of_matcha/engine/cpu/MemoryPool.h
@@ -126,7 +146,7 @@ set(
 
   include/bits_of_matcha/engine/dataset/Dataset.h
 
-  include/bits_of_matcha/engine/autograd/Autograd.h
+  include/bits_of_matcha/engine/ops/Require.h
   include/bits_of_matcha/engine/ops/Add.h
   include/bits_of_matcha/engine/ops/Multiply.h
   include/bits_of_matcha/engine/ops/Divide.h
@@ -172,9 +192,10 @@ set(
   src/bits_of_matcha/Frame.cpp
   src/bits_of_matcha/tensor.cpp
   src/bits_of_matcha/ops.cpp
+  src/bits_of_matcha/decorators.cpp
   src/bits_of_matcha/Device.cpp
   src/bits_of_matcha/random.cpp
-  src/bits_of_matcha/Flow.cpp
+#  src/bits_of_matcha/Flow.cpp
   src/bits_of_matcha/Backprop.cpp
   src/bits_of_matcha/Loader.cpp
   src/bits_of_matcha/Engine.cpp
@@ -234,15 +255,31 @@ set(
 
   src/bits_of_matcha/engine/chain/Chain.cpp
   src/bits_of_matcha/engine/chain/Tracer.cpp
-  src/bits_of_matcha/engine/chain/optimizers/reduceToEffects.cpp
-  src/bits_of_matcha/engine/chain/optimizers/contractIdentities.cpp
+  src/bits_of_matcha/engine/chain/Executor.cpp
+  src/bits_of_matcha/engine/chain/Module.cpp
 
-  src/bits_of_matcha/engine/flow/Flow.cpp
-  src/bits_of_matcha/engine/flow/Module.cpp
-  src/bits_of_matcha/engine/flow/ModuleForw.cpp
+  src/bits_of_matcha/engine/chain/passes/reduceToEffects.cpp
+  src/bits_of_matcha/engine/chain/passes/contractIdentities.cpp
+  src/bits_of_matcha/engine/chain/passes/initialize.cpp
+  src/bits_of_matcha/engine/chain/passes/flatten.cpp
+  src/bits_of_matcha/engine/chain/passes/foldConstants.cpp
+  src/bits_of_matcha/engine/chain/passes/check.cpp
+
+  src/bits_of_matcha/engine/chain/executors/SinglecoreExecutor.cpp
+
+#  src/bits_of_matcha/engine/flow/Flow.cpp
+#  src/bits_of_matcha/engine/flow/Module.cpp
+#  src/bits_of_matcha/engine/flow/ModuleForw.cpp
+
+  src/bits_of_matcha/engine/decorator/Decorator.cpp
+  src/bits_of_matcha/engine/decorator/TracingDecorator.cpp
+  src/bits_of_matcha/engine/decorator/JitDecorator.cpp
 
   src/bits_of_matcha/engine/autograd/AccumulateGrads.cpp
-  src/bits_of_matcha/engine/autograd/GradientTape.cpp
+#  src/bits_of_matcha/engine/autograd/GradientTape.cpp
+  src/bits_of_matcha/engine/autograd/Partials.cpp
+  src/bits_of_matcha/engine/autograd/backprop.cpp
+#  src/bits_of_matcha/engine/autograd/Autograd.cpp
 
   #  src/bits_of_matcha/engine/utils/TexGraph.cpp
 
@@ -252,7 +289,7 @@ set(
 
   src/bits_of_matcha/engine/dataset/Dataset.cpp
 
-  src/bits_of_matcha/engine/autograd/Autograd.cpp
+  src/bits_of_matcha/engine/ops/Require.cpp
   src/bits_of_matcha/engine/ops/Add.cpp
   src/bits_of_matcha/engine/ops/Multiply.cpp
   src/bits_of_matcha/engine/ops/Divide.cpp

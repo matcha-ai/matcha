@@ -7,8 +7,10 @@
 #include "bits_of_matcha/nn/optimizers/Sgd.h"
 #include "bits_of_matcha/dataset/Dataset.h"
 #include "bits_of_matcha/ops.h"
+#include "bits_of_matcha/fn.h"
 #include "bits_of_matcha/random.h"
 
+#include <set>
 
 namespace matcha::nn {
 
@@ -25,13 +27,13 @@ public:
 public:
   // Sequential API
 
-  Net(std::initializer_list<UnaryOp> sequence);
-  Net(const std::vector<UnaryOp>& sequence);
+  Net(std::initializer_list<unary_fn> sequence);
+  Net(const std::vector<unary_fn>& sequence);
 
 public:
   // Functional API
 
-  Net(const AnyOp& function);
+  Net(const fn& forward);
 
 public:
 
@@ -84,8 +86,8 @@ protected:
   void propagateBackward(const std::map<tensor*, tensor>& gradients);
 
 private:
-  AnyOp function_;
-  Flow trainFlow_, evalFlow_;
+  fn forward_;
+//  fn function_;
 
 };
 

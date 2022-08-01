@@ -38,7 +38,7 @@ bool OpInputs::none() const {
 }
 
 OpInputs::~OpInputs() {
-  for (auto in: data_) in->unreq();
+  for (auto in: data_) if (in) in->unreq();
 }
 
 std::vector<Tensor*>& OpInputs::stdVector() {

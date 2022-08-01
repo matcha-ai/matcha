@@ -1,4 +1,4 @@
-#include "bits_of_matcha/engine/chain/optimizers/contractIdentities.h"
+#include "bits_of_matcha/engine/chain/passes/contractIdentities.h"
 #include "bits_of_matcha/engine/ops/Identity.h"
 
 namespace matcha::engine {
@@ -31,6 +31,7 @@ void contractIdentities(Chain& chain) {
     }
 
     // get rid of the Identity
+    // TODO: boom!
     delete op;
     orphans.insert(target);
 

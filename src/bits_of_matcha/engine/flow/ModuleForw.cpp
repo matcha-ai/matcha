@@ -4,11 +4,11 @@
 
 namespace matcha::engine {
 
-ModuleForw::ModuleForw(Module* module, const std::vector<Tensor*>& ins)
+ModuleForw::ModuleForw(std::shared_ptr<Module> module, const std::vector<Tensor*>& ins)
   : Op{ins}
   , module_(module)
 {
-  for (auto&& out: module_->chain_.outputs)
+  for (auto&& out: module_->chain().outputs)
     outputs.add(this, out->frame());
 }
 

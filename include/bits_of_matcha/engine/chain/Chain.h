@@ -20,14 +20,15 @@ struct Chain {
 
   Chain() = default;
   Chain(const Chain& other) = delete;
-  Chain(Chain&& other) = default;
+  Chain(Chain&& other) noexcept = default;
 
   Chain& operator=(const Chain& other) = delete;
-  Chain& operator=(Chain&& other) = default;
+  Chain& operator=(Chain&& other) noexcept = default;
 
   ~Chain();
 };
 
+Chain copy(const Chain& chain);
 std::ostream& operator<<(std::ostream& os, const Chain& chain);
 
 }

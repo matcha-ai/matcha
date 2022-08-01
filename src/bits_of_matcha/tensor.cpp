@@ -6,6 +6,8 @@
 #include "bits_of_matcha/engine/ops/Print.h"
 #include "bits_of_matcha/engine/ops/SaveImage.h"
 #include "bits_of_matcha/engine/ops/SaveCsv.h"
+#include "bits_of_matcha/engine/chain/Tracer.h"
+#include "bits_of_matcha/engine/ops/Assign.h"
 
 #include <filesystem>
 
@@ -78,6 +80,12 @@ tensor::tensor(std::complex<double> scalar) : internal_(engine::full(std::comple
   deref(this)->ref();
 }
 
+tensor& tensor::assign(const tensor& other) {
+  auto op = new engine::ops::Assign{deref(other), deref(this)};
+  dispatch(op);
+  return *this;
+}
+
 tensor& tensor::operator=(const tensor& other) {
   auto temp = identity(other);
   if (internal_) deref(this)->unref();
@@ -85,7 +93,7 @@ tensor& tensor::operator=(const tensor& other) {
   return *this;
 }
 
-tensor& tensor::operator=(tensor&& other) {
+tensor& tensor::operator=(tensor&& other) noexcept {
   if (internal_ == other.internal_) return *this;
   auto internal = (engine::Tensor*) internal_;
   internal->unref();
@@ -106,7 +114,10 @@ tensor::tensor(tensor&& other) noexcept {
 
 tensor::tensor(void* engineObject) {
   internal_ = engineObject;
-  if (internal_) deref(this)->ref();
+  if (internal_) {
+    deref(this)->ref();
+    Tracer::handleNewTensor(deref(this));
+  }
 }
 
 tensor::~tensor() {

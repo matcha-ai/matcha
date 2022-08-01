@@ -137,7 +137,7 @@ struct Internal : Callback {
 
   void onTrainBegin(Net& net, Dataset ds) override {
     std::cout << "fitting matcha::Net "
-              << "(" << net.params.total() << " parameters, unk FLOPs)"
+              << "(" << net.params.total() << " parameters)" //, unk FLOPs)"
               << std::endl;
   }
 

@@ -12,12 +12,21 @@ namespace matcha {
 Flow::Flow(const AnyOp& op)
   : internal_(new engine::Flow(op))
 {
-
+  auto internal = (Internal) internal_;
+  internal->ref();
 }
 
 Flow::Flow()
   : internal_(new engine::Flow())
-{}
+{
+  auto internal = (Internal) internal_;
+  internal->ref();
+}
+
+Flow::~Flow() {
+  auto internal = (Internal) internal_;
+  if (internal) internal->unref();
+}
 
 tensor Flow::operator()(const tensor& a) {
   auto flow = Internal(internal_);
@@ -70,5 +79,35 @@ tensor Flow::run(const tensor& a) { throw NotSubclassed(); }
 tensor Flow::run(const tensor& a, const tensor& b) { throw NotSubclassed(); }
 tensor Flow::run(const tensor& a, const tensor& b, const tensor& c) { throw NotSubclassed(); }
 tuple Flow::run(const tuple& inputs) { throw NotSubclassed(); }
+
+Flow::Flow(const Flow& other) {
+  internal_ = other.internal_;
+  auto internal = (Internal) internal_;
+  if (internal) internal->ref();
+}
+
+Flow::Flow(Flow&& other) noexcept {
+  internal_ = other.internal_;
+  other.internal_ = nullptr;
+}
+
+Flow& Flow::operator=(const Flow& other) {
+  if (internal_ == other.internal_) return *this;
+  auto internal = (Internal) internal_;
+  if (internal) internal->unref();
+  internal_ = other.internal_;
+  internal = (Internal) internal_;
+  if (internal) internal->ref();
+  return *this;
+}
+
+Flow& Flow::operator=(Flow&& other) noexcept {
+  if (other.internal_ == internal_) return *this;
+  auto internal = (Internal) internal_;
+  if (internal) internal->unref();
+  internal_ = other.internal_;
+  other.internal_ = nullptr;
+  return *this;
+}
 
 }
