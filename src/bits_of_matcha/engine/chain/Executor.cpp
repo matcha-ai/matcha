@@ -1,0 +1,39 @@
+#include "bits_of_matcha/engine/chain/Executor.h"
+#include "bits_of_matcha/engine/tensor/Tensor.h"
+
+
+namespace matcha::engine {
+
+Executor::Executor(Chain&& chain)
+  : chain_(std::move(chain))
+{}
+
+void stream(const std::vector<Tensor*>& source, std::vector<Tensor*>& target) {
+  if (source.size() != target.size())
+    throw std::runtime_error("source and target count mismatch");
+
+  for (int i = 0; i < source.size(); i++) {
+    target[i]->share(source[i]);
+  }
+}
+
+auto Executor::run(const std::vector<Tensor*>& ins) -> std::vector<Tensor*> {
+  stream(ins, chain_.inputs);
+  run();
+  std::vector<Tensor*> outputs;
+  for (auto&& cout: chain_.outputs) {
+    auto out = new Tensor(cout->frame());
+    out->share(cout);
+    outputs.push_back(out);
+  }
+  return outputs;
+}
+
+void Executor::run(const std::vector<Tensor*>& ins, std::vector<Tensor*>& outs) {
+  stream(ins, chain_.inputs);
+  run();
+  stream(chain_.outputs, outs);
+}
+
+
+}
