@@ -16,7 +16,7 @@ Pow::Pow(Tensor* a, Tensor* b)
   : ElementwiseBinaryOp(a, b, promoteDtypesPow(a, b))
 {}
 
-OpMeta<Pow> Pow::meta {
+Reflection<Pow> Pow::reflection {
   .name = "Pow",
 };
 
@@ -54,7 +54,7 @@ PowBack::PowBack(const BackCtx& ctx)
 {
 }
 
-OpMeta<PowBack> PowBack::meta {
+Reflection<PowBack> PowBack::reflection {
   .name = "PowBack",
 };
 

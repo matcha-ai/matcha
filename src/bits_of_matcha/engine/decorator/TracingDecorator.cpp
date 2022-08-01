@@ -14,10 +14,7 @@ std::vector<Tensor*> TracingDecorator::run(const std::vector<Tensor*>& inputs) {
   if (!tracing()) {
     return executor->run(inputs);
   } else {
-    auto module = new Module(inputs, executor);
-    auto outs = module->outputs.stdVector();
-    dispatch(module);
-    return outs;
+    return dispatch<Module>(inputs, executor);
   }
 }
 

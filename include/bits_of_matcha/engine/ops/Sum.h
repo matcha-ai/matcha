@@ -9,7 +9,7 @@ namespace matcha::engine::ops {
 struct Sum : AxiswiseFoldOp {
   explicit Sum(Tensor* a);
   explicit Sum(Tensor* a, int axis);
-  static OpMeta<Sum> meta;
+  static Reflection<Sum> reflection;
 
   void run() override;
 };

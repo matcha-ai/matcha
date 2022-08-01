@@ -10,16 +10,37 @@ Op::Op(std::initializer_list<Tensor*> inputs)
 
 Op::Op(const std::vector<Tensor*>& inputs)
   : inputs(inputs)
-{}
+{
+  for (auto&& in: inputs)
+    if (in) in->req();
+}
 
 Op::~Op() {
-//  print("deleting op");
+  for (auto&& in: inputs)
+    if (in) in->unreq();
+
+  for (auto&& out: outputs)
+    if (out) out->setOp(nullptr);
 }
 
 void Op::init() {}
 
 void Op::run() {
 
+}
+
+Tensor* Op::addOutput(const Frame& frame) {
+  return addOutput(new Tensor(frame));
+}
+
+Tensor* Op::addOutput(const Dtype& dtype, const Shape& shape) {
+  return addOutput(new Tensor(dtype, shape));
+}
+
+Tensor* Op::addOutput(Tensor* tensor) {
+  tensor->setOp(this);
+  outputs.push_back(tensor);
+  return tensor;
 }
 
 void dispatch(Op* op) {

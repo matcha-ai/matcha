@@ -8,14 +8,14 @@ namespace matcha::engine::ops {
 
 struct Divide : ElementwiseBinaryOp {
   explicit Divide(Tensor* a, Tensor* b);
-  static OpMeta<Divide> meta;
+  static Reflection<Divide> reflection;
 
   void run() override;
 };
 
 struct DivideBack : ElementwiseBinaryOpBack {
   explicit DivideBack(const BackCtx& ctx);
-  static OpMeta<DivideBack> meta;
+  static Reflection<DivideBack> reflection;
 
   void run() override;
 

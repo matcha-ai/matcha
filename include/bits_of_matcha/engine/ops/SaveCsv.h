@@ -9,7 +9,7 @@ namespace matcha::engine::ops {
 
 struct SaveCsv : Op {
   SaveCsv(Tensor* a, const std::string& file);
-  static OpMeta<SaveCsv> meta;
+  static Reflection<SaveCsv> reflection;
 
   void run() override;
 

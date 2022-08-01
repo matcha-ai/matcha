@@ -7,7 +7,7 @@ namespace matcha::engine::ops {
 
 struct Exp : ElementwiseUnaryOp {
   Exp(Tensor* a);
-  static OpMeta<Exp> meta;
+  static Reflection<Exp> reflection;
 
   void run() override;
 };

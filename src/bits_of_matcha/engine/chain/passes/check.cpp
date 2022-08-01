@@ -38,7 +38,7 @@ void check(const Chain& chain, std::ostream& os) {
       os << it(op->outputs[i]);
     }
 
-    if (op->outputs.any()) os << " = ";
+    if (!op->outputs.empty()) os << " = ";
 
     std::string opname;
     try {

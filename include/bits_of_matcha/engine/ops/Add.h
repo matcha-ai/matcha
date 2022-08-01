@@ -7,15 +7,15 @@
 namespace matcha::engine::ops {
 
 struct Add : ElementwiseBinaryOp {
-  explicit Add(Tensor* a, Tensor* b);
-  static OpMeta<Add> meta;
+  Add(Tensor* a, Tensor* b);
+  static Reflection<Add> reflection;
 
   void run() override;
 };
 
 struct AddBack : ElementwiseBinaryOpBack {
   explicit AddBack(const BackCtx& ctx);
-  static OpMeta<AddBack> meta;
+  static Reflection<AddBack> reflection;
 
   void run() override;
 };

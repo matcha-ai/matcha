@@ -8,15 +8,15 @@ Reshape::Reshape(Tensor* a, const Shape::Reshape& dims)
   : Op{a}
 {
   Shape shape = dims(a->shape());
-  if (a->size() != shape.size()) {
+  if (a->size() != shape.size())
     throw IncompatibleShapesError(a->shape(), shape);
-  }
-  outputs.add(this, a->dtype(), shape);
+
+  addOutput(a->dtype(), shape);
 }
 
-OpMeta<Reshape> Reshape::meta {
+Reflection<Reshape> Reshape::reflection {
   .name = "Reshape",
-  .back = [](auto& ctx) { return new Reshape(ctx.vals[0], ctx.forward->inputs[0]->shape()); }
+//  .back = [](auto& ctx) { return new Reshape(ctx.vals[0], ctx.forward_->inputs[0]->shape()); }
 };
 
 void Reshape::run() {

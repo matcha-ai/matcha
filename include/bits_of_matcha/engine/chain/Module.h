@@ -7,7 +7,7 @@ namespace matcha::engine {
 
 struct Module : Op {
   explicit Module(const std::vector<Tensor*>& inputs, std::shared_ptr<Executor> executor);
-  static OpMeta<Module> meta;
+  static Reflection<Module> reflection;
 
   auto executor() -> std::shared_ptr<Executor>&;
   auto chain() -> Chain&;

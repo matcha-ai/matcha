@@ -9,19 +9,19 @@
 namespace matcha::engine {
 
 class Op;
-class OpBack;
 class BackCtx;
-class BackOps;
+class Chain;
+class Tensor;
 
-class Ops final {
+class Registry final {
 public:
-  Ops() = delete;
+  Registry() = delete;
 
   struct Entry {
     std::function<std::string ()> name;
     std::function<std::string (Op* op)> label;
-    std::function<BackOps (const BackCtx&)> back;
-    std::function<bool (Op* op)> sideEffect;
+    std::function<std::vector<Tensor*> (const BackCtx&)> back;
+    std::function<bool (Op* op)> side_effect;
     std::function<Op* (Op* op)> copy;
 
     ~Entry();
@@ -30,7 +30,7 @@ public:
 
   static std::string name(Op* op);
   static std::string label(Op* op);
-  static BackOps back(const BackCtx& ctx);
+  static Chain back(const BackCtx& ctx);
   static bool isSideEffect(Op* op);
   static Op* copy(Op* op);
 
@@ -48,7 +48,7 @@ namespace matcha::engine::ops {
 
 std::string name(Op* op);
 std::string label(Op* op);
-BackOps back(const BackCtx& ctx);
+Chain back(const BackCtx& ctx);
 bool isSideEffect(Op* op);
 Op* copy(Op* op);
 

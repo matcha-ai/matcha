@@ -35,7 +35,7 @@ You can learn more about those e.g. in [the following article](tensor/basic-arit
 Notably, `tensor` overloads arithmetic operators for readable and natural code such as:
 
 ```cpp
-tensor d;    // forward-declaration is possible too
+tensor d;    // forward_-declaration is possible too
 d = a + b;
 d = a * b;
 d = -b;

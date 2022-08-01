@@ -79,4 +79,4 @@ Requires gradient computation only for the given list of tensors.
 
 > `Flow::grad(tensor delta = 1)  ->  std::vector<std::pair<tensor, tensor>>`
 
-Fires the backpropagation towards all the required gradient tensors. The forward run must be invoked first.
+Fires the backpropagation towards all the required gradient tensors. The forward_ run must be invoked first.

@@ -9,22 +9,22 @@ namespace matcha::engine::cpu {
 
 template <class T, class Callable>
 inline void axiswiseFold(Callable callable, Buffer& a, Buffer& b, const AxiswiseFoldCtx& ctx) {
-  auto valsA = a.as<T*>();
-  auto valsB = b.as<T*>();
+  auto vals_a = a.as<T*>();
+  auto vals_b = b.as<T*>();
 
-  T* beginsA[2] = {valsA, valsA};
-  T* iterB = valsB;
+  T* beginsA[2] = {vals_a, vals_a};
+  T* iter_b = vals_b;
 
-  for (size_t iter0 = 0; iter0 < ctx.prefixLengths[0]; iter0++) {
+  for (size_t iter0 = 0; iter0 < ctx.prefix_lengths[0]; iter0++) {
     beginsA[1] = beginsA[0];
-    for (size_t iter1 = 0; iter1 < ctx.prefixLengths[1]; iter1++) {
+    for (size_t iter1 = 0; iter1 < ctx.prefix_lengths[1]; iter1++) {
       T* beg = beginsA[1];
-      T* end = beg + ctx.axisStride * ctx.axisLength;
-      *valsB++ = callable(beg, ctx.axisStride, end);
+      T* end = beg + ctx.axis_stride * ctx.axis_length;
+      *vals_b++ = callable(beg, ctx.axis_stride, end);
 
-      beginsA[1] += ctx.prefixStrides[1];
+      beginsA[1] += ctx.prefix_strides[1];
     }
-    beginsA[0] += ctx.prefixStrides[0];
+    beginsA[0] += ctx.prefix_strides[0];
   }
 }
 

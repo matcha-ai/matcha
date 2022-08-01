@@ -9,7 +9,7 @@ namespace matcha::engine::ops {
 struct Max : AxiswiseFoldOp {
   Max(Tensor* a);
   Max(Tensor* a, int axis);
-  static OpMeta<Max> meta;
+  static Reflection<Max> reflection;
 
   void run() override;
 };

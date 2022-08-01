@@ -31,7 +31,7 @@ MemoryPool::MemoryPool()
       0x8000000,      // 128 MiB       32M floats
 */
 {
-  blockPools_ = {
+  block_pools_ = {
     {0x20, 128},
     {0x200, 64},
     {0x800, 32},
@@ -69,19 +69,19 @@ void MemoryPool::free(Block* block) {
 
 BlockPool* MemoryPool::bestFit(size_t size) {
   auto it = std::lower_bound(
-    std::begin(blockPools_), std::end(blockPools_),
-    size,
-    [](auto& pool, size_t required) {
+  std::begin(block_pools_), std::end(block_pools_),
+  size,
+  [](auto& pool, size_t required) {
       return pool.blockSize() < required;
     }
   );
-  if (it == std::end(blockPools_)) return nullptr;
+  if (it == std::end(block_pools_)) return nullptr;
   return &*it;
 }
 
 size_t MemoryPool::usage() const {
   size_t total = 0;
-  for (auto pool: blockPools_) {
+  for (auto pool: block_pools_) {
     total += pool.blockSize() * pool.blocks();
   }
   return total;

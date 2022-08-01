@@ -8,14 +8,14 @@ namespace matcha::engine::ops {
 
 struct Pow : ElementwiseBinaryOp {
   Pow(Tensor* a, Tensor* b);
-  static OpMeta<Pow> meta;
+  static Reflection<Pow> reflection;
 
   void run() override;
 };
 
 struct PowBack : OpBack {
   PowBack(const BackCtx& ctx);
-  static OpMeta<PowBack> meta;
+  static Reflection<PowBack> reflection;
 
 };
 

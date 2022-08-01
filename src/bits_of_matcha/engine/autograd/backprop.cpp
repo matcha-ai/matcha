@@ -23,14 +23,19 @@ void backprop(Chain& chain, const std::vector<Tensor*>& wrt) {
   // extend chain by backprop ops
   Partials partials(chain, wrt);
 
+  chain.outputs.clear();
+  for (auto&& g: partials.accumulateGrads(wrt))
+    chain.outputs.push_back(g);
+  return;
+
   for (int i = (int) chain.ops.size() - 1; i >= 0; i--) {
     auto op = chain.ops[i];
     if (!partials.needs(op)) continue;
 
     BackCtx ctx {
       .forward = op,
-      .vals = partials.accumulateGrads(op->outputs.stdVector()),
-      .wrts = partials.needs(op->inputs.stdVector()),
+      .vals = partials.accumulateGrads(op->outputs),
+      .wrts = partials.needs(op->inputs),
     };
     auto back = ops::back(ctx);
 
@@ -49,6 +54,8 @@ void backprop(Chain& chain, const std::vector<Tensor*>& wrt) {
       if (!bout) continue;
       partials.addGrads(op->inputs[j], bout);
     }
+
+    back = {};
   }
 
   // modify chain outputs
@@ -56,10 +63,10 @@ void backprop(Chain& chain, const std::vector<Tensor*>& wrt) {
   for (auto&& g: partials.accumulateGrads(wrt))
     chain.outputs.push_back(g);
 
-//  flatten(chain);
-//  reduceToEffects(chain);
-//  contractIdentities(chain);
-//  check(chain);
+  flatten(chain);
+  reduceToEffects(chain);
+  contractIdentities(chain);
+  check(chain);
 }
 
 }

@@ -9,7 +9,7 @@ namespace matcha::engine::ops {
 struct Identity final : Op {
   explicit Identity(Tensor* a);
   explicit Identity(Tensor* a, Tensor* target);
-  static OpMeta<Identity> meta;
+  static Reflection<Identity> reflection;
 
   void run() override;
 };

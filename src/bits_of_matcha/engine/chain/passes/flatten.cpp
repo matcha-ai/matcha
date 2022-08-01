@@ -53,10 +53,7 @@ void flatten(Chain& chain) {
     delete op;
 
     // don't deallocate the copies
-    c.ops.clear();
-    c.tensors.clear();
-    c.inputs.clear();
-    c.outputs.clear();
+    c = {};
   }
   chain.ops = ops;
 //  std::cerr << "FLATTENED:" << std::endl;

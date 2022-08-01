@@ -14,7 +14,7 @@ Min::Min(Tensor* a, int axis)
   : AxiswiseFoldOp(a, axis)
 {}
 
-OpMeta<Min> Min::meta {
+Reflection<Min> Min::reflection {
   .name = "Min",
 };
 

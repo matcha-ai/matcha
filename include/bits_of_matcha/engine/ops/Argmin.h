@@ -9,7 +9,7 @@ namespace matcha::engine::ops {
 struct Argmin : AxiswiseFoldOp {
   Argmin(Tensor* a);
   Argmin(Tensor* a, int axis);
-  static OpMeta<Argmin> meta;
+  static Reflection<Argmin> reflection;
 
   void run() override;
 };

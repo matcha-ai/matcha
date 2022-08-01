@@ -6,17 +6,17 @@
 namespace matcha::engine {
 
 ElementwiseBinaryCtx::ElementwiseBinaryCtx(const Shape& a, const Shape& b)
-  : dimsC(std::max(a.rank(), b.rank()))
-  , stridesA(dimsC.size() + 1)
-  , stridesB(dimsC.size() + 1)
-  , stridesC(dimsC.size() + 1)
+  : dims_c(std::max(a.rank(), b.rank()))
+  , strides_a(dims_c.size() + 1)
+  , strides_b(dims_c.size() + 1)
+  , strides_c(dims_c.size() + 1)
 {
-  stridesA[stridesA.size() - 1] = 1;
-  stridesB[stridesB.size() - 1] = 1;
-  stridesC[stridesC.size() - 1] = 1;
+  strides_a[strides_a.size() - 1] = 1;
+  strides_b[strides_b.size() - 1] = 1;
+  strides_c[strides_c.size() - 1] = 1;
 
-  for (int i = 0; i < dimsC.size(); i++) {
-    int j = (int) dimsC.size() - 1 - i;
+  for (int i = 0; i < dims_c.size(); i++) {
+    int j = (int) dims_c.size() - 1 - i;
     unsigned dimA = i < a.rank() ? a[-1 - i] : 1;
     unsigned dimB = i < b.rank() ? b[-1 - i] : 1;
     unsigned dimC;
@@ -30,23 +30,23 @@ ElementwiseBinaryCtx::ElementwiseBinaryCtx(const Shape& a, const Shape& b)
     } else {
       throw BroadcastError(a, b, -1 - i);
     }
-    dimsC[j] = dimC;
+    dims_c[j] = dimC;
 
-    stridesA[j] = stridesA[j + 1] * dimA;
-    stridesB[j] = stridesB[j + 1] * dimB;
-    stridesC[j] = stridesC[j + 1] * dimC;
+    strides_a[j] = strides_a[j + 1] * dimA;
+    strides_b[j] = strides_b[j + 1] * dimB;
+    strides_c[j] = strides_c[j + 1] * dimC;
   }
 
-  for (int i = 0; i < dimsC.size(); i++) {
-    int j = (int) dimsC.size() - 1 - i;
+  for (int i = 0; i < dims_c.size(); i++) {
+    int j = (int) dims_c.size() - 1 - i;
     unsigned dimA = i < a.rank() ? a[-1 - i] : 1;
     unsigned dimB = i < b.rank() ? b[-1 - i] : 1;
 
     if (dimA == dimB) {
     } else if (dimA == 1) {
-      stridesA[j + 1] = 0;
+      strides_a[j + 1] = 0;
     } else if (dimB == 1) {
-      stridesB[j + 1] = 0;
+      strides_b[j + 1] = 0;
     }
   }
 }

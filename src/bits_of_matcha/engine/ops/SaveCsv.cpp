@@ -51,12 +51,12 @@ void SaveCsv::dumpData(std::ostream& os) {
   }
 
   MatrixStackIteration iter(t->shape());
-  float* tensorEnd = f + t->size();
-  for (float* matrix = f; matrix != tensorEnd ; matrix += iter.size) {
-    float* matrixEnd = matrix + iter.size;
-    for (float* row = matrix; row != matrixEnd; row += iter.cols) {
-      float* rowEnd = row + iter.cols;
-      for (float* col = row; col != rowEnd; col++) {
+  float* tensor_end = f + t->size();
+  for (float* matrix = f; matrix != tensor_end ; matrix += iter.size) {
+    float* matrix_end = matrix + iter.size;
+    for (float* row = matrix; row != matrix_end; row += iter.cols) {
+      float* row_end = row + iter.cols;
+      for (float* col = row; col != row_end; col++) {
         if (col != row) os << ",";
         os << *col;
       }

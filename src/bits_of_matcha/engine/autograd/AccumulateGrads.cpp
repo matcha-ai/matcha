@@ -8,18 +8,18 @@ AccumulateGrads::AccumulateGrads(const std::vector<Tensor*>& grads)
   : Op(grads)
 {
   if (grads.empty()) throw std::runtime_error("grads are empty");
-  outputs.add(this, Float, grads[0]->shape());
+  addOutput(Float, grads[0]->shape());
 }
 
 AccumulateGrads::AccumulateGrads(const std::vector<Tensor*>& grads, Tensor* target)
   : Op(grads)
 {
-  outputs.add(this, target);
+  addOutput(target);
   if (target->dtype() != Float)
     throw std::runtime_error("target is not of type Float");
 }
 
-OpMeta<AccumulateGrads> AccumulateGrads::meta {
+Reflection<AccumulateGrads> AccumulateGrads::reflection {
   .name = "AccumulateGrads"
 };
 

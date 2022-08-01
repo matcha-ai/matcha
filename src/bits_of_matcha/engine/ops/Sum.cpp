@@ -22,7 +22,7 @@ Sum::Sum(Tensor* a, int axis)
   : AxiswiseFoldOp(a, axis, promoteDtypesSum(a))
 {}
 
-OpMeta<Sum> Sum::meta {
+Reflection<Sum> Sum::reflection {
   .name = "Sum"
 };
 

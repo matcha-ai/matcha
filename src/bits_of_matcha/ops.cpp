@@ -106,10 +106,8 @@ matcha::tensor operator>=(const matcha::tensor& a, const matcha::tensor& b) {
 namespace matcha {
 
 tensor add(const tensor& a, const tensor& b) {
-  auto op = new ops::Add(deref(a), deref(b));
-  auto out = ref(op->outputs[0]);
-  engine::dispatch(op);
-  return out;
+  auto outs = dispatch<ops::Add>(deref(a), deref(b));
+  return ref(outs[0]);
 }
 
 tensor subtract(const tensor& a, const tensor& b) {
@@ -117,76 +115,43 @@ tensor subtract(const tensor& a, const tensor& b) {
 }
 
 tensor multiply(const tensor& a, const tensor& b) {
-  auto op = new ops::Multiply {
-    deref(a),
-    deref(b),
-  };
-
-  auto out = ref(op->outputs[0]);
-  engine::dispatch(op);
-  return out;
+  auto outs = dispatch<ops::Multiply>(deref(a), deref(b));
+  return ref(outs[0]);
 }
 
 tensor divide(const tensor& a, const tensor& b) {
-  auto op = new ops::Divide {
-    deref(a),
-    deref(b),
-  };
-
-  auto out = ref(op->outputs[0]);
-  engine::dispatch(op);
-  return out;
+  auto outs = dispatch<ops::Divide>(deref(a), deref(b));
+  return ref(outs[0]);
 }
 
 tensor negative(const tensor& a) {
-  return (float) -1. * a;
+  return -1 * a;
 }
 
 tensor dot(const tensor& a, const tensor& b) {
-  auto op = new ops::Dot {
-    deref(a),
-    deref(b),
-  };
-
-  auto out = ref(op->outputs[0]);
-  engine::dispatch(op);
-  return out;
+  auto outs = dispatch<ops::Dot>(deref(a), deref(b));
+  return ref(outs[0]);
 }
 
 tensor transpose(const tensor& a) {
-  auto op = new ops::Transpose {
-    deref(a),
-  };
-
-  auto out = ref(op->outputs[0]);
-  engine::dispatch(op);
-  return out;
+  auto outs = dispatch<ops::Transpose>(deref(a));
+  return ref(outs[0]);
 }
 
 tensor identity(const tensor& a) {
-  auto op = new ops::Identity {deref(a)};
-  auto out = ref(op->outputs[0]);
-  engine::dispatch(op);
-  return out;
+  auto outs = dispatch<ops::Identity>(deref(a));
+  return ref(outs[0]);
 }
 
 tensor reshape(const tensor& a, const Shape::Reshape& dims) {
-  auto op = new ops::Reshape {deref(a), dims};
-  auto out = ref(op->outputs[0]);
-  engine::dispatch(op);
-  return out;
+  auto outs = dispatch<ops::Reshape>(deref(a), dims);
+  return ref(outs[0]);
 }
 
 
 tensor pow(const tensor& a, const tensor& b) {
-  auto op = new ops::Pow {
-    deref(a),
-    deref(b)
-  };
-
-  auto out = ref(op->outputs[0]);
-  engine::dispatch(op);
-  return out;
+  auto outs = dispatch<ops::Pow>(deref(a), deref(b));
+  return ref(outs[0]);
 }
 
 tensor square(const tensor& a) {
@@ -207,97 +172,64 @@ tensor exp(const tensor& a) {
   return out;
 }
 
-//void image(const tensor& a, const std::string& file) {
-//  auto op = new ops::SaveImage {
-//    deref(a),
-//    file
-//  };
-//
-//  engine::dispatch(op);
-//}
-
 tensor max(const tensor& a) {
-  auto op = new ops::Max { deref(a) };
-  auto out = ref(op->outputs[0]);
-  engine::dispatch(op);
-  return out;
+  auto outs = dispatch<ops::Max>(deref(a));
+  return ref(outs[0]);
 }
 
 tensor max(const tensor& a, int axis) {
-  auto op = new ops::Max { deref(a), axis };
-  auto out = ref(op->outputs[0]);
-  engine::dispatch(op);
-  return out;
+  auto outs = dispatch<ops::Max>(deref(a), axis);
+  return ref(outs[0]);
 }
 
 tensor min(const tensor& a) {
-  auto op = new ops::Min { deref(a) };
-  auto out = ref(op->outputs[0]);
-  engine::dispatch(op);
-  return out;
-}
-
-tensor maxBetween(const tensor& a, const tensor& b) {
-  auto op = new ops::MaxBetween { deref(a), deref(b) };
-  auto out = ref(op->outputs[0]);
-  engine::dispatch(op);
-  return out;
+  auto outs = dispatch<ops::Min>(deref(a));
+  return ref(outs[0]);
 }
 
 tensor min(const tensor& a, int axis) {
-  auto op = new ops::Min { deref(a), axis };
-  auto out = ref(op->outputs[0]);
-  engine::dispatch(op);
-  return out;
+  auto outs = dispatch<ops::Min>(deref(a), axis);
+  return ref(outs[0]);
+}
+
+tensor maxBetween(const tensor& a, const tensor& b) {
+  auto outs = dispatch<ops::MaxBetween>(deref(a), deref(b));
+  return ref(outs[0]);
 }
 
 tensor minBetween(const tensor& a, const tensor& b) {
-  auto op = new ops::MinBetween { deref(a), deref(b) };
-  auto out = ref(op->outputs[0]);
-  engine::dispatch(op);
-  return out;
+  auto outs = dispatch<ops::MinBetween>(deref(a), deref(b));
+  return ref(outs[0]);
 }
 
 tensor argmax(const tensor& a) {
-  auto op = new ops::Argmax { deref(a) };
-  auto out = ref(op->outputs[0]);
-  engine::dispatch(op);
-  return out;
+  auto outs = dispatch<ops::Argmax>(deref(a));
+  return ref(outs[0]);
 }
 
 tensor argmin(const tensor& a) {
-  auto op = new ops::Argmin { deref(a) };
-  auto out = ref(op->outputs[0]);
-  engine::dispatch(op);
-  return out;
+  auto outs = dispatch<ops::Argmin>(deref(a));
+  return ref(outs[0]);
 }
 
 tensor argmax(const tensor& a, int axis) {
-  auto op = new ops::Argmax { deref(a), axis };
-  auto out = ref(op->outputs[0]);
-  engine::dispatch(op);
-  return out;
+  auto outs = dispatch<ops::Argmax>(deref(a), axis);
+  return ref(outs[0]);
 }
 
 tensor argmin(const tensor& a, int axis) {
-  auto op = new ops::Argmin { deref(a), axis };
-  auto out = ref(op->outputs[0]);
-  engine::dispatch(op);
-  return out;
+  auto outs = dispatch<ops::Argmin>(deref(a), axis);
+  return ref(outs[0]);
 }
 
 tensor sum(const tensor& a) {
-  auto op = new engine::ops::Sum {deref(a)};
-  auto out = ref(op->outputs[0]);
-  engine::dispatch(op);
-  return out;
+  auto outs = dispatch<ops::Sum>(deref(a));
+  return ref(outs[0]);
 }
 
 tensor sum(const tensor& a, int axis) {
-  auto op = new engine::ops::Sum {deref(a), axis};
-  auto out = ref(op->outputs[0]);
-  engine::dispatch(op);
-  return out;
+  auto outs = dispatch<ops::Sum>(deref(a), axis);
+  return ref(outs[0]);
 }
 
 tensor mean(const tensor& a) {
@@ -363,45 +295,33 @@ tensor norm(const tensor& a, int axis) {
 }
 
 tensor eq(const tensor& a, const tensor& b) {
-  auto op = new ops::Eq { deref(a), deref(b) };
-  auto out = ref(op->outputs[0]);
-  engine::dispatch(op);
-  return out;
+  auto outs = dispatch<ops::Eq>(deref(a), deref(b));
+  return ref(outs[0]);
 }
 
 tensor neq(const tensor& a, const tensor& b) {
-  auto op = new ops::Neq { deref(a), deref(b) };
-  auto out = ref(op->outputs[0]);
-  engine::dispatch(op);
-  return out;
+  auto outs = dispatch<ops::Neq>(deref(a), deref(b));
+  return ref(outs[0]);
 }
 
 tensor lt(const tensor& a, const tensor& b) {
-  auto op = new ops::Lt { deref(a), deref(b) };
-  auto out = ref(op->outputs[0]);
-  engine::dispatch(op);
-  return out;
+  auto outs = dispatch<ops::Lt>(deref(a), deref(b));
+  return ref(outs[0]);
 }
 
 tensor le(const tensor& a, const tensor& b) {
-  auto op = new ops::Le { deref(a), deref(b) };
-  auto out = ref(op->outputs[0]);
-  engine::dispatch(op);
-  return out;
+  auto outs = dispatch<ops::Le>(deref(a), deref(b));
+  return ref(outs[0]);
 }
 
 tensor gt(const tensor& a, const tensor& b) {
-  auto op = new ops::Gt { deref(a), deref(b) };
-  auto out = ref(op->outputs[0]);
-  engine::dispatch(op);
-  return out;
+  auto outs = dispatch<ops::Gt>(deref(a), deref(b));
+  return ref(outs[0]);
 }
 
 tensor ge(const tensor& a, const tensor& b) {
-  auto op = new ops::Ge { deref(a), deref(b) };
-  auto out = ref(op->outputs[0]);
-  engine::dispatch(op);
-  return out;
+  auto outs = dispatch<ops::Ge>(deref(a), deref(b));
+  return ref(outs[0]);
 }
 
 tensor broadcast(const tensor& a, const Shape& shape) {
@@ -409,17 +329,13 @@ tensor broadcast(const tensor& a, const Shape& shape) {
 }
 
 tensor stack(const std::vector<tensor>& tensors) {
-  auto op = new ops::Stack(deref(tensors));
-  auto out = ref(op->outputs[0]);
-  engine::dispatch(op);
-  return out;
+  auto outs = dispatch<ops::Stack>(deref(tensors));
+  return ref(outs[0]);
 }
 
 tensor cast(const tensor& a, const Dtype& dtype) {
-  auto op = new ops::Cast(deref(a), dtype);
-  auto out = ref(op->outputs[0]);
-  engine::dispatch(op);
-  return out;
+  auto outs = dispatch<ops::Cast>(deref(a), dtype);
+  return ref(outs[0]);
 }
 
 tensor sigmoid(const tensor& a) {

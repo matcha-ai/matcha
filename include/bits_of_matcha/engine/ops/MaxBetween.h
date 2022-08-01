@@ -8,14 +8,14 @@ namespace matcha::engine::ops {
 
 struct MaxBetween : ElementwiseBinaryOp {
   MaxBetween(Tensor* a, Tensor* b);
-  static OpMeta<MaxBetween> meta;
+  static Reflection<MaxBetween> reflection;
 
   void run() override;
 };
 
 struct MaxBetweenBack : ElementwiseBinaryOpBack {
   MaxBetweenBack(const BackCtx& ctx);
-  static OpMeta<MaxBetweenBack> meta;
+  static Reflection<MaxBetweenBack> reflection;
 
   void run() override;
 };

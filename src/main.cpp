@@ -6,28 +6,27 @@ using namespace std::complex_literals;
 void net();
 Dataset dataset();
 
-tensor p = 3 * ones(3);
+tensor p;
 
 tensor foo(const tensor& x) {
-  return x + p;
+  p = x*x;
+  return p;
 }
 
 int main() {
   net(); return 0;
-  fn f = [](tensor x) {return x;};
+  unary_fn f = jit(foo);
+  unary_fn g = jit([=](tensor x) { return 2 * f(x); });
 
   for (int i = 0; true; i++) {
-
-//    auto f = jit(foo);
-//    print(info(ones(3, 3)));
-//    info(3);
-    auto f = jit(foo);
-    unary_fn g = jit([&](tensor x) { return f(x);});
-    unary_fn h = jit([&](tensor x) { return g(x);});
-    print(f(ones(3, 3)));
-    p.assign(2);
     print(p);
-    print(f(ones(3, 3)));
+    print("------");
+    tensor x = ones(3, 3);
+    tensor y = g(x);
+    print(x, "\n", y);
+    print("------");
+    print(p);
+
     break;
   }
 }
@@ -80,10 +79,10 @@ Dataset dataset() {
 void net() {
   Net net {
     nn::Flatten{},
-    nn::Fc{400},
-    nn::Fc{100, "relu"},
-    nn::Fc{50, "relu"},
-    nn::Fc{10, "softmax"},
+//    nn::Fc{400},
+//    nn::Fc{100, "relu"},
+//    nn::Fc{50, "relu"},
+    nn::Fc{10, "nobias"},
   };
 
   net.loss = mse;
@@ -99,5 +98,5 @@ void net() {
   mnist = mnist.take(1000);
   mnist = mnist.cat(mnist).cat(mnist).cat(mnist);
   mnist = load("mnist_train.csv");
-  net.fit(mnist.batch(300));
+  net.fit(mnist.batch(64));
 }

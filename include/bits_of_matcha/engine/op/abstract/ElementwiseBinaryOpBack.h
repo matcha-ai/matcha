@@ -10,7 +10,7 @@ namespace matcha::engine {
 
 struct ElementwiseBinaryOpBack : Op {
   explicit ElementwiseBinaryOpBack(const BackCtx& ctx)
-    : Op{cat(ctx.vals, ctx.forward->outputs.stdVector(), ctx.forward->inputs.stdVector())}
+    : Op{cat(ctx.vals, ctx.forward->outputs, ctx.forward->inputs)}
     , forward_(ctx.forward)
     , iter_(forward_->inputs[0]->shape(), forward_->inputs[1]->shape())
   {
@@ -23,11 +23,21 @@ struct ElementwiseBinaryOpBack : Op {
 
     for (int i = 0; i < ctx.wrts.size(); i++) {
       if (!ctx.wrts[i]) {
-        outputs.add(this, nullptr);
+        addOutput(nullptr);
         continue;
       }
-      outputs.add(this, Float, forward_->inputs[i]->shape());
+      addOutput(Float, forwardInput(i)->shape());
     }
+  }
+
+protected:
+  Tensor* forwardInput(int idx) {
+    int begin = (int) inputs.size() - forward_->inputs.size();
+    return inputs[begin + idx];
+  }
+  Tensor* forwardOutput(int idx) {
+    int begin = (int) inputs.size() - forward_->inputs.size() - forward_->outputs.size();
+    return inputs[begin + idx];
   }
 
 protected:

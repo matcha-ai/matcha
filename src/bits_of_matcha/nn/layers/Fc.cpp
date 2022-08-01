@@ -8,7 +8,7 @@
 namespace matcha::nn {
 
 Layer* Fc::init() {
-  static std::map<std::string, UnaryOp> activationFlags = {
+  static std::map<std::string, UnaryOp> activation_flags = {
     {"relu", nn::relu},
     {"identity", identity},
     {"none", identity},
@@ -19,7 +19,7 @@ Layer* Fc::init() {
     {"tanh", nn::tanh},
   };
 
-  static std::set<std::string> bnFlags = {
+  static std::set<std::string> bn_flags = {
     "bn",
 
     "bnorm",
@@ -31,11 +31,16 @@ Layer* Fc::init() {
     "batchnormalization",
   };
 
+  static std::set<std::string> nobias_flags = {
+    "nobias",
+  };
+
   std::transform(flags.begin(), flags.end(), flags.begin(), tolower);
   std::stringstream ss(flags);
   std::string flag;
   std::set<std::string> flagSet;
 
+  bool use_bias = true;
   bool bn = false;
   UnaryOp activation = identity;
 
@@ -43,22 +48,29 @@ Layer* Fc::init() {
     // trim leading and trailing spaces
     flag.erase(std::remove_if(flag.begin(), flag.end(), isspace), flag.end());
 
-    if (bnFlags.contains(flag)) {
+    if (bn_flags.contains(flag)) {
       bn = true;
       continue;
     }
 
-    if (activationFlags.contains(flag)) {
-      activation = activationFlags[flag];
+    if (nobias_flags.contains(flag)) {
+      use_bias = false;
+      continue;
+    }
+
+    if (activation_flags.contains(flag)) {
+      activation = activation_flags[flag];
       continue;
     }
 
     throw std::invalid_argument("couldn't parse Fc configuration");
   }
 
+  use_bias &= !bn;
+
   auto linear = Linear {
     .units = units,
-    .useBias = !bn
+    .use_bias = use_bias,
   };
 
 

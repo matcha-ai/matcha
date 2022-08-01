@@ -14,7 +14,7 @@ Argmin::Argmin(Tensor* a, int axis)
   : AxiswiseFoldOp(a, axis)
 {}
 
-OpMeta<Argmin> Argmin::meta {
+Reflection<Argmin> Argmin::reflection {
   .name = "Argmin",
 };
 

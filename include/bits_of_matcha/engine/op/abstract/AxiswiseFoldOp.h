@@ -13,7 +13,7 @@ struct AxiswiseFoldOp : Op {
     : Op{a}
     , ctx_(a->shape())
   {
-    outputs.add(this, a->dtype(), {});
+    addOutput(a->dtype(), {});
   }
 
   explicit AxiswiseFoldOp(Tensor* a, int axis)
@@ -28,7 +28,7 @@ struct AxiswiseFoldOp : Op {
       outDims.push_back(shape[i]);
     }
 
-    outputs.add(this, a->dtype(), outDims);
+    addOutput(a->dtype(), outDims);
   }
 
   explicit AxiswiseFoldOp(Tensor* a, Dtype dtype)
@@ -38,7 +38,7 @@ struct AxiswiseFoldOp : Op {
     if (inputs[0]->dtype() != dtype)
       engine::incept(this, new ops::Cast(inputs[0], dtype));
 
-    outputs.add(this, dtype, {});
+    addOutput(dtype, {});
   }
 
   explicit AxiswiseFoldOp(Tensor* a, int axis, Dtype dtype)
@@ -56,7 +56,7 @@ struct AxiswiseFoldOp : Op {
     if (inputs[0]->dtype() != dtype)
       engine::incept(this, new ops::Cast(inputs[0], dtype));
 
-    outputs.add(this, dtype, outDims);
+    addOutput(dtype, outDims);
   }
 
 protected:

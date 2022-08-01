@@ -8,10 +8,6 @@ namespace matcha::engine {
 
 class Buffer;
 
-//Buffer malloc(size_t bytes, const Device::Concrete& device = CPU);
-//Buffer malloc(const Frame& frame, const Device::Concrete& device = CPU);
-//Buffer malloc(const Frame* frame, const Device::Concrete& device = CPU);
-
 }
 
 namespace matcha::engine::stats {

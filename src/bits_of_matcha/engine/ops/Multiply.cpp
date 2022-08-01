@@ -9,9 +9,9 @@ Multiply::Multiply(Tensor* a, Tensor* b)
   : ElementwiseBinaryOp(a, b)
 {}
 
-OpMeta<Multiply> Multiply::meta {
+Reflection<Multiply> Multiply::reflection {
   .name = "Multiply",
-  .back = [](auto& ctx) { return new MultiplyBack(ctx); },
+  .back = [](auto& ctx) { return dispatch<MultiplyBack>(ctx); },
 };
 
 void Multiply::run() {
@@ -25,7 +25,7 @@ MultiplyBack::MultiplyBack(const BackCtx& ctx)
 {
 }
 
-OpMeta<MultiplyBack> MultiplyBack::meta {
+Reflection<MultiplyBack> MultiplyBack::reflection {
   .name = "MultiplyBack",
 };
 
@@ -37,11 +37,11 @@ void MultiplyBack::run() {
 
     cpu::elementwiseBinaryBack(
       [](float& a, float& b, float& c) {
-        print(a, b, c);
+//        print(a, " ", b, " ", c);
         a += b * c;
       },
       outputs[0]->buffer(),
-      forward_->inputs[1]->buffer(),
+      forwardInput(1)->buffer(),
       inputs[0]->buffer(),
       iter_
     );
@@ -53,7 +53,7 @@ void MultiplyBack::run() {
       [](float& a, float& b, float& c) {
         b += a * c;
       },
-      forward_->inputs[0]->buffer(),
+      forwardInput(0)->buffer(),
       outputs[1]->buffer(),
       inputs[0]->buffer(),
       iter_

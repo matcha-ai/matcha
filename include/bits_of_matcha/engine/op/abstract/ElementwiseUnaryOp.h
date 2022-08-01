@@ -16,7 +16,7 @@ struct ElementwiseUnaryOp : public Op {
     : Op{a}
   {
     size_ = a->size();
-    outputs.add(this, a->frame());
+    addOutput(a->frame());
   }
 
 protected:

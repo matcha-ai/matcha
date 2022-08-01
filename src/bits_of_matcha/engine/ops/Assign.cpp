@@ -10,7 +10,7 @@ Assign::Assign(Tensor* source, Tensor* target)
   , iter_(source->shape(), target->shape())
   , target_(target)
 {
-  if (Shape(iter_.dimsC) != target->shape())
+  if (Shape(iter_.dims_c) != target->shape())
     throw std::invalid_argument("can't broadcast shapes for assignment");
 
   if (target->dtype() != source->dtype()) {
@@ -31,9 +31,9 @@ Assign::~Assign() {
   target_->unreq();
 }
 
-OpMeta<Assign> Assign::meta {
+Reflection<Assign> Assign::reflection {
   .name = "Assign",
-  .sideEffect = true,
+  .side_effect = true,
 };
 
 void Assign::run() {

@@ -6,7 +6,7 @@ Le::Le(Tensor* a, Tensor* b)
   : ElementwiseBinaryLogicalOp(a, b)
 {}
 
-OpMeta<Le> Le::meta {
+Reflection<Le> Le::reflection {
   .name = "Le",
 };
 

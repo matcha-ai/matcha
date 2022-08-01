@@ -24,7 +24,7 @@ private:
   MemoryPool();
 
   static MemoryPool* the_;
-  std::vector<BlockPool> blockPools_;
+  std::vector<BlockPool> block_pools_;
 
   BlockPool* bestFit(size_t bytes);
 

@@ -23,9 +23,8 @@ Net::Net(std::initializer_list<UnaryOp> sequence)
 
 void Net::fit(Dataset ds, size_t epochs) {
   Layer::netStack_.push(this);
-//  forward_ = jit(forward_);
-//  trainFlow_ = function_;
-//  trainFlow_.build({ds.get()["x"]});
+  forward_ = jit(forward_);
+
   ds.reset();
 
   trainBegin(ds);
@@ -42,7 +41,6 @@ void Net::fit(Dataset ds, size_t epochs) {
 //      print(88 * (x.reshape(-1, 28, 28) != 0), "\n\n");
 //      print("---");
       tensor y = forward_(x);
-//      print(argmax(y, -1).reshape(1, -1));
       tensor l = loss(t, y);
 
       auto gradients = backprop(l);

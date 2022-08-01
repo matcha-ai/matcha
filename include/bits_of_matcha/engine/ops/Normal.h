@@ -9,7 +9,7 @@ namespace matcha::engine::ops {
 
 struct Normal : Op {
   Normal(Tensor* m, Tensor* sd, const Shape& shape, size_t seed);
-  static OpMeta<Normal> meta;
+  static Reflection<Normal> reflection;
 
   void run() override;
 

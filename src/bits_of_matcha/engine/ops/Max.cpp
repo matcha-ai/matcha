@@ -14,7 +14,7 @@ Max::Max(Tensor* a, int axis)
   : AxiswiseFoldOp(a, axis)
 {}
 
-OpMeta<Max> Max::meta {
+Reflection<Max> Max::reflection {
   .name = "Max",
 };
 

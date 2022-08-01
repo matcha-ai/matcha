@@ -10,20 +10,20 @@ Transpose::Transpose(Tensor* a)
   : Op{a}
   , iter_(a->shape())
 {
-  auto& shapeA = a->shape();
+  auto& shape_a = a->shape();
   std::vector<unsigned> dims;
 
-  if (shapeA.rank() >= 2) {
-    dims = std::vector(shapeA.begin(), shapeA.end());
+  if (shape_a.rank() >= 2) {
+    dims = std::vector(shape_a.begin(), shape_a.end());
     std::swap(dims[dims.size() - 1], dims[dims.size() - 2]);
   } else {
     throw std::invalid_argument("can't transpose scalar or vector");
   }
 
-  outputs.add(this, a->dtype(), dims);
+  addOutput(a->dtype(), dims);
 }
 
-OpMeta<Transpose> Transpose::meta {
+Reflection<Transpose> Transpose::reflection {
   .name = "Transpose",
 };
 

@@ -9,9 +9,9 @@ Exp::Exp(Tensor* a)
   : ElementwiseUnaryOp(a)
 {}
 
-OpMeta<Exp> Exp::meta {
+Reflection<Exp> Exp::reflection {
   .name = "Exp",
-  .back = [](auto& ctx) { return new Exp(ctx.vals[0]); },
+//  .back = [](auto& ctx) { return new Exp(ctx.vals[0]); },
 };
 
 void Exp::run() {

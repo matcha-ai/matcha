@@ -8,9 +8,9 @@ Add::Add(Tensor* a, Tensor* b)
  : ElementwiseBinaryOp(a, b)
 {}
 
-OpMeta<Add> Add::meta {
+Reflection<Add> Add::reflection {
   .name = "Add",
-  .back = [](auto& ctx) { return new AddBack(ctx); },
+  .back = [](auto& ctx) { return dispatch<AddBack>(ctx); },
 };
 
 void Add::run() {
@@ -22,7 +22,7 @@ AddBack::AddBack(const BackCtx& ctx)
   : ElementwiseBinaryOpBack(ctx)
 {}
 
-OpMeta<AddBack> AddBack::meta {
+Reflection<AddBack> AddBack::reflection {
   .name = "AddBack",
 };
 
@@ -35,7 +35,7 @@ void AddBack::run() {
         a += c;
       },
       outputs[0]->buffer(),
-      forward_->inputs[1]->buffer(),
+      forwardInput(1)->buffer(),
       inputs[0]->buffer(),
       iter_
     );
@@ -47,7 +47,7 @@ void AddBack::run() {
       [](float& a, float& b, float& c) {
         b += c;
       },
-      forward_->inputs[0]->buffer(),
+      forwardInput(0)->buffer(),
       outputs[1]->buffer(),
       inputs[0]->buffer(),
       iter_

@@ -23,21 +23,24 @@ Print::Print(const std::string& text, bool endl, std::ostream& os)
   recorded_ = recorderNext();
 }
 
-OpMeta<Print> Print::meta {
+Reflection<Print> Print::reflection {
   .name = "Print",
-  .sideEffect = true,
+  .side_effect = true,
 };
 
 void Print::run() {
+//  return;
+//  std::cout << "RUN" << std::endl;
   dumpRecorded(std::cout);
 
-  if (inputs.any())
+  if (!inputs.empty())
     dumpTensor(os_);
   else
     dumpText(os_);
 
   if (endl_)
     std::endl(os_);
+//  std::cout << "DUN" << std::endl;
 }
 
 void Print::dumpRecorded(std::ostream& os) {

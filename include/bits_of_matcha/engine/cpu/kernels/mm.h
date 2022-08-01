@@ -10,20 +10,20 @@ namespace matcha::engine::cpu {
 
 template <class T>
 void mm(Buffer& a, Buffer& b, Buffer& c, const MatrixwiseBinaryCtx& ctx) {
-  size_t sizeA = ctx.rowsA * ctx.colsA;
-  size_t sizeB = ctx.rowsB * ctx.colsB;
-  size_t sizeC = ctx.rowsA * ctx.colsB;
+  size_t sizeA = ctx.rows_a * ctx.cols_a;
+  size_t sizeB = ctx.rows_b * ctx.cols_b;
+  size_t sizeC = ctx.rows_a * ctx.cols_b;
 
-  auto valsA = a.as<T*>();
-  auto valsB = b.as<T*>();
-  auto valsC = c.as<T*>();
+  auto vals_a = a.as<T*>();
+  auto vals_b = b.as<T*>();
+  auto vals_c = c.as<T*>();
 
-  int strides = (int) ctx.prefixStridesA.size();
+  int strides = (int) ctx.prefix_strides_a.size();
 
-  std::vector<unsigned> beginA(strides, 0);
-  std::vector<unsigned> beginB(strides, 0);
-  std::vector<unsigned> beginC(strides, 0);
-  auto iterC = valsC;
+  std::vector<unsigned> begin_a(strides, 0);
+  std::vector<unsigned> begin_b(strides, 0);
+  std::vector<unsigned> begin_c(strides, 0);
+  auto iter_c = vals_c;
 
   int counter = 0;
   int axis = 1;
@@ -31,23 +31,23 @@ void mm(Buffer& a, Buffer& b, Buffer& c, const MatrixwiseBinaryCtx& ctx) {
 //    if (counter++ > 20) exit(69);
     if (axis < strides - 1) {
       print("==========");
-      print("axis ", axis, " beginC ", beginC[axis], " stridesC ", ctx.prefixStridesC[axis - 1]);
+      print("axis ", axis, " begin_c ", begin_c[axis], " strides_c ", ctx.prefix_strides_c[axis - 1]);
 //    print("axis: ", axis, " (strides ", strides, ")");
-//      print("strides: ", ctx.prefixStridesA[axis], " ", ctx.prefixStridesB[axis], " -> ", ctx.prefixStridesC[axis]);
-//      print("begins: ", beginA[axis], " ", beginB[axis], " -> ", beginC[axis]);
-//      print("BC: ", beginC[axis], " ", beginC[axis - 1] + ctx.prefixStridesC[axis - 1]);
-//      print("beginC ", beginC[axis]);
-      if (beginC[axis] == beginC[axis - 1] + ctx.prefixStridesC[axis - 1]) {
+//      print("strides: ", ctx.prefix_strides_a[axis], " ", ctx.prefix_strides_b[axis], " -> ", ctx.prefix_strides_c[axis]);
+//      print("begins: ", begin_a[axis], " ", begin_b[axis], " -> ", begin_c[axis]);
+//      print("BC: ", begin_c[axis], " ", begin_c[axis - 1] + ctx.prefix_strides_c[axis - 1]);
+//      print("begin_c ", begin_c[axis]);
+      if (begin_c[axis] == begin_c[axis - 1] + ctx.prefix_strides_c[axis - 1]) {
 //        print("-> dec axis");
         if (axis == 1) break;
         axis--;
       } else {
-        beginA[axis + 1] = beginA[axis];
-        beginB[axis + 1] = beginB[axis];
-        beginC[axis + 1] = beginC[axis];
-        beginA[axis] += ctx.prefixStridesA[axis];
-        beginB[axis] += ctx.prefixStridesB[axis];
-        beginC[axis] += ctx.prefixStridesC[axis];
+        begin_a[axis + 1] = begin_a[axis];
+        begin_b[axis + 1] = begin_b[axis];
+        begin_c[axis + 1] = begin_c[axis];
+        begin_a[axis] += ctx.prefix_strides_a[axis];
+        begin_b[axis] += ctx.prefix_strides_b[axis];
+        begin_c[axis] += ctx.prefix_strides_c[axis];
 //        print("-> inc axis");
         axis++;
       }
@@ -56,49 +56,49 @@ void mm(Buffer& a, Buffer& b, Buffer& c, const MatrixwiseBinaryCtx& ctx) {
         axis = strides - 1;
       }
 
-//      print(ctx.prefixStridesC[axis - 1]);
-//      print(beginA[axis]);
-      auto matA = valsA + beginA[axis] * sizeA;
-      auto matB = valsB + beginB[axis] * sizeB;
-      auto loops = axis - 1 >= 0 ? ctx.prefixStridesC[axis - 1] : 1;
+//      print(ctx.prefix_strides_c[axis - 1]);
+//      print(begin_a[axis]);
+      auto matA = vals_a + begin_a[axis] * sizeA;
+      auto matB = vals_b + begin_b[axis] * sizeB;
+      auto loops = axis - 1 >= 0 ? ctx.prefix_strides_c[axis - 1] : 1;
       for (auto itC = 0; itC != loops; itC++) {
-        auto matC = valsC + (beginC[axis] + itC) * sizeC;
+        auto matC = vals_c + (begin_c[axis] + itC) * sizeC;
 
-//        print(matA - valsA, " ", matB - valsB, " -> ", matC - valsC);
+//        print(matA - vals_a, " ", matB - vals_b, " -> ", matC - vals_c);
 ///*
         if constexpr (std::is_same<T, float>()) {
           cblas_sgemm(
             CblasRowMajor,
             CblasNoTrans,
             CblasNoTrans,
-            (int) ctx.rowsA,
-            (int) ctx.colsB,
-            (int) ctx.colsA,
+            (int) ctx.rows_a,
+            (int) ctx.cols_b,
+            (int) ctx.cols_a,
             1,
             matA,
-            (int) ctx.colsA,
+            (int) ctx.cols_a,
             matB,
-            (int) ctx.colsB,
+            (int) ctx.cols_b,
             0,
             matC,
-            (int) ctx.colsB
+            (int) ctx.cols_b
           );
         } else if constexpr (std::is_same<T, double>()) {
           cblas_dgemm(
             CblasRowMajor,
             CblasNoTrans,
             CblasNoTrans,
-            (int) ctx.rowsA,
-            (int) ctx.colsB,
-            (int) ctx.colsA,
+            (int) ctx.rows_a,
+            (int) ctx.cols_b,
+            (int) ctx.cols_a,
             1,
             matA,
-            (int) ctx.colsA,
+            (int) ctx.cols_a,
             matB,
-            (int) ctx.colsB,
+            (int) ctx.cols_b,
             0,
             matC,
-            (int) ctx.colsB
+            (int) ctx.cols_b
           );
 
         } else if constexpr (std::is_same<T, std::complex<float>>()) {
@@ -106,17 +106,17 @@ void mm(Buffer& a, Buffer& b, Buffer& c, const MatrixwiseBinaryCtx& ctx) {
             CblasRowMajor,
             CblasNoTrans,
             CblasNoTrans,
-            (int) ctx.rowsA,
-            (int) ctx.colsB,
-            (int) ctx.colsA,
+            (int) ctx.rows_a,
+            (int) ctx.cols_b,
+            (int) ctx.cols_a,
             1,
             matA,
-            (int) ctx.colsA,
+            (int) ctx.cols_a,
             matB,
-            (int) ctx.colsB,
+            (int) ctx.cols_b,
             0,
             matC,
-            (int) ctx.colsB
+            (int) ctx.cols_b
           );
 
         } else if constexpr (std::is_same<T, std::complex<double>>()) {
@@ -124,24 +124,24 @@ void mm(Buffer& a, Buffer& b, Buffer& c, const MatrixwiseBinaryCtx& ctx) {
             CblasRowMajor,
             CblasNoTrans,
             CblasNoTrans,
-            (int) ctx.rowsA,
-            (int) ctx.colsB,
-            (int) ctx.colsA,
+            (int) ctx.rows_a,
+            (int) ctx.cols_b,
+            (int) ctx.cols_a,
             1,
             matA,
-            (int) ctx.colsA,
+            (int) ctx.cols_a,
             matB,
-            (int) ctx.colsB,
+            (int) ctx.cols_b,
             0,
             matC,
-            (int) ctx.colsB
+            (int) ctx.cols_b
           );
 
         }
 //        */
 
-        matA += sizeA * ctx.prefixStridesA[axis];
-        matB += sizeB * ctx.prefixStridesB[axis];
+        matA += sizeA * ctx.prefix_strides_a[axis];
+        matB += sizeB * ctx.prefix_strides_b[axis];
       }
 //      print("blas");
 

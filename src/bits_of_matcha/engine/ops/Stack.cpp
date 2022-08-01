@@ -10,7 +10,7 @@ namespace matcha::engine::ops {
 Stack::Stack(const std::vector<Tensor*>& ins)
   : Op(ins)
 {
-  if (inputs.none())
+  if (inputs.empty())
     throw std::invalid_argument("expected at least one tensor to stack");
   auto& frame = inputs[0]->frame();
   for (int i = 1; i < inputs.size(); i++) {
@@ -20,7 +20,7 @@ Stack::Stack(const std::vector<Tensor*>& ins)
   std::vector<unsigned> dims = {(unsigned) inputs.size()};
   dims.reserve(frame.shape().size() + 1);
   for (auto dim: frame.shape()) dims.push_back(dim);
-  outputs.add(this, frame.dtype(), dims);
+  addOutput(frame.dtype(), dims);
 }
 
 void Stack::run() {

@@ -48,8 +48,14 @@ Chain copy(const Chain& chain) {
     }
     for (auto& out: cop->outputs) {
       if (!out) continue;
+      auto old = out;
       out = relink(out);
       out->setOp(cop);
+
+      if (old->refs()) {
+        auto ass = new ops::Assign(out, old);
+        result.ops.push_back(ass);
+      }
     }
   }
   for (auto&& t: chain.tensors) result.tensors.push_back(relink(t));
@@ -114,7 +120,7 @@ std::ostream& operator<<(std::ostream& os, const Chain& chain) {
 //      os << out;
     }
 
-    if (op->outputs.any())
+    if (!op->outputs.empty())
       os << " = ";
 
     os << opname << '(';

@@ -16,7 +16,7 @@ LoadImage::LoadImage(const std::string& file)
 {
   FILE* fp = fopen(file.c_str(), "r");
   if (!fp) throw std::runtime_error("can't open given .png file");
-  outputs.add(this, getFrame(fp));
+  addOutput(getFrame(fp));
   fclose(fp);
 }
 
@@ -24,7 +24,7 @@ LoadImage::LoadImage(const std::string& file, const Frame& frame)
   : Op{}
   , file_(file)
 {
-  outputs.add(this, frame);
+  addOutput(frame);
 }
 
 void LoadImage::run() {
@@ -95,16 +95,16 @@ void LoadImage::dumpData(FILE* fp) {
 
   png_read_image(pngPtr, rowPtrs);
 
-  float* tensorEnd = b + t->size();
+  float* tensor_end = b + t->size();
   size_t c = 0;
-  for (float* channel = b; channel != tensorEnd; channel += iter.size) {
+  for (float* channel = b; channel != tensor_end; channel += iter.size) {
     float* channelEnd = channel + iter.size;
     *channel = 3;
     size_t y = 0;
     for (float* row = channel; row != channelEnd; row += iter.cols) {
       png_bytep rowPtr = rowPtrs[y] + c;
-      float* rowEnd = row + iter.cols;
-      for (float* col = row; col != rowEnd; col++) {
+      float* row_end = row + iter.cols;
+      for (float* col = row; col != row_end; col++) {
         *col = *rowPtr;
         rowPtr += 3;
       }

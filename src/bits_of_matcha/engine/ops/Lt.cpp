@@ -6,7 +6,7 @@ Lt::Lt(Tensor* a, Tensor* b)
   : ElementwiseBinaryLogicalOp(a, b)
 {}
 
-OpMeta<Lt> Lt::meta {
+Reflection<Lt> Lt::reflection {
   .name = "Lt",
 };
 

@@ -7,12 +7,12 @@ Module::Module(const std::vector<Tensor*>& inputs, std::shared_ptr<Executor> exe
   , executor_(std::move(executor))
 {
   for (auto&& out: executor_->chain().outputs)
-    outputs.add(this, new Tensor(out->frame()));
+    addOutput(out->frame());
 }
 
-OpMeta<Module> Module::meta {
+Reflection<Module> Module::reflection {
   .name = "Module",
-  .sideEffect = true,
+  .side_effect = true,
 };
 
 auto Module::executor() -> std::shared_ptr<Executor>& {
@@ -24,7 +24,7 @@ auto Module::chain() -> Chain& {
 }
 
 void Module::run() {
-  executor_->run(inputs.stdVector(), outputs.stdVector());
+  executor_->run(inputs, outputs);
 }
 
 }

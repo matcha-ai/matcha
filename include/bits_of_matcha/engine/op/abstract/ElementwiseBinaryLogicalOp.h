@@ -4,7 +4,6 @@
 #include "bits_of_matcha/engine/op/abstract/ElementwiseBinaryOp.h"
 #include "bits_of_matcha/engine/iterations/ElementwiseBinaryCtx.h"
 #include "bits_of_matcha/engine/cpu/kernels/elementwiseBinaryLogical.h"
-#include "bits_of_matcha/engine/memory/implicitCast.h"
 #include "bits_of_matcha/error/IncompatibleDtypesError.h"
 #include "bits_of_matcha/engine/ops/Cast.h"
 
@@ -22,7 +21,7 @@ struct ElementwiseBinaryLogicalOp : Op {
     , ctx_(a->shape(), b->shape())
   {
     Dtype dtype = promoteDtypes(a, b);
-    outputs.add(this, Bool, ctx_.dimsC);
+    addOutput(Bool, ctx_.dims_c);
     for (auto&& in: inputs) {
       if (in->dtype() == dtype) continue;
       auto op = new ops::Cast(in, dtype);

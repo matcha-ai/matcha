@@ -9,7 +9,7 @@ namespace matcha::engine::ops {
 
 struct Transpose : Op {
   Transpose(Tensor* a);
-  static OpMeta<Transpose> meta;
+  static Reflection<Transpose> reflection;
 
   void run() override;
 

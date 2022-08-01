@@ -8,14 +8,14 @@ namespace matcha::engine::ops {
 
 struct Multiply : ElementwiseBinaryOp {
   Multiply(Tensor* a, Tensor* b);
-  static OpMeta<Multiply> meta;
+  static Reflection<Multiply> reflection;
 
   void run() override;
 };
 
 struct MultiplyBack : ElementwiseBinaryOpBack {
   MultiplyBack(const BackCtx& ctx);
-  static OpMeta<MultiplyBack> meta;
+  static Reflection<MultiplyBack> reflection;
 
   void run() override;
 };

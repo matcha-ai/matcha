@@ -6,7 +6,7 @@ Neq::Neq(Tensor* a, Tensor* b)
   : ElementwiseBinaryLogicalOp(a, b)
 {}
 
-OpMeta<Neq> Neq::meta {
+Reflection<Neq> Neq::reflection {
   .name = "Neq",
 };
 

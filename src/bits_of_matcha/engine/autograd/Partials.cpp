@@ -59,13 +59,20 @@ auto Partials::needs(const std::vector<Tensor*>& tensors) const -> std::vector<b
 auto Partials::accumulateGrads(Tensor* t) -> Tensor* {
   if (partials_.contains(t)) {
     auto& partial = partials_[t];
-    if (!partial.first) partial.first = new Tensor(Float, t->shape());
-    if (partial.first->op()) return partial.first;
+
+    if (!partial.first)
+      partial.first = new Tensor(Float, t->shape());
+
+    if (partial.first->op() || partial.first->buffer())
+      return partial.first;
+
     auto acc = new AccumulateGrads(partial.second, partial.first);
     chain_.ops.push_back(acc);
     chain_.tensors.push_back(acc->outputs[0]);
     acc->outputs[0]->req();
+
     return partial.first;
+
   } else {
     throw std::out_of_range("no such partial");
   }

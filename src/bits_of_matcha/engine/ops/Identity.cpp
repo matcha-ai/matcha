@@ -6,7 +6,7 @@ namespace matcha::engine::ops {
 Identity::Identity(Tensor* a)
   : Op{a}
 {
-  outputs.add(this, a->frame());
+  addOutput(a->frame());
 }
 
 Identity::Identity(Tensor* a, Tensor* target)
@@ -14,13 +14,13 @@ Identity::Identity(Tensor* a, Tensor* target)
 {
   if (a->frame() != target->frame())
     throw std::runtime_error("frame mismatch");
-  outputs.add(this, target);
+  addOutput(target);
 }
 
-OpMeta<Identity> Identity::meta {
+Reflection<Identity> Identity::reflection {
   .name = "Identity",
-  .back = [](auto& ctx) {
-    return new Identity(ctx.vals[0]);
+  .back = [](const BackCtx& ctx) {
+    return dispatch<Identity>(ctx.vals[0]);
   },
 };
 

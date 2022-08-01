@@ -6,7 +6,7 @@ Ge::Ge(Tensor* a, Tensor* b)
   : ElementwiseBinaryLogicalOp(a, b)
 {}
 
-OpMeta<Ge> Ge::meta {
+Reflection<Ge> Ge::reflection {
   .name = "Ge",
 };
 

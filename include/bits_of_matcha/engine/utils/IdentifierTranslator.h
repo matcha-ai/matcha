@@ -9,9 +9,9 @@ namespace matcha::engine {
 template <class T>
 class IdentifierTranslator {
 public:
-  explicit IdentifierTranslator(char alphabetBegin, char alphabetEnd) {
-    alBegin_ = alphabetBegin;
-    alEnd_ = alphabetEnd;
+  explicit IdentifierTranslator(char alphabet_begin, char alphabet_end) {
+    alphabet_begin_ = alphabet_begin;
+    alphabet_end_ = alphabet_end;
   }
 
   explicit IdentifierTranslator()
@@ -22,7 +22,7 @@ public:
     if (table_.contains(t)) return table_.at(t);
 
     size_t n = table_.size();
-    size_t alphabetSize = alEnd_ - alBegin_ + 1;
+    size_t alphabetSize = alphabet_end_ - alphabet_begin_ + 1;
     std::string id;
 
     do {
@@ -36,7 +36,7 @@ public:
   }
 
 private:
-  char alBegin_, alEnd_;
+  char alphabet_begin_, alphabet_end_;
   std::map<T, std::string> table_;
 };
 

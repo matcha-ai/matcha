@@ -10,21 +10,21 @@ MatrixwiseBinaryCtx::MatrixwiseBinaryCtx(const Shape& a, const Shape& b) {
     throw std::invalid_argument("both inputs must have rank at least 2");
   }
 
-  prefixDimsC.resize(std::max(a.rank(), b.rank()) - 2);
-  prefixStridesA.resize(prefixDimsC.size() + 1);
-  prefixStridesB.resize(prefixDimsC.size() + 1);
-  prefixStridesC.resize(prefixDimsC.size() + 1);
+  prefix_dims_c.resize(std::max(a.rank(), b.rank()) - 2);
+  prefix_strides_a.resize(prefix_dims_c.size() + 1);
+  prefix_strides_b.resize(prefix_dims_c.size() + 1);
+  prefix_strides_c.resize(prefix_dims_c.size() + 1);
 
-  colsA = a[-1];
-  colsB = b[-1];
-  rowsA = a[-2];
-  rowsB = b[-2];
+  cols_a = a[-1];
+  cols_b = b[-1];
+  rows_a = a[-2];
+  rows_b = b[-2];
 
-  prefixStridesA[prefixStridesA.size() - 1] = 1;
-  prefixStridesB[prefixStridesB.size() - 1] = 1;
-  prefixStridesC[prefixStridesC.size() - 1] = 1;
+  prefix_strides_a[prefix_strides_a.size() - 1] = 1;
+  prefix_strides_b[prefix_strides_b.size() - 1] = 1;
+  prefix_strides_c[prefix_strides_c.size() - 1] = 1;
 
-  for (int i = 0; i < prefixDimsC.size(); i++) {
+  for (int i = 0; i < prefix_dims_c.size(); i++) {
     int j = i + 2;
     unsigned dimA = j < a.rank() ? a[-1 - j] : 1;
     unsigned dimB = j < b.rank() ? b[-1 - j] : 1;
@@ -40,27 +40,27 @@ MatrixwiseBinaryCtx::MatrixwiseBinaryCtx(const Shape& a, const Shape& b) {
       throw BroadcastError(a, b);
     }
 
-    prefixDimsC[prefixDimsC.size() - 1 - i] = dimC;
-    prefixStridesA[prefixStridesA.size() - 2 -i ] = dimA * prefixStridesA[prefixStridesA.size() - 1 - i];
-    prefixStridesB[prefixStridesB.size() - 2 -i ] = dimB * prefixStridesB[prefixStridesB.size() - 1 - i];
-    prefixStridesC[prefixStridesC.size() - 2 -i ] = dimC * prefixStridesC[prefixStridesC.size() - 1 - i];
+    prefix_dims_c[prefix_dims_c.size() - 1 - i] = dimC;
+    prefix_strides_a[prefix_strides_a.size() - 2 - i ] = dimA * prefix_strides_a[prefix_strides_a.size() - 1 - i];
+    prefix_strides_b[prefix_strides_b.size() - 2 - i ] = dimB * prefix_strides_b[prefix_strides_b.size() - 1 - i];
+    prefix_strides_c[prefix_strides_c.size() - 2 - i ] = dimC * prefix_strides_c[prefix_strides_c.size() - 1 - i];
   }
 
-  for (int i = 0; i < prefixDimsC.size(); i++) {
+  for (int i = 0; i < prefix_dims_c.size(); i++) {
     int j = i + 2;
     unsigned dimA = j < a.rank() ? a[-1 - j] : 1;
     unsigned dimB = j < b.rank() ? b[-1 - j] : 1;
 
     if (dimA == 1) {
-      prefixStridesA[prefixStridesA.size() - 1 - i] = 0;
+      prefix_strides_a[prefix_strides_a.size() - 1 - i] = 0;
     }
     if (dimB == 1) {
-      prefixStridesB[prefixStridesB.size() - 1 - i] = 0;
+      prefix_strides_b[prefix_strides_b.size() - 1 - i] = 0;
     }
   }
 
-//  for (int i = 0 ; i < prefixStridesA.size(); i++) {
-//    print(prefixStridesA[i], " ", prefixStridesB[i], " -> ", prefixStridesC[i]);
+//  for (int i = 0 ; i < prefix_strides_a.size(); i++) {
+//    print(prefix_strides_a[i], " ", prefix_strides_b[i], " -> ", prefix_strides_c[i]);
 //  }
 //  print("---");
 //  exit(0);

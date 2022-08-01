@@ -13,11 +13,11 @@ struct AxiswiseFoldCtx {
   AxiswiseFoldCtx(const Shape& a, int axis);
   AxiswiseFoldCtx() = default;
 
-  size_t axisStride;
-  size_t axisLength;
+  size_t axis_stride;
+  size_t axis_length;
 
-  std::array<size_t, 2> prefixStrides;
-  std::array<size_t, 2> prefixLengths;
+  std::array<size_t, 2> prefix_strides;
+  std::array<size_t, 2> prefix_lengths;
 };
 
 }

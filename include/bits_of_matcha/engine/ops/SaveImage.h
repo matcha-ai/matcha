@@ -7,7 +7,7 @@ namespace matcha::engine::ops {
 
 struct SaveImage : Op {
   SaveImage(Tensor* a, const std::string& file);
-  static OpMeta<SaveImage> meta;
+  static Reflection<SaveImage> reflection;
 
   void run() override;
 

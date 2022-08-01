@@ -7,7 +7,7 @@ namespace matcha::engine::ops {
 
 struct Cast : Op {
   Cast(Tensor* a, const Dtype& dtype);
-  static OpMeta<Cast> meta;
+  static Reflection<Cast> reflection;
 
   void run() override;
 };

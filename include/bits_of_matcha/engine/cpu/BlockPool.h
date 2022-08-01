@@ -19,7 +19,7 @@ public:
   size_t blocks() const;
 
 private:
-  size_t blockSize_;
+  size_t block_size_;
   size_t quantum_;
   size_t blocks_;
 

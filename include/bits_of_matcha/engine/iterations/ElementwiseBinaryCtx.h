@@ -13,10 +13,10 @@ struct ElementwiseBinaryCtx {
   ElementwiseBinaryCtx(const Shape& a, const Shape& b);
   ElementwiseBinaryCtx() = default;
 
-  std::vector<unsigned> dimsC;
-  std::vector<unsigned> stridesA;
-  std::vector<unsigned> stridesB;
-  std::vector<unsigned> stridesC;
+  std::vector<unsigned> dims_c;
+  std::vector<unsigned> strides_a;
+  std::vector<unsigned> strides_b;
+  std::vector<unsigned> strides_c;
 };
 
 

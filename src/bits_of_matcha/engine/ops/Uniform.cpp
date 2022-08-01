@@ -10,10 +10,10 @@ Uniform::Uniform(Tensor* a, Tensor* b, const Shape& shape, size_t seed)
   if (a->rank() != 0 || b->rank() != 0) {
     throw std::invalid_argument("Uniform parameters must be scalars");
   }
-  outputs.add(this, Float, shape);
+  addOutput(Float, shape);
 }
 
-OpMeta<Uniform> Uniform::meta {
+Reflection<Uniform> Uniform::reflection {
   .name = "Uniform"
 };
 

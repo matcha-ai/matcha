@@ -32,7 +32,6 @@ set(
   include/bits_of_matcha/error/IncompatibleDtypesError.h
   include/bits_of_matcha/error/IncompatibleShapesError.h
   include/bits_of_matcha/error/BroadcastError.h
-  include/bits_of_matcha/error/ImplicitCastError.h
 
   include/bits_of_matcha/macros/generator.h
   include/bits_of_matcha/macros/dataset.h
@@ -82,10 +81,8 @@ set(
   include/bits_of_matcha/engine/tensor/RefReqCounted.h
 
   include/bits_of_matcha/engine/op/Op.h
-  include/bits_of_matcha/engine/op/OpInputs.h
-  include/bits_of_matcha/engine/op/OpOutputs.h
-  include/bits_of_matcha/engine/op/OpMeta.h
-  include/bits_of_matcha/engine/op/Ops.h
+  include/bits_of_matcha/engine/op/Reflection.h
+  include/bits_of_matcha/engine/op/Registry.h
   include/bits_of_matcha/engine/op/BackCtx.h
   include/bits_of_matcha/engine/op/OpBack.h
 
@@ -196,7 +193,6 @@ set(
   src/bits_of_matcha/error/IncompatibleDtypesError.cpp
   src/bits_of_matcha/error/IncompatibleShapesError.cpp
   src/bits_of_matcha/error/BroadcastError.cpp
-  src/bits_of_matcha/error/ImplicitCastError.cpp
 
   src/bits_of_matcha/dataset/Instance.cpp
   src/bits_of_matcha/dataset/InstanceIterator.cpp
@@ -231,9 +227,7 @@ set(
 
   src/bits_of_matcha/engine/op/Op.cpp
   src/bits_of_matcha/engine/op/OpBack.cpp
-  src/bits_of_matcha/engine/op/OpInputs.cpp
-  src/bits_of_matcha/engine/op/OpOutputs.cpp
-  src/bits_of_matcha/engine/op/Ops.cpp
+  src/bits_of_matcha/engine/op/Registry.cpp
   src/bits_of_matcha/engine/op/BackCtx.cpp
 
   src/bits_of_matcha/engine/iterations/ElementwiseBinaryCtx.cpp

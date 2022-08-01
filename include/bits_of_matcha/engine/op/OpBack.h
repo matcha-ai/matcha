@@ -10,7 +10,7 @@ struct OpBack : Op {
   OpBack(const BackCtx& ctx);
 
 protected:
-  Op* forward;
+  Op* forward_;
 };
 
 }

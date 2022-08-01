@@ -81,8 +81,7 @@ tensor::tensor(std::complex<double> scalar) : internal_(engine::full(std::comple
 }
 
 tensor& tensor::assign(const tensor& other) {
-  auto op = new engine::ops::Assign{deref(other), deref(this)};
-  dispatch(op);
+//  dispatch<ops::Assign>(deref(other), deref(this));
   return *this;
 }
 

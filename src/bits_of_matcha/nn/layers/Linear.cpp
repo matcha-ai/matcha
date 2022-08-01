@@ -8,7 +8,7 @@ namespace matcha::nn {
 Layer* Linear::init() {
   struct Internal : Layer {
     unsigned units_;
-    bool useBias_;
+    bool use_bias_;
     tensor kernel_, bias_;
     Generator initializer_;
 
@@ -19,7 +19,7 @@ Layer* Linear::init() {
 
       kernel_ = initializer_(units_, prev);
       params.add(&kernel_);
-      if (useBias_) {
+      if (use_bias_) {
         bias_ = zeros(units_);
         params.add(&bias_);
       }
@@ -28,13 +28,13 @@ Layer* Linear::init() {
     tensor run(const tensor& a) override {
       unsigned bs = a.shape()[0];
       tensor z = kernel_.dot(a.reshape(bs, -1, 1)).reshape(bs, -1);
-      if (useBias_) z += bias_;
+      if (use_bias_) z += bias_;
       return z;
     }
   };
   auto internal = new Internal;
   internal->units_ = units;
-  internal->useBias_ = useBias;
+  internal->use_bias_ = use_bias;
   internal->initializer_ = initializer;
   return internal;
 }

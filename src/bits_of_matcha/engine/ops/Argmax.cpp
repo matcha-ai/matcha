@@ -14,7 +14,7 @@ Argmax::Argmax(Tensor* a, int axis)
   : AxiswiseFoldOp(a, axis)
 {}
 
-OpMeta<Argmax> Argmax::meta {
+Reflection<Argmax> Argmax::reflection {
   .name = "Argmax",
 };
 

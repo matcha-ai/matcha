@@ -1,6 +1,6 @@
 #pragma once
 
-#include "bits_of_matcha/engine/op/Ops.h"
+#include "bits_of_matcha/engine/op/Registry.h"
 #include "bits_of_matcha/engine/op/BackCtx.h"
 #include "bits_of_matcha/engine/chain/Chain.h"
 #include "bits_of_matcha/print.h"
@@ -16,32 +16,32 @@ class OpBack;
 class BackCtx;
 
 template <class T>
-struct OpMeta {
+struct Reflection {
   std::string name;
   std::function<std::string (T*)> label = [&](auto) { return name; };
-  std::function<BackOps (const BackCtx&)> back = [](auto&) { return BackOps{}; };
-  bool sideEffect = false;
+  std::function<std::vector<Tensor*> (const BackCtx&)> back = [](auto&) { return std::vector<Tensor*>{}; };
+  bool side_effect = false;
   std::function<void (T*)> save;
   std::function<void (T*)> load;
   std::function<T* (T*)> copy = [](T* op) { return new T(*op); };
 
   struct RegisterCtx {
-    explicit RegisterCtx(OpMeta* meta) {
+    explicit RegisterCtx(Reflection* meta) {
 
-      auto entry = new Ops::Entry {
+      auto entry = new Registry::Entry {
         .name = [meta] { return meta->name; },
         .label = [meta] (Op* op) { return meta->label(dynamic_cast<T*>(op)); },
         .back = meta->back,
-        .sideEffect = [meta] (Op* op) { return meta->sideEffect; },
+        .side_effect = [meta] (Op* op) { return meta->side_effect; },
         .copy = [meta] (Op* op) { return meta->copy(dynamic_cast<T*>(op)); },
       };
 
-      Ops::add(typeid(T), entry);
+      Registry::add(typeid(T), entry);
     }
   };
 
   RegisterCtx registerCtx_{this};
-  ~OpMeta() {
+  ~Reflection() {
 
   }
 };

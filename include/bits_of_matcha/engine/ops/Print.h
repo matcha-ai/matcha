@@ -12,7 +12,7 @@ namespace matcha::engine::ops {
 struct Print : Op {
   Print(Tensor* a, bool endl = true, std::ostream& os = std::cout);
   Print(const std::string& text, bool endl = true, std::ostream& os = std::cout);
-  static OpMeta<Print> meta;
+  static Reflection<Print> reflection;
 
   void run() override;
 

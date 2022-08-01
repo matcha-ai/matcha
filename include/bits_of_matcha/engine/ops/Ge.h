@@ -8,7 +8,7 @@ namespace matcha::engine::ops {
 
 struct Ge : ElementwiseBinaryLogicalOp {
   Ge(Tensor* a, Tensor* b);
-  static OpMeta<Ge> meta;
+  static Reflection<Ge> reflection;
 
   void run() override;
 };

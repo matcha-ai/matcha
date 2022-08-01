@@ -8,17 +8,17 @@ namespace matcha::engine::cpu {
 
 template <class T = float>
 void transpose(Buffer& a, Buffer& b, const MatrixwiseUnaryCtx& ctx) {
-  auto valsA = a.as<T*>();
-  auto valsB = b.as<T*>();
+  auto vals_a = a.as<T*>();
+  auto vals_b = b.as<T*>();
 
-  auto matBeginA = valsA;
-  auto matBeginB = valsB;
-  auto iterB = matBeginB;
+  auto matBeginA = vals_a;
+  auto matBeginB = vals_b;
+  auto iter_b = matBeginB;
   for (int mat = 0; mat < ctx.mats; mat++) {
 
     for (T* colA = matBeginA; colA != matBeginA + ctx.cols; colA++) {
       for (T* rowA = colA; rowA != colA + ctx.size; rowA += ctx.cols) {
-        *iterB++ = *rowA;
+        *iter_b++ = *rowA;
       }
     }
 

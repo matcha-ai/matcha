@@ -10,14 +10,14 @@ LoadCsv::LoadCsv(const std::string& file)
   : Op{}
   , file_(file)
 {
-  outputs.add(this, getFrame());
+  addOutput(getFrame());
 }
 
 LoadCsv::LoadCsv(const std::string& file, const Frame& frame)
   : Op{}
   , file_(file)
 {
-  outputs.add(this, frame);
+  addOutput(frame);
 }
 
 void LoadCsv::run() {

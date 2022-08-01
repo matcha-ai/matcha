@@ -8,9 +8,9 @@ MaxBetween::MaxBetween(Tensor* a, Tensor* b)
   : ElementwiseBinaryOp(a, b)
 {}
 
-OpMeta<MaxBetween> MaxBetween::meta {
+Reflection<MaxBetween> MaxBetween::reflection {
   .name = "MaxBetween",
-  .back = [](auto& ctx) { return new MaxBetweenBack(ctx); },
+//  .back = [](auto& ctx) { return new MaxBetweenBack(ctx); },
 };
 
 void MaxBetween::run() {
@@ -27,7 +27,7 @@ MaxBetweenBack::MaxBetweenBack(const BackCtx& ctx)
   : ElementwiseBinaryOpBack(ctx)
 {}
 
-OpMeta<MaxBetweenBack> MaxBetweenBack::meta {
+Reflection<MaxBetweenBack> MaxBetweenBack::reflection {
   .name = "MaxBetweenBack",
 };
 

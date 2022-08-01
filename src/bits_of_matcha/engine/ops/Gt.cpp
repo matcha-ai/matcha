@@ -6,7 +6,7 @@ Gt::Gt(Tensor* a, Tensor* b)
   : ElementwiseBinaryLogicalOp(a, b)
 {}
 
-OpMeta<Gt> Gt::meta {
+Reflection<Gt> Gt::reflection {
   .name = "Gt",
 };
 

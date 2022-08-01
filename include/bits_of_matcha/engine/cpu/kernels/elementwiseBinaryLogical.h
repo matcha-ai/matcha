@@ -20,59 +20,59 @@ template <class T = float, class Callable>
 inline void elementwiseBinaryLogical(Callable callable, Buffer& a, Buffer& b, Buffer& c, const ElementwiseBinaryCtx& ctx) {
 //  return;
 
-  auto valsA = a.as<T*>();
-  auto valsB = b.as<T*>();
-  auto valsC = c.as<bool*>();
+  auto vals_a = a.as<T*>();
+  auto vals_b = b.as<T*>();
+  auto vals_c = c.as<bool*>();
 
-  int strides = (int) ctx.stridesA.size();
+  int strides = (int) ctx.strides_a.size();
   if (strides == 1) {
     // scalars
-    *valsC = (bool) callable(*valsA, *valsB);
+    *vals_c = (bool) callable(*vals_a, *vals_b);
     return;
   }
 
-  std::vector<unsigned> beginA(strides, 0);
-  std::vector<unsigned> beginB(strides, 0);
-  std::vector<unsigned> beginC(strides, 0);
-  auto iterC = valsC;
+  std::vector<unsigned> begin_a(strides, 0);
+  std::vector<unsigned> begin_b(strides, 0);
+  std::vector<unsigned> begin_c(strides, 0);
+  auto iter_c = vals_c;
 
   int counter = 0;
   int axis = 1;
   while (true) {
 //    if (counter++ > 20) exit(69);
 //    print("==========");
-//    print("axis ", axis, " beginC ", beginC[axis], " stridesC ", ctx.stridesC[axis - 1]);
+//    print("axis ", axis, " begin_c ", begin_c[axis], " strides_c ", ctx.strides_c[axis - 1]);
 //    print("axis: ", axis, " (strides ", strides, ")");
-//    print("strides: ", ctx.stridesA[axis], " ", ctx.stridesB[axis], " -> ", ctx.stridesC[axis]);
-//    print("begins: ", beginA[axis], " ", beginB[axis], " -> ", beginC[axis]);
+//    print("strides: ", ctx.strides_a[axis], " ", ctx.strides_b[axis], " -> ", ctx.strides_c[axis]);
+//    print("begins: ", begin_a[axis], " ", begin_b[axis], " -> ", begin_c[axis]);
     if (axis != strides - 1) {
-//      print("beginC ", beginC[axis]);
-      if (beginC[axis] == beginC[axis - 1] + ctx.stridesC[axis - 1]) {
+//      print("begin_c ", begin_c[axis]);
+      if (begin_c[axis] == begin_c[axis - 1] + ctx.strides_c[axis - 1]) {
 //        print("-> dec axis");
         if (axis == 1) break;
         axis--;
       } else {
-        beginA[axis + 1] = beginA[axis];
-        beginB[axis + 1] = beginB[axis];
-        beginC[axis + 1] = beginC[axis];
-        beginA[axis] += ctx.stridesA[axis];
-        beginB[axis] += ctx.stridesB[axis];
-        beginC[axis] += ctx.stridesC[axis];
+        begin_a[axis + 1] = begin_a[axis];
+        begin_b[axis + 1] = begin_b[axis];
+        begin_c[axis + 1] = begin_c[axis];
+        begin_a[axis] += ctx.strides_a[axis];
+        begin_b[axis] += ctx.strides_b[axis];
+        begin_c[axis] += ctx.strides_c[axis];
 //        print("-> inc axis");
         axis++;
       }
     } else {
 //      print("-> else");
-      auto iA = valsA + beginA[axis];
-      auto iB = valsB + beginB[axis];
-      auto bC = valsC + beginC[axis];
-      auto chunkSize = ctx.stridesC[axis - 1];
+      auto iA = vals_a + begin_a[axis];
+      auto iB = vals_b + begin_b[axis];
+      auto bC = vals_c + begin_c[axis];
+      auto chunkSize = ctx.strides_c[axis - 1];
       auto eC = bC + chunkSize;
-      auto sA = ctx.stridesA[axis];
-      auto sB = ctx.stridesB[axis];
+      auto sA = ctx.strides_a[axis];
+      auto sB = ctx.strides_b[axis];
 
       for (auto iC = bC; iC != eC; iC++) {
-//        print("compute ", std::distance(valsA , iA), " ", std::distance(valsB , iB), " -> ", std::distance(valsC, iC));
+//        print("compute ", std::distance(vals_a , iA), " ", std::distance(vals_b , iB), " -> ", std::distance(vals_c, iC));
         *iC = (bool) callable(*iA, *iB);
         iA += sA;
         iB += sB;

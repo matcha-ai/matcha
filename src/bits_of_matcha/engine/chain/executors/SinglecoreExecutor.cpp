@@ -9,7 +9,7 @@ SinglecoreExecutor::SinglecoreExecutor(Chain&& chain)
 {}
 
 void SinglecoreExecutor::runInternal() {
-//  check(chain);
+//  check(chain_);
   constexpr bool debug = false;
 
   for (auto&& op: chain_.ops) {
@@ -24,9 +24,9 @@ void SinglecoreExecutor::runInternal() {
     op->run();
   }
 
-  for (auto&& t: chain_.inputs) {
-    if (t->op()) t->free();
-  }
+//  for (auto&& t: chain_.inputs) {
+//    if (t->op()) t->free();
+//  }
 
 //  for (auto&& t: chain.tensors) {
 //    if (t->op() && !t->refs()) t->free();

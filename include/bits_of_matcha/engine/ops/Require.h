@@ -9,7 +9,7 @@ struct Require : Op {
   explicit Require(Tensor* a);
   explicit Require(const std::vector<Tensor*>& tensors);
   explicit Require(std::initializer_list<Tensor*> tensors);
-  static OpMeta<Require> meta;
+  static Reflection<Require> reflection;
 };
 
 }

@@ -10,7 +10,7 @@ struct Assign : Op {
   Assign(const Assign& other);
   ~Assign();
 
-  static OpMeta<Assign> meta;
+  static Reflection<Assign> reflection;
 
   void run() override;
 

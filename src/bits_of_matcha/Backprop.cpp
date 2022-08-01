@@ -35,7 +35,6 @@ std::map<tensor*, tensor> Backprop::operator()(const tensor& root) {
 
   auto&& wrt = internal->wrt_;
   engine::backprop(chain, engine::deref(wrt));
-//  check(chain);
 
   auto executor = std::make_shared<engine::SinglecoreExecutor>(std::move(chain));
   auto op = new engine::Module({}, std::move(executor));

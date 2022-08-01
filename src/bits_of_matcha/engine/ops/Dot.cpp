@@ -22,27 +22,28 @@ Dot::Dot(Tensor* a, Tensor* b)
     engine::incept(this, preop);
   }
 
-  if (iter_.colsA != iter_.rowsB) {
+  if (iter_.cols_a != iter_.rows_b) {
     throw IncompatibleShapesError(a->shape(), b->shape());
   }
 
-  std::vector dimsC = iter_.prefixDimsC;
-  dimsC.push_back(iter_.rowsA);
-  dimsC.push_back(iter_.colsB);
+  std::vector dims_c = iter_.prefix_dims_c;
+  dims_c.push_back(iter_.rows_a);
+  dims_c.push_back(iter_.cols_b);
 
-  outputs.add(this, dtype, dimsC);
+  addOutput(dtype, dims_c);
 
-//  for (int i = 0; i < iter_.prefixStridesB.size(); i++) {
-//    print(iter_.prefixStridesA[i], " ", iter_.prefixStridesB[i]);
+//  for (int i = 0; i < iter_.prefix_strides_b.size(); i++) {
+//    print(iter_.prefix_strides_a[i], " ", iter_.prefix_strides_b[i]);
 //  }
 }
 
-OpMeta<Dot> Dot::meta {
+Reflection<Dot> Dot::reflection {
   .name = "Dot",
+  /*
   .back = [](const BackCtx& ctx) {
     BackOps bops;
-    auto a = ctx.forward->inputs[0];
-    auto b = ctx.forward->inputs[1];
+    auto a = ctx.forward_->inputs[0];
+    auto b = ctx.forward_->inputs[1];
     auto c = ctx.vals[0];
 
     if (ctx.wrts[0]) {
@@ -63,6 +64,7 @@ OpMeta<Dot> Dot::meta {
     }
     return bops;
   },
+  */
 };
 
 void Dot::run() {

@@ -7,7 +7,7 @@ Eq::Eq(Tensor* a, Tensor* b)
 {
 }
 
-OpMeta<Eq> Eq::meta {
+Reflection<Eq> Eq::reflection {
   .name = "Eq",
 };
 

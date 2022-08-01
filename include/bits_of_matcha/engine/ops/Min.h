@@ -9,7 +9,7 @@ namespace matcha::engine::ops {
 struct Min : AxiswiseFoldOp {
   Min(Tensor* a);
   Min(Tensor* a, int axis);
-  static OpMeta<Min> meta;
+  static Reflection<Min> reflection;
 
   void run() override;
 };

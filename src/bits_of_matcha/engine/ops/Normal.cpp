@@ -7,13 +7,13 @@ Normal::Normal(Tensor* m, Tensor* sd, const Shape& shape, size_t seed)
   : Op{m, sd}
   , gen_(seed)
 {
-  if (m->rank() != 0 || sd->rank() != 0) {
+  if (m->rank() != 0 || sd->rank() != 0)
     throw std::invalid_argument("Normal parameters must be scalars");
-  }
-  outputs.add(this, Float, shape);
+
+  addOutput(Float, shape);
 }
 
-OpMeta<Normal> Normal::meta {
+Reflection<Normal> Normal::reflection {
   .name = "Normal",
 };
 

@@ -3,9 +3,9 @@
 
 namespace matcha::engine::ops {
 
-OpMeta<Require> Require::meta {
+Reflection<Require> Require::reflection {
   .name = "Require",
-  .sideEffect = true,
+  .side_effect = true,
 };
 
 Require::Require(Tensor* a)

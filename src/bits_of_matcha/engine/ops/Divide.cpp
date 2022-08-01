@@ -24,9 +24,9 @@ Divide::Divide(Tensor* a, Tensor* b)
   : ElementwiseBinaryOp(a, b, promoteDtypesDivide(a->dtype(), b->dtype()))
 {}
 
-OpMeta<Divide> Divide::meta {
+Reflection<Divide> Divide::reflection {
   .name = "Divide",
-  .back = [](auto& ctx) { return new DivideBack(ctx); },
+//  .back = [](auto& ctx) { return new DivideBack(ctx); },
 };
 
 void Divide::run() {
@@ -39,7 +39,7 @@ DivideBack::DivideBack(const BackCtx& ctx)
 {
 }
 
-OpMeta<DivideBack> DivideBack::meta {
+Reflection<DivideBack> DivideBack::reflection {
   .name = "DivideBack",
 };
 

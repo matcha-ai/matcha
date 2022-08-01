@@ -11,12 +11,12 @@ struct MatrixwiseBinaryCtx {
   MatrixwiseBinaryCtx(const Shape& a, const Shape& b);
   MatrixwiseBinaryCtx() = default;
 
-  std::vector<unsigned> prefixDimsC;
-  std::vector<size_t> prefixStridesA;
-  std::vector<size_t> prefixStridesB;
-  std::vector<size_t> prefixStridesC;
-  unsigned rowsA, rowsB;
-  unsigned colsA, colsB;
+  std::vector<unsigned> prefix_dims_c;
+  std::vector<size_t> prefix_strides_a;
+  std::vector<size_t> prefix_strides_b;
+  std::vector<size_t> prefix_strides_c;
+  unsigned rows_a, rows_b;
+  unsigned cols_a, cols_b;
 };
 
 }

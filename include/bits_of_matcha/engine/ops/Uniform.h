@@ -9,7 +9,7 @@ namespace matcha::engine::ops {
 
 struct Uniform : Op {
   Uniform(Tensor* a, Tensor* b, const Shape& shape, size_t seed);
-  static OpMeta<Uniform> meta;
+  static Reflection<Uniform> reflection;
 
   void run() override;
 

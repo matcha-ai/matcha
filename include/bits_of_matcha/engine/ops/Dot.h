@@ -10,7 +10,7 @@ namespace matcha::engine::ops {
 
 struct Dot : Op {
   Dot(Tensor* a, Tensor* b);
-  static OpMeta<Dot> meta;
+  static Reflection<Dot> reflection;
 
   void run() override;
 
