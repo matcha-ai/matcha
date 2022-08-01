@@ -8,7 +8,7 @@ project(
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_FLAGS -pg)
 set(CMAKE_CXX_FLAGS -march=native)
-#set(CMAKE_CXX_FLAGS -O2)
+set(CMAKE_CXX_FLAGS -O3)
 
 set(
   PROJECT_HEADERS
@@ -24,7 +24,6 @@ set(
   include/bits_of_matcha/Device.h
   include/bits_of_matcha/print.h
   include/bits_of_matcha/random.h
-  include/bits_of_matcha/Flow.h
   include/bits_of_matcha/Backprop.h
   include/bits_of_matcha/Loader.h
   include/bits_of_matcha/Engine.h
@@ -115,21 +114,14 @@ set(
 
   include/bits_of_matcha/engine/chain/executors/SinglecoreExecutor.h
 
-#  include/bits_of_matcha/engine/flow/Flow.h
-#  include/bits_of_matcha/engine/flow/Module.h
-#  include/bits_of_matcha/engine/flow/ModuleForw.h
-
   include/bits_of_matcha/engine/decorator/Decorator.h
   include/bits_of_matcha/engine/decorator/TracingDecorator.h
   include/bits_of_matcha/engine/decorator/JitDecorator.h
 
   include/bits_of_matcha/engine/autograd/AccumulateGrads.h
-#  include/bits_of_matcha/engine/autograd/GradientTape.h
   include/bits_of_matcha/engine/autograd/Partials.h
-#  include/bits_of_matcha/engine/autograd/Autograd.h
   include/bits_of_matcha/engine/autograd/backprop.h
 
-  #  include/bits_of_matcha/engine/utils/TexGraph.h
   include/bits_of_matcha/engine/utils/stdVector.h
   include/bits_of_matcha/engine/utils/IdentifierTranslator.h
 
@@ -267,21 +259,13 @@ set(
 
   src/bits_of_matcha/engine/chain/executors/SinglecoreExecutor.cpp
 
-#  src/bits_of_matcha/engine/flow/Flow.cpp
-#  src/bits_of_matcha/engine/flow/Module.cpp
-#  src/bits_of_matcha/engine/flow/ModuleForw.cpp
-
   src/bits_of_matcha/engine/decorator/Decorator.cpp
   src/bits_of_matcha/engine/decorator/TracingDecorator.cpp
   src/bits_of_matcha/engine/decorator/JitDecorator.cpp
 
   src/bits_of_matcha/engine/autograd/AccumulateGrads.cpp
-#  src/bits_of_matcha/engine/autograd/GradientTape.cpp
   src/bits_of_matcha/engine/autograd/Partials.cpp
   src/bits_of_matcha/engine/autograd/backprop.cpp
-#  src/bits_of_matcha/engine/autograd/Autograd.cpp
-
-  #  src/bits_of_matcha/engine/utils/TexGraph.cpp
 
   src/bits_of_matcha/engine/cpu/Block.cpp
   src/bits_of_matcha/engine/cpu/MemoryPool.cpp

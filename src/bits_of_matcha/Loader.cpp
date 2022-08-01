@@ -46,8 +46,4 @@ Loader::operator tensor() {
   }
 }
 
-//Loader::operator Flow() {
-//  return {};
-//}
-
 }
