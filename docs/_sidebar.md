@@ -15,14 +15,8 @@
   - [Utilities](tensor/utils)
   - [Factories](tensor/factories)
   - [Accessing data](tensor/accessing-data)
-
-- Automatic differentiation
-
-  - [Backprop](autograd/backprop)
-
-- JIT compilation
-
-  - [Backprop](autograd/backprop)
+  - [Automatic differentiation](tensor/autograd)
+  - [JIT compilation](tensor/jit)
 
 - Dataset pipelines
 
@@ -38,5 +32,5 @@
   - [Losses](optimizers)
   - [Callbacks](callbacks)
 
-
+- [Engine backend](engine/)
 - [GitHub](https://github.com/matcha-ai/matcha-engine)

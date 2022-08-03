@@ -16,9 +16,9 @@ machine learning. It features a very intuitive interface
 inspired by Numpy and Keras. Matcha brings all this to C++.
 It also provides a way to accelerate itself by Just-In-Time
 inspecting and modifying the structure of given tensor functions
-and compiling them into a chain of instructions. On top of that,
-Matcha delivers seamless dataset pipelines, automatic differentiation
-system, and neural networks.
+and compiling them into a set of instructions. On top of that,
+Matcha delivers a seamless dataset pipeline system, 
+automatic differentiation system, and neural networks framework.
 
 ```cpp
 #include <iostream>
