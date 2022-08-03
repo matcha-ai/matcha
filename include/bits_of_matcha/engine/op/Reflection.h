@@ -40,7 +40,7 @@ struct Reflection {
     }
   };
 
-  RegisterCtx registerCtx_{this};
+  RegisterCtx register_ctx_{this};
   ~Reflection() {
 
   }

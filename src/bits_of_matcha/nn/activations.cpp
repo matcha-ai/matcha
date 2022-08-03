@@ -17,7 +17,7 @@ tensor softmax(const tensor& batch) {
 }
 
 tensor relu(const tensor& batch) {
-  return maxBetween(batch, cast(0, batch.dtype()));
+  return maximum(batch, cast(0, batch.dtype()));
 }
 
 }

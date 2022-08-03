@@ -6,12 +6,12 @@
 
 namespace matcha::engine::ops {
 
-Min::Min(Tensor* a)
-  : AxiswiseFoldOp(a)
+Min::Min(Tensor* a, bool keep_dims)
+  : AxiswiseFoldOp(a, keep_dims)
 {}
 
-Min::Min(Tensor* a, int axis)
-  : AxiswiseFoldOp(a, axis)
+Min::Min(Tensor* a, int axis, bool keep_dims)
+  : AxiswiseFoldOp(a, axis, keep_dims)
 {}
 
 Reflection<Min> Min::reflection {

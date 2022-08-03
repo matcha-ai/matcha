@@ -3,32 +3,27 @@
 using namespace matcha;
 using namespace std::complex_literals;
 
+
 void net();
 Dataset dataset();
 
 tensor p;
 
-tensor foo(const tensor& x) {
-  p = x*x;
-  return p;
+tensor f(tensor x, tensor w) {
+  return matmul(w, x);
 }
 
 int main() {
   net(); return 0;
-  unary_fn f = jit(foo);
-  unary_fn g = jit([=](tensor x) { return 2 * f(x); });
+  fn df = grad(f, {1});
 
-  for (int i = 0; true; i++) {
-    print(p);
-    print("------");
-    tensor x = ones(3, 3);
-    tensor y = g(x);
-    print(x, "\n", y);
-    print("------");
-    print(p);
+  tensor x = ones(2, 5, 1);
+  tensor w = ones(3, 5);
+  tensor y = f(x, w);
+  tensor dx = df(tuple{x, w})[0];
 
-    break;
-  }
+  print(y);
+  print(dx);
 }
 
 
@@ -79,24 +74,15 @@ Dataset dataset() {
 void net() {
   Net net {
     nn::Flatten{},
-//    nn::Fc{400},
-//    nn::Fc{100, "relu"},
-//    nn::Fc{50, "relu"},
-    nn::Fc{10, "nobias"},
+    nn::Fc{400},
+    nn::Fc{100, "relu"},
+    nn::Fc{50, "relu"},
+    nn::Fc{10, "softmax"},
   };
 
   net.loss = mse;
 //  net.callbacks.clear();
 
-//  Dataset mnist = load("mnist_train.csv");
-  Dataset mnist = (Dataset) []() {
-    Instance i;
-    i["x"] = ones(28, 28);
-    i["y"] = cast(1, Int).reshape(1, 1);
-    return i;
-  };
-  mnist = mnist.take(1000);
-  mnist = mnist.cat(mnist).cat(mnist).cat(mnist);
-  mnist = load("mnist_train.csv");
-  net.fit(mnist.batch(64));
+  Dataset mnist = load("mnist_train.csv");
+  net.fit(mnist.batch(64), 5);
 }

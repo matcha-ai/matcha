@@ -18,6 +18,7 @@ Pow::Pow(Tensor* a, Tensor* b)
 
 Reflection<Pow> Pow::reflection {
   .name = "Pow",
+  .back = [](auto& ctx) { return dispatch<PowBack>(ctx); },
 };
 
 

@@ -64,9 +64,9 @@ public:
 
   /**
    * @param b the second tensor
-   * @return the dot product of two tensors
+   * @return the matrix multiplication of the two tensors
    */
-  tensor dot(const tensor& b) const;
+  tensor matmul(const tensor& b) const;
 
   /**
    * @param b the second tensor
@@ -78,7 +78,7 @@ public:
    * @param b exponent
    * @return tensor to the power of b
    */
-  tensor pow(const tensor& b) const;
+  tensor power(const tensor& b) const;
 
   /**
    * @param dtype target dtype
@@ -88,6 +88,8 @@ public:
 
   View operator[](const Shape::Range& range);
   View operator[](const tensor& idx);
+
+  explicit operator bool() const;
 
 public:
   tensor();
@@ -140,6 +142,10 @@ public:
   tensor& assign(const tensor& other);
   ~tensor();
 
+  tensor(std::initializer_list<float> vector);
+  tensor(std::initializer_list<std::initializer_list<float>> matrix);
+  tensor(std::initializer_list<std::initializer_list<std::initializer_list<float>>> rank3tensors);
+  tensor(std::initializer_list<std::initializer_list<std::initializer_list<std::initializer_list<float>>>> rank4tensors);
 
 public:
   /**

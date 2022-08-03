@@ -9,47 +9,67 @@
 namespace matcha::engine {
 
 struct AxiswiseFoldOp : Op {
-  explicit AxiswiseFoldOp(Tensor* a)
+  explicit AxiswiseFoldOp(Tensor* a, bool keep_dims)
     : Op{a}
-    , ctx_(a->shape())
+    , ctx_(a->shape(), keep_dims)
   {
-    addOutput(a->dtype(), {});
+    if (keep_dims)
+      addOutput(a->dtype(), std::vector<unsigned>(a->rank(), 1));
+    else
+      addOutput(a->dtype(), {});
   }
 
-  explicit AxiswiseFoldOp(Tensor* a, int axis)
+  explicit AxiswiseFoldOp(Tensor* a, int axis, bool keep_dims)
     : Op{a}
-    , ctx_(a->shape(), axis)
+    , ctx_(a->shape(), axis, keep_dims)
   {
     auto& shape = a->shape();
     if (axis < 0) axis += (int) shape.rank();
+    axis_ = axis;
+
     std::vector<unsigned> outDims;
     for (int i = 0; i < shape.rank(); i++) {
-      if (i == axis) continue;
+      if (i == axis) {
+        if (keep_dims)
+          outDims.push_back(1);
+
+        continue;
+      }
       outDims.push_back(shape[i]);
     }
 
     addOutput(a->dtype(), outDims);
   }
 
-  explicit AxiswiseFoldOp(Tensor* a, Dtype dtype)
+  explicit AxiswiseFoldOp(Tensor* a, bool keep_dims, Dtype dtype)
     : Op{a}
-    , ctx_(a->shape())
+    , ctx_(a->shape(), keep_dims)
   {
     if (inputs[0]->dtype() != dtype)
       engine::incept(this, new ops::Cast(inputs[0], dtype));
 
-    addOutput(dtype, {});
+    if (keep_dims)
+      addOutput(a->dtype(), std::vector<unsigned>(a->rank(), 1));
+    else
+      addOutput(a->dtype(), {});
   }
 
-  explicit AxiswiseFoldOp(Tensor* a, int axis, Dtype dtype)
+  explicit AxiswiseFoldOp(Tensor* a, int axis, bool keep_dims, Dtype dtype)
     : Op{a}
-    , ctx_(a->shape(), axis)
+    , ctx_(a->shape(), axis, keep_dims)
   {
     auto& shape = a->shape();
     if (axis < 0) axis += (int) shape.rank();
+    axis_ = axis;
+
     std::vector<unsigned> outDims;
     for (int i = 0; i < shape.rank(); i++) {
-      if (i == axis) continue;
+      if (i == axis) {
+        if (keep_dims)
+          outDims.push_back(1);
+
+        continue;
+      }
       outDims.push_back(shape[i]);
     }
 
@@ -57,6 +77,18 @@ struct AxiswiseFoldOp : Op {
       engine::incept(this, new ops::Cast(inputs[0], dtype));
 
     addOutput(dtype, outDims);
+  }
+
+  int axis() const {
+    return axis_;
+  }
+
+  bool global() const {
+    return outputs[0]->rank() == 0;
+  }
+
+  bool keepDims() const {
+    return inputs[0]->rank() == outputs[0]->rank();
   }
 
 protected:
@@ -216,9 +248,9 @@ private:
     cpu::axiswiseFold<Type>(callable, inputs[0]->buffer(), outputs[0]->malloc(), ctx_);
   }
 
-
 protected:
   AxiswiseFoldCtx ctx_;
+  int axis_;
 };
 
 }

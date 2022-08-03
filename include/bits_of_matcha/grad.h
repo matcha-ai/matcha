@@ -1,10 +1,10 @@
 #pragma once
 
-#include "bits_of_matcha/ops.h"
+#include "bits_of_matcha/fn.h"
 
 namespace matcha {
 
-  UnaryOp grad(const UnaryOp& function);
-//  UnaryOp grad(const BinaryOp & function, const std::index_sequence& wrt);
+fn grad(const fn& function, const std::vector<int>& argnum = {0});
+fn value_and_grad(const fn& function, const std::vector<int>& argnum = {0});
 
 }

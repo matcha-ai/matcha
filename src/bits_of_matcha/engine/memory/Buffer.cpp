@@ -15,12 +15,6 @@ Buffer::Buffer(size_t bytes)
   malloc(bytes);
 }
 
-Buffer::Buffer(const Frame& frame)
-  : block_(nullptr)
-{
-  malloc(frame.bytes());
-}
-
 void Buffer::malloc(size_t bytes) {
   if (block_) {
     if (block_->fits(bytes)) return;
@@ -28,10 +22,6 @@ void Buffer::malloc(size_t bytes) {
   }
   block_ = cpu::MemoryPool::the()->malloc(bytes);
   block_->bind();
-}
-
-void Buffer::malloc(const Frame& frame) {
-  malloc(frame.bytes());
 }
 
 void Buffer::free() {

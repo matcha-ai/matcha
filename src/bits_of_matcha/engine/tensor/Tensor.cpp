@@ -10,16 +10,16 @@
 
 namespace matcha::engine {
 
-Tensor::Tensor(const Frame& frame, Op* op)
+Tensor::Tensor(const Frame& frame)
   : frame_(frame)
-  , op_(op)
+  , op_(nullptr)
 {
 //  print("created tensor ", this);
 //  Tracer::handleNewTensor(this);
 }
 
-Tensor::Tensor(const Dtype& dtype, const Shape& shape, Op* op)
-  : Tensor(Frame{dtype, shape}, op)
+Tensor::Tensor(const Dtype& dtype, const Shape& shape)
+  : Tensor(Frame(dtype, shape))
 {}
 
 Tensor::~Tensor() {
@@ -56,7 +56,7 @@ Buffer& Tensor::buffer() {
 }
 
 Buffer& Tensor::malloc() {
-  buffer_.malloc(frame_);
+  buffer_.malloc(bytes());
   return buffer_;
 }
 
@@ -77,7 +77,7 @@ Buffer& Tensor::free() {
 }
 
 
-Op* Tensor::op() {
+Op* Tensor::op() const {
   return op_;
 }
 

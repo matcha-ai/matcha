@@ -9,9 +9,9 @@ namespace matcha::engine {
 class Buffer {
 public:
   explicit Buffer();
-  explicit Buffer(Block* block);
   explicit Buffer(size_t bytes);
-  Buffer(const Frame& frame);
+  explicit Buffer(Block* block);
+
   Buffer(const Buffer& other);
   Buffer(Buffer&& other) noexcept;
   ~Buffer();
@@ -26,7 +26,6 @@ public:
   size_t bytes() const;
 
   void malloc(size_t bytes);
-  void malloc(const Frame& frame);
   void free();
 
   void* payload();

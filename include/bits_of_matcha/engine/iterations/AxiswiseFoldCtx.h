@@ -9,8 +9,8 @@
 namespace matcha::engine {
 
 struct AxiswiseFoldCtx {
-  AxiswiseFoldCtx(const Shape& a);
-  AxiswiseFoldCtx(const Shape& a, int axis);
+  AxiswiseFoldCtx(const Shape& a, bool keep_dims);
+  AxiswiseFoldCtx(const Shape& a, int axis, bool keep_dims);
   AxiswiseFoldCtx() = default;
 
   size_t axis_stride;

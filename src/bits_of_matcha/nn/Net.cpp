@@ -15,6 +15,7 @@ Net::Net(const std::vector<UnaryOp>& sequence) {
     for (auto& op: sequence) feed = op(feed);
     return feed;
   };
+  forward_ = jit(forward_);
 }
 
 Net::Net(std::initializer_list<UnaryOp> sequence)
@@ -23,7 +24,6 @@ Net::Net(std::initializer_list<UnaryOp> sequence)
 
 void Net::fit(Dataset ds, size_t epochs) {
   Layer::netStack_.push(this);
-  forward_ = jit(forward_);
 
   ds.reset();
 

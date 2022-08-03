@@ -16,7 +16,7 @@ Reshape::Reshape(Tensor* a, const Shape::Reshape& dims)
 
 Reflection<Reshape> Reshape::reflection {
   .name = "Reshape",
-//  .back = [](auto& ctx) { return new Reshape(ctx.vals[0], ctx.forward_->inputs[0]->shape()); }
+  .back = [](auto& ctx) { return dispatch<Reshape>(ctx.vals[0], ctx.forward->inputs[0]->shape()); },
 };
 
 void Reshape::run() {

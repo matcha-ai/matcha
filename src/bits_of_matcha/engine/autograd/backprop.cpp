@@ -3,6 +3,7 @@
 #include "bits_of_matcha/engine/chain/passes/flatten.h"
 #include "bits_of_matcha/engine/chain/passes/contractIdentities.h"
 #include "bits_of_matcha/engine/chain/passes/reduceToEffects.h"
+#include "bits_of_matcha/engine/chain/passes/initialize.h"
 #include "bits_of_matcha/engine/chain/passes/check.h"
 #include "bits_of_matcha/engine/op/Op.h"
 
@@ -23,10 +24,10 @@ void backprop(Chain& chain, const std::vector<Tensor*>& wrt) {
   // extend chain by backprop ops
   Partials partials(chain, wrt);
 
-  chain.outputs.clear();
-  for (auto&& g: partials.accumulateGrads(wrt))
-    chain.outputs.push_back(g);
-  return;
+//  chain.outputs.clear();
+//  for (auto&& g: partials.accumulateGrads(wrt))
+//    chain.outputs.push_back(g);
+//  return;
 
   for (int i = (int) chain.ops.size() - 1; i >= 0; i--) {
     auto op = chain.ops[i];
@@ -66,7 +67,8 @@ void backprop(Chain& chain, const std::vector<Tensor*>& wrt) {
   flatten(chain);
   reduceToEffects(chain);
   contractIdentities(chain);
-  check(chain);
+  initialize(chain);
+//  check(chain);
 }
 
 }

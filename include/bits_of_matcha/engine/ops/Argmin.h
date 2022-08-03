@@ -7,8 +7,8 @@
 namespace matcha::engine::ops {
 
 struct Argmin : AxiswiseFoldOp {
-  Argmin(Tensor* a);
-  Argmin(Tensor* a, int axis);
+  explicit Argmin(Tensor* a, bool keep_dims);
+  explicit Argmin(Tensor* a, int axis, bool keep_dims);
   static Reflection<Argmin> reflection;
 
   void run() override;

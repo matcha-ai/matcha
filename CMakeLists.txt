@@ -21,6 +21,7 @@ set(
   include/bits_of_matcha/tensor.h
   include/bits_of_matcha/ops.h
   include/bits_of_matcha/decorators.h
+  include/bits_of_matcha/grad.h
   include/bits_of_matcha/Device.h
   include/bits_of_matcha/print.h
   include/bits_of_matcha/random.h
@@ -136,10 +137,11 @@ set(
   include/bits_of_matcha/engine/dataset/Dataset.h
 
   include/bits_of_matcha/engine/ops/Require.h
+  include/bits_of_matcha/engine/ops/Broadcast.h
   include/bits_of_matcha/engine/ops/Add.h
   include/bits_of_matcha/engine/ops/Multiply.h
   include/bits_of_matcha/engine/ops/Divide.h
-  include/bits_of_matcha/engine/ops/Dot.h
+  include/bits_of_matcha/engine/ops/Matmul.h
   include/bits_of_matcha/engine/ops/Transpose.h
   include/bits_of_matcha/engine/ops/Identity.h
   include/bits_of_matcha/engine/ops/Reshape.h
@@ -182,9 +184,9 @@ set(
   src/bits_of_matcha/tensor.cpp
   src/bits_of_matcha/ops.cpp
   src/bits_of_matcha/decorators.cpp
+  src/bits_of_matcha/grad.cpp
   src/bits_of_matcha/Device.cpp
   src/bits_of_matcha/random.cpp
-#  src/bits_of_matcha/Flow.cpp
   src/bits_of_matcha/Backprop.cpp
   src/bits_of_matcha/Loader.cpp
   src/bits_of_matcha/Engine.cpp
@@ -268,10 +270,11 @@ set(
   src/bits_of_matcha/engine/dataset/Dataset.cpp
 
   src/bits_of_matcha/engine/ops/Require.cpp
+  src/bits_of_matcha/engine/ops/Broadcast.cpp
   src/bits_of_matcha/engine/ops/Add.cpp
   src/bits_of_matcha/engine/ops/Multiply.cpp
   src/bits_of_matcha/engine/ops/Divide.cpp
-  src/bits_of_matcha/engine/ops/Dot.cpp
+  src/bits_of_matcha/engine/ops/Matmul.cpp
   src/bits_of_matcha/engine/ops/Transpose.cpp
   src/bits_of_matcha/engine/ops/Identity.cpp
   src/bits_of_matcha/engine/ops/Reshape.cpp

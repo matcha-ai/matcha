@@ -1,4 +1,6 @@
 #include "bits_of_matcha/engine/ops/Sum.h"
+#include "bits_of_matcha/engine/ops/Broadcast.h"
+#include "bits_of_matcha/engine/ops/Reshape.h"
 
 #include <algorithm>
 #include <numeric>
@@ -14,16 +16,36 @@ Dtype promoteDtypesSum(Tensor* a) {
     return a->dtype();
 }
 
-Sum::Sum(Tensor* a)
-  : AxiswiseFoldOp(a, promoteDtypesSum(a))
+Sum::Sum(Tensor* a, bool keep_dims)
+  : AxiswiseFoldOp(a, keep_dims, promoteDtypesSum(a))
 {}
 
-Sum::Sum(Tensor* a, int axis)
-  : AxiswiseFoldOp(a, axis, promoteDtypesSum(a))
+Sum::Sum(Tensor* a, int axis, bool keep_dims)
+  : AxiswiseFoldOp(a, axis, keep_dims, promoteDtypesSum(a))
 {}
 
 Reflection<Sum> Sum::reflection {
-  .name = "Sum"
+  .name = "Sum",
+  .back = [](const BackCtx& ctx) {
+    auto fold = dynamic_cast<AxiswiseFoldOp*>(ctx.forward);
+    auto a = ctx.forward->inputs[0];
+    auto gb = ctx.vals[0];
+
+    Tensor* temp = nullptr;
+
+    if (fold->keepDims()) {
+      temp = gb;
+    } else if (fold->global()) {
+      temp = dispatch<Reshape>(gb, std::vector(a->rank(), 1))[0];
+    } else {
+      std::vector<int> dims(a->shape().begin(), a->shape().end());
+      dims[fold->axis()] = 1;
+      temp = dispatch<Reshape>(gb, dims)[0];
+    }
+
+    auto outs = dispatch<Broadcast>(temp, a->shape());
+    return outs;
+  },
 };
 
 template <class T>

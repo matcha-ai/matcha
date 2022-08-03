@@ -7,8 +7,8 @@
 namespace matcha::engine::ops {
 
 struct Argmax : AxiswiseFoldOp {
-  Argmax(Tensor* a);
-  Argmax(Tensor* a, int axis);
+  explicit Argmax(Tensor* a, bool keep_dims);
+  explicit Argmax(Tensor* a, int axis, bool keep_dims);
   static Reflection<Argmax> reflection;
 
   void run() override;

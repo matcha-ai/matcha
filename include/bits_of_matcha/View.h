@@ -57,9 +57,9 @@ public:
 
   /**
    * @param b the second tensor
-   * @return the dot product of two tensors
+   * @return the matrix multiplication of the tensors
    */
-  tensor dot(const tensor& b) const;
+  tensor matmul(const tensor& b) const;
 
   /**
    * @param b the second tensor
@@ -71,7 +71,7 @@ public:
    * @param b exponent
    * @return tensor to the power of b
    */
-  tensor pow(const tensor& b) const;
+  tensor power(const tensor& b) const;
 
   /**
    * @param dtype target dtype

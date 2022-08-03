@@ -155,12 +155,12 @@ tensor tensor::t() const {
   return matcha::transpose(*this);
 }
 
-tensor tensor::dot(const tensor& b) const {
-  return matcha::dot(*this, b);
+tensor tensor::matmul(const tensor& b) const {
+  return matcha::matmul(*this, b);
 }
 
-tensor tensor::pow(const tensor& b) const {
-  return matcha::pow(*this, b);
+tensor tensor::power(const tensor& b) const {
+  return matcha::power(*this, b);
 }
 
 tensor tensor::cast(const Dtype& dtype) const {
@@ -169,6 +169,20 @@ tensor tensor::cast(const Dtype& dtype) const {
 
 void* tensor::data() {
   return deref(this)->readData();
+}
+
+tensor::operator bool() const {
+  if (size() != 1)
+    throw std::runtime_error("can't convert a non-scalar tensor into a single bool; use all(tensor) or any(tensor)");
+
+  if (dtype() != Bool)
+    return this->cast(Bool).operator bool();
+
+  auto internal = deref(this);
+  if (!internal->buffer())
+    throw std::runtime_error("buffer is null");
+
+  return internal->buffer().as<bool*>()[0];
 }
 
 void tensor::save(const std::string& file, SaveSpec spec) {
@@ -222,6 +236,66 @@ tensor tensor::blob(const std::vector<float>& data, const Shape& shape) {
 tensor tensor::blob(const std::vector<float>& data) {
   return blob(data, {(unsigned) data.size()});
 }
+
+template <class Ilist>
+void ilistDims(std::vector<unsigned>& dims, const Ilist& ilist) {
+  if (ilist.size() == 0)
+    throw std::runtime_error("tensor initialization data is empty");
+
+  dims.push_back(ilist.size());
+
+  if constexpr (std::is_convertible<Ilist, std::initializer_list<float>>()) {
+  } else if constexpr (std::is_convertible<Ilist, float>()) {
+  } else {
+
+    auto&& first = *ilist.begin();
+    ilistDims(dims, first);
+  }
+}
+
+template <class Ilist>
+void fromIlistInternal(std::vector<float>& buffer, const Ilist& ilist) {
+  if constexpr (std::is_convertible<Ilist, std::initializer_list<float>>()) {
+    for (auto&& val: ilist)
+      buffer.push_back(val);
+
+  } else if constexpr (std::is_convertible<Ilist, float>()) {
+  } else {
+    auto&& first = *ilist.begin();
+    for (auto&& sublist: ilist) {
+      if (sublist.size() != first.size())
+        throw std::invalid_argument("tensor initialization data is ragged");
+    }
+
+    for (auto& sublist: ilist)
+      fromIlistInternal(buffer, sublist);
+  }
+}
+
+template <class Ilist>
+inline engine::Tensor* fromIlist(Ilist& ilist) {
+  std::vector<float> buffer;
+  std::vector<unsigned> dims;
+  ilistDims(dims, ilist);
+  fromIlistInternal(buffer, ilist);
+  return engine::blob(buffer.data(), Frame(Float, dims));
+}
+
+tensor::tensor(std::initializer_list<float> vector)
+  : tensor(fromIlist(vector))
+{}
+
+tensor::tensor(std::initializer_list<std::initializer_list<float>> matrix)
+  : tensor(fromIlist(matrix))
+{}
+
+tensor::tensor(std::initializer_list<std::initializer_list<std::initializer_list<float>>> rank3tensor)
+  : tensor(fromIlist(rank3tensor))
+{}
+
+tensor::tensor(std::initializer_list<std::initializer_list<std::initializer_list<std::initializer_list<float>>>> rank4tensor)
+  : tensor(fromIlist(rank4tensor))
+{}
 
 std::ostream& operator<<(std::ostream& os, const matcha::tensor& t) {
   auto op = new ops::Print(deref(t), false, os);

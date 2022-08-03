@@ -25,6 +25,7 @@ Transpose::Transpose(Tensor* a)
 
 Reflection<Transpose> Transpose::reflection {
   .name = "Transpose",
+  .back = [](auto& ctx) { return dispatch<Transpose>(ctx.vals[0]); },
 };
 
 void Transpose::run() {

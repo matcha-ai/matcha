@@ -6,7 +6,7 @@
 namespace matcha::engine::ops {
 
 struct Exp : ElementwiseUnaryOp {
-  Exp(Tensor* a);
+  explicit Exp(Tensor* a);
   static Reflection<Exp> reflection;
 
   void run() override;

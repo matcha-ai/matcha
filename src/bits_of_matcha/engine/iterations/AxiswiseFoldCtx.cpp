@@ -3,7 +3,7 @@
 
 namespace matcha::engine {
 
-AxiswiseFoldCtx::AxiswiseFoldCtx(const Shape& a) {
+AxiswiseFoldCtx::AxiswiseFoldCtx(const Shape& a, bool keep_dims) {
   axis_stride = 1;
   axis_length = a.size();
   prefix_strides = {0, 0};
@@ -11,7 +11,7 @@ AxiswiseFoldCtx::AxiswiseFoldCtx(const Shape& a) {
 //  exit(0);
 }
 
-AxiswiseFoldCtx::AxiswiseFoldCtx(const Shape& a, int axis) {
+AxiswiseFoldCtx::AxiswiseFoldCtx(const Shape& a, int axis, bool keep_dims) {
   if (axis < 0) axis += (int) a.rank();
   if (axis < 0 || axis >= a.rank()) throw std::invalid_argument("axis is out of range");
 

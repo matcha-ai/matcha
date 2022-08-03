@@ -39,38 +39,48 @@ matcha::tensor operator<(const matcha::tensor& a, const matcha::tensor& b);
 matcha::tensor operator>(const matcha::tensor& a, const matcha::tensor& b);
 matcha::tensor operator<=(const matcha::tensor& a, const matcha::tensor& b);
 matcha::tensor operator>=(const matcha::tensor& a, const matcha::tensor& b);
+matcha::tensor operator!(const matcha::tensor& a);
 
 namespace matcha {
 
+tensor positive(const tensor& a);
+tensor negative(const tensor& a);
 tensor add(const tensor& a, const tensor& b);
 tensor subtract(const tensor& a, const tensor& b);
 tensor multiply(const tensor& a, const tensor& b);
 tensor divide(const tensor& a, const tensor& b);
-tensor negative(const tensor& a);
 
-tensor dot(const tensor& a, const tensor& b);
+tensor matmul(const tensor& a, const tensor& b);
 tensor transpose(const tensor& a);
 
 tensor identity(const tensor& a);
 tensor reshape(const tensor& a, const Shape::Reshape& dims);
 
-tensor pow(const tensor& a, const tensor& b);
+tensor power(const tensor& a, const tensor& b);
 tensor square(const tensor& a);
 tensor sqrt(const tensor& a);
 tensor exp(const tensor& a);
 
+tensor sum(const tensor& a, bool keep_dims = false);
+tensor sum(const tensor& a, int axis, bool keep_dims = false);
 
-tensor sum(const tensor& a);
-tensor sum(const tensor& a, int axis);
+tensor any(const tensor& a, bool keep_dims = false);
+tensor any(const tensor& a, int axis, bool keep_dims = false);
 
-tensor mean(const tensor& a);
-tensor mean(const tensor& a, int axis);
+tensor all(const tensor& a, bool keep_dims = false);
+tensor all(const tensor& a, int axis, bool keep_dims = false);
 
-tensor stdev(const tensor& a);
-tensor stdev(const tensor& a, int axis);
+tensor none(const tensor& a, bool keep_dims = false);
+tensor none(const tensor& a, int axis, bool keep_dims = false);
 
-tensor stdevu(const tensor& a);
-tensor stdevu(const tensor& a, int axis);
+tensor mean(const tensor& a, bool keep_dims = false);
+tensor mean(const tensor& a, int axis, bool keep_dims = false);
+
+tensor stdev(const tensor& a, bool keep_dims = false);
+tensor stdev(const tensor& a, int axis, bool keep_dims = false);
+
+tensor stdevu(const tensor& a, bool keep_dims = false);
+tensor stdevu(const tensor& a, int axis, bool keep_dims = false);
 
 tensor mse(const tensor& gold, const tensor& pred);
 tensor rmse(const tensor& gold, const tensor& pred);
@@ -81,18 +91,18 @@ tensor l2norm(const tensor& a, int axis);
 tensor norm(const tensor& a);
 tensor norm(const tensor& a, int axis);
 
-tensor max(const tensor& a);
-tensor max(const tensor& a, int axis);
-tensor min(const tensor& a);
-tensor min(const tensor& a, int axis);
+tensor max(const tensor& a, bool keep_dims = false);
+tensor max(const tensor& a, int axis, bool keep_dims = false);
+tensor min(const tensor& a, bool keep_dims = false);
+tensor min(const tensor& a, int axis, bool keep_dims = false);
 
-tensor argmax(const tensor& a);
-tensor argmax(const tensor& a, int axis);
-tensor argmin(const tensor& a);
-tensor argmin(const tensor& a, int axis);
+tensor argmax(const tensor& a, bool keep_dims = false);
+tensor argmax(const tensor& a, int axis, bool keep_dims = false);
+tensor argmin(const tensor& a, bool keep_dims = false);
+tensor argmin(const tensor& a, int axis, bool keep_dims = false);
 
-tensor maxBetween(const tensor& a, const tensor& b);
-tensor minBetween(const tensor& a, const tensor& b);
+tensor maximum(const tensor& a, const tensor& b);
+tensor minimum(const tensor& a, const tensor& b);
 
 tensor eq(const tensor& a, const tensor& b);
 tensor neq(const tensor& a, const tensor& b);
@@ -101,7 +111,7 @@ tensor le(const tensor& a, const tensor& b);
 tensor gt(const tensor& a, const tensor& b);
 tensor ge(const tensor& a, const tensor& b);
 
-tensor broadcast(const tensor& a, const Shape& shape);
+tensor broadcast_to(const tensor& a, const Shape& shape);
 
 tensor stack(const std::vector<tensor>& tensors);
 

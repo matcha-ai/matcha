@@ -1,6 +1,7 @@
 #pragma once
 
 #include "bits_of_matcha/engine/op/Op.h"
+#include "bits_of_matcha/engine/ops/Cast.h"
 #include "bits_of_matcha/engine/cpu/kernels/elementwiseUnary.h"
 
 #include <algorithm>
@@ -17,6 +18,17 @@ struct ElementwiseUnaryOp : public Op {
   {
     size_ = a->size();
     addOutput(a->frame());
+  }
+
+  explicit ElementwiseUnaryOp(Tensor* a, Dtype dtype)
+  : Op{a}
+  {
+    if (inputs[0]->dtype() != dtype) {
+      auto preop = new ops::Cast(inputs[0], dtype);
+      incept(this, preop);
+    }
+    size_ = a->size();
+    addOutput(dtype, a->shape());
   }
 
 protected:

@@ -27,7 +27,7 @@ Layer* Linear::init() {
 
     tensor run(const tensor& a) override {
       unsigned bs = a.shape()[0];
-      tensor z = kernel_.dot(a.reshape(bs, -1, 1)).reshape(bs, -1);
+      tensor z = matmul(kernel_, a.reshape(bs, -1, 1)).reshape(bs, -1);
       if (use_bias_) z += bias_;
       return z;
     }

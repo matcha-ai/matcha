@@ -15,13 +15,16 @@ using nary_fn = std::function<tuple (const tuple&)>;
 
 class fn {
 public:
-  template <class Callable, std::enable_if_t<
+  template <class Callable, std::enable_if_t<(
   std::is_convertible<Callable, UnaryOp>() ||
   std::is_convertible<Callable, BinaryOp>() ||
   std::is_convertible<Callable, TernaryOp>() ||
   std::is_convertible<Callable, NaryOp>() ||
   std::is_same<Callable, AnyOp>()
-  , bool> = true>
+  ) && !(
+  std::is_same<Callable, fn>() ||
+  std::is_same<Callable, const fn>()
+  ), bool> = true>
   fn(Callable&& callable) : internal_(callable) {}
 
 //  fn(AnyOp function) : internal_(function) {}
@@ -61,9 +64,9 @@ public:
     case 1:
       return {std::get<UnaryOp>(internal_)(inputs[0])};
     case 2:
-      return {std::get<BinaryOp>(internal_)(inputs[0], inputs[2])};
+      return {std::get<BinaryOp>(internal_)(inputs[0], inputs[1])};
     case 3:
-      return {std::get<TernaryOp>(internal_)(inputs[0], inputs[2], inputs[3])};
+      return {std::get<TernaryOp>(internal_)(inputs[0], inputs[1], inputs[2])};
     }
 
     throw std::bad_variant_access();

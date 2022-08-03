@@ -6,12 +6,12 @@
 
 namespace matcha::engine::ops {
 
-Max::Max(Tensor* a)
-  : AxiswiseFoldOp(a)
+Max::Max(Tensor* a, bool keep_dims)
+  : AxiswiseFoldOp(a, keep_dims)
 {}
 
-Max::Max(Tensor* a, int axis)
-  : AxiswiseFoldOp(a, axis)
+Max::Max(Tensor* a, int axis, bool keep_dims)
+  : AxiswiseFoldOp(a, axis, keep_dims)
 {}
 
 Reflection<Max> Max::reflection {

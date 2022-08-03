@@ -38,8 +38,8 @@ Tensor* Op::addOutput(const Dtype& dtype, const Shape& shape) {
 }
 
 Tensor* Op::addOutput(Tensor* tensor) {
-  tensor->setOp(this);
   outputs.push_back(tensor);
+  if (tensor) tensor->setOp(this);
   return tensor;
 }
 

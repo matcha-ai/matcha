@@ -83,27 +83,20 @@ Dataset dataset() {
 }
 
 void net() {
+
+
   Net net {
-  nn::Flatten{},
-  nn::Fc{400},
-  nn::Fc{100, "relu"},
-  nn::Fc{50, "relu"},
-  nn::Fc{10, "softmax"},
+    nn::Flatten{},
+    nn::Fc{400},
+    nn::Fc{100, "relu"},
+    nn::Fc{50, "relu"},
+    nn::Fc{10, "softmax"},
   };
 
   net.loss = mse;
 //  net.callbacks.clear();
 
-//  Dataset mnist = load("mnist_train.csv");
-  Dataset mnist = (Dataset) []() {
-    Instance i;
-    i["x"] = ones(28, 28);
-    i["y"] = cast(1, Int).reshape(1, 1);
-    return i;
-  };
-  mnist = mnist.take(1000);
-  mnist = mnist.cat(mnist).cat(mnist).cat(mnist);
-  mnist = load("mnist_train.csv");
+  Dataset mnist = load("mnist_train.csv");
   net.fit(mnist.batch(30));
 }
 
@@ -195,8 +188,8 @@ void benchmark() {
   bm.linspace([] (size_t scale){ run_op(add, scale); },
               1, 5'000'000, 100, 10, "add");
 
-  bm.linspace([] (size_t scale){ run_op_square(dot, scale); },
-              1, 3'000, 100, 10, "dot");
+  bm.linspace([] (size_t scale){ run_op_square(matmul, scale); },
+              1, 3'000, 100, 10, "matmul");
 
   bm.linspace([] (size_t scale){ run_op(matcha::exp, scale); },
               1, 5'000'000, 100, 10, "exp");
@@ -218,10 +211,10 @@ void benchmark() {
   bm.run([] { run_op_huge_broadcast(add); }, 20, "add_huge_broadcast");
 //   */
 
-  print("dot");
-  bm.run([] { run_op_tiny(dot); }, 300, "dot_tiny");
-  bm.run([] { run_op_small(dot); }, 100, "dot_small");
-  bm.run([] { run_op_big(dot); }, 100, "dot_big");
+  print("matmul");
+  bm.run([] { run_op_tiny(matmul); }, 300, "matmul_tiny");
+  bm.run([] { run_op_small(matmul); }, 100, "matmul_small");
+  bm.run([] { run_op_big(matmul); }, 100, "matmul_big");
 
 //  /*
   print("exp");

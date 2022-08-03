@@ -1,11 +1,10 @@
 #include "bits_of_matcha/ops.h"
 #include "bits_of_matcha/tensor.h"
-#include "bits_of_matcha/engine/chain/Tracer.h"
 
 #include "bits_of_matcha/engine/ops/Add.h"
 #include "bits_of_matcha/engine/ops/Multiply.h"
 #include "bits_of_matcha/engine/ops/Divide.h"
-#include "bits_of_matcha/engine/ops/Dot.h"
+#include "bits_of_matcha/engine/ops/Matmul.h"
 #include "bits_of_matcha/engine/ops/Transpose.h"
 #include "bits_of_matcha/engine/ops/Identity.h"
 #include "bits_of_matcha/engine/ops/Reshape.h"
@@ -27,6 +26,7 @@
 #include "bits_of_matcha/engine/ops/Product.h"
 #include "bits_of_matcha/engine/ops/Stack.h"
 #include "bits_of_matcha/engine/ops/Cast.h"
+#include "bits_of_matcha/engine/ops/Broadcast.h"
 
 
 using namespace matcha::engine;
@@ -36,8 +36,7 @@ matcha::tensor operator+(const matcha::tensor& a, const matcha::tensor& b) {
 }
 
 matcha::tensor operator+(const matcha::tensor& a) {
-  if (a.dtype() == matcha::Bool) return a.cast(matcha::Byte);
-  return a;
+  return positive(a);
 }
 
 matcha::tensor& operator+=(matcha::tensor& a, const matcha::tensor& b) {
@@ -93,13 +92,16 @@ matcha::tensor operator>(const matcha::tensor& a, const matcha::tensor& b) {
   return gt(a, b);
 }
 
-
 matcha::tensor operator<=(const matcha::tensor& a, const matcha::tensor& b) {
   return le(a, b);
 }
 
 matcha::tensor operator>=(const matcha::tensor& a, const matcha::tensor& b) {
   return ge(a, b);
+}
+
+matcha::tensor operator!(const matcha::tensor& a) {
+  return a.cast(matcha::Bool) == false;
 }
 
 
@@ -124,12 +126,17 @@ tensor divide(const tensor& a, const tensor& b) {
   return ref(outs[0]);
 }
 
+tensor positive(const tensor& a) {
+  if (a.dtype() == matcha::Bool) return a.cast(matcha::Byte);
+  return a;
+}
+
 tensor negative(const tensor& a) {
   return -1 * a;
 }
 
-tensor dot(const tensor& a, const tensor& b) {
-  auto outs = dispatch<ops::Dot>(deref(a), deref(b));
+tensor matmul(const tensor& a, const tensor& b) {
+  auto outs = dispatch<ops::Matmul>(deref(a), deref(b));
   return ref(outs[0]);
 }
 
@@ -149,125 +156,130 @@ tensor reshape(const tensor& a, const Shape::Reshape& dims) {
 }
 
 
-tensor pow(const tensor& a, const tensor& b) {
+tensor power(const tensor& a, const tensor& b) {
   auto outs = dispatch<ops::Pow>(deref(a), deref(b));
   return ref(outs[0]);
 }
 
 tensor square(const tensor& a) {
-  return pow(a, 2.);
+  return power(a, 2.);
 }
 
 tensor sqrt(const tensor& a) {
-  return pow(a, .5);
+  return power(a, .5);
 }
 
 tensor exp(const tensor& a) {
-  auto op = new ops::Exp {
-    deref(a)
-  };
-
-  auto out = ref(op->outputs[0]);
-  engine::dispatch(op);
-  return out;
-}
-
-tensor max(const tensor& a) {
-  auto outs = dispatch<ops::Max>(deref(a));
+  auto outs = dispatch<ops::Exp>(deref(a));
   return ref(outs[0]);
 }
 
-tensor max(const tensor& a, int axis) {
-  auto outs = dispatch<ops::Max>(deref(a), axis);
+tensor max(const tensor& a, bool keep_dims) {
+  auto outs = dispatch<ops::Max>(deref(a), keep_dims);
   return ref(outs[0]);
 }
 
-tensor min(const tensor& a) {
-  auto outs = dispatch<ops::Min>(deref(a));
+tensor max(const tensor& a, int axis, bool keep_dims) {
+  auto outs = dispatch<ops::Max>(deref(a), axis, keep_dims);
   return ref(outs[0]);
 }
 
-tensor min(const tensor& a, int axis) {
-  auto outs = dispatch<ops::Min>(deref(a), axis);
+tensor min(const tensor& a, bool keep_dims) {
+  auto outs = dispatch<ops::Min>(deref(a), keep_dims);
   return ref(outs[0]);
 }
 
-tensor maxBetween(const tensor& a, const tensor& b) {
+tensor min(const tensor& a, int axis, bool keep_dims) {
+  auto outs = dispatch<ops::Min>(deref(a), axis, keep_dims);
+  return ref(outs[0]);
+}
+
+tensor maximum(const tensor& a, const tensor& b) {
   auto outs = dispatch<ops::MaxBetween>(deref(a), deref(b));
   return ref(outs[0]);
 }
 
-tensor minBetween(const tensor& a, const tensor& b) {
+tensor minimum(const tensor& a, const tensor& b) {
   auto outs = dispatch<ops::MinBetween>(deref(a), deref(b));
   return ref(outs[0]);
 }
 
-tensor argmax(const tensor& a) {
-  auto outs = dispatch<ops::Argmax>(deref(a));
+tensor argmax(const tensor& a, bool keep_dims) {
+  auto outs = dispatch<ops::Argmax>(deref(a), keep_dims);
   return ref(outs[0]);
 }
 
-tensor argmin(const tensor& a) {
-  auto outs = dispatch<ops::Argmin>(deref(a));
+tensor argmin(const tensor& a, bool keep_dims) {
+  auto outs = dispatch<ops::Argmin>(deref(a), keep_dims);
   return ref(outs[0]);
 }
 
-tensor argmax(const tensor& a, int axis) {
-  auto outs = dispatch<ops::Argmax>(deref(a), axis);
+tensor argmax(const tensor& a, int axis, bool keep_dims) {
+  auto outs = dispatch<ops::Argmax>(deref(a), axis, keep_dims);
   return ref(outs[0]);
 }
 
-tensor argmin(const tensor& a, int axis) {
-  auto outs = dispatch<ops::Argmin>(deref(a), axis);
+tensor argmin(const tensor& a, int axis, bool keep_dims) {
+  auto outs = dispatch<ops::Argmin>(deref(a), axis, keep_dims);
   return ref(outs[0]);
 }
 
-tensor sum(const tensor& a) {
-  auto outs = dispatch<ops::Sum>(deref(a));
+tensor sum(const tensor& a, bool keep_dims) {
+  auto outs = dispatch<ops::Sum>(deref(a), keep_dims);
   return ref(outs[0]);
 }
 
-tensor sum(const tensor& a, int axis) {
-  auto outs = dispatch<ops::Sum>(deref(a), axis);
+tensor sum(const tensor& a, int axis, bool keep_dims) {
+  auto outs = dispatch<ops::Sum>(deref(a), axis, keep_dims);
   return ref(outs[0]);
 }
 
-tensor mean(const tensor& a) {
-  return sum(a) / a.size();
+tensor any(const tensor& a, bool keep_dims) {
+  return sum(a.cast(Bool), keep_dims) != 0;
 }
 
-tensor mean(const tensor& a, int axis) {
-  if (axis < 0) axis += (int) a.rank();
-  unsigned n = a.shape()[axis];
-  return sum(a, axis) / n;
+tensor any(const tensor& a, int axis, bool keep_dims) {
+  return sum(a.cast(Bool), axis, keep_dims) != 0;
 }
 
-tensor stdev(const tensor& a) {
-  return sqrt(sum(square(a - mean(a))) / a.size());
+tensor all(const tensor& a, bool keep_dims) {
+  return sum(a.cast(Bool), keep_dims) == a.size();
 }
 
-tensor stdev(const tensor& a, int axis) {
-  if (axis < 0) axis += (int) a.rank();
-  unsigned n = a.shape()[axis];
-  std::vector dims(a.shape().begin(), a.shape().end());
-  dims[axis] = 1;
-  tensor means = mean(a, axis).reshape(dims);
-  tensor sdevs = sqrt(sum(square(a - means), axis) / n);
-  return sdevs;
+tensor all(const tensor& a, int axis, bool keep_dims) {
+  return sum(a.cast(Bool), axis, keep_dims) == a.shape()[axis];
 }
 
-tensor stdevu(const tensor& a) {
-  return sqrt(sum(square(a - mean(a))) / (a.size() - 1));
+tensor none(const tensor& a, bool keep_dims) {
+  return all(!a, keep_dims);
 }
 
-tensor stdevu(const tensor& a, int axis) {
-  if (axis < 0) axis += (int) a.rank();
-  unsigned n = a.shape()[axis];
-  std::vector dims(a.shape().begin(), a.shape().end());
-  dims[axis] = 1;
-  tensor means = mean(a, axis).reshape(dims);
-  tensor sdevs = sqrt(sum(square(a - means), axis) / (n - 1));
-  return sdevs;
+tensor none(const tensor& a, int axis, bool keep_dims) {
+  return all(!a, axis, keep_dims);
+}
+
+tensor mean(const tensor& a, bool keep_dims) {
+  return sum(a, keep_dims) / a.size();
+}
+
+tensor mean(const tensor& a, int axis, bool keep_dims) {
+  return sum(a, axis, keep_dims) / a.shape()[axis];
+}
+
+tensor stdev(const tensor& a, bool keep_dims) {
+  return sqrt(sum(square(a - mean(a, keep_dims)), keep_dims) / a.size());
+}
+
+tensor stdev(const tensor& a, int axis, bool keep_dims) {
+  return sqrt(sum(square(a - mean(a, axis, keep_dims)), axis, keep_dims) / a.shape()[axis]);
+}
+
+tensor stdevu(const tensor& a, bool keep_dims) {
+  return sqrt(sum(square(a - mean(a, keep_dims)), keep_dims) / (a.size() - 1));
+}
+
+tensor stdevu(const tensor& a, int axis, bool keep_dims) {
+  return sqrt(sum(square(a - mean(a, axis, keep_dims)), axis) / (a.shape()[axis] - 1));
 }
 
 tensor mse(const tensor& gold, const tensor& pred) {
@@ -324,8 +336,9 @@ tensor ge(const tensor& a, const tensor& b) {
   return ref(outs[0]);
 }
 
-tensor broadcast(const tensor& a, const Shape& shape) {
-  return a + zeros(shape);
+tensor broadcast_to(const tensor& a, const Shape& shape) {
+  auto outs = dispatch<ops::Broadcast>(deref(a), shape);
+  return ref(outs[0]);
 }
 
 tensor stack(const std::vector<tensor>& tensors) {

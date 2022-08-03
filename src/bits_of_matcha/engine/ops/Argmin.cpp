@@ -6,12 +6,12 @@
 
 namespace matcha::engine::ops {
 
-Argmin::Argmin(Tensor* a)
-  : AxiswiseFoldOp(a)
+Argmin::Argmin(Tensor* a, bool keep_dims)
+  : AxiswiseFoldOp(a, keep_dims)
 {}
 
-Argmin::Argmin(Tensor* a, int axis)
-  : AxiswiseFoldOp(a, axis)
+Argmin::Argmin(Tensor* a, int axis, bool keep_dims)
+  : AxiswiseFoldOp(a, axis, keep_dims)
 {}
 
 Reflection<Argmin> Argmin::reflection {

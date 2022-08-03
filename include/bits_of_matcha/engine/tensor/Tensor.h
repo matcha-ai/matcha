@@ -17,8 +17,8 @@ class Op;
 
 class Tensor : public RefReqCounted {
 public:
-  explicit Tensor(const Dtype& dtype, const Shape& shape, Op* op = nullptr);
-  explicit Tensor(const Frame& frame, Op* op = nullptr);
+  explicit Tensor(const Dtype& dtype, const Shape& shape);
+  explicit Tensor(const Frame& frame);
   virtual ~Tensor();
 
   const Frame& frame() const;
@@ -28,15 +28,15 @@ public:
   size_t size() const;
   size_t bytes() const;
 
-  Buffer& malloc();
   Buffer& buffer();
+  Buffer& malloc();
   Buffer& free();
   Buffer& share(Buffer& buffer);
   Buffer& share(Tensor* tensor);
 
   void* readData();
 
-  Op* op();
+  Op* op() const;
   void setOp(Op* op);
 
 private:

@@ -19,9 +19,7 @@ Identity::Identity(Tensor* a, Tensor* target)
 
 Reflection<Identity> Identity::reflection {
   .name = "Identity",
-  .back = [](const BackCtx& ctx) {
-    return dispatch<Identity>(ctx.vals[0]);
-  },
+  .back = [](const BackCtx& ctx) { return dispatch<Identity>(ctx.vals[0]); },
 };
 
 void Identity::run() {

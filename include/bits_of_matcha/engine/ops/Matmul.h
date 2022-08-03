@@ -8,9 +8,9 @@
 
 namespace matcha::engine::ops {
 
-struct Dot : Op {
-  Dot(Tensor* a, Tensor* b);
-  static Reflection<Dot> reflection;
+struct Matmul : Op {
+  explicit Matmul(Tensor* a, Tensor* b);
+  static Reflection<Matmul> reflection;
 
   void run() override;
 

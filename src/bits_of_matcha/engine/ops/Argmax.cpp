@@ -6,12 +6,12 @@
 
 namespace matcha::engine::ops {
 
-Argmax::Argmax(Tensor* a)
-  : AxiswiseFoldOp(a)
+Argmax::Argmax(Tensor* a, bool keep_dims)
+  : AxiswiseFoldOp(a, keep_dims)
 {}
 
-Argmax::Argmax(Tensor* a, int axis)
-  : AxiswiseFoldOp(a, axis)
+Argmax::Argmax(Tensor* a, int axis, bool keep_dims)
+  : AxiswiseFoldOp(a, axis, keep_dims)
 {}
 
 Reflection<Argmax> Argmax::reflection {
