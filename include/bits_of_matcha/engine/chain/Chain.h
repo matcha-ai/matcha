@@ -28,7 +28,7 @@ struct Chain {
   ~Chain();
 };
 
-Chain copy(const Chain& chain);
+Chain clone(const Chain& chain);
 std::ostream& operator<<(std::ostream& os, const Chain& chain);
 
 }

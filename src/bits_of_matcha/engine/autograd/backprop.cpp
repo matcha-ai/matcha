@@ -4,7 +4,7 @@
 #include "bits_of_matcha/engine/chain/passes/contractIdentities.h"
 #include "bits_of_matcha/engine/chain/passes/reduceToEffects.h"
 #include "bits_of_matcha/engine/chain/passes/initialize.h"
-#include "bits_of_matcha/engine/chain/passes/check.h"
+#include "bits_of_matcha/engine/chain/passes/debug.h"
 #include "bits_of_matcha/engine/op/Op.h"
 
 

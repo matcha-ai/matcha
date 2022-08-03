@@ -1,5 +1,5 @@
 #include "bits_of_matcha/engine/chain/passes/flatten.h"
-#include "bits_of_matcha/engine/chain/passes/check.h"
+#include "bits_of_matcha/engine/chain/passes/debug.h"
 #include "bits_of_matcha/engine/chain/Module.h"
 #include "bits_of_matcha/engine/op/Op.h"
 #include "bits_of_matcha/engine/ops/Identity.h"
@@ -20,7 +20,7 @@ void flatten(Chain& chain) {
     // flatten Module recursively
 //    std::cerr << "ORIGINAL:" << std::endl;
 //    check(dynamic_cast<ModuleForw*>(op)->module().chain());
-    auto c = copy(dynamic_cast<Module*>(op)->chain());
+    auto c = clone(dynamic_cast<Module*>(op)->chain());
 //    std::cerr << "COPY:" << std::endl;
 //    check(c);
     flatten(c);

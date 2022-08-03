@@ -20,7 +20,7 @@ Chain::~Chain() {
   }
 }
 
-Chain copy(const Chain& chain) {
+Chain clone(const Chain& chain) {
   std::map<Tensor*, Tensor*> tensors;
   Chain result;
 

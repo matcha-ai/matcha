@@ -2,7 +2,7 @@
 #include "bits_of_matcha/engine/chain/Tracer.h"
 #include "bits_of_matcha/engine/chain/Module.h"
 #include "bits_of_matcha/engine/autograd/backprop.h"
-#include "bits_of_matcha/engine/chain/passes/check.h"
+#include "bits_of_matcha/engine/chain/passes/debug.h"
 #include "bits_of_matcha/engine/chain/executors/SinglecoreExecutor.h"
 
 namespace matcha {

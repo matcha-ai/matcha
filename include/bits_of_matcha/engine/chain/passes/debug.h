@@ -6,6 +6,6 @@
 
 namespace matcha::engine {
 
-void check(const Chain& chain, std::ostream& os = std::cerr);
+void debug(const Chain& chain, std::ostream& os = std::cerr);
 
 }

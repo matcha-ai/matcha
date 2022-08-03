@@ -1,5 +1,5 @@
 #include "bits_of_matcha/engine/chain/executors/SinglecoreExecutor.h"
-#include "bits_of_matcha/engine/chain/passes/check.h"
+#include "bits_of_matcha/engine/chain/passes/debug.h"
 
 
 namespace matcha::engine {

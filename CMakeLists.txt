@@ -108,7 +108,7 @@ set(
   include/bits_of_matcha/engine/chain/passes/initialize.h
   include/bits_of_matcha/engine/chain/passes/flatten.h
   include/bits_of_matcha/engine/chain/passes/foldConstants.h
-  include/bits_of_matcha/engine/chain/passes/check.h
+  include/bits_of_matcha/engine/chain/passes/debug.h
 
   include/bits_of_matcha/engine/chain/executors/SinglecoreExecutor.h
 
@@ -251,7 +251,7 @@ set(
   src/bits_of_matcha/engine/chain/passes/initialize.cpp
   src/bits_of_matcha/engine/chain/passes/flatten.cpp
   src/bits_of_matcha/engine/chain/passes/foldConstants.cpp
-  src/bits_of_matcha/engine/chain/passes/check.cpp
+  src/bits_of_matcha/engine/chain/passes/debug.cpp
 
   src/bits_of_matcha/engine/chain/executors/SinglecoreExecutor.cpp
 
