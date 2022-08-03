@@ -7,14 +7,12 @@
 - Tensor arithmetic
 
   - [Introduction](tensor/)
-  - [Basic arithmetic](tensor/basic-arithmetic)
-  - [Comparing](tensor/comparing)
-  - [Boolean arithmetic](tensor/boolean-arithmetic)
+  - [Basic operations](tensor/basic-operations)
   - [Linear algebra](tensor/linear-algebra)
   - [Block operations](tensor/block-operations)
-  - [Utilities](tensor/utils)
-  - [Factories](tensor/factories)
+  - [Generators](tensor/generators)
   - [Accessing data](tensor/accessing-data)
+  - [Tracing](tensor/tracing)
   - [Automatic differentiation](tensor/autograd)
   - [JIT compilation](tensor/jit)
 

@@ -17,7 +17,7 @@ Given all inputs, constants, and side-variables, running a chain
 produces its outputs and side effects. For running chains, use
 [Executors](engine/chain/executors). However, it is common to
 modify the chain in some way (e.g. simplify it) before running it.
-A function that modifies a chain is called a `Pass`. Matcha provides
+A function that e.g. modifies a chain is called a `Pass`. Matcha provides
 several pass functions for functionally simplifying chains or adding functionalities
 to them. [Read more](engine/chain/passes).
 

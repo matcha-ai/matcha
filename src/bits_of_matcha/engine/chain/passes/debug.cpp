@@ -1,4 +1,4 @@
-#include "bits_of_matcha/engine/chain/passes/check.h"
+#include "bits_of_matcha/engine/chain/passes/debug.h"
 #include "bits_of_matcha/engine/op/Op.h"
 #include "bits_of_matcha/engine/utils/IdentifierTranslator.h"
 

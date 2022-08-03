@@ -6,7 +6,7 @@ Tracing is a technique for inspecting what happens within some block of code.
 The Matcha Tracing system is able to trace tensor operations in user-defined
 functions in the program runtime. 
 The result of a tracing process is a valid `Chain`. For details 
-and limitations, refer to [this article](tracing).
+and limitations, refer to [this article](tensor/tracing).
 
 ## Tracer
 

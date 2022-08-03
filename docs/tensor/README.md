@@ -84,10 +84,9 @@ tensor e;
 
 e = a.transpose();   // error: `a` is not vector or matrix-like
 e = b.reshape(60);   // error: [100, 100] cannot be reshaped into [60]
-e = b + d;           // error: trying to add together Float[100, 100] and Float[50, 50]
+e = b + d;           // error: trying to add together Float[100, 100] and Cfloat[50, 50]
 
 e = a + b;           // OK! adding a scalar to any tensor is cool
-e = b.matmul(c);     // OK! matrix multiplication between a matrix and an appropriate vector is cool too
 e = exp(d);          // OK! elementwise exponential function does not care
 ```
 
