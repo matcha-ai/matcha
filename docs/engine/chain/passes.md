@@ -3,8 +3,8 @@
 > `engine::Pass` - alias for `std::function<void(Chain&)>`
 
 A function that passes through a `Chain` and modifies it or otherwise
-accesses it is called a `Pass`. But their implementation is 
-often non-trivial, especially for optimization purposes. Passes 
+accesses it is called a `Pass`. Their implementation is often 
+non-trivial, especially for optimization purposes. Passes 
 are usually called by Decorators such as with JIT to simplify chains. 
 However, e.g. the Matcha backpropagation system, which itself may be
 formally called a pass (as it accepts a chain and extends it by
