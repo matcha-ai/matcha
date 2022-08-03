@@ -7,7 +7,7 @@
 - Tensor arithmetic
 
   - [Introduction](tensor/)
-  - [Basic operations](tensor/basic-operations)
+  - [Basic arithmetic](tensor/basic-arithmetic)
   - [Linear algebra](tensor/linear-algebra)
   - [Block operations](tensor/block-operations)
   - [Generators](tensor/generators)

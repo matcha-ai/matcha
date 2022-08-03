@@ -1,7 +1,8 @@
 # Dataset pipelines
 
 Matcha comes together with a seamlessly integrated and modular dataset pipeline system. The pipelines enable you to load (or generate) data
-and manipulate it just-in-time or otherwise tune it to your needs.
+and manipulate it just-in-time or otherwise tune it to your needs, in a way
+that is both memory and time efficient.
 
 ?> **NOTE:** Use datasets for large amounts of data. Datasets load from the disk only the part that is needed at the moment. \
    This prevents wasting memory.
@@ -15,17 +16,17 @@ The list of all keys can be obtained by calling the `keys()` method:
 
 ```cpp
 // we will show this later...
-Dataset labeledImages;
+Dataset labeled_images;
 
 // get an instance from the dataset
-Instance i = labeledImages.get();
+Instance i = labeled_images.get();
 
 for (auto& key: i.keys()) {
   std::cout << key << ": " << i[key].frame() << std::endl;;
 }
 
 //   x: Float[224, 224]
-//   y: Float[]
+//   y: Int[]
 
 ```
 
@@ -46,7 +47,7 @@ However, since every image is represented as a single CSV file row, they are fla
 
 
 ```cpp
-Dataset mnist = dataset::Csv {"mnist_train.csv"};
+Dataset mnist = load("mnist_train.csv");
 std::cout << mnist.size() << std::endl;           // 60000
 
 Instance i = mnist.get();
@@ -69,25 +70,32 @@ Contents of `digit_original.png` and `digit_reshaped.png`:
 
 This is kind of unfortunate. We would like a dataset that provides 28x28 images right away. We can easily do this by
 _mapping_ the original dataset. Map is a _relay_ example. It modifies instances of the underlying dataset in a way we want.
-Using a lambda function:
+Let's define a function that will do this:
 
 
 ```cpp
-mnist = mnist.map([](Instance i) {
+Instance toSquare(Instance i) {
   i["x"] = i["x"].reshape(28, 28);
   return i;
 }
 ```
 
+Now we can use it to map the original dataset:
+
+```cpp
+mnist = mnist.map(toSquare);
+```
+
 This is the magic of pipelines. The new dataset behaves completely the same as the original dataset,
 performing all the necessary operations just-in-time for our need. Let's modify it further. The original
-dataset pixels have values 0-255. We would like to have them normalized to 0-1:
+dataset pixels have values 0-255. We would like to have them normalized to 0-1.
+We can simply take the dataset and map it once more. Using a lambda function:
 
 ```cpp
 mnist = mnist.map([](Instance i) {
   i["x"] /= 255;
   return i;
-}
+});
 ```
 
 There are too many source and relay datasets to cover all of them here. 

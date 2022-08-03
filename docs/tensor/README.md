@@ -31,8 +31,8 @@ c = uniform(100);
 
 ## Basic operations
 
-Tensor arithmetic is a core functionality of matcha.
-With Matcha, it is done very intuitively, much like in Numpy:
+Tensor arithmetic is a core functionality of Matcha.
+It is designed to be done very intuitively, much like in Numpy:
 
 
 ```cpp
@@ -98,6 +98,6 @@ std::cout << c.frame().bytes() << std::endl;  // 400
 ```
 
 You may have been suspicious about this. Afterall, `sizeof(tensor)` always seems to return 8 bytes (or similar, this is platform-specific).
-This is so because `tensor` is in reality an implicit reference to some [internal engine tensor object](engine/tensor). That engine object
+This is so, because `tensor` is in reality only an implicit reference to its [internal engine object](engine/tensor/). That engine object
 holds the `Buffer` and associated metadata, like the `Frame`. Finally, the number of bytes is related only to the `Buffer` size. For details, read the articles
-on engine [Memory](engine/memory) and [Buffers](engine/buffers).
+on engine [Memory](engine/memory) and [Buffers](engine/tensor/buffer).

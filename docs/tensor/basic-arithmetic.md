@@ -8,11 +8,13 @@
 Adds two tensors together elementwise. 
 Performs [broadcasting](https://numpy.org/doc/stable/user/basics.broadcasting.html) if necessary.
 If shapes cannot be broadcasted, `BroadcastError` exception is thrown.
+If the input tensor have different dtypes, they are casted 
+implicitly according to [dtype promotion rules]().
 
 ```cpp
-tensor a = tensor::ones(3, 3);
-tensor b = tensor::ones(4, 4);
-tensor c = tensor::eye(3, 3);
+tensor a = ones(3, 3);
+tensor b = ones(4, 4);
+tensor c = eye(3, 3);
 tensor d = 3;
 
 tensor e; 

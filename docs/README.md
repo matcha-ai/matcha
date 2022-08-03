@@ -50,8 +50,8 @@ For more examples, check out [this page](examples.md).
 
 ## License
 
-Matcha is open source. It is available under the MIT license. It may be freely
-used and distributed.
+Matcha is open source. It is available under the MIT license. 
+It may be freely used and distributed.
 
 ## Plans <small>(and what's currently missing)</small>
 
