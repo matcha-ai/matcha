@@ -5,7 +5,7 @@ Here I'll go through the very simple interface Matcha provides for saving and lo
 
 ```cpp
 auto foo = (Flow) [](tensor x) {
-  return x.t().dot(x);
+  return x.t().matmul(x);
 };
 
 tensor x = tensor::ones(5);

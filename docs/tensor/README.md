@@ -1,6 +1,6 @@
 # Tensors
 
-Matcha provides a primitive-like object `tensor` to enable large-scale computations.
+Matcha provides a primitive-like type `tensor` to enable large-scale computations.
 Tensors represent multidimensional arrays of data of a signle type (usually `Float`).
 
 
@@ -14,69 +14,70 @@ tensor a = 42;
 
 We have just successfully created a tensor holding the scalar value 42.
 But usually, we want to represent _much_ bigger data. For example, we may want to create
-a 100x100 matrix with all values initialized to zero:
+a 100x100 matrix with all values initialized to zero or to some custom values:
 
 ```cpp
-tensor b = tensor::zeros(100, 100);
+tensor b = zeros(100, 100);
 ```
 
-Tensors can be reassigned:
+Tensors can be reassigned without a problem:
 
 ```cpp
-tensor c = 69;
-c = tensor::zeros(100);
+tensor c = {{6, 8, 0, 2},
+            {2, 0, 7, 1},
+            {5, 2, 0, 9}};
+c = uniform(100);
 ```
 
-## Operator methods
+## Basic operations
 
-The `tensor` object provides shortcut methods for some tensor operations.
-You can learn more about those e.g. in [the following article](tensor/basic-arithmetic).
+Tensor arithmetic is a core functionality of matcha.
+With Matcha, it is done very intuitively, much like in Numpy:
 
-Notably, `tensor` overloads arithmetic operators for readable and natural code such as:
 
 ```cpp
-tensor d;    // forward_-declaration is possible too
+tensor d;           // forward-declaration is possible too
 d = a + b;
-d = a * b;
-d = -b;
-
-// and so on...
+d = a * (b + 2i);   // complex numbers
+d = power(2, -b);   // and so on...
 ```
 
-Unluckily, there is only few overloadable operators; `tensor` provides helper methods even
-for operations that don't have any overloadable operator syntax, such as:
+Matcha implements also linear algebra operations and various operations
+for composing tensors:
+
 
 ```cpp
-d = b.pow(a);       // a-th power
-d = b.transpose();  // transposition
+d = transpose(b);   // transposition
 d = b.t();          // transposition, but shorter
-d = b.dot(c);       // the dot product
-d = b.cat(b);       // concatenating b and b into one tensor
+d = matmul(b, c);   // matrix multiplication
+d = b.cat(c);       // concatenating b and c into one tensor
 ```
+
+You can learn more about specific operations e.g. in [the following article](tensor/basic-arithmetic).
 
 ## Tensor frames
 
 So far, we have created quite a diversity of tensors. To inspect their datatypes and shapes, we can use the methods:
 
 ```cpp
-d = tensor::ones(50, 50);
+d = 1i * ones(50, 50);                // 50x50 matrix of complex units
 
-std::cout << d.dtype() << std::endl;  // Float
+std::cout << d.dtype() << std::endl;  // Cfloat
 std::cout << d.shape() << std::endl;  // [50, 50]
 
 ```
 
-In fact, the tuple `Dtype` and `Shape` is actually the `Frame` of a tensor. Let's see what are the frames of the tensors
+In fact, the pair `Dtype, Shape` is actually the `Frame` of a tensor. Let's see what are the frames of the tensors
 we have encountered this far:
 
 ```cpp
-std::cout << a.frame() << std::endl;  // Float[]
+std::cout << a.frame() << std::endl;  // Int[]
 std::cout << b.frame() << std::endl;  // Float[100, 100]
 std::cout << c.frame() << std::endl;  // Float[100]
-std::cout << d.frame() << std::endl;  // Float[50, 50]
+std::cout << d.frame() << std::endl;  // Cfloat[50, 50]
 ```
 
-Usually, frames determine whether specific operations can or can not be performed on given tensors:
+Typically, frames determine whether specific operations can or can not be performed and what the resulting frames will be:
 
 ```cpp
 tensor e;
@@ -86,7 +87,7 @@ e = b.reshape(60);   // error: [100, 100] cannot be reshaped into [60]
 e = b + d;           // error: trying to add together Float[100, 100] and Float[50, 50]
 
 e = a + b;           // OK! adding a scalar to any tensor is cool
-e = b.dot(c);        // OK! dot product between a matrix and an appropriate vector is cool too
+e = b.matmul(c);     // OK! matrix multiplication between a matrix and an appropriate vector is cool too
 e = exp(d);          // OK! elementwise exponential function does not care
 ```
 

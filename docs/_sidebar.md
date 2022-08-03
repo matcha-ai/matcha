@@ -1,10 +1,10 @@
 - Getting started
 
   - [Quick start](README)
-  - [Installing](installing)
+  - [Installation](installation)
   - [Examples](examples)
 
-- Tensor API
+- Tensor arithmetic
 
   - [Introduction](tensor/)
   - [Basic arithmetic](tensor/basic-arithmetic)
@@ -16,20 +16,21 @@
   - [Factories](tensor/factories)
   - [Accessing data](tensor/accessing-data)
 
-- Flow API
+- Automatic differentiation
 
-  - [The Flow](flow/)
-  - [Autograd](flow/autograd)
-  - [Save/load](flow/save-load)
-  - [Profiling](flow/profiling)
+  - [Backprop](autograd/backprop)
 
-- Dataset API
+- JIT compilation
+
+  - [Backprop](autograd/backprop)
+
+- Dataset pipelines
 
   - [Dataset pipelines](dataset/)
   - [Sources](dataset/sources)
   - [Relays](dataset/relays)
 
-- Neural Net API
+- Neural networks
 
   - [Net](net)
   - [Layers](layers)

@@ -46,14 +46,14 @@ If no axis is specified, global fold is performed. The output tensor will be a s
 
 See [argmax](#argmax).
 
-## maxBetween
+## maximum
 
-> `maxBetween(const tensor& a, const tensor& b)`
+> `maximum(const tensor& a, const tensor& b)`
 
 Elementwise maximum of two tensors ([broadcasting](https://numpy.org/doc/stable/user/basics.broadcasting.html) if necessary).
 
-## minBetween
+## minimum
 
-> `min(const tensor& a, const tensor& b)`
+> `minimum(const tensor& a, const tensor& b)`
 
-See [maxBetween](#maxBetween).
+See [maximum](#maximum).

@@ -49,7 +49,7 @@ of the lambda syntax:
 
 ```cpp
 auto myFlow = (matcha::Flow) [](tensor a) {
-  tensor b = 3 * a.pow(2);
+  tensor b = 3 * a.power(2);
   return b + 1;
 };
 
@@ -73,7 +73,7 @@ Subclassing can be done by overriding one of the `Flow::run` methods, e.g.:
 struct MyFlow : Flow {
   tensor run(const tensor& a) override {
     tensor b = 2 * a;
-    return a.t().dot(b);
+    return a.t().matmul(b);
   }
 };
 
@@ -92,7 +92,7 @@ struct MyFlow : Flow {
   }
 
   tensor run(const tensor& a) override {
-    return a.t().dot(myVar);
+    return a.t().matmul(myVar);
   }
 };
 ```

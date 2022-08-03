@@ -1,7 +1,8 @@
 ![logo](media/img/matcha130.png)
 
 # Matcha <small>0.0.1</small>
-> Attachable Machine Learning.
+
+> Computing and machine learning engine for modern C++.
 
 
 [GitHub](https://github.com/matcha-ai/)

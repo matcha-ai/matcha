@@ -57,8 +57,8 @@ Divides two tensors elementwise. The compatibility rules copy [`add`](#add).
 
 ## pow
 
-> `pow(const tensor& a, const tensor& b)` \
-> `tensor::pow(const tensor& b)`
+> `power(const tensor& a, const tensor& b)` \
+> `tensor::power(const tensor& b)`
 
 Elementwise power. The compatibility rules copy [`add`](#add).
 

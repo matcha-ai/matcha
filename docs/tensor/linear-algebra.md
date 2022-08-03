@@ -15,16 +15,16 @@ tensor c = transpose(a);  // => Float[100, 1]
 tensor d = transpose(b);  // => Float[3, 100]
 ```
 
-## dot
+## matmul
 
-> `dot(const tensor& a, const tensor& b)` \
-> `tensor::dot(const tensor& b)`
+> `matmul(const tensor& a, const tensor& b)` \
+> `tensor::matmul(const tensor& b)`
 
-Dot product of two vector or matrix-like tensors. Note that you can use `tensor::dot` instead:
+Dot product of two vector or matrix-like tensors. Note that you can use `tensor::matmul` instead:
 
 ```cpp
 tensor a = tensor::ones(10, 20);
 tensor b = tensor::ones(20, 30);
 
-tensor c = dot(a, b);  // => Float[10, 30]
+tensor c = matmul(a, b);  // => Float[10, 30]
 ```
