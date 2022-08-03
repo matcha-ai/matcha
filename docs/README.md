@@ -46,7 +46,7 @@ int main() {
 }
 ```
 
-For more examples, check out [this page](examples.md).
+For more, check out [tutorials](tutorials/).
 
 ## License
 

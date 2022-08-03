@@ -2,7 +2,8 @@
 
   - [Quick start](README)
   - [Installation](installation)
-  - [Examples](examples)
+  - [Benchmarks](benchmarks)
+  - [Gotchas](gotchas)
 
 - Tensor arithmetic
 
@@ -30,5 +31,6 @@
   - [Losses](optimizers)
   - [Callbacks](callbacks)
 
+- [Tutorials](tutorials/)
 - [Engine backend](engine/)
 - [GitHub](https://github.com/matcha-ai/matcha-engine)

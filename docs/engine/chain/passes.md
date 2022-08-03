@@ -9,7 +9,7 @@ are usually called by Decorators such as with JIT to simplify chains.
 However, e.g. the Matcha backpropagation system, which itself may be
 formally called a pass (as it accepts a chain and extends it by
 gradient flow) calls some passes too for the backpropagation to be easier
-and more modular. Passing through valid chain should leave it valid.
+and more modular. Passing through a valid chain should leave it valid.
 
 
 - `engine::debug(Chain& chain) -> void` - prints the chain and debugging info
