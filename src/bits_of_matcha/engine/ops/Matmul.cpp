@@ -1,4 +1,4 @@
-#include "bits_of_matcha/engine/ops/Dot.h"
+#include "bits_of_matcha/engine/ops/Matmul.h"
 #include "bits_of_matcha/engine/ops/Cast.h"
 #include "bits_of_matcha/engine/ops/Transpose.h"
 #include "bits_of_matcha/engine/ops/Sum.h"
@@ -8,13 +8,13 @@
 
 namespace matcha::engine::ops {
 
-Dot::Dot(Tensor* a, Tensor* b)
+Matmul::Matmul(Tensor* a, Tensor* b)
   : Op{a, b}
   , iter_(a->shape(), b->shape())
 {
   Dtype dtype = promoteDtypes(a, b);
   if (!isFloatingReal(dtype))
-    throw std::runtime_error("Dot: input dtypes must be floating real");
+    throw std::runtime_error("Matmul: input dtypes must be floating real");
 
   for (auto&& in: inputs) {
     if (in->dtype() == dtype) continue;
@@ -37,8 +37,8 @@ Dot::Dot(Tensor* a, Tensor* b)
 //  }
 }
 
-Reflection<Dot> Dot::reflection {
-  .name = "Dot",
+Reflection<Matmul> Matmul::reflection {
+  .name = "Matmul",
   /*
   .back = [](const BackCtx& ctx) {
     BackOps bops;
@@ -48,14 +48,14 @@ Reflection<Dot> Dot::reflection {
 
     if (ctx.wrts[0]) {
       auto bt = new Transpose(b);
-      auto da = new Dot(c, bt->outputs[0]);
+      auto da = new Matmul(c, bt->outputs[0]);
       bops.ops.push_back(bt);
       bops.ops.push_back(da);
       bops.outputs.push_back(da->outputs[0]);
     }
     if (ctx.wrts[1]) {
       auto ct = new Transpose(c);
-      auto dbt = new Dot(ct->outputs[0], a);
+      auto dbt = new Matmul(ct->outputs[0], a);
       auto db = new Transpose(dbt->outputs[0]);
       bops.ops.push_back(ct);
       bops.ops.push_back(dbt);
@@ -67,7 +67,7 @@ Reflection<Dot> Dot::reflection {
   */
 };
 
-void Dot::run() {
+void Matmul::run() {
   switch (outputs[0]->dtype()) {
   case Float:
     cpu::mm<float>(inputs[0]->buffer(), inputs[1]->buffer(), outputs[0]->malloc(), iter_); break;
