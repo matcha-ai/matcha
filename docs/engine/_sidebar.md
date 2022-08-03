@@ -16,8 +16,9 @@
 - Chain
 
   - [Introduction](engine/chain/)
-  - [Passes](./chain/passses)
-  - [Executors](./chain/executors)
+  - [Tracing](engine/chain/tracing)
+  - [Executors](engine/chain/executors)
+  - [Passes](engine/chain/passes)
 
 - Autograd
   - [Overview](./autograd/)

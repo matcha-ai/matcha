@@ -60,6 +60,6 @@ Tensor* c = engine::dispatch<engine::ops::Add>(a, b)[0];
 ## Reflection
 
 To allow the Matcha engine to work with operations - inspect them,
-differentiate them, optimize them, each operation declares its `Reflection`.
+differentiate them, optimize them, ... - each operation declares its `Reflection`.
 Operations have to declare their reflection in order to work correctly with
 lazy execution scheduling. [Read more](engine/op/reflection).
