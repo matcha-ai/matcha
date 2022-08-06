@@ -14,15 +14,23 @@ namespace matcha {
  */
 class MATCHA_BACKPROP_API Backprop {
 public:
-  explicit Backprop(std::initializer_list<tensor*> wrt);
-  explicit Backprop(const std::vector<tensor*>& wrt);
+  Backprop();
+//  explicit Backprop(std::initializer_list<tensor*> wrt);
+//  explicit Backprop(const std::vector<tensor*>& wrt);
+//
+//  template <class Iterable>
+//  explicit Backprop(const Iterable& wrt)
+//    : Backprop(std::vector<tensor*>(std::begin(wrt), std::end(wrt)))
+//  {}
+//
+  std::map<tensor*, tensor> operator()(const tensor& root, const std::vector<tensor*>& wrt);
 
   template <class Iterable>
-  explicit Backprop(const Iterable& wrt)
-    : Backprop(std::vector<tensor*>(std::begin(wrt), std::end(wrt)))
-  {}
+  std::map<tensor*, tensor> operator()(const tensor& root, const Iterable& wrt) {
+    std::vector<tensor*> temp(std::begin(wrt), std::end(wrt));
+    return operator()(root, temp);
+  }
 
-  std::map<tensor*, tensor> operator()(const tensor& root);
 
   ~Backprop();
 

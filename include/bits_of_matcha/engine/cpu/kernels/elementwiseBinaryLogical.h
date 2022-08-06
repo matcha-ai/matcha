@@ -1,7 +1,7 @@
 #pragma once
 
 #include "bits_of_matcha/engine/iterations/ElementwiseBinaryCtx.h"
-#include "bits_of_matcha/engine/memory/Buffer.h"
+#include "bits_of_matcha/engine/tensor/Buffer.h"
 
 #include <algorithm>
 #include <functional>

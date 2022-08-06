@@ -38,5 +38,9 @@ void Stack::run() {
   }
 }
 
+Reflection<Stack> Stack::reflection {
+  .name = "Stack",
+};
+
 
 }

@@ -5,6 +5,9 @@
 #include "bits_of_matcha/engine/dataset/Dataset.h"
 #include "bits_of_matcha/print.h"
 #include "bits_of_matcha/fn.h"
+#include "bits_of_matcha/View.h"
+#include "bits_of_matcha/engine/tensor/Binding.h"
+#include "bits_of_matcha/engine/chain/Tracer.h"
 
 
 namespace matcha {
@@ -20,13 +23,24 @@ Tensor* Engine::unref(tensor& external) {
 }
 
 Tensor* Engine::unref(tensor* external) {
-  auto t = (Tensor*) external->internal_;
+  auto&& internal = (engine::Binding*) external->internal_;
+  Tensor* t = nullptr;
+  if (internal) {
+    t = internal->get();
+    internal->unref();
+  }
   external->internal_ = nullptr;
+
+  engine::Tracer::handleNewDeref(external, t);
   return t;
 }
 
 Tensor* Engine::deref(const tensor* external) {
-  return (Tensor*) external->internal_;
+  auto&& binding = (engine::Binding*) external->internal_;
+  if (!binding) return nullptr;
+  auto&& internal = binding->get();
+  engine::Tracer::handleNewDeref(external, internal);
+  return internal;
 }
 
 Tensor* Engine::deref(const tensor& external) {
@@ -57,6 +71,14 @@ engine::Dataset* Engine::unref(Dataset& external) {
 
 InstanceIterator Engine::makeInstanceIterator(engine::Dataset* ds, size_t pos) {
   return InstanceIterator(ds, pos);
+}
+
+matcha::View Engine::ref(engine::View* internal) {
+  return matcha::View(internal);
+}
+
+engine::View* Engine::deref(const matcha::View& external) {
+  return (engine::View*) external.internal_;
 }
 
 

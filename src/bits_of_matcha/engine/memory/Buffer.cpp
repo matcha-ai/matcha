@@ -1,4 +1,4 @@
-#include "bits_of_matcha/engine/memory/Buffer.h"
+#include "bits_of_matcha/engine/tensor/Buffer.h"
 #include "bits_of_matcha/engine/memory/memory.h"
 #include "bits_of_matcha/engine/cpu/MemoryPool.h"
 

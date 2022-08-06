@@ -1,6 +1,7 @@
 #pragma once
 
 #include "bits_of_matcha/Frame.h"
+#include "bits_of_matcha/View.h"
 #include "bits_of_matcha/macros/vararg_shape.h"
 #include "bits_of_matcha/savers/SaveSpec.h"
 
@@ -86,8 +87,11 @@ public:
    */
   tensor cast(const Dtype& dtype) const;
 
-  View operator[](const Shape::Range& range);
-  View operator[](const tensor& idx);
+  auto operator[](const tensor& idxs) -> View;
+  auto operator[](const tensor& idxs) const -> const View;
+
+  View* begin();
+  View* end();
 
   explicit operator bool() const;
 

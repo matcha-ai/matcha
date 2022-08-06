@@ -135,10 +135,14 @@ struct Internal : Callback {
     std::chrono::time_point<std::chrono::steady_clock> last_;
   };
 
-  void onTrainBegin(Net& net, Dataset ds) override {
-    std::cout << "fitting matcha::Net "
-              << "(" << net.params.total() << " parameters)" //, unk FLOPs)"
-              << std::endl;
+  void onfitInit(Net& net) override {
+    std::cout << "fitting matcha::Net ";
+    std::cout << std::flush;
+  }
+
+  void onfitBegin(Net& net, Dataset ds) override {
+    std::cout << "(" << net.params.total() << " trainable parameters) ";
+    std::cout << std::endl;
   }
 
   void onEpochBegin(size_t epoch, size_t max) override {
@@ -184,6 +188,7 @@ struct Internal : Callback {
   }
 
   void onPropagateForward(const Instance& instance, const tensor& loss) override {
+    if (!epoch_) return;
     std::stringstream buff;
     loss_ = loss;
     buff << loss;
@@ -198,6 +203,7 @@ struct Internal : Callback {
   }
 
   void onPropagateBackward(const std::map<tensor*, tensor>& grads) override {
+    if (!epoch_) return;
     if (grads.empty()) return;
     std::vector<tensor> gflows;
     for (auto&& [t, g]: grads) gflows.push_back(l2norm(g) / g.size());
@@ -265,18 +271,19 @@ struct Internal : Callback {
   Line line;
   Spinner spinner;
 
-  size_t batch_;
-  size_t batches_;
-  size_t epoch_;
-  size_t epochs_;
-  size_t usEpoch_;
-  size_t usBatch_;
-  size_t lastEtaBatch_;
-  float sEta_;
+  size_t batch_ = 0;
+  size_t batches_ = 0;
+  size_t epoch_ = 0;
+  size_t epochs_ = 0;
+  size_t usEpoch_ =0;
+  size_t usBatch_ = 0;
+  size_t lastEtaBatch_ =0;
+  float sEta_ = 0;
+  float lossLen_ = 0;
   tensor loss_;
-  float lossLen_;
   tensor gflowM_;
   tensor gflowSd_;
+  Net* net_;
 
   Interval<std::string> eta_;
 

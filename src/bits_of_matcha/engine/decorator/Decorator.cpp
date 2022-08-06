@@ -16,7 +16,6 @@ bool Decorator::hasPreimage() const { return preimage_; };
 void Decorator::setPreimage(const fn& preimage) { preimage_ = preimage; }
 
 std::vector<Tensor*> Decorator::run(const std::vector<Tensor*>& inputs) {
-  std::cout << "runnign " << this << std::endl;
   auto results = preimage_(ref(inputs));
   return unref(results);
 }

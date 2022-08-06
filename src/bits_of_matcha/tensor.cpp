@@ -1,6 +1,8 @@
 #include "bits_of_matcha/tensor.h"
 #include "bits_of_matcha/ops.h"
 #include "bits_of_matcha/engine/tensor/Tensor.h"
+#include "bits_of_matcha/engine/tensor/Binding.h"
+#include "bits_of_matcha/View.h"
 #include "bits_of_matcha/engine/tensor/factories.h"
 #include "bits_of_matcha/print.h"
 #include "bits_of_matcha/engine/ops/Print.h"
@@ -16,69 +18,69 @@ using namespace matcha::engine;
 
 namespace matcha {
 
-tensor::tensor() : internal_(new Tensor({})) {
-  deref(this)->ref();
-}
+tensor::tensor()
+  : tensor(new Tensor({}))
+{}
 
-tensor::tensor(float scalar) : internal_(engine::full(scalar, {})) {
-  deref(this)->ref();
-}
+tensor::tensor(float scalar)
+  : tensor(engine::full(scalar, {}))
+{}
 
-tensor::tensor(double scalar) : internal_(engine::full((float) scalar, {})) {
-  deref(this)->ref();
-}
+tensor::tensor(double scalar)
+  : tensor(engine::full((float) scalar, {}))
+{}
 
-tensor::tensor(int8_t scalar) : internal_(engine::full(scalar, {})) {
-  deref(this)->ref();
-}
+tensor::tensor(int8_t scalar)
+  : tensor(engine::full(scalar, {}))
+{}
 
-tensor::tensor(int16_t scalar) : internal_(engine::full(scalar, {})) {
-  deref(this)->ref();
-}
+tensor::tensor(int16_t scalar)
+  : tensor(engine::full(scalar, {}))
+{}
 
-tensor::tensor(int32_t scalar) : internal_(engine::full(scalar, {})) {
-  deref(this)->ref();
-}
+tensor::tensor(int32_t scalar)
+  : tensor(engine::full(scalar, {}))
+{}
 
-tensor::tensor(int64_t scalar) : internal_(engine::full(scalar, {})) {
-  deref(this)->ref();
-}
+tensor::tensor(int64_t scalar)
+  : tensor(engine::full(scalar, {}))
+{}
 
-tensor::tensor(uint8_t scalar) : internal_(engine::full(scalar, {})) {
-  deref(this)->ref();
-}
+tensor::tensor(uint8_t scalar)
+  : tensor(engine::full(scalar, {}))
+{}
 
-tensor::tensor(uint16_t scalar) : internal_(engine::full(scalar, {})) {
-  deref(this)->ref();
-}
+tensor::tensor(uint16_t scalar)
+  : tensor(engine::full(scalar, {}))
+{}
 
-tensor::tensor(uint32_t scalar) : internal_(engine::full(scalar, {})) {
-  deref(this)->ref();
-}
+tensor::tensor(uint32_t scalar)
+  : tensor(engine::full(scalar, {}))
+{}
 
-tensor::tensor(uint64_t scalar) : internal_(engine::full(scalar, {})) {
-  deref(this)->ref();
-}
+tensor::tensor(uint64_t scalar)
+  : tensor(engine::full(scalar, {}))
+{}
 
-tensor::tensor(bool scalar) : internal_(engine::full(scalar, {})) {
-  deref(this)->ref();
-}
+tensor::tensor(bool scalar)
+  : tensor(engine::full(scalar, {}))
+{}
 
-tensor::tensor(std::complex<int32_t> scalar) : internal_(engine::full(scalar, {})) {
-  deref(this)->ref();
-}
+tensor::tensor(std::complex<int32_t> scalar)
+  : tensor(engine::full(scalar, {}))
+{}
 
-tensor::tensor(std::complex<uint32_t> scalar) : internal_(engine::full(scalar, {})) {
-  deref(this)->ref();
-}
+tensor::tensor(std::complex<uint32_t> scalar)
+  : tensor(engine::full(scalar, {}))
+{}
 
-tensor::tensor(std::complex<float> scalar) : internal_(engine::full(scalar, {})) {
-  deref(this)->ref();
-}
+tensor::tensor(std::complex<float> scalar)
+  : tensor(engine::full(scalar, {}))
+{}
 
-tensor::tensor(std::complex<double> scalar) : internal_(engine::full(std::complex<float>(scalar), {})) {
-  deref(this)->ref();
-}
+tensor::tensor(std::complex<double> scalar)
+  : tensor(engine::full(std::complex<float>(scalar), {}))
+{}
 
 tensor& tensor::assign(const tensor& other) {
 //  dispatch<ops::Assign>(deref(other), deref(this));
@@ -86,41 +88,66 @@ tensor& tensor::assign(const tensor& other) {
 }
 
 tensor& tensor::operator=(const tensor& other) {
+  engine::Tensor* et = nullptr;
+  if (internal_)
+    et = ((engine::Binding*) internal_)->get();
+  Tracer::handleNewRef(this, et);
+
   auto temp = identity(other);
-  if (internal_) deref(this)->unref();
-  internal_ = unref(temp);
+  auto&& internal = (Binding*) internal_;
+  if (internal) internal->unref();
+  internal_ = temp.internal_;
+  temp.internal_ = nullptr;
   return *this;
 }
 
 tensor& tensor::operator=(tensor&& other) noexcept {
+  engine::Tensor* et = nullptr;
+  if (internal_)
+    et = ((engine::Binding*) internal_)->get();
+  Tracer::handleNewRef(this, et);
+
   if (internal_ == other.internal_) return *this;
-  auto internal = (engine::Tensor*) internal_;
-  internal->unref();
+  auto&& internal = (Binding*) internal_;
+//  std::cerr << "here" << std::endl;
+  if (internal) internal->unref();
+//  std::cerr << "there" << std::endl;
   internal_ = other.internal_;
   other.internal_ = nullptr;
   return *this;
 }
 
 tensor::tensor(const tensor& other) {
-  auto temp = identity(other);
-  internal_ = unref(temp);
+  Tracer::handleNewRef(this, nullptr);
+
+  tensor copy = identity(other);
+  internal_ = copy.internal_;
+  copy.internal_ = nullptr;
 }
 
 tensor::tensor(tensor&& other) noexcept {
+  Tracer::handleNewRef(this, nullptr);
+
   internal_ = other.internal_;
   other.internal_ = nullptr;
 }
 
 tensor::tensor(void* engineObject) {
-  internal_ = engineObject;
-  if (internal_) {
-    deref(this)->ref();
-    Tracer::handleNewTensor(deref(this));
-  }
+  Tracer::handleNewRef(this, nullptr);
+
+  auto&& internal = new Binding((Tensor*) engineObject);
+  internal->ref();
+  internal_ = internal;
 }
 
 tensor::~tensor() {
-  if (internal_) deref(this)->unref();
+  auto&& internal = (Binding*) internal_;
+  if (internal) {
+    Tracer::handleDelRef(this, ((engine::Binding*) internal_)->get());
+    internal->unref();
+  } else {
+    Tracer::handleDelRef(this, nullptr);
+  }
 }
 
 const Frame& tensor::frame() const {
@@ -165,6 +192,10 @@ tensor tensor::power(const tensor& b) const {
 
 tensor tensor::cast(const Dtype& dtype) const {
   return matcha::cast(*this, dtype);
+}
+
+auto tensor::operator[](const tensor& idxs) -> View {
+  return ref(new engine::View((engine::Binding*) internal_, deref(idxs)));
 }
 
 void* tensor::data() {
@@ -294,7 +325,7 @@ tensor::tensor(std::initializer_list<std::initializer_list<std::initializer_list
 {}
 
 tensor::tensor(std::initializer_list<std::initializer_list<std::initializer_list<std::initializer_list<float>>>> rank4tensor)
-  : tensor(fromIlist(rank4tensor))
+: tensor(fromIlist(rank4tensor))
 {}
 
 std::ostream& operator<<(std::ostream& os, const matcha::tensor& t) {

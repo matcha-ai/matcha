@@ -18,6 +18,8 @@ namespace matcha::nn {
 class Net {
 public:
   void fit(Dataset ds, size_t epochs = 10);
+  void epoch(Dataset ds);
+  void step(Instance i);
 
   tensor operator()(const tensor& a);
   tensor operator()(const tensor& a, const tensor& b);
@@ -71,10 +73,16 @@ public:
   };
 
 protected:
+  // customizable logic
+
+  virtual void trainStep(Instance i);
+
+protected:
   // events
 
-  void trainBegin(Dataset ds);
-  void trainEnd();
+  void fitInit();
+  void fitBegin(Dataset ds);
+  void fitEnd();
 
   void epochBegin(size_t epoch, size_t max);
   void epochEnd();

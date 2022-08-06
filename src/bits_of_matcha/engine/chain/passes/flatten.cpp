@@ -17,12 +17,8 @@ void flatten(Chain& chain) {
       continue;
     }
 
-    // flatten Module recursively
-//    std::cerr << "ORIGINAL:" << std::endl;
-//    check(dynamic_cast<ModuleForw*>(op)->module().chain());
+    // recursively flatten all nested Chains
     auto c = clone(dynamic_cast<Module*>(op)->chain());
-//    std::cerr << "COPY:" << std::endl;
-//    check(c);
     flatten(c);
 
     // relink chain inputs
@@ -48,8 +44,16 @@ void flatten(Chain& chain) {
       auto id = new ops::Identity(cout, oout);
       ops.push_back(id);
       oout = nullptr;
-
     }
+
+    // TODO: relink chain side inputs
+
+    for (auto&& [in, binding]: c.side_inputs) {
+      chain.side_inputs[in] = binding;
+    }
+
+    // TODO: flatten chain side outputs
+
     delete op;
 
     // don't deallocate the copies

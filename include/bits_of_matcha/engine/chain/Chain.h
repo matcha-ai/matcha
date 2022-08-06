@@ -6,17 +6,23 @@
 #include <memory>
 #include <set>
 #include <iostream>
+#include <map>
+
+namespace matcha {
+class tensor;
+}
 
 namespace matcha::engine {
 
 class Tensor;
 class Op;
 
-struct Chain {
+struct Chain final {
   std::vector<Tensor*> tensors;
   std::vector<Tensor*> inputs;
   std::vector<Tensor*> outputs;
   std::vector<Op*> ops;
+  std::map<Tensor*, const tensor*> side_inputs;
 
   Chain() = default;
   Chain(const Chain& other) = delete;

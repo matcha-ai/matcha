@@ -51,16 +51,12 @@ Chain clone(const Chain& chain) {
       auto old = out;
       out = relink(out);
       out->setOp(cop);
-
-      if (old->refs()) {
-        auto ass = new ops::Assign(out, old);
-        result.ops.push_back(ass);
-      }
     }
   }
   for (auto&& t: chain.tensors) result.tensors.push_back(relink(t));
   for (auto&& in: chain.inputs) result.inputs.push_back(relink(in));
   for (auto&& out: chain.outputs) result.outputs.push_back(relink(out));
+  for (auto&& [in, binding]: chain.side_inputs) result.side_inputs[relink(in)] = binding;
 
   for (auto&& t: result.tensors) t->req();
 

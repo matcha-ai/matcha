@@ -19,6 +19,7 @@ set(
   include/bits_of_matcha/Shape.h
   include/bits_of_matcha/Frame.h
   include/bits_of_matcha/tensor.h
+  include/bits_of_matcha/View.h
   include/bits_of_matcha/ops.h
   include/bits_of_matcha/decorators.h
   include/bits_of_matcha/grad.h
@@ -65,17 +66,19 @@ set(
   include/bits_of_matcha/nn/optimizers/Sgd.h
 
   include/bits_of_matcha/nn/Loss.h
-  include/bits_of_matcha/nn/losses/CategoricalCrossentropy.h
+  include/bits_of_matcha/nn/losses/Mse.h
+  include/bits_of_matcha/nn/losses/Nll.h
 
   include/bits_of_matcha/nn/Callback.h
   include/bits_of_matcha/nn/callbacks/Logger.h
 
   include/bits_of_matcha/engine/memory/memory.h
   include/bits_of_matcha/engine/memory/Block.h
-  include/bits_of_matcha/engine/memory/Buffer.h
+  include/bits_of_matcha/engine/tensor/Buffer.h
   include/bits_of_matcha/engine/memory/cast.h
 
   include/bits_of_matcha/engine/tensor/Tensor.h
+  include/bits_of_matcha/engine/tensor/Binding.h
   include/bits_of_matcha/engine/tensor/factories.h
   include/bits_of_matcha/engine/op/typing.h
   include/bits_of_matcha/engine/tensor/iterations.h
@@ -171,8 +174,11 @@ set(
   include/bits_of_matcha/engine/ops/Stack.h
   include/bits_of_matcha/engine/ops/Cast.h
   include/bits_of_matcha/engine/ops/Assign.h
+  include/bits_of_matcha/engine/ops/ViewRead.h
+  include/bits_of_matcha/engine/ops/ViewWrite.h
+  include/bits_of_matcha/engine/ops/SideOutput.h
 
-  include/bits_of_matcha/grafana/Grafana.h
+#  include/bits_of_matcha/grafana/Grafana.h
 )
 
 set(
@@ -182,6 +188,7 @@ set(
   src/bits_of_matcha/Shape.cpp
   src/bits_of_matcha/Frame.cpp
   src/bits_of_matcha/tensor.cpp
+  src/bits_of_matcha/View.cpp
   src/bits_of_matcha/ops.cpp
   src/bits_of_matcha/decorators.cpp
   src/bits_of_matcha/grad.cpp
@@ -209,12 +216,17 @@ set(
 
   src/bits_of_matcha/nn/Net.cpp
   src/bits_of_matcha/nn/activations.cpp
+
   src/bits_of_matcha/nn/Layer.cpp
   src/bits_of_matcha/nn/layers/Flatten.cpp
   src/bits_of_matcha/nn/layers/Linear.cpp
   src/bits_of_matcha/nn/layers/Fc.cpp
   src/bits_of_matcha/nn/layers/BatchNorm.cpp
+
+  src/bits_of_matcha/nn/losses/Nll.cpp
+
   src/bits_of_matcha/nn/optimizers/Sgd.cpp
+
   src/bits_of_matcha/nn/callbacks/Logger.cpp
 
   src/bits_of_matcha/engine/memory/memory.cpp
@@ -222,6 +234,7 @@ set(
   src/bits_of_matcha/engine/memory/Buffer.cpp
 
   src/bits_of_matcha/engine/tensor/Tensor.cpp
+  src/bits_of_matcha/engine/tensor/Binding.cpp
   src/bits_of_matcha/engine/tensor/factories.cpp
   src/bits_of_matcha/engine/op/typing.cpp
   src/bits_of_matcha/engine/tensor/iterations.cpp
@@ -304,8 +317,11 @@ set(
   src/bits_of_matcha/engine/ops/Stack.cpp
   src/bits_of_matcha/engine/ops/Cast.cpp
   src/bits_of_matcha/engine/ops/Assign.cpp
+  src/bits_of_matcha/engine/ops/ViewRead.cpp
+  src/bits_of_matcha/engine/ops/ViewWrite.cpp
+  src/bits_of_matcha/engine/ops/SideOutput.cpp
 
-  src/bits_of_matcha/grafana/Grafana.cpp
+#  src/bits_of_matcha/grafana/Grafana.cpp
 )
 
 #set(BLA_VENDOR OpenBLAS)

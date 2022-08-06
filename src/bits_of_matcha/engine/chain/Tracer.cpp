@@ -3,11 +3,13 @@
 #include "bits_of_matcha/engine/op/Op.h"
 #include "bits_of_matcha/tensor.h"
 #include "bits_of_matcha/engine/ops/Print.h"
+#include "bits_of_matcha/engine/ops/SideOutput.h"
 
 
 namespace matcha::engine {
 
 thread_local  std::stack<Tracer*> Tracer::tracings_ = {};
+std::map<tensor*, Tensor*> Tracer::restore_state_ = {};
 
 bool tracing() {
   return Tracer::active();
@@ -25,35 +27,6 @@ void incept(Op* op, Op* preop) {
   if (tracing()) {
     Tracer::handleNewTensor(preop->outputs[0]);
   }
-  /*
-  if (preop->inputs.size() != 1 || preop->outputs.size() != 1)
-    throw std::runtime_error("pre-operation must have 1 input and 1 output");
-
-  auto in = preop->inputs[0];
-  in->unreq();
-
-  auto it = std::find(op->inputs.begin(), op->inputs.end(), in);
-  *it = preop->outputs[0];
-
-  preop->outputs[0]->req();
-//  preop->outputs[0]->req();
-
-  auto* tracer = Tracer::get();
-  if (tracer) {
-    auto& chain = tracer->chain_;
-    auto& cops = chain.ops;
-    auto& cop = cops[cops.size() - 2];
-    auto& cpreop = cops[cops.size() - 1];
-//    if (cop != op || cpreop != preop)
-//      throw std::runtime_error("only pre-operations created inside operation constructor can be incepted");
-
-//    std::swap(cop, cpreop);
-  } else {
-    preop->init();
-    preop->run();
-    delete preop;
-  }
-   */
 }
 
 Chain trace(const fn& function, const std::vector<Frame>& frames) {
@@ -64,7 +37,8 @@ Chain trace(const fn& function, const std::vector<Frame>& frames) {
 }
 
 bool Tracer::active() {
-  return !tracings_.empty();
+  if (tracings_.empty()) return false;
+  return !tracings_.top()->frozen_;
 }
 
 Tracer* Tracer::get() {
@@ -72,8 +46,15 @@ Tracer* Tracer::get() {
   return tracings_.top();
 }
 
-Tracer::Tracer() {}
+Tracer::Tracer()
+  : frozen_(false)
+{}
+
 Tracer::~Tracer() {}
+
+void Tracer::setFrozen(bool frozen) {
+  frozen_ = frozen;
+}
 
 tuple Tracer::open(const std::vector<Frame>& frames) {
   ops::Print::claimCout();
@@ -85,20 +66,49 @@ tuple Tracer::open(const std::vector<Frame>& frames) {
     chain_.inputs.push_back(in);
     inputs.push_back(ref(in));
   }
+  refs_.clear();
+  derefs_.clear();
   return inputs;
 }
 
 Chain Tracer::close(const tuple& outputs) {
   ops::Print::unclaimCout();
-  for (auto& output: outputs) {
-    auto out = deref(output);
-    chain_.outputs.push_back(out);
-  }
 
   if (tracings_.top() != this)
     throw std::runtime_error("tracing stack got corrupted");
-
   tracings_.pop();
+
+  for (auto& output: outputs) {
+    auto out = deref(output);
+    chain_.outputs.push_back(out);
+    auto&& temp = const_cast<tensor*>(&output);
+    refs_.erase(temp);
+    restore_state_.erase(temp);
+  }
+
+
+  // populate side outputs
+  for (auto&& ref: refs_) {
+    auto so = new ops::SideOutput(deref(ref), ref);
+    chain_.ops.push_back(so);
+  }
+
+  // populate side inputs
+  for (auto&& [external, internal]: derefs_) {
+    if (side_inputs_.contains(internal))
+      chain_.side_inputs[internal] = external;
+  }
+
+  // restore state if no longer tracing anything
+
+  if (tracings_.empty()) {
+    for (auto&& [lhs, state]: restore_state_) {
+      *lhs = ref(state);
+      if (state) state->unreq();
+    }
+    restore_state_.clear();
+  }
+
   return std::move(chain_);
 }
 
@@ -109,15 +119,35 @@ bool Tracer::handleNewOp(Op* op) {
 }
 
 bool Tracer::handleNewTensor(Tensor* tensor) {
+//  std::cerr << "handle new tensor" << std::endl;
   auto tracer = get();
   if (!tracer) return false;
   return tracer->addNewTensor(tensor);
 }
 
 bool Tracer::handleOldTensor(Tensor* tensor) {
+//  std::cerr << "handle old tensor" << std::endl;
   auto tracer = get();
   if (!tracer) return false;
-  return tracer->addNewTensor(tensor);
+  return tracer->addOldTensor(tensor);
+}
+
+bool Tracer::handleNewRef(tensor* ref, Tensor* internal) {
+  auto tracer = get();
+  if (!tracer) return false;
+  return tracer->addNewRef(ref, internal);
+}
+
+bool Tracer::handleDelRef(tensor* ref, Tensor* internal) {
+  auto tracer = get();
+  if (!tracer) return false;
+  return tracer->addDelRef(ref, internal);
+}
+
+bool Tracer::handleNewDeref(const tensor* external, Tensor* internal) {
+  auto tracer = get();
+  if (!tracer) return false;
+  return tracer->addNewDeref(external, internal);
 }
 
 bool Tracer::addNewOp(Op* op) {
@@ -126,18 +156,50 @@ bool Tracer::addNewOp(Op* op) {
 }
 
 bool Tracer::addNewTensor(Tensor* tensor) {
-  if (addedTensors_.contains(tensor)) return true;
-  addedTensors_.insert(tensor);
+  if (added_tensors_.contains(tensor)) return true;
+  added_tensors_.insert(tensor);
   chain_.tensors.push_back(tensor);
   tensor->req();
   return true;
 }
 
 bool Tracer::addOldTensor(Tensor* tensor) {
-  if (addedTensors_.contains(tensor)) return true;
-  addedTensors_.insert(tensor);
+  if (added_tensors_.contains(tensor)) return true;
+  added_tensors_.insert(tensor);
+  side_inputs_.insert(tensor);
   chain_.tensors.push_back(tensor);
   tensor->req();
+  return true;
+}
+
+bool Tracer::addNewRef(tensor* ref, Tensor* internal) {
+  if (!refs_.contains(ref))
+    refs_.insert(ref);
+  if (!restore_state_.contains(ref)) {
+    restore_state_[ref] = internal;
+    if (internal) internal->req();
+  }
+  return true;
+}
+
+bool Tracer::addDelRef(tensor* ref, Tensor* internal) {
+  if (refs_.contains(ref))
+    refs_.erase(ref);
+
+  if (derefs_.contains(ref))
+    derefs_.erase(ref);
+
+  if (restore_state_.contains(ref))
+    restore_state_.erase(ref);
+
+  return true;
+}
+
+bool Tracer::addNewDeref(const tensor* external, Tensor* internal) {
+  if (!derefs_.contains(external))
+    derefs_[external] = internal;
+//  if (!derefs_.contains(internal))
+//    derefs_[internal] = external;
   return true;
 }
 

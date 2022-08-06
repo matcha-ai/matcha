@@ -22,52 +22,79 @@ Net::Net(std::initializer_list<UnaryOp> sequence)
   : Net(std::vector(sequence))
 {}
 
+void Net::trainStep(Instance i) {
+  tensor x = i["x"];
+  tensor t = i["y"];
+
+  Backprop backprop;
+  tensor y = forward_(x);
+  tensor l = loss(t, y);
+
+  auto gradients = backprop(l, params);
+
+  propagateForward(i, l);
+
+  for (auto&& [param, grad]: gradients)
+    optimizer(*param, grad);
+
+  propagateBackward(gradients);
+}
+
+void Net::step(Instance i) {
+  if (Layer::netStack_.empty() || Layer::netStack_.top() != this)
+    Layer::netStack_.push(this);
+
+  trainStep(std::move(i));
+
+  if (!Layer::netStack_.empty() && Layer::netStack_.top() == this)
+    Layer::netStack_.pop();
+}
+
+void Net::epoch(Dataset ds) {
+  if (Layer::netStack_.empty() || Layer::netStack_.top() != this)
+    Layer::netStack_.push(this);
+
+  int batch = 0;
+  for (Instance&& i: ds) {
+    batchBegin(batch, ds.size());
+    step(i);
+    batchEnd();
+    batch++;
+  }
+
+  if (!Layer::netStack_.empty() && Layer::netStack_.top() == this)
+    Layer::netStack_.pop();
+}
+
 void Net::fit(Dataset ds, size_t epochs) {
   Layer::netStack_.push(this);
 
+  fitInit();
+  step(ds.get());
   ds.reset();
 
-  trainBegin(ds);
-
-  for (int epoch = 0; epoch < epochs; epoch++) {
-    epochBegin(epoch, epochs);
-    int batch = 0;
-    for (auto i: ds) {
-      batchBegin(batch, ds.size());
-      tensor x = i["x"];
-      tensor t = i["y"];
-
-      Backprop backprop(params);
-//      print(88 * (x.reshape(-1, 28, 28) != 0), "\n\n");
-//      print("---");
-      tensor y = forward_(x);
-      tensor l = loss(t, y);
-
-      auto gradients = backprop(l);
-
-      propagateForward(i, l);
-      for (auto&& [param, grad]: gradients) {
-        optimizer(*param, grad);
-      }
-      propagateBackward(gradients);
-
-      batchEnd();
-      batch++;
-    }
+  fitBegin(ds);
+  for (int e = 0; e < epochs; e++) {
+    epochBegin(e, epochs);
+    epoch(ds);
     epochEnd();
   }
-  trainEnd();
-  if (Layer::netStack_.top() != this)
-    throw std::runtime_error("net stack corruption");
-  Layer::netStack_.pop();
+  fitEnd();
+
+  if (!Layer::netStack_.empty() && Layer::netStack_.top() == this)
+    Layer::netStack_.pop();
 }
 
-void Net::trainBegin(Dataset ds) {
-  for (auto&& cb: callbacks) if (cb) cb->onTrainBegin(*this, ds);
+void Net::fitInit() {
+  for (auto&& cb: callbacks) if (cb) cb->onfitInit(*this);
 }
 
-void Net::trainEnd() {
-  for (auto&& cb: callbacks) if (cb) cb->onTrainEnd();
+void Net::fitBegin(Dataset ds) {
+  for (auto&& cb: callbacks) if (cb) cb->onfitBegin(*this, ds);
+}
+
+void Net::fitEnd() {
+  for (auto&& cb: callbacks) if (cb) cb->onfitEnd(*this);
 }
 
 void Net::epochBegin(size_t epoch, size_t max) {

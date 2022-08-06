@@ -6,7 +6,7 @@
 
 namespace matcha::engine {
 
-void check(const Chain& chain, std::ostream& os) {
+void debug(const Chain& chain, std::ostream& os) {
   os << std::string(30, '=') << " CHAIN CHECK BEGIN " << std::string(30, '=') << std::endl;
   os << std::endl;
   IdentifierTranslator<Tensor*> it;
@@ -70,9 +70,23 @@ void check(const Chain& chain, std::ostream& os) {
   os << std::endl;
 
   for (auto&& t: chain.tensors) {
-    os << it(t) << " \t" << "[refs,reqs: " << t->refs() << "," << t->reqs() << "] \t";
+    os << it(t) << " \t";
+//    os << "[refs,reqs: " << t->refs() << "," << t->reqs() << "] \t";
     os << "op: " << t->op();
     if (t->op()) os << " (" << ops::name(t->op()) << ")";
+
+    size_t sins = 0;
+    for (auto&& sin: chain.side_inputs) {
+      if (sin.first != t) continue;
+      if (sins++ == 0) {
+        os << "\t side in:";
+      } else {
+      }
+      os << " ";
+      os << sin.second;
+      os << " (" << sin.second->frame() << ")";
+    }
+
     os << std::endl;
   }
 

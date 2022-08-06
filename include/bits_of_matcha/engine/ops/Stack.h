@@ -6,7 +6,8 @@
 namespace matcha::engine::ops {
 
 struct Stack : Op {
-  Stack(const std::vector<Tensor*>& inputs);
+  explicit Stack(const std::vector<Tensor*>& inputs);
+  static Reflection<Stack> reflection;
 
   void run() override;
 };

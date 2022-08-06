@@ -94,7 +94,7 @@ void net() {
   };
 
   net.loss = mse;
-//  net.callbacks.clear();
+  net.callbacks.clear();
 
   Dataset mnist = load("mnist_train.csv");
   net.fit(mnist.batch(30));

@@ -25,13 +25,7 @@ void contractIdentities(Chain& chain) {
 
     Tensor* source = op->inputs[0];
     Tensor* target = op->outputs[0];
-    if (target->refs()) {
-      ops.push_back(op);
-      continue;
-    }
 
-    // get rid of the Identity
-    // TODO: boom!
     delete op;
     orphans.insert(target);
 

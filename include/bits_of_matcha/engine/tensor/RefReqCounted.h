@@ -11,12 +11,12 @@ public:
   explicit RefReqCounted();
   virtual ~RefReqCounted();
 
-  void ref();
-  void unref();
+//  void ref();
+//  void unref();
   void req();
   void unreq();
 
-  unsigned refs() const;
+//  unsigned refs() const;
   unsigned reqs() const;
 
 private:

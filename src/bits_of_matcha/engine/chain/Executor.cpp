@@ -17,8 +17,15 @@ void stream(const std::vector<Tensor*>& source, std::vector<Tensor*>& target) {
   }
 }
 
+void loadSideInputs(Chain& chain) {
+  for (auto&& [in, binding]: chain.side_inputs) {
+    in->share(deref(binding));
+  }
+}
+
 auto Executor::run(const std::vector<Tensor*>& ins) -> std::vector<Tensor*> {
   stream(ins, chain_.inputs);
+  loadSideInputs(chain_);
   runInternal();
   std::vector<Tensor*> outputs;
   for (auto&& cout: chain_.outputs) {
@@ -31,6 +38,7 @@ auto Executor::run(const std::vector<Tensor*>& ins) -> std::vector<Tensor*> {
 
 void Executor::run(const std::vector<Tensor*>& ins, std::vector<Tensor*>& outs) {
   stream(ins, chain_.inputs);
+  loadSideInputs(chain_);
   runInternal();
   stream(chain_.outputs, outs);
 }

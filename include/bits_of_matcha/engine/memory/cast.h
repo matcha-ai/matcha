@@ -1,6 +1,6 @@
 #pragma once
 
-#include "bits_of_matcha/engine/memory/Buffer.h"
+#include "bits_of_matcha/engine/tensor/Buffer.h"
 #include "bits_of_matcha/engine/cpu/kernels/cast.h"
 
 #include <execution>

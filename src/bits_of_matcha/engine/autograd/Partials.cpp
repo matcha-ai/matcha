@@ -10,6 +10,7 @@ Partials::Partials(Chain& chain, const std::vector<Tensor*>& wrt)
   : chain_(chain)
 {
   for (auto&& w: wrt) {
+//    std::cerr << "WRT: " << w << std::endl;
     partials_[w] = {nullptr, {}};
   }
 
@@ -17,6 +18,7 @@ Partials::Partials(Chain& chain, const std::vector<Tensor*>& wrt)
     if (!needs(op)) continue;
     for (auto&& out: op->outputs) {
       partials_[out] = {nullptr, {}};
+//      std::cerr << "WRT: " << out << std::endl;
     }
   }
 

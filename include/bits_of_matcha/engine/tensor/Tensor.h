@@ -4,7 +4,7 @@
 #include "bits_of_matcha/Frame.h"
 #include "bits_of_matcha/engine/tensor/RefReqCounted.h"
 #include "bits_of_matcha/engine/memory/Block.h"
-#include "bits_of_matcha/engine/memory/Buffer.h"
+#include "Buffer.h"
 
 #include <iostream>
 #include <complex>

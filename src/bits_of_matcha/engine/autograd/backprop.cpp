@@ -6,6 +6,7 @@
 #include "bits_of_matcha/engine/chain/passes/initialize.h"
 #include "bits_of_matcha/engine/chain/passes/debug.h"
 #include "bits_of_matcha/engine/op/Op.h"
+#include "bits_of_matcha/engine/tensor/factories.h"
 
 
 namespace matcha::engine {
@@ -15,19 +16,16 @@ void backprop(Chain& chain, const std::vector<Tensor*>& wrt) {
   if (chain.outputs.size() != 1)
     throw std::runtime_error("there must be exactly one root to back-propagate from");
 
-  // make the job easier
-  flatten(chain);
-  reduceToEffects(chain);
-  contractIdentities(chain);
-//  check(chain);
+//  debug(chain);
 
   // extend chain by backprop ops
   Partials partials(chain, wrt);
 
-//  chain.outputs.clear();
-//  for (auto&& g: partials.accumulateGrads(wrt))
-//    chain.outputs.push_back(g);
-//  return;
+  chain.outputs.clear();
+  for (auto&& w: wrt) {
+    chain.outputs.push_back(engine::ones(w->shape()));
+  }
+  return;
 
   for (int i = (int) chain.ops.size() - 1; i >= 0; i--) {
     auto op = chain.ops[i];
@@ -68,7 +66,7 @@ void backprop(Chain& chain, const std::vector<Tensor*>& wrt) {
   reduceToEffects(chain);
   contractIdentities(chain);
   initialize(chain);
-//  check(chain);
+//  debug(chain);
 }
 
 }

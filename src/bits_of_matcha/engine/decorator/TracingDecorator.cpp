@@ -33,7 +33,15 @@ std::shared_ptr<Executor> TracingDecorator::cache(const std::vector<Tensor*>& te
 std::shared_ptr<Executor> TracingDecorator::cache(const std::vector<Frame>& frames) {
   std::string h = hash(frames);
   try {
-    return cache_.at(h);
+    auto& executor = cache_.at(h);
+
+    for (auto&& [in, binding]: executor->chain().side_inputs) {
+      if (in->frame() != binding->frame()) {
+        throw std::out_of_range("side input frame changed");
+      }
+    }
+
+    return executor;
   } catch (std::out_of_range&) {
     auto chain = trace(preimage(), frames);
     auto executor = compile(std::move(chain));

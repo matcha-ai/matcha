@@ -7,23 +7,10 @@ using namespace std::complex_literals;
 void net();
 Dataset dataset();
 
-tensor p;
-
-tensor f(tensor x, tensor w) {
-  return matmul(w, x);
-}
+tensor w1 = ones(2, 2);
 
 int main() {
   net(); return 0;
-  fn df = grad(f, {1});
-
-  tensor x = ones(2, 5, 1);
-  tensor w = ones(3, 5);
-  tensor y = f(x, w);
-  tensor dx = df(tuple{x, w})[0];
-
-  print(y);
-  print(dx);
 }
 
 
@@ -74,15 +61,17 @@ Dataset dataset() {
 void net() {
   Net net {
     nn::Flatten{},
-    nn::Fc{400},
+//    nn::Fc{1000, "relu"},
+    nn::Fc{300, "relu"},
     nn::Fc{100, "relu"},
-    nn::Fc{50, "relu"},
     nn::Fc{10, "softmax"},
   };
 
-  net.loss = mse;
+  net.loss = nn::Nll{};
+  net.optimizer = nn::Sgd {.lr = 1};
 //  net.callbacks.clear();
 
-  Dataset mnist = load("mnist_train.csv");
-  net.fit(mnist.batch(64), 5);
+  Dataset mnist = load("mnist_test.csv");
+//  net.step(mnist.batch(64).get());
+  net.fit(mnist.batch(64));
 }

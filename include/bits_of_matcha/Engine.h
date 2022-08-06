@@ -9,6 +9,7 @@ namespace matcha::engine {
 class Tensor;
 class Flow;
 class Dataset;
+class View;
 }
 
 namespace matcha {
@@ -18,6 +19,7 @@ class Dataset;
 class InstanceIterator;
 class Instance;
 class fn;
+class View;
 }
 
 namespace matcha {
@@ -37,6 +39,9 @@ public:
   static engine::Dataset* unref(Dataset* external);
 
   static InstanceIterator makeInstanceIterator(engine::Dataset* ds, size_t pos);
+
+  static matcha::View ref(engine::View* internal);
+  static engine::View* deref(const matcha::View& external);
 
 };
 

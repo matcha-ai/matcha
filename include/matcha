@@ -36,8 +36,8 @@ namespace matcha::nn {}
 #include "bits_of_matcha/nn/optimizers/Sgd.h"
 
 #include "bits_of_matcha/nn/Loss.h"
-#include "bits_of_matcha/nn/losses/CategoricalCrossentropy.h"
 #include "bits_of_matcha/nn/losses/Mse.h"
+#include "bits_of_matcha/nn/losses/Nll.h"
 
 #include "bits_of_matcha/nn/Callback.h"
 #include "bits_of_matcha/nn/callbacks/Logger.h"

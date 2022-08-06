@@ -1,5 +1,6 @@
 #include "bits_of_matcha/nn/Layer.h"
 #include "bits_of_matcha/nn/Net.h"
+#include "bits_of_matcha/engine/chain/Tracer.h"
 
 
 namespace matcha::nn {
@@ -11,7 +12,11 @@ Layer::Layer()
 tensor Layer::operator()(const tensor& a) {
   if (!initialized_) {
     initialized_ = true;
+    engine::Tracer tracer;
+    tracer.setFrozen(true);
+    tracer.open({});
     init(a);
+    tracer.close({});
   }
   if (training()) {
     net()->params.add(params);

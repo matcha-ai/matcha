@@ -15,11 +15,11 @@ RefReqCounted::~RefReqCounted() {
 
 }
 
-void RefReqCounted::ref() {
+//void RefReqCounted::ref() {
 //  print("refs++");
 //  std::lock_guard guard(mtx_);
-  refs_++;
-}
+//  refs_++;
+//}
 
 void RefReqCounted::req() {
 //  print("reqs++");
@@ -27,13 +27,13 @@ void RefReqCounted::req() {
   reqs_++;
 }
 
-void RefReqCounted::unref() {
+//void RefReqCounted::unref() {
 //  print("refs--");
 //  std::lock_guard guard(mtx_);
-  if (!refs_) throw std::runtime_error("refs are already 0");
-  refs_--;
-  if (!refs_ && !reqs_) delete this;
-}
+//  if (!refs_) throw std::runtime_error("refs are already 0");
+//  refs_--;
+//  if (!refs_ && !reqs_) delete this;
+//}
 
 void RefReqCounted::unreq() {
 //  print("reqs--");
@@ -43,9 +43,9 @@ void RefReqCounted::unreq() {
   if (!refs_ && !reqs_) delete this;
 }
 
-unsigned RefReqCounted::refs() const {
-  return refs_;
-}
+//unsigned RefReqCounted::refs() const {
+//  return refs_;
+//}
 
 unsigned RefReqCounted::reqs() const {
   return reqs_;

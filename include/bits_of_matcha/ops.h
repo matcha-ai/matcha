@@ -60,6 +60,7 @@ tensor power(const tensor& a, const tensor& b);
 tensor square(const tensor& a);
 tensor sqrt(const tensor& a);
 tensor exp(const tensor& a);
+tensor log(const tensor& a);
 
 tensor sum(const tensor& a, bool keep_dims = false);
 tensor sum(const tensor& a, int axis, bool keep_dims = false);

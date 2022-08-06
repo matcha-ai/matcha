@@ -40,6 +40,7 @@ Matmul::Matmul(Tensor* a, Tensor* b)
 
 Reflection<Matmul> Matmul::reflection {
   .name = "Matmul",
+  /*
   .back = [](const BackCtx& ctx) {
     std::vector<Tensor*> result = {nullptr, nullptr};
 
@@ -73,6 +74,7 @@ Reflection<Matmul> Matmul::reflection {
 
     return result;
   },
+   */
 };
 
 void Matmul::run() {

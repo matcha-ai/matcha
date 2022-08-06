@@ -6,11 +6,15 @@
 namespace matcha::nn {
 
 struct Mse {
-  tensor operator()(const tensor& gold, const tensor& pred) const { return mse(gold, pred); }
+  tensor operator()(const tensor& expected, const tensor& predicted) const {
+    return mse(expected, predicted);
+  }
 };
 
 struct Rmse {
-  tensor operator()(const tensor& gold, const tensor& pred) const { return rmse(gold, pred); }
+  tensor operator()(const tensor& expected, const tensor& predicted) const {
+    return rmse(expected, predicted);
+  }
 };
 
 }
