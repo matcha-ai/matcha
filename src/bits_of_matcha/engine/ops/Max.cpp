@@ -1,4 +1,5 @@
 #include "bits_of_matcha/engine/ops/Max.h"
+#include "bits_of_matcha/engine/cpu/kernels/axiswiseFoldBack.h"
 
 #include <limits>
 #include <execution>
@@ -16,6 +17,7 @@ Max::Max(Tensor* a, int axis, bool keep_dims)
 
 Reflection<Max> Max::reflection {
   .name = "Max",
+  .back = [](auto& ctx) { return dispatch<MaxBack>(ctx); },
 };
 
 template <class T>
@@ -52,6 +54,61 @@ void Max::run() {
     runCpuReal([](auto a, auto b, auto c) { return foo(a, b, c); });
   else
     runCpuComplex([](auto a, auto b, auto c) { return fooc(a, b, c); });
+}
+
+MaxBack::MaxBack(const BackCtx& ctx)
+  : OpBack(ctx)
+{
+  auto fold = dynamic_cast<AxiswiseFoldOp*>(ctx.forward);
+  iter_ = fold->iter();
+  inputs.push_back(forward_->inputs[0]);
+  inputs.push_back(forward_->outputs[0]);
+  forward_->inputs[0]->req();
+  forward_->outputs[0]->req();
+}
+
+Reflection<MaxBack> MaxBack::reflection {
+  .name = "MaxBack"
+};
+
+void MaxBack::run() {
+  auto gy = inputs.front();
+  auto ga = outputs.front();
+  auto a = inputs[1];
+  auto y = inputs[2];
+
+  ga->malloc();
+
+  auto begin_gy = gy->buffer().as<float*>();
+  auto begin_ga = ga->buffer().as<float*>();
+  auto begin_a = a->buffer().as<float*>();
+  auto begin_y = y->buffer().as<float*>();
+
+  switch (gy->dtype()) {
+  case Float:
+
+    cpu::axiswiseFoldBack<float>([=](auto* begin, auto stride, auto* end, auto& g) {
+      size_t count = 0;
+      auto offset_begin = begin - begin_ga;
+      auto offset_end = end - begin_ga;
+      auto m = begin_y + (&g - begin_gy);
+      for (auto i = begin_a + offset_begin; i != begin_a + offset_end; i += stride)
+        if (*i == *m) count++;
+
+      auto g_normed = g / count;
+
+      auto j = begin_a + offset_begin;
+      for (auto i = begin; i != end; i += stride) {
+        *i = (*j == *m) ? g_normed : 0;
+        j += stride;
+      }
+
+    }, ga->malloc(), gy->buffer(), iter_);
+
+    break;
+  default:
+    throw std::runtime_error("unsupported dtype");
+  }
 }
 
 }

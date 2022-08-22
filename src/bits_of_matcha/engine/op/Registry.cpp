@@ -44,7 +44,7 @@ std::string Registry::label(Op* op) {
   return get(op).label(op);
 }
 
-Chain Registry::back(const BackCtx& ctx) {
+Lambda Registry::back(const BackCtx& ctx) {
   auto op = ctx.forward;
   auto& entry = get(op);
 
@@ -64,25 +64,25 @@ Chain Registry::back(const BackCtx& ctx) {
     .wrts = ctx.wrts,
   };
   auto outsInternal = entry.back(innerCtx);
-  auto chain1 = tracer.close(engine::ref(outsInternal));
-  Chain chain2;
+  auto lambda1 = tracer.close(engine::ref(outsInternal));
+  Lambda lambda2;
 
-  for (int i = 0; i < chain1.inputs.size(); i++) {
-    auto in1 = chain1.inputs[i];
+  for (int i = 0; i < lambda1.inputs.size(); i++) {
+    auto in1 = lambda1.inputs[i];
     auto in2 = ctx.vals[i];
     auto id = new ops::Identity(in2, in1);
-    chain2.inputs.push_back(in2);
-    chain2.tensors.push_back(in2);
-    chain2.ops.push_back(id);
+    lambda2.inputs.push_back(in2);
+    lambda2.tensors.push_back(in2);
+    lambda2.ops.push_back(id);
   }
 
-  for (auto&& opp: chain1.ops) chain2.ops.push_back(opp);
-  for (auto&& t: chain1.tensors) chain2.tensors.push_back(t);
-  for (auto&& out: chain1.outputs) chain2.outputs.push_back(out);
+  for (auto&& opp: lambda1.ops) lambda2.ops.push_back(opp);
+  for (auto&& t: lambda1.tensors) lambda2.tensors.push_back(t);
+  for (auto&& out: lambda1.outputs) lambda2.outputs.push_back(out);
 
-  chain1 = {};
+  lambda1 = {};
 
-  return chain2;
+  return lambda2;
 }
 
 bool Registry::isSideEffect(Op* op) {
@@ -102,7 +102,7 @@ namespace matcha::engine::ops {
 
 std::string name(Op* op) { return Registry::name(op); }
 std::string label(Op* op) { return Registry::label(op); }
-Chain back(const BackCtx& ctx) { return Registry::back(ctx); }
+Lambda back(const BackCtx& ctx) { return Registry::back(ctx); }
 bool isSideEffect(Op* op) { return Registry::isSideEffect(op); }
 Op* copy(Op* op) { return Registry::copy(op); }
 

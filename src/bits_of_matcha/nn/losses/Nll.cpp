@@ -22,14 +22,18 @@ tensor Nll::operator()(const tensor& expected, const tensor& predicted) const {
 
   categorical = predicted.size() > 0;
 
-  // TODO: regressions
-
+  tensor likelihood;
   if (sparse && categorical) {
-    tensor p = predicted[expected];
-    return -log(p);
+    likelihood = gather(predicted, expected, -1);
+  } else if (sparse && !categorical) {
+    likelihood = (expected == 1) * predicted + (expected == 0) * (1 - predicted);
+  } else {
+    // TODO: regressions, dense classification
+
+    throw std::runtime_error("not implemented yet");
   }
 
-  return 0;
+  return -log(likelihood);
 }
 
 }

@@ -5,7 +5,7 @@
 #include "bits_of_matcha/engine/cpu/kernels/elementwiseBinary.h"
 #include "bits_of_matcha/error/IncompatibleDtypesError.h"
 #include "bits_of_matcha/engine/ops/Cast.h"
-#include "bits_of_matcha/engine/chain/Tracer.h"
+#include "bits_of_matcha/engine/lambda/Tracer.h"
 
 #include <algorithm>
 #include <numeric>

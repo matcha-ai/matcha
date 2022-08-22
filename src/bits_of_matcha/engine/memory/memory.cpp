@@ -1,7 +1,7 @@
 #include "bits_of_matcha/engine/memory/memory.h"
 #include "bits_of_matcha/engine/memory/Block.h"
 #include "bits_of_matcha/engine/cpu/MemoryPool.h"
-#include "bits_of_matcha/engine/cpu/Buffer.h"
+#include "bits_of_matcha/engine/cpu/Block.h"
 
 #include <stdexcept>
 

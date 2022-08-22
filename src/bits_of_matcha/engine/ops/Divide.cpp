@@ -26,7 +26,7 @@ Divide::Divide(Tensor* a, Tensor* b)
 
 Reflection<Divide> Divide::reflection {
   .name = "Divide",
-//  .back = [](auto& ctx) { return new DivideBack(ctx); },
+  .back = [](auto& ctx) { return dispatch<DivideBack>(ctx); },
 };
 
 void Divide::run() {
@@ -52,7 +52,7 @@ void DivideBack::run() {
         a += c / b;
       },
       outputs[0]->buffer(),
-      forward_->inputs[1]->buffer(),
+      forwardInput(1)->buffer(),
       inputs[0]->buffer(),
       iter_
     );
@@ -70,7 +70,7 @@ void DivideBack::run() {
         bf *= bf;
         b -= a * c / bf;
       },
-      forward_->inputs[0]->buffer(),
+      forwardInput(0)->buffer(),
       outputs[1]->buffer(),
       inputs[0]->buffer(),
       iter_

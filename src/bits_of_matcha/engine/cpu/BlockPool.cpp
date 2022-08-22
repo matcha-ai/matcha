@@ -1,5 +1,5 @@
 #include "bits_of_matcha/engine/cpu/BlockPool.h"
-#include "bits_of_matcha/engine/cpu/Buffer.h"
+#include "bits_of_matcha/engine/cpu/Block.h"
 #include "bits_of_matcha/print.h"
 
 

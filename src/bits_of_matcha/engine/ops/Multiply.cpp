@@ -13,17 +13,6 @@ Multiply::Multiply(Tensor* a, Tensor* b)
 Reflection<Multiply> Multiply::reflection {
   .name = "Multiply",
   .back = [](auto& ctx) { return dispatch<MultiplyBack>(ctx); },
-//  .back = [](const BackCtx& ctx) {
-//    std::vector<Tensor*> result;
-//    for (int i = 0; i < ctx.wrts.size(); i++) {
-//      if (!ctx.wrts[i]) result.push_back(nullptr);
-//
-//      auto feed = dispatch<Multiply>(ctx.vals[0], ctx.forward->inputs[1 - i])[0];
-//      result.push_back(feed);
-//    }
-
-//    return result;
-//  },
 };
 
 void Multiply::run() {
@@ -63,6 +52,7 @@ void MultiplyBack::run() {
 
     cpu::elementwiseBinaryBack(
       [](float& a, float& b, float& c) {
+//        print(b);
         b += a * c;
       },
       forwardInput(0)->buffer(),

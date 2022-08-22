@@ -12,8 +12,7 @@ tensor sigmoid(const tensor& batch) {
 }
 
 tensor softmax(const tensor& batch) {
-  // batch-wise softmax
-  return matcha::softmax(batch, 0);
+  return matcha::softmax(batch, -1);
 }
 
 tensor relu(const tensor& batch) {

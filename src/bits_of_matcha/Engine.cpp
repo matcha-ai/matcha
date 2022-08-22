@@ -7,7 +7,7 @@
 #include "bits_of_matcha/fn.h"
 #include "bits_of_matcha/View.h"
 #include "bits_of_matcha/engine/tensor/Binding.h"
-#include "bits_of_matcha/engine/chain/Tracer.h"
+#include "bits_of_matcha/engine/lambda/Tracer.h"
 
 
 namespace matcha {

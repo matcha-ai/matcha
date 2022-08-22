@@ -12,16 +12,19 @@ namespace matcha::dataset {
 Csv::operator Dataset() {
   struct Internal : engine::Dataset {
     std::string file_;
-    std::set<std::string> y_;
     size_t size_;
     size_t pos_;
     std::ifstream is_;
     std::vector<std::string> cache_;
     std::vector<int> indicesX_, indicesY_;
+    std::set<std::string> classification_tags_;
+    std::set<std::string> regression_tags_;
+    bool regression_;
 
-    Internal(const std::string& file, const std::set<std::string>& y)
+    Internal(const std::string& file, const std::set<std::string>& classification_tags, const std::set<std::string>& regression_tags)
       : file_(file)
-      , y_(y)
+      , classification_tags_(classification_tags)
+      , regression_tags_(regression_tags)
       , size_(-1)
       , pos_(0)
     {
@@ -39,10 +42,19 @@ Csv::operator Dataset() {
     void findIndices() {
       for (int i = 0; i < cache_.size(); i++) {
         auto& head = cache_[i];
-        if (y_.contains(head))
+        if (classification_tags_.contains(head)) {
+          if (regression_ && !indicesY_.empty())
+            throw std::runtime_error("currently Csv supports only one target");
           indicesY_.push_back(i);
-        else
+          regression_ = false;
+        } else if (regression_tags_.contains(head)) {
+          if (!regression_ && !indicesY_.empty())
+            throw std::runtime_error("currently Csv supports only one target");
+          indicesY_.push_back(i);
+          regression_ = true;
+        } else {
           indicesX_.push_back(i);
+        }
       }
     }
 
@@ -87,7 +99,12 @@ Csv::operator Dataset() {
 
       std::map<std::string, tensor> dict;
       if (!indicesX_.empty()) dict["x"] = engine::ref(tensorX);
-      if (!indicesY_.empty()) dict["y"] = engine::ref(tensorY);
+      if (!indicesY_.empty()) {
+        if (regression_)
+          dict["y"] = engine::ref(tensorY);
+        else
+          dict["y"] = engine::ref(tensorY).cast(Int);
+      }
       return dict;
     }
 
@@ -134,7 +151,7 @@ Csv::operator Dataset() {
 
   };
 
-  return ref(new Internal(file, y));
+  return ref(new Internal(file, classification_tags, regression_tags));
 }
 
 }

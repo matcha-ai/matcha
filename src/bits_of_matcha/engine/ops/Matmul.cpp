@@ -4,6 +4,7 @@
 #include "bits_of_matcha/engine/ops/Transpose.h"
 #include "bits_of_matcha/engine/ops/Sum.h"
 #include "bits_of_matcha/engine/cpu/kernels/mm.h"
+#include "bits_of_matcha/engine/tensor/factories.h"
 #include "bits_of_matcha/error/IncompatibleShapesError.h"
 
 
@@ -40,7 +41,6 @@ Matmul::Matmul(Tensor* a, Tensor* b)
 
 Reflection<Matmul> Matmul::reflection {
   .name = "Matmul",
-  /*
   .back = [](const BackCtx& ctx) {
     std::vector<Tensor*> result = {nullptr, nullptr};
 
@@ -62,11 +62,13 @@ Reflection<Matmul> Matmul::reflection {
       result[1] = gb;
     }
 
-    for (int i = 0; i < 0; i++) {
+    for (int i = 0; i < 2; i++) {
+      if (!ctx.wrts[i]) continue;
       if (result[i]->rank() > ctx.forward->inputs[i]->rank()) {
         std::vector<int> dims = {-1};
         for (auto&& dim: ctx.forward->inputs[i]->shape())
           dims.push_back(dim);
+
         result[i] = dispatch<Reshape>(result[i], dims)[0];
         result[i] = dispatch<Sum>(result[i], 0, false)[0];
       }
@@ -74,7 +76,6 @@ Reflection<Matmul> Matmul::reflection {
 
     return result;
   },
-   */
 };
 
 void Matmul::run() {

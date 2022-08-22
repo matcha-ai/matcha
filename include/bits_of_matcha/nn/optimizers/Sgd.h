@@ -2,25 +2,14 @@
 
 #include "bits_of_matcha/nn/Optimizer.h"
 
+#include <map>
 
 namespace matcha::nn {
 
 struct Sgd {
-  tensor lr = 1e-3;
+  tensor lr = 1e-2;
 
-  void operator()(tensor& target, const tensor& grad) const {
-    constexpr bool debug = false;
-    if constexpr (debug) {
-      std::cerr << "target:" << std::endl;
-      std::cerr << target << std::endl;
-      std::cerr << std::endl << std::endl << std::endl;
-      std::cerr << "grad:" << std::endl;
-      std::cerr << grad << std::endl;
-      std::cerr << std::endl << std::endl << std::endl;
-      std::cerr << std::endl << std::endl << std::endl;
-    }
-    target -= lr * grad;
-  }
+  void operator()(std::map<tensor*, tensor>& gradients) const;
 };
 
 }

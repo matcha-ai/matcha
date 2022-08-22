@@ -9,7 +9,7 @@ using Partial = std::pair<Tensor*, std::vector<Tensor*>>;
 
 class Partials {
 public:
-  explicit Partials(Chain& chain, const std::vector<Tensor*>& wrt);
+  explicit Partials(Lambda& lambda, const std::vector<Tensor*>& wrt);
 
   auto needs(Op* op) const -> bool;
   auto needs(const std::vector<Op*>& ops) const -> std::vector<bool>;
@@ -23,7 +23,7 @@ public:
   void addGrads(const std::vector<Tensor*>& tensors, const std::vector<Tensor*>& grads);
 
 private:
-  Chain& chain_;
+  Lambda& lambda_;
   std::map<Tensor*, Partial> partials_;
 };
 

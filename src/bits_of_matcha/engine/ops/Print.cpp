@@ -100,7 +100,7 @@ void dumpTensorData(Tensor* t, std::ostream& os) {
   int skipColsSize = (int) iter.cols - (int)(termCols / cellW);
   int skipColsBegin = ((int) iter.cols - skipColsSize) / 2;
   int skipColsEnd = skipColsBegin + skipColsSize;
-  if (skipColsEnd <= skipColsBegin - 1) skipColsBegin = -1;
+  if (skipColsEnd <= skipColsBegin) skipColsBegin = -1;
 
   int termRows = 40;
   int skipRowsSize = (int) iter.rows - (int)(termRows);

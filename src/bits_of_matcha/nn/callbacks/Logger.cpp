@@ -135,12 +135,12 @@ struct Internal : Callback {
     std::chrono::time_point<std::chrono::steady_clock> last_;
   };
 
-  void onfitInit(Net& net) override {
+  void onFitInit(Net& net) override {
     std::cout << "fitting matcha::Net ";
     std::cout << std::flush;
   }
 
-  void onfitBegin(Net& net, Dataset ds) override {
+  void onFitBegin(Net& net, Dataset ds) override {
     std::cout << "(" << net.params.total() << " trainable parameters) ";
     std::cout << std::endl;
   }
@@ -190,8 +190,8 @@ struct Internal : Callback {
   void onPropagateForward(const Instance& instance, const tensor& loss) override {
     if (!epoch_) return;
     std::stringstream buff;
-    loss_ = loss;
-    buff << loss;
+    loss_ = mean(loss);
+    buff << loss_;
     float len = (float) buff.str().size();
 
 //    float coef = std::min(100.0 / batches_, .05);
@@ -260,7 +260,7 @@ struct Internal : Callback {
       if (padding > buff.str().length())
         line << std::string(padding - buff.str().length(), ' ');
       line <<  " ";
-      line << " ::  grads " << gflowSd_ << " +- " << gflowSd_ << " ";
+      line << " ::  grads " << gflowM_ << " +- " << gflowSd_ << " ";
     }
 
     line.flush();

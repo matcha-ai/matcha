@@ -6,15 +6,15 @@
 
 namespace matcha::engine {
 
-Partials::Partials(Chain& chain, const std::vector<Tensor*>& wrt)
-  : chain_(chain)
+Partials::Partials(Lambda& lambda, const std::vector<Tensor*>& wrt)
+  : lambda_(lambda)
 {
   for (auto&& w: wrt) {
 //    std::cerr << "WRT: " << w << std::endl;
     partials_[w] = {nullptr, {}};
   }
 
-  for (auto&& op: chain.ops) {
+  for (auto&& op: lambda.ops) {
     if (!needs(op)) continue;
     for (auto&& out: op->outputs) {
       partials_[out] = {nullptr, {}};
@@ -22,13 +22,13 @@ Partials::Partials(Chain& chain, const std::vector<Tensor*>& wrt)
     }
   }
 
-  auto req = new ops::Require(chain.outputs);
-  chain_.ops.push_back(req);
-  for (auto&& out: chain.outputs) {
+  auto req = new ops::Require(lambda.outputs);
+  lambda_.ops.push_back(req);
+  for (auto&& out: lambda.outputs) {
     auto root = engine::ones(out->shape());
     partials_[out] = {root, {}};
     root->req();
-    chain_.tensors.push_back(root);
+    lambda_.tensors.push_back(root);
   }
 }
 
@@ -69,8 +69,8 @@ auto Partials::accumulateGrads(Tensor* t) -> Tensor* {
       return partial.first;
 
     auto acc = new AccumulateGrads(partial.second, partial.first);
-    chain_.ops.push_back(acc);
-    chain_.tensors.push_back(acc->outputs[0]);
+    lambda_.ops.push_back(acc);
+    lambda_.tensors.push_back(acc->outputs[0]);
     acc->outputs[0]->req();
 
     return partial.first;

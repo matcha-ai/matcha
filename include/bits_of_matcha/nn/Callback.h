@@ -10,9 +10,9 @@ class Net;
 
 struct Callback {
 
-  virtual void onfitInit(Net& net) {};
-  virtual void onfitBegin(Net& net, Dataset ds) {};
-  virtual void onfitEnd(Net& net) {};
+  virtual void onFitInit(Net& net) {};
+  virtual void onFitBegin(Net& net, Dataset ds) {};
+  virtual void onFitEnd(Net& net) {};
 
   virtual void onEpochBegin(size_t epoch, size_t max) {};
   virtual void onEpochEnd() {};

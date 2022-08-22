@@ -14,17 +14,17 @@ ViewRead::ViewRead(engine::Tensor* source,
   std::reverse_copy(source->shape().begin(), source->shape().end(), std::back_inserter(dims));
 
   for (auto&& idx: idxs) {
-    if (idx->rank() > 1)
-      throw std::invalid_argument(
-      "the rank of tensor indices can be at most 1");
-
     if (dims.empty())
       throw std::out_of_range("invalid index to scalar value");
 
     if (idx->rank() == 0) {
       dims.pop_back();
     } else {
-      dims.back() = idx->size();
+      if (dims.size() < idx->rank())
+        throw std::out_of_range("invalid index to scalar value");
+      for (int i = 0; i < idx->rank(); i++)
+        dims.pop_back();
+      dims.push_back(idx->size());
     }
   }
 

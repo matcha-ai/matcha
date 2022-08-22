@@ -9,7 +9,12 @@ namespace matcha::dataset {
 
 struct Csv {
   std::string file;
-  std::set<std::string> y = {"class", "label", "y", "target"};
+  std::set<std::string> classification_tags = {
+    "class", "label"
+  };
+  std::set<std::string> regression_tags = {
+    "target", "y"
+  };
 
   operator Dataset();
 };

@@ -14,4 +14,14 @@ struct Max : AxiswiseFoldOp {
   void run() override;
 };
 
+struct MaxBack : OpBack {
+  explicit MaxBack(const BackCtx& ctx);
+  static Reflection<MaxBack> reflection;
+
+  void run() override;
+
+private:
+  AxiswiseFoldCtx iter_;
+};
+
 }

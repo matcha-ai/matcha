@@ -1,10 +1,10 @@
 #include "bits_of_matcha/engine/autograd/backprop.h"
 #include "bits_of_matcha/engine/autograd/Partials.h"
-#include "bits_of_matcha/engine/chain/passes/flatten.h"
-#include "bits_of_matcha/engine/chain/passes/contractIdentities.h"
-#include "bits_of_matcha/engine/chain/passes/reduceToEffects.h"
-#include "bits_of_matcha/engine/chain/passes/initialize.h"
-#include "bits_of_matcha/engine/chain/passes/debug.h"
+#include "bits_of_matcha/engine/lambda/passes/inlineExpansion.h"
+#include "bits_of_matcha/engine/lambda/passes/copyPropagation.h"
+#include "bits_of_matcha/engine/lambda/passes/deadCodeElimination.h"
+#include "bits_of_matcha/engine/lambda/passes/init.h"
+#include "bits_of_matcha/engine/lambda/passes/debug.h"
 #include "bits_of_matcha/engine/op/Op.h"
 #include "bits_of_matcha/engine/tensor/factories.h"
 
@@ -12,23 +12,26 @@
 namespace matcha::engine {
 
 
-void backprop(Chain& chain, const std::vector<Tensor*>& wrt) {
-  if (chain.outputs.size() != 1)
+void backprop(Lambda& lambda, const std::vector<Tensor*>& wrt) {
+  if (lambda.outputs.size() != 1)
     throw std::runtime_error("there must be exactly one root to back-propagate from");
 
-//  debug(chain);
+//  debug(lambda);
 
-  // extend chain by backprop ops
-  Partials partials(chain, wrt);
+  // extend lambda by backprop ops
+  Partials partials(lambda, wrt);
 
-  chain.outputs.clear();
-  for (auto&& w: wrt) {
-    chain.outputs.push_back(engine::ones(w->shape()));
+  lambda.outputs.clear();
+
+  constexpr bool disable = false;
+  if constexpr (disable) {
+    for (auto&& w: wrt)
+      lambda.outputs.push_back(engine::ones(w->shape()));
+    return;
   }
-  return;
 
-  for (int i = (int) chain.ops.size() - 1; i >= 0; i--) {
-    auto op = chain.ops[i];
+  for (int i = (int) lambda.ops.size() - 1; i >= 0; i--) {
+    auto op = lambda.ops[i];
     if (!partials.needs(op)) continue;
 
     BackCtx ctx {
@@ -37,14 +40,14 @@ void backprop(Chain& chain, const std::vector<Tensor*>& wrt) {
       .wrts = partials.needs(op->inputs),
     };
     auto back = ops::back(ctx);
+//    auto back = Lambda();
 
     for (auto&& bop: back.ops) {
       if (!bop) continue;
-      chain.ops.push_back(bop);
+      lambda.ops.push_back(bop);
       for (auto&& out: bop->outputs) {
         if (!out) continue;
-        chain.tensors.push_back(out);
-        out->req();
+        lambda.tensors.push_back(out);
       }
     }
 
@@ -54,19 +57,12 @@ void backprop(Chain& chain, const std::vector<Tensor*>& wrt) {
       partials.addGrads(op->inputs[j], bout);
     }
 
-    back = {};
+    back = Lambda{};
   }
 
-  // modify chain outputs
-  chain.outputs.clear();
+  lambda.outputs.clear();
   for (auto&& g: partials.accumulateGrads(wrt))
-    chain.outputs.push_back(g);
-
-  flatten(chain);
-  reduceToEffects(chain);
-  contractIdentities(chain);
-  initialize(chain);
-//  debug(chain);
+    lambda.outputs.push_back(g);
 }
 
 }

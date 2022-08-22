@@ -8,7 +8,7 @@
 #include "bits_of_matcha/engine/ops/Print.h"
 #include "bits_of_matcha/engine/ops/SaveImage.h"
 #include "bits_of_matcha/engine/ops/SaveCsv.h"
-#include "bits_of_matcha/engine/chain/Tracer.h"
+#include "bits_of_matcha/engine/lambda/Tracer.h"
 #include "bits_of_matcha/engine/ops/Assign.h"
 
 #include <filesystem>
@@ -195,6 +195,10 @@ tensor tensor::cast(const Dtype& dtype) const {
 }
 
 auto tensor::operator[](const tensor& idxs) -> View {
+  return ref(new engine::View((engine::Binding*) internal_, deref(idxs)));
+}
+
+auto tensor::operator[](const tensor& idxs) const -> View const {
   return ref(new engine::View((engine::Binding*) internal_, deref(idxs)));
 }
 

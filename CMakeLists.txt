@@ -21,7 +21,7 @@ set(
   include/bits_of_matcha/tensor.h
   include/bits_of_matcha/View.h
   include/bits_of_matcha/ops.h
-  include/bits_of_matcha/decorators.h
+  include/bits_of_matcha/transforms.h
   include/bits_of_matcha/grad.h
   include/bits_of_matcha/Device.h
   include/bits_of_matcha/print.h
@@ -64,6 +64,7 @@ set(
 
   include/bits_of_matcha/nn/Optimizer.h
   include/bits_of_matcha/nn/optimizers/Sgd.h
+  include/bits_of_matcha/nn/optimizers/Adam.h
 
   include/bits_of_matcha/nn/Loss.h
   include/bits_of_matcha/nn/losses/Mse.h
@@ -100,24 +101,24 @@ set(
   include/bits_of_matcha/engine/op/abstract/ElementwiseBinaryLogicalOp.h
   include/bits_of_matcha/engine/op/abstract/AxiswiseFoldOp.h
 
-  include/bits_of_matcha/engine/chain/Chain.h
-  include/bits_of_matcha/engine/chain/Tracer.h
-  include/bits_of_matcha/engine/chain/Executor.h
-  include/bits_of_matcha/engine/chain/Module.h
-  include/bits_of_matcha/engine/chain/Pass.h
+  include/bits_of_matcha/engine/lambda/Lambda.h
+  include/bits_of_matcha/engine/lambda/Tracer.h
+  include/bits_of_matcha/engine/lambda/Executor.h
+  include/bits_of_matcha/engine/lambda/Module.h
+  include/bits_of_matcha/engine/lambda/Pass.h
 
-  include/bits_of_matcha/engine/chain/passes/reduceToEffects.h
-  include/bits_of_matcha/engine/chain/passes/contractIdentities.h
-  include/bits_of_matcha/engine/chain/passes/initialize.h
-  include/bits_of_matcha/engine/chain/passes/flatten.h
-  include/bits_of_matcha/engine/chain/passes/foldConstants.h
-  include/bits_of_matcha/engine/chain/passes/debug.h
+  include/bits_of_matcha/engine/lambda/passes/deadCodeElimination.h
+  include/bits_of_matcha/engine/lambda/passes/copyPropagation.h
+  include/bits_of_matcha/engine/lambda/passes/init.h
+  include/bits_of_matcha/engine/lambda/passes/inlineExpansion.h
+  include/bits_of_matcha/engine/lambda/passes/constantPropagation.h
+  include/bits_of_matcha/engine/lambda/passes/debug.h
 
-  include/bits_of_matcha/engine/chain/executors/SinglecoreExecutor.h
+  include/bits_of_matcha/engine/lambda/executors/SinglecoreExecutor.h
 
-  include/bits_of_matcha/engine/decorator/Decorator.h
-  include/bits_of_matcha/engine/decorator/TracingDecorator.h
-  include/bits_of_matcha/engine/decorator/JitDecorator.h
+  include/bits_of_matcha/engine/transform/Transform.h
+  include/bits_of_matcha/engine/transform/TracingTransform.h
+  include/bits_of_matcha/engine/transform/JitTransform.h
 
   include/bits_of_matcha/engine/autograd/AccumulateGrads.h
   include/bits_of_matcha/engine/autograd/Partials.h
@@ -126,13 +127,15 @@ set(
   include/bits_of_matcha/engine/utils/stdVector.h
   include/bits_of_matcha/engine/utils/IdentifierTranslator.h
 
-  include/bits_of_matcha/engine/cpu/Buffer.h
+  include/bits_of_matcha/engine/cpu/Block.h
   include/bits_of_matcha/engine/cpu/MemoryPool.h
   include/bits_of_matcha/engine/cpu/BlockPool.h
 
   include/bits_of_matcha/engine/cpu/kernels/elementwiseUnary.h
   include/bits_of_matcha/engine/cpu/kernels/elementwiseBinary.h
   include/bits_of_matcha/engine/cpu/kernels/elementwiseBinaryBack.h
+  include/bits_of_matcha/engine/cpu/kernels/axiswiseFold.h
+  include/bits_of_matcha/engine/cpu/kernels/axiswiseFoldBack.h
   include/bits_of_matcha/engine/cpu/kernels/fill.h
   include/bits_of_matcha/engine/cpu/kernels/transpose.h
   include/bits_of_matcha/engine/cpu/kernels/mm.h
@@ -151,14 +154,15 @@ set(
   include/bits_of_matcha/engine/ops/Print.h
   include/bits_of_matcha/engine/ops/Pow.h
   include/bits_of_matcha/engine/ops/Exp.h
+  include/bits_of_matcha/engine/ops/Log.h
   include/bits_of_matcha/engine/ops/SaveImage.h
   include/bits_of_matcha/engine/ops/LoadImage.h
   include/bits_of_matcha/engine/ops/SaveCsv.h
   include/bits_of_matcha/engine/ops/LoadCsv.h
   include/bits_of_matcha/engine/ops/Max.h
-  include/bits_of_matcha/engine/ops/MaxBetween.h
+  include/bits_of_matcha/engine/ops/Maximum.h
   include/bits_of_matcha/engine/ops/Min.h
-  include/bits_of_matcha/engine/ops/MinBetween.h
+  include/bits_of_matcha/engine/ops/Minimum.h
   include/bits_of_matcha/engine/ops/Eq.h
   include/bits_of_matcha/engine/ops/Neq.h
   include/bits_of_matcha/engine/ops/Lt.h
@@ -177,6 +181,7 @@ set(
   include/bits_of_matcha/engine/ops/ViewRead.h
   include/bits_of_matcha/engine/ops/ViewWrite.h
   include/bits_of_matcha/engine/ops/SideOutput.h
+  include/bits_of_matcha/engine/ops/Gather.h
 
 #  include/bits_of_matcha/grafana/Grafana.h
 )
@@ -190,7 +195,7 @@ set(
   src/bits_of_matcha/tensor.cpp
   src/bits_of_matcha/View.cpp
   src/bits_of_matcha/ops.cpp
-  src/bits_of_matcha/decorators.cpp
+  src/bits_of_matcha/transforms.cpp
   src/bits_of_matcha/grad.cpp
   src/bits_of_matcha/Device.cpp
   src/bits_of_matcha/random.cpp
@@ -226,6 +231,7 @@ set(
   src/bits_of_matcha/nn/losses/Nll.cpp
 
   src/bits_of_matcha/nn/optimizers/Sgd.cpp
+  src/bits_of_matcha/nn/optimizers/Adam.cpp
 
   src/bits_of_matcha/nn/callbacks/Logger.cpp
 
@@ -254,23 +260,23 @@ set(
   src/bits_of_matcha/engine/op/abstract/ElementwiseUnaryOp.cpp
   src/bits_of_matcha/engine/op/abstract/ElementwiseBinaryOp.cpp
 
-  src/bits_of_matcha/engine/chain/Chain.cpp
-  src/bits_of_matcha/engine/chain/Tracer.cpp
-  src/bits_of_matcha/engine/chain/Executor.cpp
-  src/bits_of_matcha/engine/chain/Module.cpp
+  src/bits_of_matcha/engine/lambda/Lambda.cpp
+  src/bits_of_matcha/engine/lambda/Tracer.cpp
+  src/bits_of_matcha/engine/lambda/Executor.cpp
+  src/bits_of_matcha/engine/lambda/Module.cpp
 
-  src/bits_of_matcha/engine/chain/passes/reduceToEffects.cpp
-  src/bits_of_matcha/engine/chain/passes/contractIdentities.cpp
-  src/bits_of_matcha/engine/chain/passes/initialize.cpp
-  src/bits_of_matcha/engine/chain/passes/flatten.cpp
-  src/bits_of_matcha/engine/chain/passes/foldConstants.cpp
-  src/bits_of_matcha/engine/chain/passes/debug.cpp
+  src/bits_of_matcha/engine/lambda/passes/reduceToEffects.cpp
+  src/bits_of_matcha/engine/lambda/passes/contractIdentities.cpp
+  src/bits_of_matcha/engine/lambda/passes/initialize.cpp
+  src/bits_of_matcha/engine/lambda/passes/flatten.cpp
+  src/bits_of_matcha/engine/lambda/passes/foldConstants.cpp
+  src/bits_of_matcha/engine/lambda/passes/debug.cpp
 
-  src/bits_of_matcha/engine/chain/executors/SinglecoreExecutor.cpp
+  src/bits_of_matcha/engine/lambda/executors/SinglecoreExecutor.cpp
 
-  src/bits_of_matcha/engine/decorator/Decorator.cpp
-  src/bits_of_matcha/engine/decorator/TracingDecorator.cpp
-  src/bits_of_matcha/engine/decorator/JitDecorator.cpp
+  src/bits_of_matcha/engine/transform/Transform.cpp
+  src/bits_of_matcha/engine/transform/TracingTransform.cpp
+  src/bits_of_matcha/engine/transform/JitTransform.cpp
 
   src/bits_of_matcha/engine/autograd/AccumulateGrads.cpp
   src/bits_of_matcha/engine/autograd/Partials.cpp
@@ -294,14 +300,15 @@ set(
   src/bits_of_matcha/engine/ops/Print.cpp
   src/bits_of_matcha/engine/ops/Pow.cpp
   src/bits_of_matcha/engine/ops/Exp.cpp
+  src/bits_of_matcha/engine/ops/Log.cpp
   src/bits_of_matcha/engine/ops/LoadImage.cpp
   src/bits_of_matcha/engine/ops/SaveImage.cpp
   src/bits_of_matcha/engine/ops/LoadCsv.cpp
   src/bits_of_matcha/engine/ops/SaveCsv.cpp
   src/bits_of_matcha/engine/ops/Max.cpp
-  src/bits_of_matcha/engine/ops/MaxBetween.cpp
+  src/bits_of_matcha/engine/ops/Maximum.cpp
   src/bits_of_matcha/engine/ops/Min.cpp
-  src/bits_of_matcha/engine/ops/MinBetween.cpp
+  src/bits_of_matcha/engine/ops/Minimum.cpp
   src/bits_of_matcha/engine/ops/Eq.cpp
   src/bits_of_matcha/engine/ops/Neq.cpp
   src/bits_of_matcha/engine/ops/Lt.cpp
@@ -320,6 +327,7 @@ set(
   src/bits_of_matcha/engine/ops/ViewRead.cpp
   src/bits_of_matcha/engine/ops/ViewWrite.cpp
   src/bits_of_matcha/engine/ops/SideOutput.cpp
+  src/bits_of_matcha/engine/ops/Gather.cpp
 
 #  src/bits_of_matcha/grafana/Grafana.cpp
 )
@@ -329,6 +337,7 @@ set(
 find_package(BLAS REQUIRED)
 find_package(OpenCL REQUIRED)
 find_package(libpng CONFIG REQUIRED)
+find_package(CLBlast CONFIG REQUIRED)
 message("${BLAS_LIBRARIES}")
 
 add_library(${PROJECT_NAME} SHARED)
@@ -359,7 +368,8 @@ target_link_libraries(${PROJECT_NAME} PRIVATE pthread)
 #target_link_libraries(${PROJECT_NAME} PRIVATE ${BLAS_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} PRIVATE /usr/lib/libcblas.so)
 target_link_libraries(${PROJECT_NAME} PRIVATE dl)
-target_link_libraries(${PROJECT_NAME} PRIVATE curl)
+#target_link_libraries(${PROJECT_NAME} PRIVATE curl)
+target_link_libraries(${PROJECT_NAME} PRIVATE clblast)
 
 target_link_libraries(main PUBLIC ${PROJECT_NAME})
 

@@ -2,7 +2,7 @@
 #include "bits_of_matcha/Engine.h"
 #include "bits_of_matcha/print.h"
 #include "bits_of_matcha/View.h"
-#include "bits_of_matcha/engine/chain/Tracer.h"
+#include "bits_of_matcha/engine/lambda/Tracer.h"
 #include "bits_of_matcha/engine/ops/ViewRead.h"
 #include "bits_of_matcha/engine/ops/ViewWrite.h"
 

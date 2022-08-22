@@ -4,10 +4,11 @@
 #include "bits_of_matcha/ops.h"
 
 #include <functional>
+#include <map>
 
 
 namespace matcha::nn {
 
-using Optimizer = std::function<void (tensor&, const tensor&)>;
+using Optimizer = std::function<void (std::map<tensor*, tensor>&)>;
 
 }

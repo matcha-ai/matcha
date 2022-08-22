@@ -11,7 +11,7 @@ namespace matcha::nn {
 struct {
   Generator init() {
     auto g = [&] (const Shape& shape) {
-      tensor range = std::sqrt(6. / (float) (shape[-1] + shape[-2]));
+      tensor range = std::sqrt(6. / (shape[-1] + shape[-2]));
       random::Uniform uni {-range, +range};
       return uni(shape);
     };

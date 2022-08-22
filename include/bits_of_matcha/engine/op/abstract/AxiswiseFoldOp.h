@@ -79,6 +79,10 @@ struct AxiswiseFoldOp : Op {
     addOutput(dtype, outDims);
   }
 
+  const AxiswiseFoldCtx& iter() const {
+    return ctx_;
+  }
+
   int axis() const {
     return axis_;
   }

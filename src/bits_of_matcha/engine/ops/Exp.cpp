@@ -1,4 +1,5 @@
 #include "bits_of_matcha/engine/ops/Exp.h"
+#include "bits_of_matcha/engine/ops/Multiply.h"
 
 #include <cmath>
 
@@ -11,7 +12,11 @@ Exp::Exp(Tensor* a)
 
 Reflection<Exp> Exp::reflection {
   .name = "Exp",
-  .back = [](auto& ctx) { return dispatch<Exp>(ctx.vals[0]); },
+  .back = [](const BackCtx& ctx) {
+    // y = e^a
+    // dy/da = e^a * da = y * da
+    return dispatch<Multiply>(ctx.forward->outputs[0], ctx.vals[0]);
+  },
 };
 
 void Exp::run() {

@@ -1,5 +1,5 @@
 #include "bits_of_matcha/engine/op/Op.h"
-#include "bits_of_matcha/engine/chain/Tracer.h"
+#include "bits_of_matcha/engine/lambda/Tracer.h"
 
 
 namespace matcha::engine {

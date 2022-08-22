@@ -3,14 +3,14 @@
 using namespace matcha;
 using namespace std::complex_literals;
 
-
-void net();
-Dataset dataset();
-
-tensor w1 = ones(2, 2);
+auto testAutograd() -> void;
+auto testNet() -> void;
+auto testDataset() -> Dataset;
 
 int main() {
-  net(); return 0;
+  testNet();
+//  testAutograd();
+  return 0;
 }
 
 
@@ -49,8 +49,8 @@ int main() {
 
 
 
-Dataset dataset() {
-  Dataset mnist = load("mnist_test.csv");
+Dataset testDataset() {
+  Dataset mnist = load("mnist_train.csv");
   mnist = mnist.take(1);
   for (int i = 0; i < 2; i++)
     mnist = mnist.cat(mnist);
@@ -58,20 +58,37 @@ Dataset dataset() {
   return mnist;
 }
 
-void net() {
+void testNet() {
   Net net {
-    nn::Flatten{},
-//    nn::Fc{1000, "relu"},
-    nn::Fc{300, "relu"},
+    nn::flatten,
     nn::Fc{100, "relu"},
     nn::Fc{10, "softmax"},
   };
 
   net.loss = nn::Nll{};
-  net.optimizer = nn::Sgd {.lr = 1};
-//  net.callbacks.clear();
 
-  Dataset mnist = load("mnist_test.csv");
-//  net.step(mnist.batch(64).get());
-  net.fit(mnist.batch(64));
+  Dataset mnist = load("mnist_train.csv");
+  mnist = mnist.map([](auto i) { i["x"] /= 255; return i; });
+  mnist = mnist.batch(256);
+//  for (int i = 0; i < 15; i++)
+//    net.step(mnist.get());
+  net.fit(mnist);
+}
+
+void testAutograd() {
+  tensor a = 3*ones(2, 3, 3);
+  tensor b = 2*(1 - eye(3, 3));
+//  tensor b = 2*ones(3, 3);
+
+  Backprop backprop;
+
+//  tensor normed = b - max(b, -1, true);
+//  tensor mapped = exp(b);
+//  tensor y = mapped / sum(b, -1, true);
+  tensor y = exp(b) - b;
+
+  for (auto&& [t, g]: backprop(y, {&b}))
+    print(g, "\n");
+
+  print("y:\n", y, "\n");
 }

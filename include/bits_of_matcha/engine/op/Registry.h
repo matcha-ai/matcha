@@ -10,7 +10,7 @@ namespace matcha::engine {
 
 class Op;
 class BackCtx;
-class Chain;
+class Lambda;
 class Tensor;
 
 class Registry final {
@@ -30,7 +30,7 @@ public:
 
   static std::string name(Op* op);
   static std::string label(Op* op);
-  static Chain back(const BackCtx& ctx);
+  static Lambda back(const BackCtx& ctx);
   static bool isSideEffect(Op* op);
   static Op* copy(Op* op);
 
@@ -48,7 +48,7 @@ namespace matcha::engine::ops {
 
 std::string name(Op* op);
 std::string label(Op* op);
-Chain back(const BackCtx& ctx);
+Lambda back(const BackCtx& ctx);
 bool isSideEffect(Op* op);
 Op* copy(Op* op);
 

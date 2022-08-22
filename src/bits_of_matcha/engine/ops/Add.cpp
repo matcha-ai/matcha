@@ -32,6 +32,7 @@ void AddBack::run() {
 
     cpu::elementwiseBinaryBack(
       [](float& a, float& b, float& c) {
+//        std::cout << a << " " << b << " " << c << std::endl;
         a += c;
       },
       outputs[0]->buffer(),

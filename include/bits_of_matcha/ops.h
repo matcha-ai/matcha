@@ -123,6 +123,9 @@ inline tensor stack(const Tensor& tensor, Tensors... tensors) {
 
 tensor cast(const tensor& a, const Dtype& dtype);
 
+tensor gather(const tensor& a, const tensor& idxs, bool keep_dims = false);
+tensor gather(const tensor& a, const tensor& idxs, int axis, bool keep_dims = false);
+
 tensor sigmoid(const tensor& a);
 tensor tanh(const tensor& a);
 

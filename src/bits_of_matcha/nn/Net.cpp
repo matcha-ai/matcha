@@ -1,7 +1,7 @@
 #include "bits_of_matcha/nn/Net.h"
 #include "bits_of_matcha/nn/Layer.h"
 #include "bits_of_matcha/Backprop.h"
-#include "bits_of_matcha/decorators.h"
+#include "bits_of_matcha/transforms.h"
 
 
 namespace matcha::nn {
@@ -25,18 +25,20 @@ Net::Net(std::initializer_list<UnaryOp> sequence)
 void Net::trainStep(Instance i) {
   tensor x = i["x"];
   tensor t = i["y"];
+  size_t bsize = x.shape()[0];
 
   Backprop backprop;
   tensor y = forward_(x);
   tensor l = loss(t, y);
 
   auto gradients = backprop(l, params);
+//  print(y);
+//  print(l);
+//  print();
 
   propagateForward(i, l);
-
-  for (auto&& [param, grad]: gradients)
-    optimizer(*param, grad);
-
+  for (auto&& [t, g]: gradients) g /= bsize;
+  optimizer(gradients);
   propagateBackward(gradients);
 }
 
@@ -85,16 +87,35 @@ void Net::fit(Dataset ds, size_t epochs) {
     Layer::netStack_.pop();
 }
 
+tensor Net::operator()(const tensor& a) const {
+  return forward_(a);
+}
+
+tensor Net::operator()(const tensor& a, const tensor& b) const {
+  return forward_(a, b);
+}
+
+tensor Net::operator()(const tensor& a,
+                       const tensor& b,
+                       const tensor& c) const
+{
+  return forward_(a, b, c);
+}
+
+tuple Net::operator()(const tuple& inputs) const {
+  return forward_(inputs);
+}
+
 void Net::fitInit() {
-  for (auto&& cb: callbacks) if (cb) cb->onfitInit(*this);
+  for (auto&& cb: callbacks) if (cb) cb->onFitInit(*this);
 }
 
 void Net::fitBegin(Dataset ds) {
-  for (auto&& cb: callbacks) if (cb) cb->onfitBegin(*this, ds);
+  for (auto&& cb: callbacks) if (cb) cb->onFitBegin(*this, ds);
 }
 
 void Net::fitEnd() {
-  for (auto&& cb: callbacks) if (cb) cb->onfitEnd(*this);
+  for (auto&& cb: callbacks) if (cb) cb->onFitEnd(*this);
 }
 
 void Net::epochBegin(size_t epoch, size_t max) {

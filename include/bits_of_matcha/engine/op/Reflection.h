@@ -2,7 +2,7 @@
 
 #include "bits_of_matcha/engine/op/Registry.h"
 #include "bits_of_matcha/engine/op/BackCtx.h"
-#include "bits_of_matcha/engine/chain/Chain.h"
+#include "bits_of_matcha/engine/lambda/Lambda.h"
 #include "bits_of_matcha/print.h"
 
 #include <string>

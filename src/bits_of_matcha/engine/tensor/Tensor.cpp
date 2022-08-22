@@ -1,7 +1,7 @@
 #include "bits_of_matcha/engine/tensor/Tensor.h"
 #include "bits_of_matcha/engine/tensor/iterations.h"
 #include "bits_of_matcha/engine/memory/memory.h"
-#include "bits_of_matcha/engine/chain/Tracer.h"
+#include "bits_of_matcha/engine/lambda/Tracer.h"
 #include "bits_of_matcha/Engine.h"
 #include "bits_of_matcha/print.h"
 

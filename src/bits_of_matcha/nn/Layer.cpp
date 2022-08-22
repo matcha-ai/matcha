@@ -1,6 +1,6 @@
 #include "bits_of_matcha/nn/Layer.h"
 #include "bits_of_matcha/nn/Net.h"
-#include "bits_of_matcha/engine/chain/Tracer.h"
+#include "bits_of_matcha/engine/lambda/Tracer.h"
 
 
 namespace matcha::nn {

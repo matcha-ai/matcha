@@ -1,7 +1,7 @@
 #pragma once
 
 #include "bits_of_matcha/engine/op/Reflection.h"
-#include "bits_of_matcha/engine/chain/Tracer.h"
+#include "bits_of_matcha/engine/lambda/Tracer.h"
 #include "bits_of_matcha/engine/tensor/Tensor.h"
 #include "bits_of_matcha/engine/op/typing.h"
 

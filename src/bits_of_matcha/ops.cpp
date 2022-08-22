@@ -10,10 +10,11 @@
 #include "bits_of_matcha/engine/ops/Reshape.h"
 #include "bits_of_matcha/engine/ops/Pow.h"
 #include "bits_of_matcha/engine/ops/Exp.h"
+#include "bits_of_matcha/engine/ops/Log.h"
 #include "bits_of_matcha/engine/ops/Max.h"
-#include "bits_of_matcha/engine/ops/MaxBetween.h"
+#include "bits_of_matcha/engine/ops/Maximum.h"
 #include "bits_of_matcha/engine/ops/Min.h"
-#include "bits_of_matcha/engine/ops/MinBetween.h"
+#include "bits_of_matcha/engine/ops/Minimum.h"
 #include "bits_of_matcha/engine/ops/Eq.h"
 #include "bits_of_matcha/engine/ops/Neq.h"
 #include "bits_of_matcha/engine/ops/Lt.h"
@@ -26,6 +27,7 @@
 #include "bits_of_matcha/engine/ops/Product.h"
 #include "bits_of_matcha/engine/ops/Stack.h"
 #include "bits_of_matcha/engine/ops/Cast.h"
+#include "bits_of_matcha/engine/ops/Gather.h"
 #include "bits_of_matcha/engine/ops/Broadcast.h"
 
 
@@ -174,6 +176,11 @@ tensor exp(const tensor& a) {
   return ref(outs[0]);
 }
 
+tensor log(const tensor& a) {
+  auto outs = dispatch<ops::Log>(deref(a));
+  return ref(outs[0]);
+}
+
 tensor max(const tensor& a, bool keep_dims) {
   auto outs = dispatch<ops::Max>(deref(a), keep_dims);
   return ref(outs[0]);
@@ -195,12 +202,12 @@ tensor min(const tensor& a, int axis, bool keep_dims) {
 }
 
 tensor maximum(const tensor& a, const tensor& b) {
-  auto outs = dispatch<ops::MaxBetween>(deref(a), deref(b));
+  auto outs = dispatch<ops::Maximum>(deref(a), deref(b));
   return ref(outs[0]);
 }
 
 tensor minimum(const tensor& a, const tensor& b) {
-  auto outs = dispatch<ops::MinBetween>(deref(a), deref(b));
+  auto outs = dispatch<ops::Minimum>(deref(a), deref(b));
   return ref(outs[0]);
 }
 
@@ -351,33 +358,34 @@ tensor cast(const tensor& a, const Dtype& dtype) {
   return ref(outs[0]);
 }
 
+tensor gather(const tensor& a, const tensor& idxs, bool keep_dims) {
+  auto outs = dispatch<ops::Gather>(deref(a), deref(idxs), keep_dims);
+  return ref(outs[0]);
+}
+
+tensor gather(const tensor& a, const tensor& idxs, int axis, bool keep_dims) {
+  auto outs = dispatch<ops::Gather>(deref(a), deref(idxs), axis, keep_dims);
+  return ref(outs[0]);
+}
+
 tensor sigmoid(const tensor& a) {
-  Dtype dtype = a.dtype().size() > 4 ? Double : Float;
-  tensor one = cast(1, dtype);
-  return one / (one + exp(a));
+  return 1 / (1 + exp(a));
 }
 
 tensor tanh(const tensor& a) {
-  Dtype dtype = a.dtype().size() > 4 ? Double : Float;
-  tensor two = cast(2, dtype);
-  return two * sigmoid(two * a);
+  return 2 * sigmoid(2 * a);
 }
 
 tensor softmax(const tensor& a) {
   tensor normed = a - max(a);
   tensor mapped = exp(normed);
-  tensor scales = sum(mapped);
-  return mapped / scales;
+  return mapped / sum(mapped, true);
 }
 
 tensor softmax(const tensor& a, int axis) {
-  std::vector<int> dims(a.shape().begin(), a.shape().end());
-  if (axis < 0) axis += (int) a.rank();
-  dims[axis] = 1;
-  tensor normed = a - max(a, axis).reshape(dims);
+  tensor normed = a - max(a, axis, true);
   tensor mapped = exp(normed);
-  tensor scales = sum(mapped, axis).reshape(dims);
-  return mapped / scales;
+  return mapped / sum(mapped, axis, true);
 }
 
 }

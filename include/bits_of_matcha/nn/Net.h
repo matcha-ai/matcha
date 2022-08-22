@@ -5,6 +5,7 @@
 #include "bits_of_matcha/nn/Callback.h"
 #include "bits_of_matcha/nn/callbacks/Logger.h"
 #include "bits_of_matcha/nn/optimizers/Sgd.h"
+#include "bits_of_matcha/nn/optimizers/Adam.h"
 #include "bits_of_matcha/dataset/Dataset.h"
 #include "bits_of_matcha/ops.h"
 #include "bits_of_matcha/fn.h"
@@ -21,10 +22,10 @@ public:
   void epoch(Dataset ds);
   void step(Instance i);
 
-  tensor operator()(const tensor& a);
-  tensor operator()(const tensor& a, const tensor& b);
-  tensor operator()(const tensor& a, const tensor& b, const tensor& c);
-  tuple operator()(const tuple& inputs);
+  tensor operator()(const tensor& a) const;
+  tensor operator()(const tensor& a, const tensor& b) const;
+  tensor operator()(const tensor& a, const tensor& b, const tensor& c) const;
+  tuple operator()(const tuple& inputs) const;
 
 public:
   // Sequential API
@@ -65,7 +66,7 @@ public:
 
   Params params;
 
-  Optimizer optimizer = Sgd{};
+  Optimizer optimizer = Adam{};
   Loss loss;
 
   std::vector<std::shared_ptr<Callback>> callbacks = {
