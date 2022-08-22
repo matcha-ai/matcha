@@ -13,8 +13,8 @@ is assumed.
 - `engine::Buffer` - a wrapper for a contiguous block of memory on some device (e.g. RAM)
 - `engine::Tensor` - the `tensor` backend object, essentially `engine::Buffer` and `Frame`, with some context around
 - `engine::Op` - base operation class, all operations inherit from it; has `inputs` and `outputs`
-- `engine::Chain` - a sequence of interconnected `engine::Op` operation objects on tensors, also has its inputs and outputs
-- `engine::Decorator` - base class for modifying and replacing normal functions by their enhanced counterpart
+- `engine::Lambda` - a sequence of interconnected `engine::Op` operation objects on tensors, also has its inputs and outputs
+- `engine::Transform` - base class for modifying and replacing normal functions by their enhanced counterpart
 
 
 ## Philosophy

@@ -35,7 +35,7 @@ for (auto [var, delta]: foo.grad()) {
 
 ?> Note that if the Flow outputs a tuple, the gradient is propagated back from its **first element**.
 
-The backpropagation makes use of the well-known chain rule. It goes from the back and calculates deeper
+The backpropagation makes use of the well-known lambda rule. It goes from the back and calculates deeper
 and deeper partials, until it covers all the required gradients. 
 
 Not all operations are necessarily differentiable though!
@@ -47,7 +47,7 @@ the derivative of `abs(0)` returns 0. Another notable case is the Rectified Line
 This is usually the case when working with discrete values,
 such as in `argmax`. If the derivative is not defined (or the Op simply doesn't implement it), it is assumed to be zero.
 This will again make it possible to acquire at least some gradients. Moreover, even the locally unreachable gradients will be
-computed with at least partial correctness, if there exists some other derivative chain leading to it.
+computed with at least partial correctness, if there exists some other derivative lambda leading to it.
 
 ## requireGrad
 

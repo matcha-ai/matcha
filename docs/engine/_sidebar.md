@@ -13,12 +13,12 @@
   - [Abstract ops](engine/op/abstract)
   - [Custom example](engine/op/example)
 
-- Chain
+- Lambda
 
-  - [Introduction](engine/chain/)
-  - [Tracing](engine/chain/tracing)
-  - [Executors](engine/chain/executors)
-  - [Passes](engine/chain/passes)
+  - [Introduction](engine/lambda/)
+  - [Tracing](engine/lambda/tracing)
+  - [Executors](engine/lambda/executors)
+  - [Passes](engine/lambda/passes)
 
 - Autograd
   - [Overview](./autograd/)

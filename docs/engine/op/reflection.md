@@ -32,7 +32,7 @@ Reflection<CustomOp> CustomOp::reflection {
 
 - `std::string name` - operation type name
 - `std::function<std::string(Operation*)> label` - operation instance label
-- `std::function<Chain(const BackCtx&)> back` - reverse mode derivative
+- `std::function<Lambda(const BackCtx&)> back` - reverse mode derivative
 - `std::function<bool(Operation*)> side_effect` - whether an operation has or does not have a side effect (default false)
 - `std::function<Operation*(Operation*)> copy` - operation copy (runs the operation's copy constructor by default)
 
