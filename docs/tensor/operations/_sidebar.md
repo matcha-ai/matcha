@@ -10,6 +10,11 @@
   - [Introduction](tensor/)
   - [Generators](tensor/generators)
   - [Operations](tensor/operations/)
+    - [Elementwise unary](tensor/operations/elementwise-unary)
+    - [Elementwise binary](tensor/operations/elementwise-binary)
+    - [Reductions](tensor/operations/reduction)
+    - [Miscellaneous](tensor/operations/miscellaneous)
+
   - [Automatic differentiation](tensor/autograd)
   - [JIT compilation](tensor/jit)
   - [Buffer access](tensor/accessing-data)
