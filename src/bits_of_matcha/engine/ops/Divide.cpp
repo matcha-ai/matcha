@@ -7,17 +7,7 @@ namespace matcha::engine::ops {
 
 Dtype promoteDtypesDivide(Dtype a, Dtype b) {
   Dtype c = promoteDtypes(a, b);
-
-  switch (c) {
-  case Int:
-  case Uint:
-  case Long:
-  case Ulong:
-  case Double:
-    return Double;
-  default:
-    return Float;
-  }
+  return promoteDtypes(c, Float);
 }
 
 Divide::Divide(Tensor* a, Tensor* b)
