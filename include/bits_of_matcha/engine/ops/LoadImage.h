@@ -16,8 +16,15 @@ struct LoadImage : Op {
 private:
   std::string file_;
 
-  Frame getFrame(FILE* fp);
-  void dumpData(FILE* fp);
+  Frame getFramePng(FILE* fp);
+  Frame getFrameJpeg(FILE* fp);
+  void dumpDataPng(FILE* fp);
+  void dumpDataJpeg(FILE* fp);
+
+  enum {
+    Png, Jpeg
+  } type_;
+
 };
 
 }

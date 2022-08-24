@@ -17,13 +17,13 @@ void inlineExpansion(Lambda& lambda) {
       continue;
     }
 
-    // recursively inlineExpansion all nested Lambdas
-    auto c = clone(dynamic_cast<Module*>(op)->lambda());
-    inlineExpansion(c);
+    // recursively inline all nested Lambdas
+    Lambda l = dynamic_cast<Module*>(op)->lambda();
+    inlineExpansion(l);
 
     // relink lambda inputs
-    for (int i = 0; i < c.inputs.size(); i++) {
-      auto cin = c.inputs[i];
+    for (int i = 0; i < l.inputs.size(); i++) {
+      auto cin = l.inputs[i];
       auto oin = op->inputs[i];
 
       auto id = new ops::Identity(oin, cin);
@@ -31,14 +31,14 @@ void inlineExpansion(Lambda& lambda) {
     }
 
     // include lambda
-    for (auto&& opp: c.ops)
+    for (auto&& opp: l.ops)
       ops.push_back(opp);
-    for (auto&& tt: c.tensors)
+    for (auto&& tt: l.tensors)
       lambda.tensors.push_back(tt);
 
     // relink lambda outputs
-    for (int i = 0; i < c.outputs.size(); i++) {
-      auto& cout = c.outputs[i];
+    for (int i = 0; i < l.outputs.size(); i++) {
+      auto& cout = l.outputs[i];
       auto& oout = op->outputs[i];
 
       auto id = new ops::Identity(cout, oout);
@@ -48,7 +48,7 @@ void inlineExpansion(Lambda& lambda) {
 
     // TODO: relink lambda side inputs
 
-    for (auto&& [in, binding]: c.side_inputs) {
+    for (auto&& [in, binding]: l.side_inputs) {
       lambda.side_inputs[in] = binding;
     }
 
@@ -57,11 +57,9 @@ void inlineExpansion(Lambda& lambda) {
     delete op;
 
     // don't deallocate the copies
-    c = {};
+    l = {};
   }
   lambda.ops = ops;
-//  std::cerr << "FLATTENED:" << std::endl;
-//  check(lambda);
 }
 
 }

@@ -92,7 +92,11 @@ Dataset Dataset::batch(size_t limit) const {
   return dataset::Batch(*this, limit);
 }
 
-Dataset Dataset::map(const std::function<Instance (const Instance&)>& function) const {
+//Dataset Dataset::map(const std::function<Instance (const Instance&)>& function) const {
+//  return dataset::Map(*this, function);
+//}
+
+Dataset Dataset::map(const std::function<void (Instance&)>& function) const {
   return dataset::Map(*this, function);
 }
 

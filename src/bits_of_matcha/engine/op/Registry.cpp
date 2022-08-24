@@ -56,7 +56,6 @@ Lambda Registry::back(const BackCtx& ctx) {
   Tracer tracer;
   auto ins = tracer.open(grad_frames);
 
-  // TODO: nullptr checking
   auto insInternal = deref(ins);
   BackCtx innerCtx {
     .forward = ctx.forward,
@@ -67,12 +66,31 @@ Lambda Registry::back(const BackCtx& ctx) {
   auto lambda1 = tracer.close(engine::ref(outsInternal));
   Lambda lambda2;
 
+  std::set<Tensor*> tensors(lambda1.tensors.begin(), lambda1.tensors.end());
+  for (auto&& lop: lambda1.ops) {
+    for (auto&& in: lop->inputs) {
+      if (!in) continue;
+      if (tensors.contains(in)) continue;
+      tensors.insert(in);
+      lambda1.tensors.push_back(in);
+      in->req();
+    }
+    for (auto&& out: lop->outputs) {
+      if (!out) continue;
+      if (tensors.contains(out)) continue;
+      tensors.insert(out);
+      lambda1.tensors.push_back(out);
+      out->req();
+    }
+  }
+
   for (int i = 0; i < lambda1.inputs.size(); i++) {
     auto in1 = lambda1.inputs[i];
     auto in2 = ctx.vals[i];
     auto id = new ops::Identity(in2, in1);
     lambda2.inputs.push_back(in2);
     lambda2.tensors.push_back(in2);
+    in2->req();
     lambda2.ops.push_back(id);
   }
 

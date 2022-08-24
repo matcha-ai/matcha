@@ -11,23 +11,8 @@
 namespace matcha {
 
 struct Internal {
-  Internal()
-    : wrt_()
-  {}
-
-  std::vector<tensor*> wrt_;
   engine::Tracer tracer_;
 };
-
-//Backprop::Backprop(std::initializer_list<tensor*> wrt)
-//  : Backprop(std::vector(wrt.begin(), wrt.end()))
-//{}
-//
-//Backprop::Backprop(const std::vector<tensor*>& wrt) {\
-//  auto internal = new Internal(wrt);
-//  internal_ = internal;
-//  internal->tracer_.open({});
-//}
 
 Backprop::Backprop() {
   auto internal = new Internal;
@@ -49,8 +34,8 @@ std::map<tensor*, tensor> Backprop::operator()(const tensor& root, const std::ve
   auto lambda = internal->tracer_.close(temp);
 
   engine::inlineExpansion(lambda);
-  engine::deadCodeElimination(lambda);
-  engine::copyPropagation(lambda);
+//  engine::deadCodeElimination(lambda);
+//  engine::copyPropagation(lambda);
 
   std::map<const tensor*, engine::Tensor*> side_inputs_inv;
   for (auto&& [in, binding]: lambda.side_inputs) {

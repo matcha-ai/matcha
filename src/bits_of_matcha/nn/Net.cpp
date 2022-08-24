@@ -7,8 +7,9 @@
 namespace matcha::nn {
 
 Net::Net(const fn& function)
-  : forward_(function)
-{}
+{
+  forward_ = function;
+}
 
 Net::Net(const std::vector<UnaryOp>& sequence) {
   forward_ = [sequence] (tensor feed) {
@@ -32,12 +33,9 @@ void Net::trainStep(Instance i) {
   tensor l = loss(t, y);
 
   auto gradients = backprop(l, params);
-//  print(y);
-//  print(l);
-//  print();
 
   propagateForward(i, l);
-  for (auto&& [t, g]: gradients) g /= bsize;
+  for (auto&& [p, g]: gradients) g /= bsize;
   optimizer(gradients);
   propagateBackward(gradients);
 }
@@ -56,6 +54,7 @@ void Net::epoch(Dataset ds) {
   if (Layer::netStack_.empty() || Layer::netStack_.top() != this)
     Layer::netStack_.push(this);
 
+  epochBegin(0, 1);
   int batch = 0;
   for (Instance&& i: ds) {
     batchBegin(batch, ds.size());
@@ -63,6 +62,7 @@ void Net::epoch(Dataset ds) {
     batchEnd();
     batch++;
   }
+  epochEnd();
 
   if (!Layer::netStack_.empty() && Layer::netStack_.top() == this)
     Layer::netStack_.pop();
@@ -72,13 +72,20 @@ void Net::fit(Dataset ds, size_t epochs) {
   Layer::netStack_.push(this);
 
   fitInit();
+  ds.reset();
   step(ds.get());
   ds.reset();
 
   fitBegin(ds);
   for (int e = 0; e < epochs; e++) {
     epochBegin(e, epochs);
-    epoch(ds);
+    int batch = 0;
+    for (Instance&& i: ds) {
+      batchBegin(batch, ds.size());
+      step(i);
+      batchEnd();
+      batch++;
+    }
     epochEnd();
   }
   fitEnd();

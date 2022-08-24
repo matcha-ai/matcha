@@ -6,18 +6,21 @@
 
 namespace matcha::engine {
 
+Lambda::Lambda(const Lambda& other) {
+  *this = std::move(clone(other));
+}
+
+Lambda& Lambda::operator=(const Lambda& other) {
+  *this = std::move(clone(other));
+  return *this;
+}
+
 Lambda::~Lambda() {
-//  std::cerr << "Lambdaa " << ops.size() << std::endl;
-  for (auto&& op: ops) {
-//    std::cerr << "deleting " << op << " " << ops::name(op) << std::endl;
+  for (auto&& op: ops)
     delete op;
-  }
-  for (auto&& t: tensors) {
-//    std::cerr << t << " " << t->reqs() << std::endl;
-//    if (t->op()) std::cerr << ops::name(t->op()) << std::endl;
-//    std::cerr << t << std::endl;
+
+  for (auto&& t: tensors)
     t->unreq();
-  }
 }
 
 Lambda clone(const Lambda& lambda) {

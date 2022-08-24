@@ -41,8 +41,9 @@ Tensor* Binding::get() {
 }
 
 void Binding::set(Tensor* tensor) {
-  if (tensor_)
+  if (tensor_) {
     tensor_->unreq();
+  }
 
   tensor_ = tensor;
 

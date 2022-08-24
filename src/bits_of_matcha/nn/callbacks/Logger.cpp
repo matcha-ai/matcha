@@ -152,6 +152,7 @@ struct Internal : Callback {
     size_t intervalMs = updaterIntervalMs;
     eta_ = "";
     eta_.action();
+    batch_ = -1;
     batches_ = -1;
     updater_ = (std::thread) [&, epoch_ = epoch_, intervalMs]() {
       while (this->epoch_ == epoch_) {
@@ -188,7 +189,7 @@ struct Internal : Callback {
   }
 
   void onPropagateForward(const Instance& instance, const tensor& loss) override {
-    if (!epoch_) return;
+//    if (!epoch_) return;
     std::stringstream buff;
     loss_ = mean(loss);
     buff << loss_;
@@ -203,12 +204,12 @@ struct Internal : Callback {
   }
 
   void onPropagateBackward(const std::map<tensor*, tensor>& grads) override {
-    if (!epoch_) return;
-    if (grads.empty()) return;
-    std::vector<tensor> gflows;
-    for (auto&& [t, g]: grads) gflows.push_back(l2norm(g) / g.size());
-    gflowM_ = mean(stack(gflows));
-    gflowSd_ = stdevu(stack(gflows));
+//    if (!epoch_) return;
+//    if (grads.empty()) return;
+//    std::vector<tensor> gflows;
+//    for (auto&& [t, g]: grads) gflows.push_back(l2norm(g) / g.size());
+//    gflowM_ = mean(stack(gflows));
+//    gflowSd_ = stdevu(stack(gflows));
   }
 
   void update() {
@@ -225,9 +226,7 @@ struct Internal : Callback {
 
     if (batch_ != 0 && eta_.action()) {
       std::stringstream  ss_;
-//      ss_ << std::fixed << std::setprecision(2);
       ss_ << " ::  ";
-//      << ((float) usBatch_ / 1000.0)  << " ms, ";
       if (batch_ == lastEtaBatch_) {
         if (sEta_ >= 3) sEta_ = sEta_ - 1;
       } else {
@@ -251,7 +250,7 @@ struct Internal : Callback {
 
     line << (std::string) eta_;
 
-    if (batch_ != 0) {
+    if (batch_ >= 1) {
       std::stringstream buff;
       buff << loss_;
       line << " ::  loss "
@@ -259,8 +258,8 @@ struct Internal : Callback {
       size_t padding = (size_t) lossLen_ + 2;
       if (padding > buff.str().length())
         line << std::string(padding - buff.str().length(), ' ');
-      line <<  " ";
-      line << " ::  grads " << gflowM_ << " +- " << gflowSd_ << " ";
+//      line <<  " ";
+//      line << " ::  grads " << gflowM_ << " +- " << gflowSd_ << " ";
     }
 
     line.flush();
@@ -275,9 +274,9 @@ struct Internal : Callback {
   size_t batches_ = 0;
   size_t epoch_ = 0;
   size_t epochs_ = 0;
-  size_t usEpoch_ =0;
+  size_t usEpoch_ = 0;
   size_t usBatch_ = 0;
-  size_t lastEtaBatch_ =0;
+  size_t lastEtaBatch_ = 0;
   float sEta_ = 0;
   float lossLen_ = 0;
   tensor loss_;

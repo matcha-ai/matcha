@@ -25,10 +25,10 @@ struct Lambda final {
   std::map<Tensor*, const tensor*> side_inputs;
 
   Lambda() = default;
-  Lambda(const Lambda& other) = delete;
+  Lambda(const Lambda& other);
   Lambda(Lambda&& other) noexcept = default;
 
-  Lambda& operator=(const Lambda& other) = delete;
+  Lambda& operator=(const Lambda& other);
   Lambda& operator=(Lambda&& other) noexcept = default;
 
   ~Lambda();

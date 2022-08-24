@@ -24,9 +24,7 @@ Reflection<AccumulateGrads> AccumulateGrads::reflection {
 };
 
 void AccumulateGrads::run() {
-//  print("accumulate: ", inputs.size());
   if (inputs.size() == 1) {
-//    print("just one");
     outputs[0]->share(inputs[0]);
     return;
   }

@@ -18,17 +18,22 @@ void backprop(Lambda& lambda, const std::vector<Tensor*>& wrt) {
 
 //  debug(lambda);
 
-  // extend lambda by backprop ops
-  Partials partials(lambda, wrt);
-
-  lambda.outputs.clear();
-
   constexpr bool disable = false;
   if constexpr (disable) {
-    for (auto&& w: wrt)
-      lambda.outputs.push_back(engine::ones(w->shape()));
+    lambda.outputs.clear();
+    for (auto&& w: wrt) {
+      auto g = engine::ones(w->shape());
+      lambda.tensors.push_back(g);
+      lambda.outputs.push_back(g);
+      g->req();
+    }
     return;
   }
+
+  // extend lambda by backprop ops
+
+  std::set<Tensor*> tensors(lambda.tensors.begin(), lambda.tensors.end());
+  Partials partials(lambda, wrt);
 
   for (int i = (int) lambda.ops.size() - 1; i >= 0; i--) {
     auto op = lambda.ops[i];
@@ -39,15 +44,17 @@ void backprop(Lambda& lambda, const std::vector<Tensor*>& wrt) {
       .vals = partials.accumulateGrads(op->outputs),
       .wrts = partials.needs(op->inputs),
     };
-    auto back = ops::back(ctx);
-//    auto back = Lambda();
+    Lambda back = ops::back(ctx);
 
-    for (auto&& bop: back.ops) {
-      if (!bop) continue;
+    for (auto&& bop: back.ops)
       lambda.ops.push_back(bop);
-      for (auto&& out: bop->outputs) {
-        if (!out) continue;
-        lambda.tensors.push_back(out);
+
+    for (auto&& t: back.tensors) {
+      if (tensors.contains(t)) {
+        t->unreq();
+      } else {
+        lambda.tensors.push_back(t);
+        tensors.insert(t);
       }
     }
 
@@ -57,7 +64,7 @@ void backprop(Lambda& lambda, const std::vector<Tensor*>& wrt) {
       partials.addGrads(op->inputs[j], bout);
     }
 
-    back = Lambda{};
+    back = {};
   }
 
   lambda.outputs.clear();

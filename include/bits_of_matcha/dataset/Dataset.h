@@ -28,8 +28,11 @@ public:
 public:
   Dataset take(size_t limit) const;
   Dataset batch(size_t limit) const;
-  Dataset map(const std::function<Instance (const Instance&)>& function) const;
   Dataset cat(const Dataset& ds) const;
+//  Dataset map(const std::function<Instance (const Instance&)>& function) const;
+  Dataset map(const std::function<void (Instance&)>& function) const;
+//  Dataset map(const std::variant<std::function<Instance (const Instance&)>,
+//                                 std::function<void (Instance&)>>& function);
 
 public:
   Dataset(std::initializer_list<tensor> tensors);

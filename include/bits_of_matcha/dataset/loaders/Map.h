@@ -8,12 +8,20 @@
 namespace matcha::dataset {
 
 struct Map {
-  Map(const Dataset& dataset, const std::function<Instance (const Instance&)>& function);
+  Map(const Dataset& dataset,
+      const std::function<Instance (const Instance&)>& function);
+  Map(const Dataset& dataset,
+      const std::function<void (Instance&)>& function);
+
   operator Dataset();
 
 private:
+  using CbModifying = std::function<void (Instance&)>;
+  using CbReturning = std::function<Instance (const Instance&)>;
+  using Callback = std::variant<CbModifying, CbReturning>;
+
+  Callback callback_;
   Dataset dataset_;
-  std::function<Instance (const Instance&)> function_;
 };
 
 }

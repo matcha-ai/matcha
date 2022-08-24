@@ -70,8 +70,8 @@ auto Partials::accumulateGrads(Tensor* t) -> Tensor* {
 
     auto acc = new AccumulateGrads(partial.second, partial.first);
     lambda_.ops.push_back(acc);
-    lambda_.tensors.push_back(acc->outputs[0]);
-    acc->outputs[0]->req();
+    lambda_.tensors.push_back(partial.first);
+    partial.first->req();
 
     return partial.first;
 
@@ -90,7 +90,6 @@ auto Partials::accumulateGrads(const std::vector<Tensor*>& tensors) -> std::vect
 
 void Partials::addGrads(Tensor* tensor, Tensor* grad) {
   if (!partials_.contains(tensor))
-//    throw std::runtime_error("added gradient is not needed");
     partials_[tensor] = {nullptr, {}};
 
   partials_[tensor].second.push_back(grad);

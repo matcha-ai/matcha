@@ -109,9 +109,7 @@ tensor& tensor::operator=(tensor&& other) noexcept {
 
   if (internal_ == other.internal_) return *this;
   auto&& internal = (Binding*) internal_;
-//  std::cerr << "here" << std::endl;
   if (internal) internal->unref();
-//  std::cerr << "there" << std::endl;
   internal_ = other.internal_;
   other.internal_ = nullptr;
   return *this;

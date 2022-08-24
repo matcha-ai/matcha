@@ -337,6 +337,7 @@ set(
 find_package(BLAS REQUIRED)
 find_package(OpenCL REQUIRED)
 find_package(libpng CONFIG REQUIRED)
+find_package(JPEG REQUIRED)
 find_package(CLBlast CONFIG REQUIRED)
 message("${BLAS_LIBRARIES}")
 
@@ -364,6 +365,7 @@ target_include_directories(
 )
 
 target_link_libraries(${PROJECT_NAME} PUBLIC png)
+target_link_libraries(${PROJECT_NAME} PUBLIC jpeg)
 target_link_libraries(${PROJECT_NAME} PRIVATE pthread)
 #target_link_libraries(${PROJECT_NAME} PRIVATE ${BLAS_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} PRIVATE /usr/lib/libcblas.so)

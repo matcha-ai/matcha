@@ -21,11 +21,10 @@ size_t Shape::rank() const {
 }
 
 size_t Shape::size() const {
-  return std::accumulate(
-    std::begin(dims_), std::end(dims_),
-    1,
-    std::multiplies()
-  );
+  return std::accumulate(std::begin(dims_),
+                         std::end(dims_),
+                         1,
+                         std::multiplies());
 }
 
 unsigned Shape::operator[](int index) const {

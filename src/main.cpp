@@ -1,11 +1,10 @@
+auto testAutograd() -> void;
+auto testNet() -> void;
+
 #include <matcha>
 
 using namespace matcha;
 using namespace std::complex_literals;
-
-auto testAutograd() -> void;
-auto testNet() -> void;
-auto testDataset() -> Dataset;
 
 int main() {
   testNet();
@@ -31,47 +30,19 @@ int main() {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Dataset testDataset() {
-  Dataset mnist = load("mnist_train.csv");
-  mnist = mnist.take(1);
-  for (int i = 0; i < 2; i++)
-    mnist = mnist.cat(mnist);
-
-  return mnist;
-}
-
 void testNet() {
   Net net {
-    nn::flatten,
-    nn::Fc{100, "relu"},
+    nn::Fc{500, "relu"},
+    nn::Fc{300, "relu"},
     nn::Fc{10, "softmax"},
   };
 
   net.loss = nn::Nll{};
+//  net.callbacks.clear();
 
   Dataset mnist = load("mnist_train.csv");
-  mnist = mnist.map([](auto i) { i["x"] /= 255; return i; });
-  mnist = mnist.batch(256);
-//  for (int i = 0; i < 15; i++)
-//    net.step(mnist.get());
+  mnist = mnist.map([](auto& i) { i["x"] /= 255; });
+  mnist = mnist.batch(64);
   net.fit(mnist);
 }
 
