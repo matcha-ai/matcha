@@ -5,7 +5,7 @@
 [Automatic differentiation](tensor/autograd) |
 [JIT compilation](tensor/jit) |
 [Dataset pipelines](dataset/) |
-[Neural networks](nn/) |
+[Neural networks](nn/net) |
 [Gotchas](gotchas/)
 
 

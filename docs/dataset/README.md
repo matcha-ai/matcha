@@ -4,7 +4,7 @@ Matcha comes together with a seamlessly integrated and modular dataset pipeline 
 and manipulate it just-in-time or otherwise tune it to your needs, in a way
 that is both memory and time efficient.
 
-?> **NOTE:** Use datasets for large amounts of data. Datasets load from the disk only the part that is needed at the moment. \
+?> **NOTE:** Use datasets for large amounts of data. Datasets load from the disk only the part that is needed at the moment.
    This prevents wasting memory.
 
 ## Data instances
@@ -74,9 +74,8 @@ Let's define a function that will do this:
 
 
 ```cpp
-Instance toSquare(Instance i) {
+Instance toSquare(Instance& i) {
   i["x"] = i["x"].reshape(28, 28);
-  return i;
 }
 ```
 
@@ -92,9 +91,8 @@ dataset pixels have values 0-255. We would like to have them normalized to 0-1.
 We can simply take the dataset and map it once more. Using a lambda function:
 
 ```cpp
-mnist = mnist.map([](Instance i) {
+mnist = mnist.map([](Instance& i) {
   i["x"] /= 255;
-  return i;
 });
 ```
 
@@ -162,5 +160,5 @@ std::cout << mnist.tell() << std::endl;     // 1
 std::cout << mnist.eof() << std::endl;      // 0
 ```
 
-!> **NOTE:** Depending on the concrete pipeline components used, it may or may not be inefficient to jump frequently through the dataset. \
-   It's recommended to avoid unneeded jumping and to proceed linearly instead.
+!> Depending on the concrete pipeline components used, it may or may not be inefficient to jump frequently through the dataset. \
+   It's recommended to avoid unnecessary jumping and to proceed linearly instead.
