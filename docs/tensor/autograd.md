@@ -76,8 +76,8 @@ $
 Correct! Our Matcha snippet produces the following output:
 
 ```txt
-the gradient w.r.t. 0x7ffd2865a468is 0.583333
-the gradient w.r.t. 0x7ffd2865a470is 0.375
+the gradient w.r.t. 0x7ffd2865a468 is 0.583333
+the gradient w.r.t. 0x7ffd2865a470 is 0.375
 ```
 
 ## Example
