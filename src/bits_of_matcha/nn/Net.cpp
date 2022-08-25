@@ -19,7 +19,7 @@ Net::Net(const std::vector<UnaryOp>& sequence) {
   forward_ = jit(forward_);
 }
 
-Net::Net(std::initializer_list<UnaryOp> sequence)
+Net::Net(std::initializer_list<unary_fn> sequence)
   : Net(std::vector(sequence))
 {}
 
