@@ -7,8 +7,27 @@ using namespace matcha;
 using namespace std::complex_literals;
 
 int main() {
-  testNet();
+//  testNet();
 //  testAutograd();
+
+  tensor a = 3;
+  tensor b = 2;
+
+  Backprop backprop;
+
+  tensor c = log(b * square(a) + a * 2);
+//  tensor c = log(b * square(a));
+
+  // compute the gradients of `c` w.r.t. `a` and `b`
+// and return std::map<tensor*, tensor>
+
+  auto gradients = backprop(c, {&a, &b});
+
+  for (auto&& [wrt, gradient]: gradients) {
+    std::cout << "the gradient w.r.t. " << wrt << "is ";
+    std::cout << gradient << std::endl;
+  }
+
   return 0;
 }
 
@@ -28,14 +47,26 @@ int main() {
 
 
 
+struct MyNet : Net {
+  nn::Fc hidden{200, "relu"};
+  nn::Fc output{10, "softmax"};
+
+  tensor run(const tensor& a) override {
+    tensor feed = a;
+    feed = hidden(feed);
+    feed = output(feed);
+    return feed;
+  }
+};
 
 
 void testNet() {
-  Net net {
-    nn::Fc{500, "relu"},
-    nn::Fc{300, "relu"},
-    nn::Fc{10, "softmax"},
-  };
+//  Net net {
+//    nn::Fc{500, "relu"},
+//    nn::Fc{300, "relu"},
+//    nn::Fc{10, "softmax"},
+//  };
+  MyNet net;
 
   net.loss = nn::Nll{};
 //  net.callbacks.clear();

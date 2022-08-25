@@ -8,7 +8,7 @@
 #include "bits_of_matcha/engine/ops/Transpose.h"
 #include "bits_of_matcha/engine/ops/Identity.h"
 #include "bits_of_matcha/engine/ops/Reshape.h"
-#include "bits_of_matcha/engine/ops/Pow.h"
+#include "bits_of_matcha/engine/ops/Power.h"
 #include "bits_of_matcha/engine/ops/Exp.h"
 #include "bits_of_matcha/engine/ops/Log.h"
 #include "bits_of_matcha/engine/ops/Max.h"
@@ -159,7 +159,7 @@ tensor reshape(const tensor& a, const Shape::Reshape& dims) {
 
 
 tensor power(const tensor& a, const tensor& b) {
-  auto outs = dispatch<ops::Pow>(deref(a), deref(b));
+  auto outs = dispatch<ops::Power>(deref(a), deref(b));
   return ref(outs[0]);
 }
 

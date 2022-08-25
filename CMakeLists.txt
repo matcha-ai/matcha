@@ -152,7 +152,7 @@ set(
   include/bits_of_matcha/engine/ops/Identity.h
   include/bits_of_matcha/engine/ops/Reshape.h
   include/bits_of_matcha/engine/ops/Print.h
-  include/bits_of_matcha/engine/ops/Pow.h
+  include/bits_of_matcha/engine/ops/Power.h
   include/bits_of_matcha/engine/ops/Exp.h
   include/bits_of_matcha/engine/ops/Log.h
   include/bits_of_matcha/engine/ops/SaveImage.h
@@ -298,7 +298,7 @@ set(
   src/bits_of_matcha/engine/ops/Identity.cpp
   src/bits_of_matcha/engine/ops/Reshape.cpp
   src/bits_of_matcha/engine/ops/Print.cpp
-  src/bits_of_matcha/engine/ops/Pow.cpp
+  src/bits_of_matcha/engine/ops/Power.cpp
   src/bits_of_matcha/engine/ops/Exp.cpp
   src/bits_of_matcha/engine/ops/Log.cpp
   src/bits_of_matcha/engine/ops/LoadImage.cpp

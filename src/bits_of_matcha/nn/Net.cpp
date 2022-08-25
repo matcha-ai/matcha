@@ -113,6 +113,17 @@ tuple Net::operator()(const tuple& inputs) const {
   return forward_(inputs);
 }
 
+Net::Net()
+{}
+
+tensor Net::run(const tensor& a) {
+  throw std::runtime_error("not subclassed");
+}
+
+tensor Net::run(const tensor& a, const tensor& b) {
+  throw std::runtime_error("not subclassed");
+}
+
 void Net::fitInit() {
   for (auto&& cb: callbacks) if (cb) cb->onFitInit(*this);
 }

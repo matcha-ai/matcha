@@ -38,6 +38,13 @@ public:
 
   Net(const fn& forward);
 
+protected:
+  // Subclassing API
+  Net();
+
+  virtual tensor run(const tensor& a);
+  virtual tensor run(const tensor& a, const tensor& b);
+
 public:
 
   class Params {
@@ -95,6 +102,7 @@ protected:
   void propagateBackward(const std::map<tensor*, tensor>& gradients);
 
 private:
+  fn forward();
   fn forward_;
 //  fn function_;
 

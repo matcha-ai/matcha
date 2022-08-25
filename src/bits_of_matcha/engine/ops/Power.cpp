@@ -1,4 +1,6 @@
-#include "bits_of_matcha/engine/ops/Pow.h"
+#include "bits_of_matcha/engine/ops/Power.h"
+#include "bits_of_matcha/engine/cpu/kernels/fill.h"
+#include "bits_of_matcha/engine/cpu/kernels/elementwiseBinaryBack.h"
 
 #include <cmath>
 #include <numeric>
@@ -12,17 +14,17 @@ Dtype promoteDtypesPow(Tensor* a, Tensor* b) {
   return temp;
 }
 
-Pow::Pow(Tensor* a, Tensor* b)
+Power::Power(Tensor* a, Tensor* b)
   : ElementwiseBinaryOp(a, b, promoteDtypesPow(a, b))
 {}
 
-Reflection<Pow> Pow::reflection {
-  .name = "Pow",
-  .back = [](auto& ctx) { return dispatch<PowBack>(ctx); },
+Reflection<Power> Power::reflection {
+  .name = "Power",
+  .back = [](auto& ctx) { return dispatch<PowerBack>(ctx); },
 };
 
 
-void Pow::run() {
+void Power::run() {
   Dtype dtype = outputs[0]->dtype();
   auto a = inputs[0]->buffer();
   auto b = inputs[1]->buffer();
@@ -50,13 +52,36 @@ void Pow::run() {
 }
 
 
-PowBack::PowBack(const BackCtx& ctx)
-  : OpBack(ctx)
+PowerBack::PowerBack(const BackCtx& ctx)
+  : ElementwiseBinaryOpBack(ctx)
 {
 }
 
-Reflection<PowBack> PowBack::reflection {
-  .name = "PowBack",
+Reflection<PowerBack> PowerBack::reflection {
+  .name = "PowerBack",
 };
+
+void PowerBack::run() {
+  if (outputs[0]) {
+    cpu::fill(outputs[0]->malloc(), outputs[0]->size(), (float) 0);
+
+    float* begin_ga = outputs[0]->buffer().as<float*>();
+    float* begin_a = forwardInput(0)->buffer().as<float*>();
+
+    cpu::elementwiseBinaryBack(
+    [=](float& ga, float& b, float& gc) {
+      float a = begin_a[begin_ga - &ga];
+//        std::cout << a << " " << b << " " << c << std::endl;
+      // c = a^b
+      // dc/da = b * a^(b-1)
+      ga += b * pow(a, b - 1) * gc;
+    },
+    outputs[0]->buffer(),
+    forwardInput(1)->buffer(),
+    inputs[0]->buffer(),
+    iter_
+    );
+  }
+}
 
 }
