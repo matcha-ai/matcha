@@ -13,6 +13,13 @@ inspired by popular state-of-the-art frameworks like
 - [Subclassing](#subclassing-api) API
 - [Functional](#functional-api) API
 
+After demonstrating each of these APIs, we will go through
+[training](#training-neural-networks) neural networks and using them for
+generating [predictions](#neural-network-predictions). 
+Note however, that this guide is concerned with explaining the interface
+and does not go into detail on _how to design neural networks_,
+which can be found in [tutorials](tutorials/) (note: work in progress).
+
 ## Sequential API
 
 > `Net::Net(std::initializer_list<unary_fn> layers)` \
@@ -271,6 +278,10 @@ To fit our dataset, simply:
 net.fit(california_housing);
 ```
 
+If we have the `nn::Logger` enabled, the fitting process will be reported:
+
+![img](fit.gif)
+
 We can specify the number of epochs the fitting algorithm shall perform:
 
 ```cpp
@@ -295,5 +306,31 @@ for (int i = 0; i < california_housing.size(); i++) {
 }
 ```
 
+## Neural network predictions
+> `operator()(const tensor& a) -> tensor` \
+> `operator()(const tensor& a, const tensor& b) -> tensor` \
+> `operator()(const tensor& a, const tensor& b, const tensor& c) -> tensor` \
+> `operator()(const tuple& inputs) -> tuple`
 
+If we have designed the network correctly, it will be able to 
+_generalize_ what it has been trained. This means we can now use it to 
+predict novel data. In this sense, the `Net` class behaves as a completely
+normal function. It accepts a batch of input data and returns a batch
+of respective predictions:
+
+```cpp
+tensor data = load("novel_housnig_context.csv");
+tensor pred = net(data);
+
+std::cout << "Neural Network predictions are:" << std::endl;
+std::cout << pred << std::endl;
+```
+
+!> Note that the neural network accepts _a batch_ of inputs,
+   not a _single_ input. Confusing these two can lead to errors
+   or non-sensical results. To easily convert a single `input` to
+   a single-input batch, use the `stack` operation. This will expand
+   the input dimensionality by batch axis while retaining the 
+   original shape: \
+   `tensor batched_input = stack(input);`
 
