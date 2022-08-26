@@ -7,11 +7,14 @@
 namespace matcha::nn {
 
 Net::Net(const fn& function)
+  : initialized_(false)
 {
   forward_ = function;
 }
 
-Net::Net(const std::vector<UnaryOp>& sequence) {
+Net::Net(const std::vector<UnaryOp>& sequence)
+  : initialized_(false)
+{
   forward_ = [sequence] (tensor feed) {
     for (auto& op: sequence) feed = op(feed);
     return feed;
@@ -23,13 +26,45 @@ Net::Net(std::initializer_list<unary_fn> sequence)
   : Net(std::vector(sequence))
 {}
 
+tensor Net::forward(const tensor& a) {
+  if (!initialized_) {
+    initialized_ = true;
+    init(a);
+  }
+  return run(a);
+}
+
+tensor Net::forward(const tensor& a, const tensor& b) {
+  if (!initialized_) {
+    initialized_ = true;
+    init(a, b);
+  }
+  return run(a, b);
+}
+
+tensor Net::forward(const tensor& a, const tensor& b, const tensor& c) {
+  if (!initialized_) {
+    initialized_ = true;
+    init(a, b, c);
+  }
+  return run(a, b, c);
+}
+
+tuple Net::forward(const tuple& inputs) {
+  if (!initialized_) {
+    initialized_ = true;
+    init(inputs);
+  }
+  return run(inputs);
+}
+
 void Net::trainStep(Instance i) {
   tensor x = i["x"];
   tensor t = i["y"];
   size_t bsize = x.shape()[0];
 
   Backprop backprop;
-  tensor y = forward_(x);
+  tensor y = forward(x);
   tensor l = loss(t, y);
 
   auto gradients = backprop(l, params);
@@ -94,34 +129,47 @@ void Net::fit(Dataset ds, size_t epochs) {
     Layer::netStack_.pop();
 }
 
-tensor Net::operator()(const tensor& a) const {
-  return forward_(a);
+tensor Net::operator()(const tensor& a) {
+  return forward(a);
 }
 
-tensor Net::operator()(const tensor& a, const tensor& b) const {
-  return forward_(a, b);
+tensor Net::operator()(const tensor& a, const tensor& b) {
+  return forward(a, b);
 }
 
 tensor Net::operator()(const tensor& a,
                        const tensor& b,
-                       const tensor& c) const
+                       const tensor& c)
 {
-  return forward_(a, b, c);
+  return forward(a, b, c);
 }
 
-tuple Net::operator()(const tuple& inputs) const {
-  return forward_(inputs);
+tuple Net::operator()(const tuple& inputs) {
+  return forward(inputs);
 }
 
 Net::Net()
 {}
 
+void Net::init(const tensor& a) {}
+void Net::init(const tensor& a, const tensor& b) {}
+void Net::init(const tensor& a, const tensor& b, const tensor& c) {}
+void Net::init(const tuple& inputs) {}
+
 tensor Net::run(const tensor& a) {
-  throw std::runtime_error("not subclassed");
+  return forward_(a);
 }
 
 tensor Net::run(const tensor& a, const tensor& b) {
-  throw std::runtime_error("not subclassed");
+  return forward_(a, b);
+}
+
+tensor Net::run(const tensor& a, const tensor& b, const tensor& c) {
+  return forward_(a, b, c);
+}
+
+tuple Net::run(const tuple& tuple) {
+  return forward_(tuple);
 }
 
 void Net::fitInit() {

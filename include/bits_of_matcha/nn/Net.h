@@ -22,10 +22,10 @@ public:
   void epoch(Dataset ds);
   void step(Instance i);
 
-  tensor operator()(const tensor& a) const;
-  tensor operator()(const tensor& a, const tensor& b) const;
-  tensor operator()(const tensor& a, const tensor& b, const tensor& c) const;
-  tuple operator()(const tuple& inputs) const;
+  tensor operator()(const tensor& a);
+  tensor operator()(const tensor& a, const tensor& b);
+  tensor operator()(const tensor& a, const tensor& b, const tensor& c);
+  tuple operator()(const tuple& inputs);
 
 public:
   // Sequential API
@@ -42,8 +42,22 @@ protected:
   // Subclassing API
   Net();
 
+  virtual void init(const tensor& a);
+  virtual void init(const tensor& a, const tensor& b);
+  virtual void init(const tensor& a, const tensor& b, const tensor& c);
+  virtual void init(const tuple& inputs);
+
   virtual tensor run(const tensor& a);
   virtual tensor run(const tensor& a, const tensor& b);
+  virtual tensor run(const tensor& a, const tensor& b, const tensor& c);
+  virtual tuple run(const tuple& inputs);
+
+  virtual void trainStep(Instance i);
+
+  tensor forward(const tensor& a);
+  tensor forward(const tensor& a, const tensor& b);
+  tensor forward(const tensor& a, const tensor& b, const tensor& c);
+  tuple forward(const tuple& inputs);
 
 public:
 
@@ -81,12 +95,7 @@ public:
   };
 
 protected:
-  // customizable logic
-
-  virtual void trainStep(Instance i);
-
-protected:
-  // events
+  // Callback events
 
   void fitInit();
   void fitBegin(Dataset ds);
@@ -102,9 +111,8 @@ protected:
   void propagateBackward(const std::map<tensor*, tensor>& gradients);
 
 private:
-  fn forward();
   fn forward_;
-//  fn function_;
+  bool initialized_;
 
 };
 
