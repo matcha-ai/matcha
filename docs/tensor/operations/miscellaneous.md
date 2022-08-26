@@ -56,7 +56,7 @@ $ softmax(x) = \frac{e^{\odot \hat{x}}}{\sum_{i \in \hat{x}} e^i } $
 
 Computes the mean-squared-error between `expected` and `predicted`:
 
-$ mse(a, b) = \frac{1}{|a|} \sum_{(i, j) \in (a, b)}(b - a)^2 $
+$ mse(a, b) = \frac{1}{|a|} \sum_{(i, j) \in (a, b)}(j - i)^2 $
 
 ## rmse
 > `rmse(const tensor& expected, const tensor& predicted) -> tensor`
@@ -64,4 +64,4 @@ $ mse(a, b) = \frac{1}{|a|} \sum_{(i, j) \in (a, b)}(b - a)^2 $
 Computes the root-mean-squared-error between `expected` and `predicted`:
 
 $ rmse(a, b) = \sqrt{mse(a, b)} = 
-\sqrt{\frac{1}{|a|} \sum_{(i, j) \in (a, b)}(b - a)^2} $
+\sqrt{\frac{1}{|a|} \sum_{(i, j) \in (a, b)}(j - i)^2} $
