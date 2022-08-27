@@ -28,7 +28,7 @@ using namespace matcha;
 
 int main() {
   Net net {
-    nn::flatten,                             // inlineExpansion the inputs
+    nn::flatten,                             // flatten the inputs
     nn::Fc{300, "relu,batchnorm"},           // hidden layer
     nn::Fc{10, "softmax"}                    // output layer
   };
