@@ -86,7 +86,7 @@ the gradient w.r.t. 0x7ffd2865a470 is 0.375
 Usually we want to differentiate much larger tensors, such
 as matrices of neural network parameters.
 The ability to have the gradients computed automatically is priceless
-in machine learning. Supposed we have computed the gradients of some
+in machine learning. Suppose we have computed the gradients of some
 loss function w.r.t. neural network parameters. We can then
 perform a single [SGD](nn/optimizers/sgd) step simply like this:
 
