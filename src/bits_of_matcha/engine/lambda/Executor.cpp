@@ -18,9 +18,8 @@ void stream(const std::vector<Tensor*>& source, std::vector<Tensor*>& target) {
 }
 
 void loadSideInputs(Lambda& lambda) {
-  for (auto&& [in, binding]: lambda.side_inputs) {
+  for (auto&& [in, binding]: lambda.side_inputs)
     in->share(deref(binding));
-  }
 }
 
 auto Executor::run(const std::vector<Tensor*>& ins) -> std::vector<Tensor*> {

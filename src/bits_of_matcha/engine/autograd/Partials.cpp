@@ -10,15 +10,15 @@ Partials::Partials(Lambda& lambda, const std::vector<Tensor*>& wrt)
   : lambda_(lambda)
 {
   for (auto&& w: wrt) {
-//    std::cerr << "WRT: " << w << std::endl;
+    if (!w) continue;
     partials_[w] = {nullptr, {}};
   }
 
   for (auto&& op: lambda.ops) {
     if (!needs(op)) continue;
     for (auto&& out: op->outputs) {
+      if (!out) continue;
       partials_[out] = {nullptr, {}};
-//      std::cerr << "WRT: " << out << std::endl;
     }
   }
 
@@ -59,6 +59,9 @@ auto Partials::needs(const std::vector<Tensor*>& tensors) const -> std::vector<b
 }
 
 auto Partials::accumulateGrads(Tensor* t) -> Tensor* {
+  if (!t)
+    throw std::runtime_error("tensor is null");
+
   if (partials_.contains(t)) {
     auto& partial = partials_[t];
 
@@ -89,6 +92,9 @@ auto Partials::accumulateGrads(const std::vector<Tensor*>& tensors) -> std::vect
 }
 
 void Partials::addGrads(Tensor* tensor, Tensor* grad) {
+  if (!tensor)
+    throw std::runtime_error("tensor is null");
+
   if (!partials_.contains(tensor))
     partials_[tensor] = {nullptr, {}};
 

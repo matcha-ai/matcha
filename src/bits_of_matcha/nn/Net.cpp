@@ -59,15 +59,15 @@ tuple Net::forward(const tuple& inputs) {
 }
 
 void Net::trainStep(Instance i) {
+  Backprop backprop;
+
   tensor x = i["x"];
   tensor t = i["y"];
-  size_t bsize = x.shape()[0];
-
-  Backprop backprop;
   tensor y = forward(x);
   tensor l = loss(t, y);
 
   auto gradients = backprop(l, params);
+  size_t bsize = x.shape()[0];
 
   propagateForward(i, l);
   for (auto&& [p, g]: gradients) g /= bsize;

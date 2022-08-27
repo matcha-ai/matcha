@@ -119,14 +119,12 @@ bool Tracer::handleNewOp(Op* op) {
 }
 
 bool Tracer::handleNewTensor(Tensor* tensor) {
-//  std::cerr << "handle new tensor" << std::endl;
   auto tracer = get();
   if (!tracer) return false;
   return tracer->addNewTensor(tensor);
 }
 
 bool Tracer::handleOldTensor(Tensor* tensor) {
-//  std::cerr << "handle old tensor" << std::endl;
   auto tracer = get();
   if (!tracer) return false;
   return tracer->addOldTensor(tensor);
@@ -173,6 +171,7 @@ bool Tracer::addOldTensor(Tensor* tensor) {
 }
 
 bool Tracer::addNewRef(tensor* ref, Tensor* internal) {
+  if (!internal) return true;
   if (!refs_.contains(ref))
     refs_.insert(ref);
   if (!restore_state_.contains(ref)) {
@@ -191,6 +190,9 @@ bool Tracer::addDelRef(tensor* ref, Tensor* internal) {
 
   if (restore_state_.contains(ref))
     restore_state_.erase(ref);
+
+  if (side_inputs_.contains(internal))
+    side_inputs_.erase(internal);
 
   return true;
 }

@@ -21,7 +21,6 @@ void SideOutput::run() {
   auto in = inputs[0];
   auto out = new Tensor(in->frame());
   out->share(in);
-//  std::cerr << "assigning to " << target_ << std::endl;
   *target_ = ref(out);
 }
 

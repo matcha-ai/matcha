@@ -33,14 +33,12 @@ std::map<tensor*, tensor> Backprop::operator()(const tensor& root, const std::ve
 
   auto lambda = internal->tracer_.close(temp);
 
+//  engine::debug(lambda);
   engine::inlineExpansion(lambda);
-//  engine::deadCodeElimination(lambda);
-//  engine::copyPropagation(lambda);
 
   std::map<const tensor*, engine::Tensor*> side_inputs_inv;
-  for (auto&& [in, binding]: lambda.side_inputs) {
+  for (auto&& [in, binding]: lambda.side_inputs)
     side_inputs_inv[binding] = in;
-  }
 
   std::vector<engine::Tensor*> wrt_internal;
   for (auto&& w: wrt) {
