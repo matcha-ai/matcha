@@ -53,7 +53,7 @@ d = matmul(b, c);   // matrix multiplication
 d = b.cat(c);       // concatenating b and c into one tensor
 ```
 
-You can learn more about specific operations e.g. in [the following article](tensor/basic-arithmetic).
+You can learn more about specific operations e.g. in [the following article](tensor/operations/).
 
 ## Tensor frames
 
