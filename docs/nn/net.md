@@ -42,7 +42,7 @@ Done! Now we can [train](#training-neural-networks) it.
 
 !> This simplicity comes at a price. 
    The sequential API can only be used  to build nets with sequential
-   topology. For more complex networks (e.g. with residual connections),
+   topology. For more complex networks (e.g. with _residual connections_),
    use the functional or subclassing API.
 
 ## Subclassing API
@@ -69,23 +69,25 @@ invoked `Net::run`.
 
 > `virtual Net::trainStep(Instance i) -> void`
 
-Customizable train step logic.
+Customizable train step logic. By default, it performs one _forward_ and
+_backward_ propagation using [`Backprop`](tensor/autograd#backprop), 
+emitting appropriate [callback signals](nn/callbacks/signals).
 
 !> In contrast to static machine learning frameworks like 
    [TensorFlow](https://www.tensorflow.org/), which let you merely
-   declare the network topology through enumerating its components,
+   _declare_ the network topology through enumerating its components,
    Matcha allows more flexibility through dynamic flow. However, this
    means that all components that the neural net uses must be stored
    somethere so that they can be explicitly called later in your code.
    For example, instantiating and calling a layer all at once inside
-   the `run` method would not work as expected in TensorFlow. Instead,
+   the `run` method **would not work as expected in TensorFlow**. Instead,
    a new layer would be created in each `run` invokation. Therefore,
-   You must instantiate all layers before calling `run`, e.g. from `init`
+   **you must instantiate all layers before calling `run`**, e.g. from `init`
    as private class members.
 
 An example will follow. We will create a custom `FcResNet` class using the
 `Net` subclassing API. To demonstrate the flexibility of the subclassing
-API, the `FcResNet` class will implement automatic residual connection
+API, the `FcResNet` class will implement automatic _residual connection_
 creation logic on fully connected (`nn::Fc`) layers:
 
 ```cpp
