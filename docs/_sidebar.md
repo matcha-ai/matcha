@@ -8,6 +8,7 @@
 - Tensor arithmetic
 
   - [Introduction](tensor/)
+  - [Frames](tensor/frames)
   - [Generators](tensor/generators)
   - [Operations](tensor/operations/)
   - [Automatic differentiation](tensor/autograd)

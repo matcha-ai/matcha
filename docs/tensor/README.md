@@ -101,3 +101,5 @@ You may have been suspicious about this. Afterall, `sizeof(tensor)` always seems
 This is so, because `tensor` is in reality only an implicit reference to its [internal engine object](engine/tensor/). That engine object
 holds the `Buffer` and associated metadata, like the `Frame`. Finally, the number of bytes is related only to the `Buffer` size. For details, read the articles
 on engine [Memory](engine/memory) and [Buffers](engine/tensor/buffer).
+
+For a more technical explanation of frames, read the [next article](tensor/frames).

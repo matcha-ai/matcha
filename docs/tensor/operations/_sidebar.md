@@ -10,6 +10,8 @@
   - [Introduction](tensor/)
   - [Generators](tensor/generators)
   - [Operations](tensor/operations/)
+
+    - [Dtype promotion](tensor/operations/dtype-promotion)
     - [Elementwise unary](tensor/operations/elementwise-unary)
     - [Elementwise binary](tensor/operations/elementwise-binary)
     - [Reductions](tensor/operations/reduction)

@@ -8,6 +8,14 @@ of Matcha operations in most cases copies
 [TensorFlow](https://www.tensorflow.org/api_docs/python/tf). You can refer
 to their appropriate docs if not covered enough here yet.
 
+### Dtype promotion
+
+When an operation expecting multiple input tensors of the same `Dtype`, 
+(such as [elementwise binary](tensor/operations/elementwise-binary)
+operations) receives inputs of different dtypes, implicit type casting
+is performed based on the [dtype promotion](tensor/operations/dtype-promotion)
+rules.
+
 ### Hierarchy
 
 For easy understanding and implementation, Matcha operations build 

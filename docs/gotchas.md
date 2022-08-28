@@ -1,5 +1,16 @@
 # Gotchas
 
+## Overpromotion of 32-bit dtypes
+
+For future compability with TPUs and GPUs, where `double` operations
+are often unsupported, Matcha dtype promotion rules strive to preserve
+bit size rather than representative capacity, which may, if not careful,
+result in arithmetic overflows. For example, a binary operation on
+`Int` and `Float` converts `Int` to `Float` rather than to `Double`, in
+order to keep the kernel types 32-bit. The result of such operation is again
+of type `Float`. For details, read 
+[dtype promotion](tensor/operations/dtype-promotion).
+
 ## JIT native variable caching
 
 When tracing, the dependence of **Matcha tensors** is inspected. This ignores
@@ -30,7 +41,31 @@ int main() {
 }
 ```
 
-To fix that, simply replace 
+To fix that, simply declare `i` to be of type `tensor` instead:
+
+```cpp
+tensor i = 0;                         // `i` can be traced by matcha now
+
+tensor foo(tensor x) {
+  i += 1;
+  return x + i;
+}
+
+int main() {
+  auto joo = jit(foo);                // wrap foo by matcha JIT compiler
+  std::cout << joo(42) << std::endl;  // foo is JIT compiled, including the `i` increment
+  std::cout << joo(42) << std::endl;  // the compiled instructions are called again, including `i += 1`
+  std::cout << joo(42) << std::endl;  // and once more
+}
+```
+
+Output:
+
+```text
+43
+44
+45
+```
 
 ## Neural network dynamism
 
