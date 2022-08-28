@@ -16,7 +16,7 @@ you to create custom layers. However, Matcha implements commonly occuring
 layers, see the following lists:
 
 
-## Feed forward networks
+### Feed forward networks
 
 - [`nn::flatten`, `class nn::Flatten`](nn/layers/flatten) -
   flatten inputs to the shape `{batch_size, rest}`
@@ -34,14 +34,14 @@ layers, see the following lists:
   easily configurable wrapper for `nn::Linear` with various activation
   functions and normalizations
 
-## Convolutional neural networks
+### Convolutional neural networks
 
 Work in progress.
 
-## Recurrent neural networks
+### Recurrent neural networks
 
 Work in progress.
 
-## Transformers
+### Transformers
 
 Work in progress.

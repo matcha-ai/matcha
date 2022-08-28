@@ -3,10 +3,6 @@
   - [Quick start](README)
   - [Installation](installation)
   - [Benchmarks](benchmarks/)
-    - [Kernels](benchmarks/kernels)
-    - [JIT](benchmarks/jit)
-    - [Autograd](benchmarks/autograd)
-    - [Neural networks](benchmarks/nn)
   - [Gotchas](gotchas)
 
 - Tensor arithmetic
@@ -28,6 +24,13 @@
 
   - [Net](nn/net)
   - [Layers](nn/layers/)
+    - [Flatten](nn/layers/flatten)
+    - [Fully-connected (FC)](nn/layers/fc)
+    - [Linear](nn/layers/linear)
+    - [Relu](nn/layers/relu)
+    - [Softmax](nn/layers/softmax)
+    - [Sigmoid](nn/layers/sigmoid)
+    - [Tanh](nn/layers/tanh)
   - [Losses](nn/losses)
   - [Optimizers](nn/optimizers)
   - [Callbacks](nn/callbacks)
