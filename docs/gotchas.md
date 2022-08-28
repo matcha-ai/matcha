@@ -85,7 +85,7 @@ The following following functional API code **is incorrect**.
 New `nn::Fc` layers will be instantiated in every forward propagation:
 
 ```cpp
-Net net = (fn) [](tensor x) {
+Net net = [](tensor x) {
   x = nn::Fc{100, "relu"}(x);
   x = nn::Fc{1, "exp"}(x);
   return x;
@@ -95,7 +95,7 @@ Net net = (fn) [](tensor x) {
 Instead, each stateful component must be made persistent in some way:
 
 ```cpp
-Net net = (fn) [](tensor x) {
+Net net = [](tensor x) {
   static auto hidden = nn::Fc{100, "relu"};
   static auto output = nn::Fc{1, "exp"};
 
@@ -110,7 +110,7 @@ Alternatively, although not so elegant, using reference-capturing lambdas:
 auto hidden = nn::Fc{100, "relu"};
 auto output = nn::Fc{1, "exp"};
 
-Net net = (fn) [&](tensor x) {
+Net net = [&](tensor x) {
   x = output(hidden(x));
   return x;
 };

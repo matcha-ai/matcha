@@ -165,7 +165,7 @@ to create a simple net with one gated block, similar to those used in
 [recurrent neural networks](https://en.wikipedia.org/wiki/Recurrent_neural_network) (RNNs):
 
 ```cpp
-Net net = (fn) [](tensor feed) {
+Net net = [](tensor feed) {
   static auto fc1 = nn::Fc{100, "relu"};
   static auto fc2 = nn::Fc{100, "tanh"};
   static auto output = nn::Fc{10, "softmax"};
