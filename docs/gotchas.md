@@ -11,29 +11,26 @@ version is invoked instead of the original. Therefore, these non-tensor
 variables no longer play a role, since their value cached during the
 compilation is used.
 
-The following code, for example, returns `42` three times, which
+The following code, for example, returns `43` three times, which
 would be unexpected:
 
 ```cpp
-bool change_foo = false;
+int i = 0;
 
 tensor foo(tensor x) {
-  if (!change_foo) {
-    change_foo = true;    // in the first call,
-    return x;             // return x
-  } else {
-    return x - 1;         // in all subsequent calls, return x - 1
-  }
+  i += 1;
+  return x + i;
 }
 
 int main() {
   auto joo = jit(foo);                // wrap foo by matcha JIT compiler
-  std::cout << joo(42) << std::endl;  // foo is JIT compiled, change_foo is set to true in the process
-  std::cout << joo(42) << std::endl;  // but it is irrelevant here, because the compiled flow is used
-  std::cout << joo(42) << std::endl;  // again, the cached flow from the compilation is used
+  std::cout << joo(42) << std::endl;  // foo is JIT compiled, `i` is increased to 1
+  std::cout << joo(42) << std::endl;  // but here, the original function is not run again
+  std::cout << joo(42) << std::endl;  // instead, the previously compiled matcha version is invoked
 }
-
 ```
+
+To fix that, simply replace 
 
 ## Neural network dynamism
 
