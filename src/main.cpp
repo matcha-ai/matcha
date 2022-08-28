@@ -43,9 +43,10 @@ struct MyNet : Net {
 
 void testNet() {
 //  MyNet net;
-  Net net {
-    nn::Fc{100, "relu"},
-    nn::Fc{.units=10, .flags="softmax"},
+  Net net = [](tensor x) {
+    static auto hidden = nn::Fc{100, "relu"};
+    static auto output = nn::Fc{10, "softmax"};
+    return output(hidden(x));
   };
 
   net.loss = nn::Nll{};

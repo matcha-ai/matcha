@@ -38,6 +38,10 @@ public:
 
   Net(const fn& forward);
 
+  template <class Function,
+  std::enable_if_t<std::is_constructible<fn, Function>::value, bool> = true>
+  Net(const Function& forward) : Net((fn) forward) {}
+
 protected:
   // Subclassing API
   Net();
