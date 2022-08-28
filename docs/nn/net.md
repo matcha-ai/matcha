@@ -214,7 +214,8 @@ An `Optimizer` uses the gradients of that loss with respect to (w.r.t.)
 our net's trainable parameters to minimize the loss and approach to 
 the goal. By default, `Net` uses the stochastic
 [Adaptive Moment Estimation (Adam)](https://arxiv.org/abs/1412.6980)
-algorithm (`nn::Adam`), which has proven to be the most efficient for the 
+algorithm ([`nn::Adam`](nn/optimizers#adam)), 
+which has proven to be the most efficient for the 
 vast majority of uses.
 For this reason, we **can usually skip this step altogether**.
 
