@@ -2,12 +2,13 @@
 
   - [Quick start](README)
   - [Installation](installation)
-  - [Benchmarks](benchmarks)
+  - [Benchmarks](benchmarks/)
   - [Gotchas](gotchas)
 
 - Tensor arithmetic
 
   - [Introduction](tensor/)
+  - [Frames](tensor/frames)
   - [Generators](tensor/generators)
   - [Operations](tensor/operations/)
 
@@ -29,11 +30,11 @@
 
 - Neural networks
 
-  - [Net](net)
-  - [Layers](layers)
-  - [Optimizers](optimizers)
-  - [Losses](optimizers)
-  - [Callbacks](callbacks)
+  - [Net](nn/net)
+  - [Layers](nn/layers)
+  - [Losses](nn/losses)
+  - [Optimizers](nn/optimizers)
+  - [Callbacks](nn/callbacks)
 
 - [Tutorials](tutorials/)
 - [Engine backend](engine/)
