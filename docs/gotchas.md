@@ -74,7 +74,7 @@ In contrast to static machine learning frameworks like
 _declare_ the network topology through enumerating its components,
 Matcha allows more flexibility through dynamic flow. However, this
 means that all components that the neural net uses must be stored
-somethere so that they can be explicitly called later in your code.
+somewhere so that they can be explicitly called later in your code.
 For example, instantiating and calling a layer all at once inside
 the `run` method **would not work as expected in TensorFlow**. Instead,
 a new layer would be created in each `run` invokation. Therefore,
@@ -82,7 +82,7 @@ a new layer would be created in each `run` invokation. Therefore,
 as private class members.
 
 The following following functional API code **is incorrect**.
-A new `nn::Fc` layers will be instantiated in every forward propagation:
+New `nn::Fc` layers will be instantiated in every forward propagation:
 
 ```cpp
 Net net = (fn) [](tensor x) {
@@ -92,7 +92,7 @@ Net net = (fn) [](tensor x) {
 };
 ```
 
-Instead, each stateful object must be made persistent in some way:
+Instead, each stateful component must be made persistent in some way:
 
 ```cpp
 Net net = (fn) [](tensor x) {
