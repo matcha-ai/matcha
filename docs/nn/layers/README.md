@@ -18,19 +18,19 @@ layers, see the following lists:
 
 ## Feed forward networks
 
-- [`nn::flatten`, `class nn::Flatten`]() -
+- [`nn::flatten`, `class nn::Flatten`](nn/layers/flatten) -
   flatten inputs to the shape `{batch_size, rest}`
-- [`nn::relu`, `class nn::Relu`]() -
+- [`nn::relu`, `class nn::Relu`](nn/layers/relu) -
   the Rectangular Linear Unit (ReLU)
-- [`nn::sigmoid`, `class nn::Sigmoid`]() -
+- [`nn::sigmoid`, `class nn::Sigmoid`](nn/layers/sigmoid) -
   the [sigmoid](tensor/operations/elementwise-unary#sigmoid) function
-- [`nn::tanh`, `class nn::Tanh`]() -
+- [`nn::tanh`, `class nn::Tanh`](nn/layers/tanh) -
   the [tanh](tensor/operations/elementwise-unary#tanh) function
-- [`nn::softmax`, `class nn::Softmax`]() -
+- [`nn::softmax`, `class nn::Softmax`](nn/layers/softmax) -
   the [softmax](tensor/operations/miscellaneous#softmax) function
-- [`class nn::Linear`]() - 
+- [`class nn::Linear`](nn/layers/linear) - 
   perform stateful linear (affine) transformation to the inputs
-- [`class nn::Fc`]() - 
+- [`class nn::Fc`](nn/layers/fc) - 
   easily configurable wrapper for `nn::Linear` with various activation
   functions and normalizations
 

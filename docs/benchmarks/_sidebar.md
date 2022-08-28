@@ -3,6 +3,10 @@
   - [Quick start](README)
   - [Installation](installation)
   - [Benchmarks](benchmarks/)
+    - [Kernels](benchmarks/kernels)
+    - [JIT](benchmarks/jit)
+    - [Autograd](benchmarks/autograd)
+    - [Neural networks](benchmarks/jit)
   - [Gotchas](gotchas)
 
 - Tensor arithmetic

@@ -1,4 +1,4 @@
-# JIT
+# JIT compilation
 > `jit(const fn& function) -> fn`
 
 JIT is an easy-to-use tool for transforming dynamic programs into
