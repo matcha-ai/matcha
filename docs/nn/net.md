@@ -175,7 +175,7 @@ Net net = [](tensor feed) {
 };
 ```
 
-The network can now be [trained](#training-neural-neural).
+The network can now be [trained](#training-neural-networks).
 
 ## Training neural networks
 > `Net::fit(Dataset ds, size_t epochs = 10) -> void` \
@@ -225,7 +225,7 @@ This step may equally important to designing the entire neural net.
 It involves collecting data from the internet or otherwise, formatting
 it, and assembling it into a single dataset. We will show here only
 how to import an already prepared dataset and perform some pre-processing.
-For a more, refer to the [dataset](dataset/) documentation section.
+For more, refer to the [dataset](dataset/) documentation section.
 
 First, we have to load data from this disk. In this case, we will load the 
 [Sklearn California housing](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.fetch_california_housing.html#sklearn.datasets.fetch_california_housing)
