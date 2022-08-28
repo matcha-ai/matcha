@@ -73,7 +73,7 @@ Customizable train step logic. By default, it performs one _forward_ and
 _backward_ propagation using [`Backprop`](tensor/autograd#backprop), 
 emitting appropriate [callback signals](nn/callbacks/signals).
 
-!> In contrast to static machine learning frameworks like 
+!> **Gotcha!** In contrast to static machine learning frameworks like 
    [TensorFlow](https://www.tensorflow.org/), which let you merely
    _declare_ the network topology through enumerating its components,
    Matcha allows more flexibility through dynamic flow. However, this
@@ -83,7 +83,7 @@ emitting appropriate [callback signals](nn/callbacks/signals).
    the `run` method **would not work as expected in TensorFlow**. Instead,
    a new layer would be created in each `run` invokation. Therefore,
    **you must instantiate all layers before calling `run`**, e.g. from `init`
-   as private class members.
+   as private class members. [Details](gotchas#neural-network-dynamism).
 
 An example will follow. We will create a custom `FcResNet` class using the
 `Net` subclassing API. To demonstrate the flexibility of the subclassing
