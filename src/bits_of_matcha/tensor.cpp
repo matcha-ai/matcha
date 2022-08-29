@@ -332,7 +332,9 @@ tensor::tensor(std::initializer_list<std::initializer_list<std::initializer_list
 
 std::ostream& operator<<(std::ostream& os, const matcha::tensor& t) {
   auto op = new ops::Print(deref(t), false, os);
-  dispatch(op);
+  op->init();
+  op->run();
+  delete op;
   return os;
 }
 

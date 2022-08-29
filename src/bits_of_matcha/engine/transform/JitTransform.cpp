@@ -17,12 +17,12 @@ JitTransform::JitTransform(const fn& function)
 {}
 
 std::shared_ptr<Executor> JitTransform::compile(Lambda lambda) {
-  std::ofstream before("/home/patz/temp/before.txt");
-  std::ofstream after("/home/patz/temp/after.txt");
+//  std::ofstream before("/home/patz/temp/before.txt");
+//  std::ofstream after("/home/patz/temp/after.txt");
 //
 //  deadCodeElimination(lambda);
 //  copyPropagation(lambda);
-  debug(lambda, before);
+//  debug(lambda, before);
 
   inlineExpansion(lambda);
   deadCodeElimination(lambda);
@@ -30,7 +30,7 @@ std::shared_ptr<Executor> JitTransform::compile(Lambda lambda) {
   matmulFusion(lambda);
   constantPropagation(lambda);
 
-  debug(lambda, after);
+//  debug(lambda, after);
 //  debug(lambda);
   init(lambda);
   return std::make_shared<SinglecoreExecutor>(std::move(lambda));
