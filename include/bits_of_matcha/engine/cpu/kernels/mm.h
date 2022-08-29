@@ -14,6 +14,18 @@ void mm(Buffer& a, Buffer& b, Buffer& c, const MatrixwiseBinaryCtx& ctx) {
   size_t sizeB = ctx.rows_b * ctx.cols_b;
   size_t sizeC = ctx.rows_a * ctx.cols_b;
 
+  CBLAS_TRANSPOSE trans_a, trans_b;
+  switch (ctx.transpose.first) {
+  case 'N': trans_a = CblasNoTrans; break;
+  case 'T': trans_a = CblasTrans; break;
+  case 'H': trans_a = CblasConjTrans; break;
+  }
+  switch (ctx.transpose.second) {
+  case 'N': trans_b = CblasNoTrans; break;
+  case 'T': trans_b = CblasTrans; break;
+  case 'H': trans_b = CblasConjTrans; break;
+  }
+
   auto vals_a = a.as<T*>();
   auto vals_b = b.as<T*>();
   auto vals_c = c.as<T*>();
@@ -69,8 +81,8 @@ void mm(Buffer& a, Buffer& b, Buffer& c, const MatrixwiseBinaryCtx& ctx) {
         if constexpr (std::is_same<T, float>()) {
           cblas_sgemm(
             CblasRowMajor,
-            CblasNoTrans,
-            CblasNoTrans,
+            trans_a,
+            trans_b,
             (int) ctx.rows_a,
             (int) ctx.cols_b,
             (int) ctx.cols_a,
@@ -86,8 +98,8 @@ void mm(Buffer& a, Buffer& b, Buffer& c, const MatrixwiseBinaryCtx& ctx) {
         } else if constexpr (std::is_same<T, double>()) {
           cblas_dgemm(
             CblasRowMajor,
-            CblasNoTrans,
-            CblasNoTrans,
+            trans_a,
+            trans_b,
             (int) ctx.rows_a,
             (int) ctx.cols_b,
             (int) ctx.cols_a,
@@ -104,8 +116,8 @@ void mm(Buffer& a, Buffer& b, Buffer& c, const MatrixwiseBinaryCtx& ctx) {
         } else if constexpr (std::is_same<T, std::complex<float>>()) {
           cblas_cgemm(
             CblasRowMajor,
-            CblasNoTrans,
-            CblasNoTrans,
+            trans_a,
+            trans_b,
             (int) ctx.rows_a,
             (int) ctx.cols_b,
             (int) ctx.cols_a,
@@ -122,8 +134,8 @@ void mm(Buffer& a, Buffer& b, Buffer& c, const MatrixwiseBinaryCtx& ctx) {
         } else if constexpr (std::is_same<T, std::complex<double>>()) {
           cblas_zgemm(
             CblasRowMajor,
-            CblasNoTrans,
-            CblasNoTrans,
+            trans_a,
+            trans_b,
             (int) ctx.rows_a,
             (int) ctx.cols_b,
             (int) ctx.cols_a,

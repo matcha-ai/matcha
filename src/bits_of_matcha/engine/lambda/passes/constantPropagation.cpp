@@ -30,12 +30,13 @@ void constantPropagation(Lambda& lambda) {
       continue;
     }
 
-    // pre-compute
+    // Pre-compute.
     op->init();
     op->run();
     delete op;
   }
 
+  // Prune unnecessary tensors.
   std::vector<Tensor*> tensors;
   for (auto&& t: lambda.tensors) {
     if (runtime.contains(t))
@@ -43,6 +44,7 @@ void constantPropagation(Lambda& lambda) {
     else
       t->unreq();
   }
+
   lambda.ops = ops;
   lambda.tensors = tensors;
 }

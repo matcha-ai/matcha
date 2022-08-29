@@ -14,7 +14,8 @@ Uniform::Uniform(Tensor* a, Tensor* b, const Shape& shape, size_t seed)
 }
 
 Reflection<Uniform> Uniform::reflection {
-  .name = "Uniform"
+  .name = "Uniform",
+  .deterministic = false,
 };
 
 void Uniform::run() {

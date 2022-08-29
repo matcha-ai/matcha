@@ -8,7 +8,8 @@
 namespace matcha::engine {
 
 struct MatrixwiseBinaryCtx {
-  MatrixwiseBinaryCtx(const Shape& a, const Shape& b);
+  MatrixwiseBinaryCtx(const Shape& a, const Shape& b,
+                      std::pair<char, char> transpose);
   MatrixwiseBinaryCtx() = default;
 
   std::vector<unsigned> prefix_dims_c;
@@ -17,6 +18,7 @@ struct MatrixwiseBinaryCtx {
   std::vector<size_t> prefix_strides_c;
   unsigned rows_a, rows_b;
   unsigned cols_a, cols_b;
+  std::pair<char, char> transpose;
 };
 
 }

@@ -27,9 +27,8 @@ Lambda clone(const Lambda& lambda) {
   std::map<Tensor*, Tensor*> tensors;
   Lambda result;
 
-  for (auto&& in: lambda.inputs) {
+  for (auto&& in: lambda.inputs)
     tensors[in] = new Tensor(in->frame());
-  }
 
   auto relink = [&] (Tensor* t) {
     if (tensors.contains(t)) return tensors.at(t);
@@ -41,7 +40,9 @@ Lambda clone(const Lambda& lambda) {
 
   for (auto&& op: lambda.ops) {
     auto cop = ops::copy(op);
-    if (!cop || cop == op) throw std::runtime_error("can't copy op");
+    if (!cop || cop == op)
+      throw std::runtime_error("can't copy op");
+
     result.ops.push_back(cop);
 
     for (auto& in: cop->inputs) {
@@ -51,7 +52,6 @@ Lambda clone(const Lambda& lambda) {
     }
     for (auto& out: cop->outputs) {
       if (!out) continue;
-      auto old = out;
       out = relink(out);
       out->setOp(cop);
     }
@@ -59,9 +59,11 @@ Lambda clone(const Lambda& lambda) {
   for (auto&& t: lambda.tensors) result.tensors.push_back(relink(t));
   for (auto&& in: lambda.inputs) result.inputs.push_back(relink(in));
   for (auto&& out: lambda.outputs) result.outputs.push_back(relink(out));
-  for (auto&& [in, binding]: lambda.side_inputs) result.side_inputs[relink(in)] = binding;
 
   for (auto&& t: result.tensors) t->req();
+  for (auto&& [in, binding]: lambda.side_inputs)
+    result.side_inputs[relink(in)] = binding;
+
 
   return result;
 }

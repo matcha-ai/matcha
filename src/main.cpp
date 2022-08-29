@@ -1,5 +1,6 @@
 auto testAutograd() -> void;
 auto testNet() -> void;
+auto testJit() -> void;
 
 #include <matcha>
 
@@ -7,6 +8,8 @@ using namespace matcha;
 using namespace std::complex_literals;
 
 int main() {
+//  print(0);
+//  testJit();
   testNet();
 //  testAutograd();
   return 0;
@@ -43,10 +46,14 @@ struct MyNet : Net {
 
 void testNet() {
 //  MyNet net;
-  Net net = [](tensor x) {
-    static auto hidden = nn::Fc{100, "relu"};
-    static auto output = nn::Fc{10, "softmax"};
-    return output(hidden(x));
+//  Net net = jit([](tensor x) {
+//    static auto hidden = nn::Fc{100, "relu"};
+//    static auto output = nn::Fc{10, "softmax"};
+//    return output(hidden(x));
+//  });
+  Net net {
+//    nn::Fc{100, "relu"},
+    nn::Fc{10, "softmax"},
   };
 
   net.loss = nn::Nll{};
@@ -54,7 +61,7 @@ void testNet() {
 
   Dataset mnist = load("mnist_train.csv");
   mnist = mnist.map([](auto& i) { i["x"] /= 255; });
-  mnist = mnist.batch(64);
+  mnist = mnist.batch(1);
   net.fit(mnist);
 }
 
@@ -69,4 +76,29 @@ void testAutograd() {
     print(g, "\n");
 
   print("y:\n", y, "\n");
+}
+
+tensor side = 1;
+
+tensor bar(tensor x) {
+//  side += 10;
+  side *= 2;
+  return x;
+}
+
+tensor foo(tensor x) {
+  return matmul(x, x.t());
+}
+
+void testJit() {
+  auto joo = jit(foo);
+
+  for (int i = 0; i < 6; i++) {
+//    side = i;
+    print("------");
+//    print(side);
+    tensor y = joo(2 * ones(1, 4));
+    print(y);
+//    print(side);
+  }
 }

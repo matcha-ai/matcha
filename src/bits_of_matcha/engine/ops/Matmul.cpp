@@ -10,9 +10,9 @@
 
 namespace matcha::engine::ops {
 
-Matmul::Matmul(Tensor* a, Tensor* b)
+Matmul::Matmul(Tensor* a, Tensor* b, std::pair<char, char> transpose)
   : Op{a, b}
-  , iter_(a->shape(), b->shape())
+  , iter_(a->shape(), b->shape(), transpose)
 {
   Dtype dtype = promoteDtypes(a, b);
   if (!isFloatingReal(dtype))
@@ -39,13 +39,18 @@ Matmul::Matmul(Tensor* a, Tensor* b)
 //  }
 }
 
+std::pair<char, char> Matmul::getTranspose() const {
+  return iter_.transpose;
+}
+
 Reflection<Matmul> Matmul::reflection {
   .name = "Matmul",
   .back = [](const BackCtx& ctx) {
     std::vector<Tensor*> result = {nullptr, nullptr};
+    auto forw = dynamic_cast<Matmul*>(ctx.forward);
 
-    auto a = ctx.forward->inputs[0];
-    auto b = ctx.forward->inputs[1];
+    auto a = forw->inputs[0];
+    auto b = forw->inputs[1];
     auto gc = ctx.vals[0];
 
     if (ctx.wrts[0]) {
@@ -73,6 +78,10 @@ Reflection<Matmul> Matmul::reflection {
         result[i] = dispatch<Sum>(result[i], 0, false)[0];
       }
     }
+
+    auto transpose = forw->getTranspose();
+    if (transpose.first) result[0] = dispatch<Transpose>(result[0])[0];
+    if (transpose.second) result[1] = dispatch<Transpose>(result[1])[0];
 
     return result;
   },

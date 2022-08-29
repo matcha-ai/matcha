@@ -5,7 +5,8 @@
 
 namespace matcha::engine {
 
-MatrixwiseBinaryCtx::MatrixwiseBinaryCtx(const Shape& a, const Shape& b) {
+MatrixwiseBinaryCtx::MatrixwiseBinaryCtx(const Shape& a, const Shape& b,
+                                         std::pair<char, char> transpose) {
   if (std::min(a.rank(), b.rank()) < 2) {
     throw std::invalid_argument("both inputs must have rank at least 2");
   }
@@ -19,6 +20,9 @@ MatrixwiseBinaryCtx::MatrixwiseBinaryCtx(const Shape& a, const Shape& b) {
   cols_b = b[-1];
   rows_a = a[-2];
   rows_b = b[-2];
+
+  if (transpose.first != 'N') std::swap(cols_a, rows_a);
+  if (transpose.second != 'N') std::swap(cols_b, rows_b);
 
   prefix_strides_a[prefix_strides_a.size() - 1] = 1;
   prefix_strides_b[prefix_strides_b.size() - 1] = 1;
@@ -58,12 +62,6 @@ MatrixwiseBinaryCtx::MatrixwiseBinaryCtx(const Shape& a, const Shape& b) {
       prefix_strides_b[prefix_strides_b.size() - 1 - i] = 0;
     }
   }
-
-//  for (int i = 0 ; i < prefix_strides_a.size(); i++) {
-//    print(prefix_strides_a[i], " ", prefix_strides_b[i], " -> ", prefix_strides_c[i]);
-//  }
-//  print("---");
-//  exit(0);
 }
 
 }

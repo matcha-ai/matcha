@@ -175,13 +175,15 @@ struct Internal : Callback {
   }
 
   void onBatchBegin(size_t batch, size_t max) override {
+    std::lock_guard guard(mtx_);
     batch_ = batch;
     batches_ = max;
     batchBeginTime_ = std::chrono::steady_clock::now();
-    update();
+//    update();
   }
 
   void onBatchEnd() override {
+    std::lock_guard guard(mtx_);
     auto eduration = std::chrono::steady_clock::now() - epochBeginTime_;
     auto bduration = std::chrono::steady_clock::now() - batchBeginTime_;
     usEpoch_ = std::chrono::duration_cast<std::chrono::microseconds>(eduration).count();
@@ -189,6 +191,7 @@ struct Internal : Callback {
   }
 
   void onPropagateForward(const Instance& instance, const tensor& loss) override {
+    std::lock_guard guard(mtx_);
 //    if (!epoch_) return;
     std::stringstream buff;
     loss_ = mean(loss);
@@ -204,6 +207,7 @@ struct Internal : Callback {
   }
 
   void onPropagateBackward(const std::map<tensor*, tensor>& grads) override {
+    std::lock_guard guard(mtx_);
 //    if (!epoch_) return;
 //    if (grads.empty()) return;
 //    std::vector<tensor> gflows;

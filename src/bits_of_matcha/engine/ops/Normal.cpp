@@ -15,6 +15,7 @@ Normal::Normal(Tensor* m, Tensor* sd, const Shape& shape, size_t seed)
 
 Reflection<Normal> Normal::reflection {
   .name = "Normal",
+  .deterministic = false,
 };
 
 void Normal::run() {

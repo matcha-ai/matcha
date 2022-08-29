@@ -103,6 +103,10 @@ Lambda Registry::back(const BackCtx& ctx) {
   return lambda2;
 }
 
+bool Registry::isDeterministic(Op* op) {
+  return get(op).deterministic(op);
+}
+
 bool Registry::isSideEffect(Op* op) {
   return get(op).side_effect(op);
 }
@@ -122,6 +126,7 @@ std::string name(Op* op) { return Registry::name(op); }
 std::string label(Op* op) { return Registry::label(op); }
 Lambda back(const BackCtx& ctx) { return Registry::back(ctx); }
 bool isSideEffect(Op* op) { return Registry::isSideEffect(op); }
+bool isDeterministic(Op* op) { return Registry::isDeterministic(op); }
 Op* copy(Op* op) { return Registry::copy(op); }
 
 }

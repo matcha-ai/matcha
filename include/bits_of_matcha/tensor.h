@@ -96,7 +96,7 @@ public:
   explicit operator bool() const;
 
 public:
-  tensor();
+  tensor() noexcept;
 
   tensor(float scalar);
   tensor(double scalar);

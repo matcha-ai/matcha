@@ -21,6 +21,7 @@ public:
     std::function<std::string ()> name;
     std::function<std::string (Op* op)> label;
     std::function<std::vector<Tensor*> (const BackCtx&)> back;
+    std::function<bool (Op* op)> deterministic;
     std::function<bool (Op* op)> side_effect;
     std::function<Op* (Op* op)> copy;
 
@@ -32,6 +33,7 @@ public:
   static std::string label(Op* op);
   static Lambda back(const BackCtx& ctx);
   static bool isSideEffect(Op* op);
+  static bool isDeterministic(Op* op);
   static Op* copy(Op* op);
 
 private:
@@ -50,6 +52,7 @@ std::string name(Op* op);
 std::string label(Op* op);
 Lambda back(const BackCtx& ctx);
 bool isSideEffect(Op* op);
+bool isDeterministic(Op* op);
 Op* copy(Op* op);
 
 }

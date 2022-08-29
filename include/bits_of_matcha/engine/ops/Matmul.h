@@ -9,10 +9,13 @@
 namespace matcha::engine::ops {
 
 struct Matmul : Op {
-  explicit Matmul(Tensor* a, Tensor* b);
+  explicit Matmul(Tensor* a, Tensor* b,
+                  std::pair<char, char> transpose = {'N', 'N'});
   static Reflection<Matmul> reflection;
 
   void run() override;
+
+  std::pair<char, char> getTranspose() const;
 
 private:
   MatrixwiseBinaryCtx iter_;

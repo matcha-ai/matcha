@@ -2,6 +2,8 @@
 #include "bits_of_matcha/tensor.h"
 
 #include "bits_of_matcha/engine/ops/Add.h"
+#include "bits_of_matcha/engine/ops/Subtract.h"
+#include "bits_of_matcha/engine/ops/Negative.h"
 #include "bits_of_matcha/engine/ops/Multiply.h"
 #include "bits_of_matcha/engine/ops/Divide.h"
 #include "bits_of_matcha/engine/ops/Matmul.h"
@@ -115,7 +117,8 @@ tensor add(const tensor& a, const tensor& b) {
 }
 
 tensor subtract(const tensor& a, const tensor& b) {
-  return a + negative(b);
+  auto outs = dispatch<ops::Subtract>(deref(a), deref(b));
+  return ref(outs[0]);
 }
 
 tensor multiply(const tensor& a, const tensor& b) {
@@ -134,7 +137,8 @@ tensor positive(const tensor& a) {
 }
 
 tensor negative(const tensor& a) {
-  return -1 * a;
+  auto outs = dispatch<ops::Negative>(deref(a));
+  return ref(outs[0]);
 }
 
 tensor matmul(const tensor& a, const tensor& b) {

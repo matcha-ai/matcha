@@ -20,6 +20,7 @@ struct Reflection {
   std::string name;
   std::function<std::string (T*)> label = [&](auto) { return name; };
   std::function<std::vector<Tensor*> (const BackCtx&)> back = [](auto&) { return std::vector<Tensor*>{}; };
+  bool deterministic = true;
   bool side_effect = false;
   std::function<void (T*)> save;
   std::function<void (T*)> load;
@@ -32,6 +33,7 @@ struct Reflection {
         .name = [meta] { return meta->name; },
         .label = [meta] (Op* op) { return meta->label(dynamic_cast<T*>(op)); },
         .back = meta->back,
+        .deterministic = [meta] (Op* op) { return meta->deterministic; },
         .side_effect = [meta] (Op* op) { return meta->side_effect; },
         .copy = [meta] (Op* op) { return meta->copy(dynamic_cast<T*>(op)); },
       };

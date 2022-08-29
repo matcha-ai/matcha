@@ -57,7 +57,7 @@ void Tracer::setFrozen(bool frozen) {
 }
 
 tuple Tracer::open(const std::vector<Frame>& frames) {
-  ops::Print::claimCout();
+//  ops::Print::claimCout();
   tracings_.push(this);
   tuple inputs;
   inputs.reserve(frames.size());
@@ -72,7 +72,7 @@ tuple Tracer::open(const std::vector<Frame>& frames) {
 }
 
 Lambda Tracer::close(const tuple& outputs) {
-  ops::Print::unclaimCout();
+//  ops::Print::unclaimCout();
 
   if (tracings_.top() != this)
     throw std::runtime_error("tracing stack got corrupted");

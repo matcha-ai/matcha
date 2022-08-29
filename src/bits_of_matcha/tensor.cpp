@@ -18,7 +18,7 @@ using namespace matcha::engine;
 
 namespace matcha {
 
-tensor::tensor()
+tensor::tensor() noexcept
   : tensor(new Tensor({}))
 {}
 

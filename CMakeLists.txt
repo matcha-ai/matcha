@@ -107,6 +107,7 @@ set(
   include/bits_of_matcha/engine/lambda/Module.h
   include/bits_of_matcha/engine/lambda/Pass.h
 
+  include/bits_of_matcha/engine/lambda/passes/matmulFusion.h
   include/bits_of_matcha/engine/lambda/passes/deadCodeElimination.h
   include/bits_of_matcha/engine/lambda/passes/copyPropagation.h
   include/bits_of_matcha/engine/lambda/passes/init.h
@@ -145,6 +146,8 @@ set(
   include/bits_of_matcha/engine/ops/Require.h
   include/bits_of_matcha/engine/ops/Broadcast.h
   include/bits_of_matcha/engine/ops/Add.h
+  include/bits_of_matcha/engine/ops/Subtract.h
+  include/bits_of_matcha/engine/ops/Negative.h
   include/bits_of_matcha/engine/ops/Multiply.h
   include/bits_of_matcha/engine/ops/Divide.h
   include/bits_of_matcha/engine/ops/Matmul.h
@@ -183,7 +186,6 @@ set(
   include/bits_of_matcha/engine/ops/SideOutput.h
   include/bits_of_matcha/engine/ops/Gather.h
 
-#  include/bits_of_matcha/grafana/Grafana.h
 )
 
 set(
@@ -265,11 +267,12 @@ set(
   src/bits_of_matcha/engine/lambda/Executor.cpp
   src/bits_of_matcha/engine/lambda/Module.cpp
 
-  src/bits_of_matcha/engine/lambda/passes/reduceToEffects.cpp
-  src/bits_of_matcha/engine/lambda/passes/contractIdentities.cpp
-  src/bits_of_matcha/engine/lambda/passes/initialize.cpp
-  src/bits_of_matcha/engine/lambda/passes/flatten.cpp
-  src/bits_of_matcha/engine/lambda/passes/foldConstants.cpp
+  src/bits_of_matcha/engine/lambda/passes/deadCodeElimination.cpp
+  src/bits_of_matcha/engine/lambda/passes/matmulFusion.cpp
+  src/bits_of_matcha/engine/lambda/passes/copyPropagation.cpp
+  src/bits_of_matcha/engine/lambda/passes/init.cpp
+  src/bits_of_matcha/engine/lambda/passes/inlineExpansion.cpp
+  src/bits_of_matcha/engine/lambda/passes/constantPropagation.cpp
   src/bits_of_matcha/engine/lambda/passes/debug.cpp
 
   src/bits_of_matcha/engine/lambda/executors/SinglecoreExecutor.cpp
@@ -291,6 +294,8 @@ set(
   src/bits_of_matcha/engine/ops/Require.cpp
   src/bits_of_matcha/engine/ops/Broadcast.cpp
   src/bits_of_matcha/engine/ops/Add.cpp
+  src/bits_of_matcha/engine/ops/Subtract.cpp
+  src/bits_of_matcha/engine/ops/Negative.cpp
   src/bits_of_matcha/engine/ops/Multiply.cpp
   src/bits_of_matcha/engine/ops/Divide.cpp
   src/bits_of_matcha/engine/ops/Matmul.cpp
@@ -329,16 +334,15 @@ set(
   src/bits_of_matcha/engine/ops/SideOutput.cpp
   src/bits_of_matcha/engine/ops/Gather.cpp
 
-#  src/bits_of_matcha/grafana/Grafana.cpp
 )
 
 #set(BLA_VENDOR OpenBLAS)
 
 find_package(BLAS REQUIRED)
 find_package(OpenCL REQUIRED)
-find_package(libpng CONFIG REQUIRED)
+#find_package(libpng CONFIG REQUIRED)
 find_package(JPEG REQUIRED)
-find_package(CLBlast CONFIG REQUIRED)
+#find_package(CLBlast CONFIG REQUIRED)
 message("${BLAS_LIBRARIES}")
 
 add_library(${PROJECT_NAME} SHARED)
@@ -370,8 +374,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE pthread)
 #target_link_libraries(${PROJECT_NAME} PRIVATE ${BLAS_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} PRIVATE /usr/lib/libcblas.so)
 target_link_libraries(${PROJECT_NAME} PRIVATE dl)
-#target_link_libraries(${PROJECT_NAME} PRIVATE curl)
-target_link_libraries(${PROJECT_NAME} PRIVATE clblast)
+#target_link_libraries(${PROJECT_NAME} PRIVATE clblast)
 
 target_link_libraries(main PUBLIC ${PROJECT_NAME})
 
