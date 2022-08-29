@@ -31,7 +31,7 @@ For details about benchmark generation, see
 
 ### Available benchmarking data:
 
-- [Operation kernels](benchmarks/kernels) - performance of individual tensor operations
+- [Operations](benchmarks/ops) - performance of tensor operations
 - [JIT compilation](benchmarks/jit) - effects of JIT optimizations and overheads of JITing
 - [Automatic differentiation](benchmarks/autograd) - automatic differentiation performance
 - [Neural networks](benchmarks/nn) - performance of training and generating predictions

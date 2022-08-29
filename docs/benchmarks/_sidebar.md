@@ -3,7 +3,7 @@
   - [Quick start](README)
   - [Installation](installation)
   - [Benchmarks](benchmarks/)
-    - [Kernels](benchmarks/kernels)
+    - [Operations](benchmarks/ops)
     - [JIT](benchmarks/jit)
     - [Autograd](benchmarks/autograd)
     - [Neural networks](benchmarks/nn)
