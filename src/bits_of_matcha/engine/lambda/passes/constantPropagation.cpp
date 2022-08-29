@@ -15,7 +15,7 @@ void constantPropagation(Lambda& lambda) {
     runtime.insert(in);
 
   for (auto&& op: lambda.ops) {
-    bool deterministic = true;
+    bool deterministic = ops::isDeterministic(op);
     bool side_effect = ops::isSideEffect(op);
 
     bool r = std::any_of(op->inputs.begin(),
@@ -31,6 +31,7 @@ void constantPropagation(Lambda& lambda) {
     }
 
     // pre-compute
+    op->init();
     op->run();
     delete op;
   }
