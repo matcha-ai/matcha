@@ -52,7 +52,7 @@ void testNet() {
 //    return output(hidden(x));
 //  });
   Net net {
-//    nn::Fc{100, "relu"},
+    nn::Fc{100, "relu"},
     nn::Fc{10, "softmax"},
   };
 
@@ -61,7 +61,7 @@ void testNet() {
 
   Dataset mnist = load("mnist_train.csv");
   mnist = mnist.map([](auto& i) { i["x"] /= 255; });
-  mnist = mnist.batch(1);
+  mnist = mnist.batch(64);
   net.fit(mnist);
 }
 
