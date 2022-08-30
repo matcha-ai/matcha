@@ -1,4 +1,5 @@
 # Tensors
+> `class tensor final`
 
 Matcha provides a primitive-like type `tensor` to enable large-scale computations.
 Tensors represent multidimensional arrays of data of a signle type (usually `Float`).

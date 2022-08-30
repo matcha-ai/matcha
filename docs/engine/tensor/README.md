@@ -5,12 +5,12 @@
 A reference-requirement-counted backend object for `tensor`.
 
 
-## Constructors
+#### Constructors
 
 - `explicit Tensor(const Dtype& dtype, const Shape& shape)` - from Dtype and Shape
 - `explicit Tensor(const Frame& frame)` - from Frame directly
 
-## Frame methods
+#### Frame methods
 
 - `frame() const -> const Frame&` - tensor frame
 - `dtype() const -> const Dtype&` - tensor dtype 
@@ -19,7 +19,7 @@ A reference-requirement-counted backend object for `tensor`.
 - `rank() const -> size_t` - number of shape dimensions 
 - `bytes() const -> size_t` - required size in bytes to fit the contents 
 
-## Buffer methods
+#### Buffer methods
 
 - `buffer() -> Buffer&` - gets tensor buffer
 - `malloc() -> Buffer&` - fetches memory block into tensor's buffer if not already present
@@ -27,20 +27,17 @@ A reference-requirement-counted backend object for `tensor`.
 - `share(Buffer& buffer) -> Buffer&` - share memory of given buffer
 - `share(Tensor* tensor) -> Buffer&` - share memory of given tensor's buffer
 
-## Context methods
+#### Context methods
 
 - `op() const -> Op*` - source operation (`nullptr` if not present or deleted) 
 - `setOp(Op* op) -> void` - updates source operation
 - `ref() -> void` - increases tensor's internal reference count
 - `req() -> void` - increases tensor's internal requirement count
-- `unref() -> void` - decreases tensor's internal reference count \*
-- `unreq() -> void` - decreases tensor's internal requirement count \*
+- `unreq() -> void` - decreases tensor's internal requirement count
 - `refs() -> unsigned` - returns internal reference count
 - `reqs() -> unsigned` - returns internal requirement count
 
-\* if both references and requirements hit zero, tensor is automatically deleted
-
-## Other methods
+#### Other methods
 
 - `readData() -> void*` - returns pointer to internal tensor memory transferred to RAM;
    this is forbidden if tracing

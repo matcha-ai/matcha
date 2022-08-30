@@ -1,22 +1,21 @@
 # Op
-
-> `engine::Op`
+> `class engine::Op`
 
 Base operation class, all matcha operations inherit from `Op`.
 
-## Constructors
+#### Constructors
 
 - `explicit Op(const std::vector<Tensor*>& inputs)` - op with initialized `inputs`
 - `explicit Op(std::initializer_list<Tensor*> inputs)` - op with initialized `inputs`
 
-## Virtual methods
+#### Virtual methods
 
 The following methods can be overriden when implementing custom operations:
 
 - `init() -> void` - called automatically before `run()`, code that doesn't have to be executed in every `run()` should be here
 - `run() -> void` - operation computation logic
 
-## Public members
+#### Public members
 
 Every operation has its `inputs` and `outputs`. During the operation's lifecycle,
 they can change. However, they are guaranteed to always have the same frames.
@@ -26,7 +25,7 @@ derived constructors using `addOutput` (see below).
 - `std::vector<Tensor*> inputs` - operation inputs, `nullptr` allowed
 - `std::vector<Tensor*> outputs` - operations outputs, `nullptr` allowed
 
-## Protected methods
+#### Protected methods
 
 - `addOutput(const Frame& frame) -> Tensor*` - adds a new tensor of given frame to the op's outputs and returns it
 - `addOutput(const Dtype& dtype, const Shape& shape) -> Tensor*` - see above

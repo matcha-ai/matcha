@@ -1,25 +1,36 @@
 # Passes
 
-> `engine::Pass` - alias for `std::function<void(Lambda&)>`
+> `using engine::Pass = std::function<void(Lambda&)>`
 
-A function that passes through a `Lambda` and modifies it or otherwise
-accesses it is called a `Pass`. Their implementation is often 
+A higher-order function that passes through a `Lambda` and modifies it 
+or otherwise accesses it is called a `Pass`. Their implementation is often 
 non-trivial, especially for optimization purposes. Passes 
-are usually called by Transforms such as with JIT to simplify lambdas. 
-However, e.g. the Matcha backpropagation system, which itself may be
-formally called a pass (as it accepts a lambda and extends it by
-gradient flow) calls some passes too for the backpropagation to be easier
-and more modular. Passing through a valid lambda should leave it valid.
+are usually invoked by Transforms such as [JIT](tensor/jit).
+The Matcha automatic differentiation system, which may be
+formally called a pass too (as it accepts a lambda and extends it by
+gradient flow) also calls some passes to make the task simpler
+and more modular. 
+
+!> Unless said explicitly otherwise, 
+   passes assume the given lambda to be valid, strictly according to
+   [these](engine/lambda/README#creating-a-lambda) specifications.
+   Passing through a valid lambda should leave it valid.
 
 
-- `engine::debug(const Lambda& lambda) -> void` - prints the lambda and debugging info
-  for the lambda, performs some health checks (e.g. topological order, flow integrity)
-- `engine::init(Lambda& lambda) -> void` - initializes all operations in the lambda
-- `engine::deadCodeElimination(Lambda& lambda) -> void` - prunes tensors and operations
-  that no output or side effect depends on
-- `engine::inlineExpansion(Lambda& lambda) -> void` - finds Lambdas nested inside the lambda,
-  clones them, and recursively flattens them
-- `engine::copyPropagation(Lambda& lambda) -> void` - removes _unnecessary_ identity
-  operations (some identity operations are needed for side-effects)
-- `engine::constantPropagation(Lambda& lambda) -> void` - runs all operations that do not
-  depend on a non-constant value and prunes them
+- `engine::constantPropagation(Lambda& lambda) -> void` - 
+  runs deterministic non-side-effect operations depending on constant 
+  tensors only and prunes them
+- `engine::copyPropagation(Lambda& lambda) -> void` - 
+  contracts identity operations
+- `engine::deadCodeElimination(Lambda& lambda) -> void` - 
+  prunes tensors and operations that no output or side effect depends on
+- `engine::debug(const Lambda& lambda) -> void` - 
+  prints the lambda and related debugging info,
+  performs some validity checks and reports found corruptions
+- `engine::init(Lambda& lambda) -> void` - 
+  initializes operations in the lambda
+- `engine::inlineExpansion(Lambda& lambda) -> void` - 
+  finds nested lambdas and recursively inlines them
+- `engine::matmulFusion(Lambda& lambda) -> void` - fuses matrix 
+   multiplications with adjacent transpose operations into a single operation
+

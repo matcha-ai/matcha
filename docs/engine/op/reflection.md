@@ -1,6 +1,6 @@
 # Reflection
 
-> `template <class Operation> engine::Reflection`
+> `template <class Operation> struct engine::Reflection`
 
 To enable the Matcha engine to perform some operation-level manipulations,
 each operation must declare its `Reflection`. Reflection was designed to need
@@ -28,7 +28,7 @@ Reflection<CustomOp> CustomOp::reflection {
 };
 ```
 
-## Public reflection members
+#### Public reflection members
 
 - `std::string name` - operation type name
 - `std::function<std::string(Operation*)> label` - operation instance label
@@ -36,9 +36,12 @@ Reflection<CustomOp> CustomOp::reflection {
 - `std::function<bool(Operation*)> side_effect` - whether an operation has or does not have a side effect (default false)
 - `std::function<Operation*(Operation*)> copy` - operation copy (runs the operation's copy constructor by default)
 
-## Other public members
+#### Internal logic
 
 - `Reflection::RegisterCtx register_ctx_` - notifies the Matcha engine about new Reflections
 
+!> The internal logic should not be modified directly. It is exposed
+   to enable the C++20 [aggregate initialization](https://en.cppreference.com/w/cpp/language/aggregate_initialization)
+   feature.
 
 

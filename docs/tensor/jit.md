@@ -53,13 +53,14 @@ to be processed, and these instructions will never have to be repeated again.
 Currently, JIT performs the following optimizations. For more in-depth 
 description, refer to [`engine::Pass`](engine/lambda/passes).
 
-- Inline expansion - recursively inlines all nested Matcha functions to allow
-  for further interprocedural optimizations
-- Dead code elimination (DCE) - prunes operations that no direct effect or
-  side effect depends on
-- Copy propagation - eliminates unnecessary identities
 - Constant propagation - pre-caches tensors that can be deterministically
   computed in compile-time rather than in run-time
+- Copy propagation - eliminates unnecessary identities
+- Dead code elimination (DCE) - prunes operations that no direct effect or
+  side effect depends on
+- Inline expansion - recursively inlines all nested Matcha functions to allow
+  for further interprocedural optimizations
+- Matmul fusion - fuses matrix multiplications with adjacent transpose operations
 
 ## To JIT or not to JIT
 
