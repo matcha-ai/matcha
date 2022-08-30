@@ -13,6 +13,16 @@ the following input generators:
 Note that input generation was performed always before the benchmarking
 itself to avoid errors caused by the potential generation overhead.
 
+For numeric relationships, the data have been fitted by the polynomial 
+regression of degree 3:
+
+$ y = a_0 + a_1 x + a_2 x^2 + a_3 x^3 $
+
+The Mean Relative Standard Deviation reports the mean of the following value
+calculated per $ \vec{b} $ vector of time datapoints with the same `scale`:
+
+$ \textrm{rsd} = \frac{\sqrt{ \textrm{var} ( \vec{b} )} }{ \textrm{mean} ( \vec{b} ) } $
+
 This file and all shown benchmarks have been generated automatically.
 
 
