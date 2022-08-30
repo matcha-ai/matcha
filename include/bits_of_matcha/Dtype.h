@@ -5,7 +5,7 @@
 
 namespace matcha {
 
-class Dtype {
+class Dtype final {
 public:
 
   enum {

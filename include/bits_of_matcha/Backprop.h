@@ -12,7 +12,7 @@ namespace matcha {
 /**
  * @brief Back-propagation controller
  */
-class MATCHA_BACKPROP_API Backprop {
+class MATCHA_BACKPROP_API Backprop final {
 public:
   Backprop();
 //  explicit Backprop(std::initializer_list<tensor*> wrt);

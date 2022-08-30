@@ -9,7 +9,7 @@
 
 namespace matcha {
 
-class Instance {
+class Instance final {
 public:
   Instance() = default;
   Instance(const std::map<std::string, tensor>& data);

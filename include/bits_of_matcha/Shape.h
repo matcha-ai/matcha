@@ -8,7 +8,7 @@
 
 namespace matcha {
 
-class Shape {
+class Shape final {
 public:
   Shape(std::initializer_list<unsigned> dims);
   Shape(const std::vector<unsigned>& dims);

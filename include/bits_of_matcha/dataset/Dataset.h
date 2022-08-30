@@ -9,7 +9,7 @@
 
 namespace matcha {
 
-class Dataset {
+class Dataset final {
 public:
   Dataset();
 
