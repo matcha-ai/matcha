@@ -2,7 +2,7 @@
 
 > `engine::Tensor`
 
-A reference-requirement-counted backend object for `tensor`.
+A reference-counted backend object for `tensor`.
 
 
 #### Constructors
@@ -31,10 +31,8 @@ A reference-requirement-counted backend object for `tensor`.
 
 - `op() const -> Op*` - source operation (`nullptr` if not present or deleted) 
 - `setOp(Op* op) -> void` - updates source operation
-- `ref() -> void` - increases tensor's internal reference count
 - `req() -> void` - increases tensor's internal requirement count
 - `unreq() -> void` - decreases tensor's internal requirement count
-- `refs() -> unsigned` - returns internal reference count
 - `reqs() -> unsigned` - returns internal requirement count
 
 #### Other methods

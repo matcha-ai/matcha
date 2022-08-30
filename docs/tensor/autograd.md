@@ -16,7 +16,7 @@ Matcha function transformations like [JIT](tensor/jit).
 
 
 ## Backprop
-> `class Backprop`
+> `class Backprop final`
 
 `Backprop` is the main class for controlling backpropagation. Conceptually, it
 roughly maps to [`tf.GradientTape`](https://www.tensorflow.org/api_docs/python/tf/GradientTape).

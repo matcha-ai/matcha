@@ -1,4 +1,5 @@
 # Dataset pipelines
+> `class Dataset final`
 
 Matcha comes together with a seamlessly integrated and modular dataset pipeline system. The pipelines enable you to load (or generate) data
 and manipulate it just-in-time or otherwise tune it to your needs, in a way
@@ -8,6 +9,7 @@ that is both memory and time efficient.
    This prevents wasting memory.
 
 ## Data instances
+> `class Instance final`
 
 A single piece of data is called an `Instance`. Instances behave as a dictionary of tensors with string keys. Why? It's quite common to
 store more than one information per data entry: for example, we might have labeled images (\*image of a cat\* - "cat", and so on).

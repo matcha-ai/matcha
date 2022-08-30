@@ -1,5 +1,5 @@
 # Tensor frames
-> `class Frame`
+> `class Frame final`
 
 Frames say how tensor contents should be interpreted. They
 provide the underlying scalar datatype ([`Dtype`](#tensor-dtype))
@@ -22,7 +22,7 @@ brackets are left empty: `Bool[]` for a single boolean.
 
 
 ## Tensor dtype
-> `class Dtype`
+> `class Dtype final`
 
 Immutable underlying tensor datatype:
 
@@ -53,7 +53,7 @@ Immutable underlying tensor datatype:
 - `Cdouble` - 2x 64-bit floating point complex (128-bit)
 
 ## Tensor shape
-> `class Shape`
+> `class Shape final`
 
 Immutable multidimensional tensor shape.
 

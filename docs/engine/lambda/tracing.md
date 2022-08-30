@@ -14,7 +14,12 @@ and limitations, refer to [this article](tensor/tracing).
 
 Class faciliating potentially recursive tracing.
 
-### Tracer lifecycle
+#### Control methods
+
+- `open(const std::vector<Frame>& frames) -> std::vector<tensor>` - initializes the tracing process and returns inputs
+- `close(const std::vector<tensor>& outputs) -> Lambda` - finalizes the tracing process and returns the resulting lambda
+
+#### Tracer lifecycle
 
 - a `Tracer` is instantiated
 - its `open(const std::vector<Frame>& frames)` method is called, returning
@@ -24,7 +29,3 @@ Class faciliating potentially recursive tracing.
   on the output tensors, finalizes the tracing process and returns the resulting `Lambda`
 - the tracer is destroyed
 
-### Control methods
-
-- `open(const std::vector<Frame>& frames) -> std::vector<tensor>` - initializes the tracing process and returns inputs
-- `close(const std::vector<tensor>& outputs) -> Lambda` - finalizes the tracing process and returns the resulting lambda
