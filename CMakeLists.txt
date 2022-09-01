@@ -114,6 +114,7 @@ set(
   include/bits_of_matcha/engine/lambda/passes/inlineExpansion.h
   include/bits_of_matcha/engine/lambda/passes/constantPropagation.h
   include/bits_of_matcha/engine/lambda/passes/debug.h
+  include/bits_of_matcha/engine/lambda/passes/check.h
 
   include/bits_of_matcha/engine/lambda/executors/SinglecoreExecutor.h
 
@@ -274,6 +275,7 @@ set(
   src/bits_of_matcha/engine/lambda/passes/inlineExpansion.cpp
   src/bits_of_matcha/engine/lambda/passes/constantPropagation.cpp
   src/bits_of_matcha/engine/lambda/passes/debug.cpp
+  src/bits_of_matcha/engine/lambda/passes/check.cpp
 
   src/bits_of_matcha/engine/lambda/executors/SinglecoreExecutor.cpp
 

@@ -6,6 +6,7 @@ namespace matcha::engine {
 
 void constantPropagation(Lambda& lambda) {
   std::set<Tensor*> runtime; // tensors that must be computed in the runtime
+  std::set<Tensor*> keep, fold;
   std::vector<Op*> ops;
 
   for (auto&& in: lambda.inputs)
@@ -26,6 +27,10 @@ void constantPropagation(Lambda& lambda) {
       // propagate runtime scheduling
       for (auto&& out: op->outputs)
         runtime.insert(out);
+
+      for (auto&& in: op->inputs)
+        keep.insert(in);
+
       ops.push_back(op);
       continue;
     }
@@ -33,16 +38,20 @@ void constantPropagation(Lambda& lambda) {
     // Pre-compute.
     op->init();
     op->run();
+
+    for (auto&& in: op->inputs)
+      fold.insert(in);
+
     delete op;
   }
 
   // Prune unnecessary tensors.
   std::vector<Tensor*> tensors;
   for (auto&& t: lambda.tensors) {
-    if (runtime.contains(t))
-      tensors.push_back(t);
-    else
+    if (fold.contains(t) && !keep.contains(t))
       t->unreq();
+    else
+      tensors.push_back(t);
   }
 
   lambda.ops = ops;

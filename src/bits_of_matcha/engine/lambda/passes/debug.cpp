@@ -1,4 +1,5 @@
 #include "bits_of_matcha/engine/lambda/passes/debug.h"
+#include "bits_of_matcha/engine/lambda/passes/check.h"
 #include "bits_of_matcha/engine/op/Op.h"
 #include "bits_of_matcha/engine/utils/IdentifierTranslator.h"
 
@@ -91,6 +92,13 @@ void debug(const Lambda& lambda, std::ostream& os) {
   }
 
   os << std::endl;
+
+  int validity = check(lambda);
+  if (validity != 0) {
+    os << "WARNING: lambda validity check returned with non-zero status: "
+       << validity << "\n\n";
+  }
+
   os << std::string(30, '=') << "= CHAIN CHECK END =" << std::string(30, '=') << std::endl;
 }
 
