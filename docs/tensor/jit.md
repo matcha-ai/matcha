@@ -22,10 +22,10 @@ tensor foo(tensor a) {
 }
 
 int main() {
-  auto fooButFaster = jit(foo);
+  auto fooButOptimized = jit(foo);
 
   tensor a = uniform(100, 100);
-  tensor b = fooButFaster(a);
+  tensor b = fooButOptimized(a);
   std::cout << b << std::endl;
 }
 
