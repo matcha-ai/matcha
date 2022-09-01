@@ -5,6 +5,9 @@ Lambda is a sequence of `engine::Op` operations stored for lazy execution.
 It is a fundamental class within the Matcha engine, since it mediates
 many core functionalities of matcha, from 
 [automatic differentiation](tensor/autograd) to [JIT](tensor/jit).
+Lambdas can be represented as directed aclycic multigraphs, where
+each `engine::Op` represents one node, and each `engine::Tensor` represents
+one edge.
 
 A lambda has its inputs and outputs, similarly to a single `engine::Op`.
 Apart from inputs, lambda also has its constants, which are tensors needed
