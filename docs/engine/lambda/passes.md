@@ -17,6 +17,13 @@ and more modular.
    Passing through a valid lambda should leave it valid.
 
 
+- `engine::check(const Lambda& lambda) -> void` -
+  runs some lambda validity checks, return values:
+  - `0` - no invalidity found
+  - `1` - `ops` are not topologically sorted
+  - `2` - `ops` are not unique
+  - `3` - some tensors accessible from lambda are not included in `tensors`
+  - `4` - `tensors` are not unique
 - `engine::constantPropagation(Lambda& lambda) -> void` - 
   runs deterministic non-side-effect operations depending on constant 
   tensors only and prunes them
@@ -25,8 +32,8 @@ and more modular.
 - `engine::deadCodeElimination(Lambda& lambda) -> void` - 
   prunes tensors and operations that no output or side effect depends on
 - `engine::debug(const Lambda& lambda) -> void` - 
-  prints the lambda and related debugging info,
-  performs some validity checks and reports found corruptions
+  prints the lambda and related debugging info, runs `engine::check` and
+  warns if non-zero value is returned
 - `engine::init(Lambda& lambda) -> void` - 
   initializes operations in the lambda
 - `engine::inlineExpansion(Lambda& lambda) -> void` - 

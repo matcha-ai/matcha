@@ -43,3 +43,4 @@ a lambda manually, populate its public members, strictly following these rules:
 - source `const tensor` pointers in `side_inputs` are expected to be valid
   for the entire lambda lifetime
 
+To help check lambda validity, use the `engine::check` [pass](engine/lambda/passes.md).
