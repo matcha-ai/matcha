@@ -1,5 +1,10 @@
 # Hypothesis testing Matcha vs. TensorFlow
 
+The following table contains hypothesis tests for specific scales (column "Scale")
+extracted from the generated linear space benchmarks (column "Benchmark").
+To verify whether the time means are significantly different, the two-sample
+independent t-test was used.
+        
 |Benchmark|Scale|Mean Matcha|Mean TensorFlow|SD Matcha|SD TensorFlow|T-test p-value|
 |---------|-----|-----------|---------------|---------|-------------|--------------|
 |add matrix_rect|5|1.741e-06|9.868e-05|5.142e-07|1.508e-05|**0.000**|
