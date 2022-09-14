@@ -25,6 +25,7 @@ struct CustomOp : Op {
 // in the source file
 Reflection<CustomOp> CustomOp::reflection {
   .name = "CustomOp",
+  .side_effect = true
 };
 ```
 

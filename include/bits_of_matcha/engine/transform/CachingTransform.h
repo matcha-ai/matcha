@@ -8,10 +8,10 @@
 
 namespace matcha::engine {
 
-class TracingTransform : public Transform {
+class CachingTransform : public Transform {
 public:
-  explicit TracingTransform(const fn& function);
-  explicit TracingTransform() = default;
+  explicit CachingTransform(const fn& function);
+  explicit CachingTransform() = default;
 
   std::vector<Tensor*> run(const std::vector<Tensor*>& inputs) override;
 

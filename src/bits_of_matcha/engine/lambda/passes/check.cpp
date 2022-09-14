@@ -24,9 +24,10 @@ int check(const Lambda& lambda) {
 bool checkOpToposort(const Lambda& lambda) {
   std::set<Op*> visited;
   for (auto&& op: lambda.ops) {
-    for (auto&& in: lambda.inputs) {
+    for (auto&& in: op->inputs) {
       if (in && in->op() && !visited.contains(in->op()))
         return false;
+      visited.insert(op);
     }
   }
   return true;

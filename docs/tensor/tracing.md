@@ -6,6 +6,3 @@ when it was destroyed, and so on. Matcha uses this technique to
 automatically create [gradient computation flows](tensor/autograd) and to
 [optimize for perfomance](JIT).
 
-## Limitations and gotchas
-
-## Debugging

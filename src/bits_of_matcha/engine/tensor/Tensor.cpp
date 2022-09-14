@@ -87,7 +87,7 @@ void Tensor::setOp(Op* op) {
 
 void* Tensor::readData() {
   if (tracing())
-    throw std::runtime_error("reading tensor data directly inside the Flow is forbidden");
+    throw std::runtime_error("reading tensor data in traced code is forbidden");
 
   if (!buffer_) return nullptr;
   return buffer_.payload();

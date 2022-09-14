@@ -1,11 +1,11 @@
 #pragma once
 
-#include "bits_of_matcha/engine/transform/TracingTransform.h"
+#include "bits_of_matcha/engine/transform/CachingTransform.h"
 
 
 namespace matcha::engine {
 
-class JitTransform : public TracingTransform {
+class JitTransform : public CachingTransform {
 public:
   explicit JitTransform(const fn& function);
   explicit JitTransform() = default;

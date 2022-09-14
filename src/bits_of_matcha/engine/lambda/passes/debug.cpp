@@ -8,7 +8,7 @@
 namespace matcha::engine {
 
 void debug(const Lambda& lambda, std::ostream& os) {
-  os << std::string(30, '=') << " CHAIN CHECK BEGIN " << std::string(30, '=') << std::endl;
+  os << std::string(30, '=') << " LAMBDA DEBUG BEGIN " << std::string(30, '=') << std::endl;
   os << std::endl;
   IdentifierTranslator<Tensor*> it;
 
@@ -99,7 +99,7 @@ void debug(const Lambda& lambda, std::ostream& os) {
        << validity << "\n\n";
   }
 
-  os << std::string(30, '=') << "= CHAIN CHECK END =" << std::string(30, '=') << std::endl;
+  os << std::string(30, '=') << "= LAMBDA DEBUG END =" << std::string(30, '=') << std::endl;
 }
 
 }

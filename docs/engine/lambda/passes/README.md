@@ -17,27 +17,22 @@ and more modular.
    Passing through a valid lambda should leave it valid.
 
 
-- `engine::check(const Lambda& lambda) -> void` -
-  runs some lambda validity checks, return values:
-  - `0` - no invalidity found
-  - `1` - `ops` are not topologically sorted
-  - `2` - `ops` are not unique
-  - `3` - some tensors accessible from lambda are not included in `tensors`
-  - `4` - `tensors` are not unique
-- `engine::constantPropagation(Lambda& lambda) -> void` - 
+- [`engine::check(const Lambda& lambda) -> void`](engine/lambda/passes/check) -
+  runs some lambda validity checks:
+- [`engine::constantPropagation(Lambda& lambda) -> void`](engine/lambda/passes/constant-propagation) - 
   runs deterministic non-side-effect operations depending on constant 
   tensors only and prunes them
-- `engine::copyPropagation(Lambda& lambda) -> void` - 
+- [`engine::copyPropagation(Lambda& lambda) -> void`](engine/lambda/passes/copy-propagation) - 
   contracts identity operations
-- `engine::deadCodeElimination(Lambda& lambda) -> void` - 
+- [`engine::deadCodeElimination(Lambda& lambda) -> void`](engine/lambda/passes/dead-code-elimination) - 
   prunes tensors and operations that no output or side effect depends on
-- `engine::debug(const Lambda& lambda) -> void` - 
+- [`engine::debug(const Lambda& lambda) -> void` - ](engine/lambda/passes/debug)
   prints the lambda and related debugging info, runs `engine::check` and
   warns if non-zero value is returned
-- `engine::init(Lambda& lambda) -> void` - 
+- [`engine::init(Lambda& lambda) -> void`](engine/lambda/passes/init) - 
   initializes operations in the lambda
-- `engine::inlineExpansion(Lambda& lambda) -> void` - 
+- [`engine::inlineExpansion(Lambda& lambda) -> void`](engine/lambda/passes/inline-expansion) - 
   finds nested lambdas and recursively inlines them
-- `engine::matmulFusion(Lambda& lambda) -> void` - fuses matrix 
+- [`engine::matmulFusion(Lambda& lambda) -> void`](engine/lambda/passes/matmul-fusion) - fuses matrix 
    multiplications with adjacent transpose operations into a single operation
 

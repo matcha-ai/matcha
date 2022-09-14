@@ -119,7 +119,7 @@ set(
   include/bits_of_matcha/engine/lambda/executors/SinglecoreExecutor.h
 
   include/bits_of_matcha/engine/transform/Transform.h
-  include/bits_of_matcha/engine/transform/TracingTransform.h
+  include/bits_of_matcha/engine/transform/CachingTransform.h
   include/bits_of_matcha/engine/transform/JitTransform.h
 
   include/bits_of_matcha/engine/autograd/AccumulateGrads.h
@@ -280,7 +280,7 @@ set(
   src/bits_of_matcha/engine/lambda/executors/SinglecoreExecutor.cpp
 
   src/bits_of_matcha/engine/transform/Transform.cpp
-  src/bits_of_matcha/engine/transform/TracingTransform.cpp
+  src/bits_of_matcha/engine/transform/CachingTransform.cpp
   src/bits_of_matcha/engine/transform/JitTransform.cpp
 
   src/bits_of_matcha/engine/autograd/AccumulateGrads.cpp

@@ -1,15 +1,15 @@
-#include "bits_of_matcha/engine/transform/TracingTransform.h"
+#include "bits_of_matcha/engine/transform/CachingTransform.h"
 #include "bits_of_matcha/engine/lambda/Module.h"
 #include "bits_of_matcha/engine/lambda/executors/SinglecoreExecutor.h"
 
 
 namespace matcha::engine {
 
-TracingTransform::TracingTransform(const fn& function)
+CachingTransform::CachingTransform(const fn& function)
   : Transform(function)
 {}
 
-std::vector<Tensor*> TracingTransform::run(const std::vector<Tensor*>& inputs) {
+std::vector<Tensor*> CachingTransform::run(const std::vector<Tensor*>& inputs) {
   auto executor = cache(inputs);
   if (!tracing()) {
     return executor->run(inputs);
@@ -18,19 +18,19 @@ std::vector<Tensor*> TracingTransform::run(const std::vector<Tensor*>& inputs) {
   }
 }
 
-void TracingTransform::build(const std::vector<Frame>& frames) {
+void CachingTransform::build(const std::vector<Frame>& frames) {
   cache(frames);
 }
 
-void TracingTransform::build(const std::vector<Tensor*>& tensors) {
+void CachingTransform::build(const std::vector<Tensor*>& tensors) {
   cache(tensors);
 }
 
-std::shared_ptr<Executor> TracingTransform::cache(const std::vector<Tensor*>& tensors) {
+std::shared_ptr<Executor> CachingTransform::cache(const std::vector<Tensor*>& tensors) {
   return cache(frames(tensors));
 }
 
-std::shared_ptr<Executor> TracingTransform::cache(const std::vector<Frame>& frames) {
+std::shared_ptr<Executor> CachingTransform::cache(const std::vector<Frame>& frames) {
   std::string h = hash(frames);
   try {
     auto& executor = cache_.at(h);
@@ -50,13 +50,13 @@ std::shared_ptr<Executor> TracingTransform::cache(const std::vector<Frame>& fram
   }
 }
 
-std::string TracingTransform::hash(const std::vector<Frame>& frames) {
+std::string CachingTransform::hash(const std::vector<Frame>& frames) {
   std::string buffer;
   for (auto& frame: frames) buffer += frame.string();
   return buffer;
 }
 
-std::vector<Frame> TracingTransform::frames(const std::vector<Tensor*>& tensors) {
+std::vector<Frame> CachingTransform::frames(const std::vector<Tensor*>& tensors) {
   std::vector<Frame> result;
   result.reserve(tensors.size());
   for (auto&& t: tensors)
@@ -64,7 +64,7 @@ std::vector<Frame> TracingTransform::frames(const std::vector<Tensor*>& tensors)
   return result;
 }
 
-std::shared_ptr<Executor> TracingTransform::compile(Lambda lambda) {
+std::shared_ptr<Executor> CachingTransform::compile(Lambda lambda) {
   return std::make_shared<SinglecoreExecutor>(std::move(lambda));
 }
 

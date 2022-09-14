@@ -6,7 +6,9 @@
 namespace matcha::engine {
 
 MatrixwiseBinaryCtx::MatrixwiseBinaryCtx(const Shape& a, const Shape& b,
-                                         std::pair<char, char> transpose) {
+                                         std::pair<char, char> transpose)
+  : transpose(transpose)
+{
   if (std::min(a.rank(), b.rank()) < 2) {
     throw std::invalid_argument("both inputs must have rank at least 2");
   }

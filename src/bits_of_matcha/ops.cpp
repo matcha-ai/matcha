@@ -373,7 +373,7 @@ tensor gather(const tensor& a, const tensor& idxs, int axis, bool keep_dims) {
 }
 
 tensor sigmoid(const tensor& a) {
-  return 1 / (1 + exp(a));
+  return 1 / (1 + exp(-a));
 }
 
 tensor tanh(const tensor& a) {

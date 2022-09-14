@@ -23,10 +23,10 @@ Base tensor function transform.
 - `hasPreimage() bool` - preimage presence getter
 - `setPreimage(const fn&) -> void` - preimage setter
 
-## TracingTransform
-> `class engine::TracingTransform : public engine::Transform`
+## CachingTransform
+> `class engine::CachingTransform : public engine::Transform`
 
-When `run` is called, `TracingTransform` [traces](engine/lambda/tracing)
+When `run` is called, `CachingTransform` [traces](engine/lambda/tracing)
 the preimage function and compiles it with overridable logic.
 Any subsequent `run` invokations use previously compiled instructions whenever
 available, based on the lambda input Frames.
@@ -48,7 +48,7 @@ available, based on the lambda input Frames.
   retrieves cached instructions for given inputs (builds if not cached yet)
 
 ## JitTransform
-> `class engine::JitTransform : public TracingTransform`
+> `class engine::JitTransform : public CachingTransform`
 
 JIT compilation transform. For supported optimizations, see
 [this article](tensor/jit#optimizations).

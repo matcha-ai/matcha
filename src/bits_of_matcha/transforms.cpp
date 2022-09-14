@@ -7,8 +7,8 @@
 namespace matcha {
 
 fn jit(const fn& function) {
-  std::shared_ptr<engine::Transform> dec {new engine::JitTransform(function)};
-  return ref(std::move(dec));
+  std::shared_ptr<engine::Transform> internal {new engine::JitTransform(function)};
+  return ref(internal);
 }
 
 }
