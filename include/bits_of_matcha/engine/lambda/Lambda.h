@@ -31,6 +31,8 @@ struct Lambda final {
   Lambda& operator=(const Lambda& other);
   Lambda& operator=(Lambda&& other) noexcept = default;
 
+  operator bool() const;
+
   ~Lambda();
 };
 

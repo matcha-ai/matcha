@@ -1,4 +1,5 @@
 # Matmul fusion
+> `"bits_of_matcha/engine/lambda/passes/matmulFusion.h"`\
 > `engine::matmulFusion(Lambda&) -> void`
 
 Passes through the lambda and fuses all matrix multiplications 
@@ -33,6 +34,18 @@ lambda(a: Float[3, 3]) -> Float[3, 3] {
 }
 ```
 
+```plantuml
+@startuml
+
+(<color:blue>**a**) --> (b) : Transpose
+(<color:blue>**a**) --> (c)
+(b) --> (c) : Matmul
+(c) --> (d) : Exp
+(d) -> (<color:magenta>**e**) : Identity
+
+@enduml
+```
+
 **After the pass**, the transposition has been fused into 
 the matrix multiplication:
 
@@ -47,6 +60,14 @@ lambda(a: Float[3, 3]) -> Float[3, 3] {
 }
 ```
 
+```plantuml
+(<color:blue>**a**) --> (b) : Matmul (fused)
+(<color:blue>**a**) --> (b)
+(b) -> (c) : Identity
+(c) -> (d) : Exp
+(d) -> (<color:magenta>**e**) : Identity
+```
+
 !> Note that the lambda representation captures only the operation _types_
    and not additional options, such as the transpostition mask. \
    Therefore, the fused matrix multiplication is
@@ -55,4 +76,4 @@ lambda(a: Float[3, 3]) -> Float[3, 3] {
 ## Op implementation requirements
 
 Matmul fusion not query operations on any
-[reflection](engine/op/reflection) property.
+[`Reflection`](engine/op/reflection) property.

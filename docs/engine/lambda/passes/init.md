@@ -1,4 +1,5 @@
 # Init
+> `"bits_of_matcha/engine/lambda/passes/init.h"`\
 > `engine::init(Lambda&) -> void`
 
 Initializes all operations inside the lambda in the order 
@@ -10,6 +11,5 @@ they are stored in the lambda's `ops`.
 ## Op implementatin requirements
 
 Init does not query operations on any
-[reflection](engine/op/reflection) property.
-
+[`Reflection`](engine/op/reflection) property. \
 Operations can override `init() -> void` for custom initialization logic.

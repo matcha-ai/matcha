@@ -99,8 +99,11 @@ std::cout << c.frame().bytes() << std::endl;  // 400
 ```
 
 You may have been suspicious about this. Afterall, `sizeof(tensor)` always seems to return 8 bytes (or similar, this is platform-specific).
-This is so, because `tensor` is in reality only an implicit reference to its [internal engine object](engine/tensor/). That engine object
-holds the `Buffer` and associated metadata, like the `Frame`. Finally, the number of bytes is related only to the `Buffer` size. For details, read the articles
-on engine [Memory](engine/memory) and [Buffers](engine/tensor/buffer).
+This is so, because `tensor` is in reality only an opaque pointer
+to its internal [`engine::Tensor`](engine/tensor/) object. That internal object
+holds the [`engine::Buffer`](engine/tensor/buffer) and other associated information,
+like the tensor's [`Frame`](tensor/frames). Finally, the number of bytes 
+is related only to the [`engine::Buffer`](engine/buffer) size. For details, read the articles
+on engine [memory](engine/memory) and [`engine::Buffer`](engine/tensor/buffer).
 
 For a more technical explanation of frames, read the [next article](tensor/frames).

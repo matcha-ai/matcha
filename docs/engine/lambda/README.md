@@ -1,4 +1,5 @@
 # Lambda
+> `"bits_of_matcha/engine/lambda/Lambda.h"`\
 > `class engine::Lambda final`
 
 Lambda is a sequence of [`engine::Op`](engine/op/) operations stored 
@@ -20,10 +21,10 @@ modified externally.
 
 Given all inputs, side-inputs, and constants, running a lambda
 produces its outputs and side effects. For running lambdas, use
-an [`Executor`](engine/lambda/executors). However, it is common to
+an [`engine::Executor`](engine/lambda/executors). However, it is common to
 modify the lambda in some way (e.g. simplify it) before running it.
 There are available available many higher-order 
-[`Pass`](engine/lambda/passes/) functions operating on lambdas.
+[`engine::Pass`](engine/lambda/passes/) functions operating on lambdas.
 
 #### Public members
 
@@ -37,20 +38,23 @@ There are available available many higher-order
 #### Public methods
 
 - `Lambda()` - default constructor - initializes empty lambda
-- `Lambda(const Lambda&)` - copy constructor;
-  the clone lambda has the same
+- `Lambda(const Lambda&)` - deep copy constructor;
+  the cloned lambda has the same
   effects and supported side-effects as the original one
-- `Lambda(Lambda&&)` - move constructor
+- `Lambda(Lambda&&) noexcept` - move constructor
 - `~Lambda()` - destructor, frees all lambda resources
   including the stored operations and tensors
-- `operator=(const Lambda&) -> Lambda&` - copy assignment operator;
-  the clone lambda has the same
+- `operator=(const Lambda&) -> Lambda&` - deep copy assignment operator;
+  the cloned lambda has the same
   effects and supported side-effects as the original one
-- `operator=(Lambda&&) -> Lambda&` - move assignment operator
+- `operator=(Lambda&&) noexcept -> Lambda&` - move assignment operator
+- `operator bool() const` - true if (and only if) not empty
+- `operator<<(std::ostream&, const Lambda&) -> std::ostream&` -
+  prints lambda representation into the stream
 
 ## Creating a lambda
 
-For most purposes, refer to [tracing](engine/lambda/tracing). To create
+For most purposes, refer to [`engine::trace`](engine/lambda/tracing). To create
 a lambda manually, populate its public members, strictly following these rules:
 
 - `ops` must be topologically sorted (upstream operations first, downstream operations last)
@@ -63,7 +67,7 @@ a lambda manually, populate its public members, strictly following these rules:
 
 To help check lambda validity, use [`engine::check`](engine/lambda/passes/check).
 This is a good practice for developing 
-custom [`Pass`](engine/lambda/passes/) functions such as various optimizers.
+custom [`engine::Pass`](engine/lambda/passes/) functions such as various optimizers.
 
 ## Examples
 
@@ -120,6 +124,18 @@ lambda(a: Float[]) -> Float[] {
 }
 ```
 
+```plantuml
+@startuml
+
+(<color:blue>**a**) -> (b) : Identity
+(<color:brown>**c**) --> (<color:orange>**d**)
+(b) --> (<color:orange>**d**) : Add
+(<color:orange>**d**) -> (e) : Identity
+(e) -> (<color:magenta>**f**) : Identity
+
+@enduml
+```
+
 There are lots of Identity operations doing nothing.
 We can get rid of them by using
 [`engine::copyPropagation`](engine/lambda/passes/copy-propagation):
@@ -141,8 +157,18 @@ lambda(a: Float[]) -> Float[] {
 }
 ```
 
-Finally, we can run it using an [`engine::Executor`](engine/lambda/executors).
-Since we are operating in both the API layer and the internal engine,
+```plantuml
+@startuml
+
+(<color:blue>**a**) -> (<color:orange>**c**)
+(<color:brown>**b**) -> (<color:orange>**c**) : Add
+
+@enduml
+```
+
+Finally, we can run it using the
+[`engine::SinglecoreExecutor`](engine/lambda/executors#singlecoreexecutor)
+executor. Since we are operating in both the API layer and the internal engine,
 we will have to do some (de)referencing:
 
 ```cpp

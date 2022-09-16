@@ -1,11 +1,12 @@
 # Tracing
 
+> `"bits_of_matcha/engine/lambda/Tracer.h"`\
 > `engine::trace(const fn& function, const std::vector<Frame>& frames) -> Lambda`
 
 Tracing is a technique for inspecting what happens within some block of code.
 The Matcha Tracing system is able to trace tensor operations in user-defined
 functions in the program runtime. 
-The result of a tracing process is a valid `Lambda`. For details 
+The result of a tracing process is a valid [`engine::Lambda`](engine/lambda/). For details 
 and limitations, refer to [this article](tensor/tracing).
 
 ## Example
@@ -37,7 +38,7 @@ std::cout << "The lambda is "
 Voilà:
 
 ```txt
- Float[3, 3]) -> Float[3, 3] {
+lambda(a: Float[3, 3]) -> Float[3, 3] {
     b = Negative(a)
     c = Exp(b)
     e = Cast(d)
@@ -51,9 +52,25 @@ Voilà:
 The lambda is valid!
 ```
 
+```plantuml
+@startuml
+
+(<color:blue>**a**) -> (b) : Negative
+(b) -> (c) : Exp
+(e) <- (d) : Cast
+(c) --> (f) : Add
+(e) --> (f)
+(h) <- (g) : Cast
+(h) --> (i)
+(f) --> (i) : Divide
+(i) -> (<color:magenta>**j**) : Identity
+
+@enduml
+```
+
 
 ## Tracer
-
+> `"bits_of_matcha/engine/lambda/Tracer.h"`\
 > `engine::Tracer`
 
 Class faciliating potentially recursive tracing.

@@ -71,7 +71,7 @@ invoked `Net::run`.
 
 Customizable train step logic. By default, it performs one _forward_ and
 _backward_ propagation using [`Backprop`](tensor/autograd#backprop), 
-emitting appropriate [callback signals](nn/callbacks/signals).
+emitting appropriate [callback signals](nn/callbacks).
 
 !> **Gotcha!** In contrast to static machine learning frameworks like 
    [TensorFlow](https://www.tensorflow.org/), which let you merely
@@ -88,7 +88,7 @@ emitting appropriate [callback signals](nn/callbacks/signals).
 An example will follow. We will create a custom `FcResNet` class using the
 `Net` subclassing API. To demonstrate the flexibility of the subclassing
 API, the `FcResNet` class will implement automatic _residual connection_
-creation logic on fully connected (`nn::Fc`) layers:
+creation logic on fully connected [`nn::Fc`](nn/layers/fc) layers:
 
 ```cpp
 class FcResNet : public Net {

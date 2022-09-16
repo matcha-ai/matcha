@@ -1,4 +1,5 @@
 # Copy propagation
+> `"bits_of_matcha/engine/lambda/passes/copyPropagation.h"`\
 > `engine::copyPropagation(Lambda&) -> void`
 
 Passes through the lambda and contracts all identity operations.
@@ -28,6 +29,19 @@ lambda(a: Float[3, 3]) -> Float[3, 3] {
 }
 ```
 
+```plantuml
+@startuml
+
+(<color:blue>**a**) -> (b) : Identity
+(b) -> (c) : Identity
+(d) --> (e) : Cast
+(c) --> (f) : Multiply
+(e) --> (f)
+(f) -> (<color:magenta>**g**) : Identity
+
+@enduml
+```
+
 !> Note that the first identity is created
    implicitly due to the input tensor being passed by value
    rather than by reference:
@@ -43,9 +57,15 @@ lambda(a: Float[3, 3]) -> Float[3, 3] {
 }
 ```
 
+```plantuml
+(<color:blue>**a**) -> (c) : Cast
+(c) --> (<color:magenta>**d**) : Multiply
+(a) --> (<color:magenta>**d**)
+```
+
 All identities have been eliminated.
 
 ## Op implementation requirements
 
 Copy propagation does not query operations on any
-[reflection](engine/op/reflection) property.
+[`Reflection`](engine/op/reflection) property.

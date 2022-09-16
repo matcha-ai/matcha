@@ -1,4 +1,5 @@
 # Op
+> `"bits_of_matcha/engine/op/Op.h"`\
 > `class engine::Op`
 
 Base operation class, all matcha operations inherit from `Op`.
@@ -31,6 +32,51 @@ derived constructors using `addOutput` (see below).
 - `addOutput(const Dtype& dtype, const Shape& shape) -> Tensor*` - see above
 - `addOutput(Tensor* tensor) -> Tensor*` - adds the tensor to the op's outputs and returns it
 
+## Example
+
+Suppose we want to create a a simple custom operation `MyOperation`.
+To do that, we simply inherit from `Op`. Let's say the operation
+accepts any number of inputs and produces the same number of outputs:
+
+```cpp
+struct MyOperation : Op {
+  MyOperation(std::initializer_list<Tensor*> inputs);
+  void run() override;
+};
+```
+
+The constructor:
+
+```cpp
+MyOperation::MyOperation(std::initializer_list<Tensor*> inputs) 
+  : Op(inputs)
+{
+  // The outputs will have the same frames
+  for (auto input: inputs)
+    addOutput(input->frame());
+}
+```
+
+Now we implement the custom `run` logic. Let's say the operation will
+monitor how much data flows through the node, and then simply forward
+the data:
+
+```cpp
+void MyOperation::run() {
+  size_t bytes_needed = 0, bytes_actual = 0;
+
+  for (int i = 0; i < inputs.size(); i++) {
+    bytes_needed += inputs[i]->frame().bytes();
+    bytes_actual += inputs[i]->buffer().bytes();
+
+    outputs[i]->share(inputs[i]);
+  }
+
+  std::cout << "bytes needed: " << bytes_needed << ",\t "
+            << "bytes actual: " << bytes_actual << std::endl;
+}
+```
+
 ## Dispatching ops
 
 The lifecycle of matcha operations is rather complicated.
@@ -59,6 +105,7 @@ Tensor* c = engine::dispatch<engine::ops::Add>(a, b)[0];
 ## Reflection
 
 To allow the Matcha engine to work with operations - inspect them,
-differentiate them, optimize them, ... - each operation declares its `Reflection`.
+differentiate them, optimize them, ... - each operation declares its 
+[`Reflection`](engine/op/reflection).
 Operations have to declare their reflection in order to work correctly with
 lazy execution scheduling. [Read more](engine/op/reflection).

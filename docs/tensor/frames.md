@@ -5,10 +5,12 @@ Frames say how tensor contents should be interpreted. They
 provide the underlying scalar datatype ([`Dtype`](#tensor-dtype))
 and dimensions ([`Shape`](#tensor-shape)). Usually, frames alone determine,
 whether tensors are compatible with some operation as inputs, and how
-the output tensors should be eventually framed. Canonically, frames
-are represented as `Dtype[Shape]`. For example, `Float[100, 5]` stands 
-for a 100x5 matrix of floats. Since scalars have rank `0`, the
-brackets are left empty: `Bool[]` for a single boolean.
+the output tensors should be eventually framed. 
+
+?> Canonically, frames
+   are represented as `Dtype[Shape]`. For example, `Float[100, 5]` stands 
+   for a 100x5 matrix of 32-bit floats. For scalars, since they have rank `0`, the
+   brackets are left empty: `Bool[]` for a single dimension-less boolean.
 
 #### Public methods
 
@@ -47,10 +49,10 @@ Immutable underlying tensor datatype:
 - `Half` - 16-bit floating point real
 - `Float` - 32-bit floating point real
 - `Double` - 64-bit floating point real
-- `Cuint` - 2x 32-bit unsigned int complex (64-bit)
-- `Cint` - 2x 32-bit signed int complex (64-bit)
-- `Cfloat` - 2x 32-bit floating point complex (64-bit)
-- `Cdouble` - 2x 64-bit floating point complex (128-bit)
+- `Cuint` - 2x 32-bit unsigned int complex (64-bit in total)
+- `Cint` - 2x 32-bit signed int complex (64-bit in total)
+- `Cfloat` - 2x 32-bit floating point complex (64-bit in total)
+- `Cdouble` - 2x 64-bit floating point complex (128-bit in total)
 
 ## Tensor shape
 > `class Shape final`

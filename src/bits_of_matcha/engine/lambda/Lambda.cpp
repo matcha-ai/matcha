@@ -15,6 +15,10 @@ Lambda& Lambda::operator=(const Lambda& other) {
   return *this;
 }
 
+Lambda::operator bool() const {
+  return !(ops.empty() && tensors.empty());
+}
+
 Lambda::~Lambda() {
   for (auto&& op: ops)
     delete op;

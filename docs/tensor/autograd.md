@@ -48,7 +48,7 @@ Let us inspect these by simply iterating through the pairs in the map:
 
 ```cpp
 for (auto&& [wrt, gradient]: gradients) {
-  std::cout << "The gradient w.r.t. " << wrt << " is ";
+  std::cout << "the gradient w.r.t. " << wrt << " is ";
   std::cout << gradient << std::endl;
 }
 ```
@@ -105,4 +105,4 @@ for (auto&& [param, gradient]: backprop(loss, parameters))
 ```
 
 For more in-depth explanation of Matcha neural networks, refer to
-[this section](nn/).
+[`Net`](nn/net).

@@ -1,8 +1,10 @@
 # Debug
+> `"bits_of_matcha/engine/lambda/passes/debug.h"`\
 > `engine::debug(const Lambda&, std::ostream& os = std::cerr) -> void`
 
 Prints the lambda and related debugging info, runs [`engine::check`](engine/lambda/passes/check).
-Output stream can be specified. Be default, stdandard error is used.
+Output stream can be specified. 
+Be default, the standard error stream `std::cerr` is used.
 
 ## Example
 
@@ -52,14 +54,14 @@ h 	op: 0x5616a4970900 (Identity)
   This follows the standard lambda printing format.
 - Then **individual tensor information**:
   - Source operation - memory location, 
-    type (if declared in the operation's [reflection](engine/op/reflection))
+    type (if declared in the operation's [`Reflection`](engine/op/reflection))
   - Its side input outside of the lambda - memory location, frame
 - If the lambda isn't valid, a **warning** is shown at the end.
 
 ## Op implementation requirements
 
 Debug does not require operations to have their
-[reflection](engine/op/reflection) declared. However, it optionally queries
+[`Reflection`](engine/op/reflection) declared. However, it optionally queries
 the following properties:
 
 - `std::string name`

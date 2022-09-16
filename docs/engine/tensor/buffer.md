@@ -1,5 +1,5 @@
 # Buffer
-
+> `"bits_of_matcha/engine/tensor/Buffer.h"`\
 > `engine::Buffer`
 
 Wrapper for an optional contiguous block of memory somewhere, on some device.

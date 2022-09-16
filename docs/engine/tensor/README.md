@@ -1,5 +1,5 @@
 # Tensor
-
+> `"bits_of_matcha/engine/tensor/Tensor.h"`\
 > `engine::Tensor`
 
 A reference-counted backend object for `tensor`.

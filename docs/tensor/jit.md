@@ -18,8 +18,8 @@ for specific applications.
 !> This article is about the usage, pros, and cons of JIT. \
    For internal function representation and manipulation, refer to the
    [`engine::Lambda`](engine/lambda/) section. \
-   For wrapping native C++
-   function in that manner, read [`engine::Transform`](engine/transform/).
+   For wrapping native C++ function in that manner, read [`engine::Transform`](engine/transform/),
+
 
 ## Usage
 
@@ -34,8 +34,8 @@ tensor foo(tensor a, tensor b) {
 ```
 
 To JIT it, simply call call `jit` on it. The higher-order function
-`jit` returns the JITed version of the given function. 
-Next, we can then use it instead of the original function:
+`jit` returns the JITed version of the given tensor function. 
+Next, we can use it simply as a usual function:
 
 ```cpp
 int main() {
@@ -66,39 +66,45 @@ JITing blindly may result in undesired behavior.
 
 ## Optimizations
 
-Currently, JIT performs the following optimizations. For implementation
-details, refer to [`engine::Pass`](engine/lambda/passes/).
+Currently, JIT performs the following optimizations (in the respective order).
+For general implementation details, 
+refer to [`engine::Pass`](engine/lambda/passes/). \
+Every optimizatons is also documented individually:
 
-- [Constant propagation](engine/lambda/passes/constant-propagation) - 
-  pre-caches tensors that can be deterministically
-  computed in compile-time rather than in run-time
-- [Copy propagation](engine/lambda/passes/copy-propagation) -
-  eliminates unnecessary identities
-- [Dead code elimination](engine/lambda/passes/dead-code-elimination) - 
-  prunes operations that no direct effect or
-  side effect depends on
 - [Inline expansion](engine/lambda/passes/inline-expansion) - 
-  recursively inlines all nested Matcha functions to allow
-  for further interprocedural optimizations
+  recursively inlines all nested functions to allow
+  for further interprocedural optimizations.
+- [Dead code elimination](engine/lambda/passes/dead-code-elimination) - 
+  transitively prunes operations that no direct effect or
+  side effect depends on. This can speed up the rest of the process.
 - [Matmul fusion](engine/lambda/passes/matmul-fusion) - 
-  fuses matrix multiplications with adjacent transpose operations
+  fuses matrix multiplications with adjacent transpose operations. \
+  This results in iterating through the matrices in a transposed manner
+  rather than creating unnecessary transposed copies. \
+  Both normal transpose and the Hermitian transpose are supported.
+- [Copy propagation](engine/lambda/passes/copy-propagation) -
+  transitively eliminates tensor copies.
+- [Constant propagation](engine/lambda/passes/constant-propagation) - 
+  transitively pre-caches tensors that can be computed
+  in the compile-time instead of the run-time. \
+  Note that this can also affect memory usage.
 
 ## Limitations
 
 As mentioned above, not every code can, or should, be JITed. Matcha makes
 use of the [tracing](tensor/tracing) technique to inspect JITed functions.
 This imposes several [limitations](tensor/jit-limitations) on the JITed
-code, such as:
+code. For details and examples of this, see:
 
 - [Forbidden acces to tensor cata](tensor/jit-limitations#forbidden-access-to-tensor-data) 
-  via `tensor::data()`
+  via [`tensor::data()`](tensor/accessing-data)
 - [Inhibited IO side effects](tensor/jit-limitations#inhibited-io-side-effects) -
   IO side effects are inhibited in JITed functions
 - [Static flow control](tensor/jit-limitations#static-flow-control) -
   Dynamic native flow control is cached when tracing and is completely
   static in subsequent function runtime
 - [Caching native variables](tensor/jit-limitations#caching-native-variables)
-  Invariance on mutable non-`tensor` variables during the function runtime
+  Invariance on mutable non-[`tensor`](tensor/) variables during the function runtime
 
 ## To JIT or not to JIT
 
@@ -106,12 +112,12 @@ code, such as:
 
 - The function contains **many operations** operating on **big data**.
 - The **overhead for operation initialization** is too large.
-- The function has only **`tensor` external parameters** needed in runtime.
+- The function has only **[`tensor`](tensor) external parameters** needed in runtime.
 
 **Don't JIT** when:
 
 - The function is not **performance-critical**.
-- You want to **control the function**.
+- You want to **control the function flow**.
 - You want to directly **access tensor buffers**.
 
 ## Example
@@ -172,6 +178,39 @@ lambda(a: Float[3, 3], b: Float[3, 3]) -> Cfloat[3, 3] {
 }
 ```
 
+Lambda flow can be represented as a directed acyclic multigraph. In this case,
+it will look like this:
+
+```plantuml
+@startuml
+
+(<color:blue>**a**) --> (d) : Identity
+(<color:blue>**b**) --> (c) : Identity
+(c) --> (e)
+(d) --> (e) : Add
+(c) --> (f)
+(d) --> (f) : Subtract
+(c) --> (g)
+(d) --> (g) : Multiply
+(c) --> (h)
+(d) --> (h) : Divide
+(e) --> (i) : Transpose
+(f) --> (j) : Transpose
+(g) --> (k) : Transpose
+(h) --> (l) : Transpose
+(i) --> (m)
+(j) --> (m) : Matmul
+(n) --> (o) : Cast
+(o) --> (q) : Multiply
+(p) --> (q)
+(m) -> (r) : Cast
+(r) --> (s) : Multiply
+(q) --> (s)
+(s) --> (<color:magenta>**t**) : Identity
+
+@enduml
+```
+
 After passing through the lambda with the various optimizers,
 it is **simplified into the following**:
 
@@ -185,6 +224,24 @@ lambda(a: Float[3, 3], b: Float[3, 3]) -> Cfloat[3, 3] {
 
     return h
 }
+```
+
+Visualized as following:
+
+```plantuml
+@startuml
+
+(<color:blue>**a**) --> (c) : Add
+(<color:blue>**b**) --> (c)
+(<color:blue>**a**) --> (d) : Subtract
+(<color:blue>**b**) --> (d)
+(c) --> (e) : Matmul
+(d) --> (e)
+(e) -> (f) : Cast
+(f) --> (<color:magenta>**h**) : Multiply
+(g) --> (<color:magenta>**h**)
+
+@enduml
 ```
 
 Voilà, from 16 operations down to 5. That is **reduction by 69%**.

@@ -9,46 +9,12 @@ a polymorphic tensor function type `fn`.
 
 ## Example
 
-First, suppose we have inherited [`engine::Transform`](engine/transform)
-and created our
-own function transformation. We will call this class `MyDebugTransform`.
-In each invocation, it will trace the function, debug it, and run it.
-We will want this to be done on per-call basis, as opposed to
-lambda-caching. For that, we would inherit from
-[`engine::CachingTransform`](engine/transform/README#cachingtransform)
-instead.
+Let us take `MyDebugTransform` from the 
+[previous article example](engine/transform/README#example).
+In each invocation, it traces
+traces its preimage function on the current inputs, debugs it, and runs it.
 
-```cpp
-class MyDebugTransform : public engine::Transform {
-  MyDebugTransform(const fn& function) : Transform(function) {}
-
-  std::vector<Tensor*> run(const std::vector<Tensor*>& inputs) override;
-}
-```
-
-Implementing the logic is simple. Take the input frames, pass
-them to the Matcha tracer together with the preimage function.
-Then debug the lambda, and finally init + run it.
-
-```cpp
-std::vector<Tensor*> MyDebugTransform::run(const std::vector<Tensor*>& inputs) {
-  using namespace matcha::engine;
-
-  std::vector<Frame> frames;
-  for (auto&& input: inputs)
-    frames.push_back(input->frame());
-
-  Lambda lambda = trace(preimage(), frames);
-
-  debug(lambda);
-
-  init(lambda);
-  SinglecoreExecutor executor(std::move(lambda));
-  return executor.run(inputs);
-}
-```
-
-Now, it is time to create the binding logic for our transform into the interface:
+To integrate it into the rest of Matcha, simply wrap it using `engine::ref`:
 
 ```cpp
 fn myDebug(const fn& function) {
@@ -57,7 +23,7 @@ fn myDebug(const fn& function) {
 }
 ```
 
-Done. We can now transform functions and call them:
+Done. We can now transform our functions and call them:
 
 ```cpp
 int main() {

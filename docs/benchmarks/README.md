@@ -20,10 +20,10 @@ _Dell XPS 13 9370 - x86\_64 architecture Intel(R) Core(TM) i7-8550U CPU @ 1.80GH
    GPUs or TPUs, these libraries will be forced to use the CPU.
    Unaccelerated libraries, like [Numpy](https://numpy.org/), are unaffected.
 
-!> As for example Numpy is a Python library, in some cases, there
-   is a non-trivial overhead associated with the Python language itself.
-   This is negligible for more performance-heavy operations, where
-   the payload computations outweigh this overhead.
+!> As for example Numpy is a Python library, there
+   is some overhead associated with the Python language itself.
+   This however turns out to be negligible, as most of the
+   actual weightlifting is done in C anyway.
 
 For details about benchmark generation, see 
 [this GitHub repo](https://github.com/matcha-ai/benchmark).

@@ -1,4 +1,5 @@
 # Dead code elimination
+> `"bits_of_matcha/engine/lambda/passes/deadCodeElimination.h"`\
 > `engine::deadCodeElimination(Lambda&) -> void`
 
 Passes through the lambda, and prunes all tensors and operations that 
@@ -28,6 +29,18 @@ lambda(a: Float[3, 3]) -> Float[3, 3] {
 }
 ```
 
+```plantuml
+@startuml
+
+(b) -> (c) : Cast
+(<color:blue>**a**) ---> (d)
+(c) --> (d) : Multiply
+(<color:blue>**a**) --> (e) : Log
+(e) --> (<color:magenta>**f**) : Identity
+
+@enduml
+```
+
 As you can see, the multiplication is performed even though it has no actual
 effect on the output.
 
@@ -42,9 +55,18 @@ lambda(a: Float[3, 3]) -> Float[3, 3] {
 }
 ```
 
+```plantuml
+@startuml
+
+(<color:blue>**a**) -> (b) : Log
+(b) -> (<color:magenta>**c**) : Identity
+
+@enduml
+```
+
 The multiplication and the cast have been pruned.
 
 ## Op implementation requirements
 
 Dead code elimination does not query operations on any
-[reflection](engine/op/reflection) property.
+[`Reflection`](engine/op/reflection) property.

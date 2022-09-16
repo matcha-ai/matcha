@@ -116,7 +116,7 @@ calculated sum: Double[]
 calculated sum: Float[]
 ```
 
-This time, we first invoked `joo` on `Frame[4]`. Then we called it on
+This time, we first invoked `joo` on `Float[4]`. Then we called it on
 `Double[4]`, and the last time, it was run on `Float[2, 4]`. Since
 each of these inputs is of a different frame, no appropriate lambda
 could be found in the JIT cache, and every call caused re-tracing.

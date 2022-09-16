@@ -1,14 +1,21 @@
 # Check
-> `engine::check(const Lambda& lambda) -> void`
+> `"bits_of_matcha/engine/lambda/passes/check.h"`\
+> `engine::check(const Lambda& lambda) -> int`
 
-Passes through the lambda, and performs validity checks. 
-Return values:
+Passes through the lambda, and performs automatic validity checks. 
 
-- `0` - No invalidity found. This is what you usually want.
-- `1` - `ops` are not topologically sorted.
-- `2` - `ops` are not unique.
-- `3` - Some tensors accessible from the lambda are not included in `tensors`.
-- `4` - `tensors` are not unique.
+!> Keep in mind that some issues, such as dangling pointers
+   to prematurely freed tensors and operations, can not be found by `check`.
+   Still, using `check` is a good debug practice when e.g.
+   developing custom [`Pass`](engine/lambda/passes/) functions.
+
+|Return value|Interpretation|
+|------------|--------------|
+| `0`        | No invalidity found. This is what you usually want.|
+| `1`        | The lambda's `ops` are not topologically sorted. |
+| `2`        | The lambda's `ops` are not unique. |
+| `3`        | Some tensors accessible from the lambda are not included in its `tensors`. |
+| `4`        | The lambda's `tensors` are not unique. |
 
 ## Example
 
@@ -36,6 +43,20 @@ lambda(a: Int[]) -> Float[] {
 }
 ```
 
+```plantuml
+@startuml
+(<color:blue>**a**) -> (b) : Identity
+(b) --> (c) : Cast
+(c) --> (d) : Exp
+(e) --> (f)
+(b) --> (f) : Multiply
+(f) --> (g) : Cast
+(d) --> (h) : Add
+(g) --> (h)
+(h) -> (<color:magenta>**i**) : Identity
+@enduml
+```
+
 First, let's check that this lambda is valid.
 Indeed, the following code prints `0`:
 
@@ -59,4 +80,4 @@ topologically sorted.
 ## Op implementation requirements
 
 Check does not query operations on any
-[reflection](engine/op/reflection) property.
+[`Reflection`](engine/op/reflection) property.
