@@ -9,7 +9,8 @@ many core functionalities of matcha, from
 [automatic differentiation](tensor/autograd) to [JIT](tensor/jit).
 Lambdas can be represented as directed acycic multigraphs, where
 each [`engine::Op`](engine/op/) represents one node, 
-and each [`engine::Tensor`](engine/tensor) represents one edge.
+and each [`engine::Tensor`](engine/tensor) represents one edge,
+or vice versa.
 
 A lambda has its inputs and outputs, similarly to a single 
 [`engine::Op`](engine/op/).
