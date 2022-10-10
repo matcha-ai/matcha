@@ -1,10 +1,12 @@
 #include "bits_of_matcha/dataset/Instance.h"
 
+#include <utility>
+
 
 namespace matcha {
 
-Instance::Instance(const std::map<std::string, tensor>& data)
-  : data_(data)
+Instance::Instance(std::map<std::string, tensor>  data)
+  : data_(std::move(data))
 {}
 
 Instance::Instance(std::initializer_list<std::pair<std::string, tensor>> data)

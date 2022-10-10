@@ -12,7 +12,7 @@ namespace matcha {
 class Instance final {
 public:
   Instance() = default;
-  Instance(const std::map<std::string, tensor>& data);
+  Instance(std::map<std::string, tensor>  data);
   Instance(std::initializer_list<std::pair<std::string, tensor>> data);
   Instance(const std::string& key, const tensor& value);
 

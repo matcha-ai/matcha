@@ -1,10 +1,12 @@
 #include "bits_of_matcha/engine/transform/Transform.h"
 
+#include <utility>
+
 
 namespace matcha::engine {
 
-Transform::Transform(const fn& preimage)
-  : preimage_(preimage)
+Transform::Transform(fn  preimage)
+  : preimage_(std::move(preimage))
 {}
 
 Transform::Transform()

@@ -2,6 +2,7 @@
 #include "bits_of_matcha/engine/dataset/Dataset.h"
 
 #include <limits>
+#include <utility>
 
 
 namespace matcha::dataset {
@@ -19,7 +20,7 @@ Generator::operator Dataset() {
     std::function<Instance (size_t)> g_;
     size_t pos_ = 0;
 
-    Indexed(const std::function<Instance (size_t)>& g) : g_(g) {}
+    Indexed(std::function<Instance (size_t)>  g) : g_(std::move(g)) {}
 
     Instance get() override {
       return g_(pos_++);

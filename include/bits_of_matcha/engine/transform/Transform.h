@@ -15,7 +15,7 @@ class Tensor;
 
 class Transform {
 public:
-  explicit Transform(const fn& preimage);
+  explicit Transform(fn  preimage);
   explicit Transform();
 
   auto preimage() -> fn&;

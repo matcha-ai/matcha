@@ -1,11 +1,13 @@
 #include "bits_of_matcha/dataset/loaders/Cat.h"
+
+#include <utility>
 #include "bits_of_matcha/engine/dataset/Dataset.h"
 
 
 namespace matcha::dataset {
 
-Cat::Cat(const std::vector<Dataset>& datasets)
-  : datasets_(datasets)
+Cat::Cat(std::vector<Dataset>  datasets)
+  : datasets_(std::move(datasets))
 {}
 
 Cat::operator Dataset() {
@@ -13,8 +15,8 @@ Cat::operator Dataset() {
     std::vector<matcha::Dataset> datasets_;
     size_t iter1_, iter2_, size_, pos_;
 
-    explicit Internal(const std::vector<matcha::Dataset>& datasets)
-      : datasets_(datasets)
+    explicit Internal(std::vector<matcha::Dataset>  datasets)
+      : datasets_(std::move(datasets))
       , iter1_(0)
       , iter2_(0)
       , size_(0)

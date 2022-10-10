@@ -5,6 +5,7 @@
 
 #include <fstream>
 #include <sstream>
+#include <utility>
 
 
 namespace matcha::dataset {
@@ -21,10 +22,10 @@ Csv::operator Dataset() {
     std::set<std::string> regression_tags_;
     bool regression_;
 
-    Internal(const std::string& file, const std::set<std::string>& classification_tags, const std::set<std::string>& regression_tags)
+    Internal(const std::string& file, std::set<std::string>  classification_tags, std::set<std::string>  regression_tags)
       : file_(file)
-      , classification_tags_(classification_tags)
-      , regression_tags_(regression_tags)
+      , classification_tags_(std::move(classification_tags))
+      , regression_tags_(std::move(regression_tags))
       , size_(-1)
       , pos_(0)
     {

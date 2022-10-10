@@ -2,20 +2,21 @@
 
 #include <fstream>
 #include <sstream>
+#include <utility>
 
 
 namespace matcha::engine::ops {
 
-LoadCsv::LoadCsv(const std::string& file)
+LoadCsv::LoadCsv(std::string  file)
   : Op{}
-  , file_(file)
+  , file_(std::move(file))
 {
   addOutput(getFrame());
 }
 
-LoadCsv::LoadCsv(const std::string& file, const Frame& frame)
+LoadCsv::LoadCsv(std::string  file, const Frame& frame)
   : Op{}
-  , file_(file)
+  , file_(std::move(file))
 {
   addOutput(frame);
 }

@@ -5,7 +5,7 @@
 namespace matcha::dataset {
 
 struct Tensors {
-  Tensors(const std::vector<tensor>& tensors);
+  Tensors(std::vector<tensor>  tensors);
   Tensors(std::initializer_list<tensor> tensors);
 
   operator Dataset();

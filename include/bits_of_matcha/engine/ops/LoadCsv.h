@@ -4,8 +4,8 @@
 namespace matcha::engine::ops {
 
 struct LoadCsv : Op {
-  LoadCsv(const std::string& file);
-  LoadCsv(const std::string& file, const Frame& frame);
+  LoadCsv(std::string  file);
+  LoadCsv(std::string  file, const Frame& frame);
 
   void run() override;
 

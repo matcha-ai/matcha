@@ -9,7 +9,7 @@ namespace matcha::engine::ops {
 
 struct LoadImage : Op {
   LoadImage(const std::string& file);
-  LoadImage(const std::string& file, const Frame& frame);
+  LoadImage(std::string  file, const Frame& frame);
 
   void run() override;
 

@@ -15,7 +15,7 @@ public:
   operator tensor();
 
 private:
-  explicit Loader(const std::string& file);
+  explicit Loader(std::string  file);
 
   std::string file_;
 

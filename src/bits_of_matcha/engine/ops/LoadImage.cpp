@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <numeric>
 #include <execution>
+#include <utility>
 #include <png.h>
 #include <jpeglib.h>
 
@@ -31,9 +32,9 @@ LoadImage::LoadImage(const std::string& file)
   fclose(fp);
 }
 
-LoadImage::LoadImage(const std::string& file, const Frame& frame)
+LoadImage::LoadImage(std::string  file, const Frame& frame)
   : Op{}
-  , file_(file)
+  , file_(std::move(file))
 {
   addOutput(frame);
 }

@@ -11,7 +11,7 @@ namespace matcha {
 class Shape final {
 public:
   Shape(std::initializer_list<unsigned> dims);
-  Shape(const std::vector<unsigned>& dims);
+  Shape(std::vector<unsigned>  dims);
 
   size_t rank() const;
   size_t size() const;

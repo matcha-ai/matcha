@@ -1,11 +1,13 @@
 #include "bits_of_matcha/dataset/loaders/Tensors.h"
+
+#include <utility>
 #include "bits_of_matcha/engine/dataset/Dataset.h"
 
 
 namespace matcha::dataset {
 
-Tensors::Tensors(const std::vector<tensor>& tensors)
-  : data_(tensors)
+Tensors::Tensors(std::vector<tensor>  tensors)
+  : data_(std::move(tensors))
 {}
 
 Tensors::Tensors(std::initializer_list<tensor> tensors)
@@ -17,7 +19,7 @@ Tensors::operator Dataset() {
     std::vector<tensor> data_;
     size_t pos_ = 0;
 
-    Internal(const std::vector<tensor>& data) : data_(data) {}
+    Internal(std::vector<tensor>  data) : data_(std::move(data)) {}
 
     Instance get() override {
       return {{{"0", data_[pos_++]}}};

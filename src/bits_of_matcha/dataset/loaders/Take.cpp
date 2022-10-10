@@ -1,11 +1,13 @@
 #include "bits_of_matcha/dataset/loaders/Take.h"
+
+#include <utility>
 #include "bits_of_matcha/engine/dataset/Dataset.h"
 
 
 namespace matcha::dataset {
 
-Take::Take(const Dataset& dataset, size_t limit)
-  : dataset_(dataset)
+Take::Take(Dataset  dataset, size_t limit)
+  : dataset_(std::move(dataset))
   , limit_(limit)
 {}
 
@@ -15,8 +17,8 @@ Take::operator Dataset() {
     size_t limit_;
     size_t offset_;
 
-    Internal(const matcha::Dataset& ds, size_t limit)
-      : dataset_(ds)
+    Internal(matcha::Dataset  ds, size_t limit)
+      : dataset_(std::move(ds))
       , limit_(limit)
     {
       offset_ = dataset_.tell();

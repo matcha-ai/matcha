@@ -18,7 +18,7 @@ class Op;
 class Tensor : public RefReqCounted {
 public:
   explicit Tensor(const Dtype& dtype, const Shape& shape);
-  explicit Tensor(const Frame& frame);
+  explicit Tensor(Frame  frame);
   virtual ~Tensor();
 
   const Frame& frame() const;

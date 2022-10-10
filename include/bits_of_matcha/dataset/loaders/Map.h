@@ -8,9 +8,9 @@
 namespace matcha::dataset {
 
 struct Map {
-  Map(const Dataset& dataset,
+  Map(Dataset  dataset,
       const std::function<Instance (const Instance&)>& function);
-  Map(const Dataset& dataset,
+  Map(Dataset  dataset,
       const std::function<void (Instance&)>& function);
 
   operator Dataset();

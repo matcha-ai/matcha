@@ -5,7 +5,7 @@
 namespace matcha::dataset {
 
 struct Take {
-  Take(const Dataset& dataset, size_t limit);
+  Take(Dataset  dataset, size_t limit);
   operator Dataset();
 
 private:

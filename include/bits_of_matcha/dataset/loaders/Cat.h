@@ -8,7 +8,7 @@
 namespace matcha::dataset {
 
 struct Cat {
-  explicit Cat(const std::vector<Dataset>& datasets);
+  explicit Cat(std::vector<Dataset>  datasets);
   operator Dataset();
 
 private:

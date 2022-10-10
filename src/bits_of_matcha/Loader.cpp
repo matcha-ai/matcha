@@ -7,12 +7,13 @@
 #include "bits_of_matcha/engine/ops/LoadImage.h"
 
 #include <filesystem>
+#include <utility>
 
 
 namespace matcha {
 
-Loader::Loader(const std::string& file)
-  : file_(file)
+Loader::Loader(std::string  file)
+  : file_(std::move(file))
 {}
 
 Loader load(const std::string& file) {

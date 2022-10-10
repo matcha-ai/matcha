@@ -5,7 +5,7 @@
 namespace matcha::dataset {
 
 struct Batch {
-  Batch(const Dataset& dataset, size_t limit);
+  Batch(Dataset  dataset, size_t limit);
   operator Dataset();
 
 private:

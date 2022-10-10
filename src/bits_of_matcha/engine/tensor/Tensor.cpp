@@ -6,12 +6,13 @@
 #include "bits_of_matcha/print.h"
 
 #include <sstream>
+#include <utility>
 
 
 namespace matcha::engine {
 
-Tensor::Tensor(const Frame& frame)
-  : frame_(frame)
+Tensor::Tensor(Frame  frame)
+  : frame_(std::move(frame))
   , op_(nullptr)
 {
 //  print("created tensor ", this);

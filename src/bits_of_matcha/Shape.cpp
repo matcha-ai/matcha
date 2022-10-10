@@ -3,6 +3,7 @@
 
 #include <stdexcept>
 #include <numeric>
+#include <utility>
 
 
 namespace matcha {
@@ -12,8 +13,8 @@ Shape::Shape(std::initializer_list<unsigned> dims)
   : dims_{dims}
 {}
 
-Shape::Shape(const std::vector<unsigned>& dims)
-  : dims_{dims}
+Shape::Shape(std::vector<unsigned>  dims)
+  : dims_{std::move(dims)}
 {}
 
 size_t Shape::rank() const {

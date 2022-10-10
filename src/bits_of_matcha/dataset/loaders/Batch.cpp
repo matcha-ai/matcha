@@ -5,14 +5,15 @@
 #include "bits_of_matcha/print.h"
 #include "bits_of_matcha/ops.h"
 
+#include <utility>
 #include <vector>
 #include <map>
 
 
 namespace matcha::dataset {
 
-Batch::Batch(const Dataset& dataset, size_t limit)
-  : dataset_(dataset)
+Batch::Batch(Dataset  dataset, size_t limit)
+  : dataset_(std::move(dataset))
   , limit_(limit)
 {}
 
@@ -22,8 +23,8 @@ Batch::operator Dataset() {
     size_t limit_;
     size_t offset_;
 
-    Internal(const matcha::Dataset& ds, size_t limit)
-      : dataset_(ds)
+    Internal(matcha::Dataset  ds, size_t limit)
+      : dataset_(std::move(ds))
       , limit_(limit)
     {
       if (limit_ == 0)

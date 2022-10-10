@@ -1,18 +1,20 @@
 #include "bits_of_matcha/dataset/loaders/Map.h"
+
+#include <utility>
 #include "bits_of_matcha/engine/dataset/Dataset.h"
 
 
 namespace matcha::dataset {
 
-Map::Map(const Dataset& dataset,
+Map::Map(Dataset  dataset,
          const std::function<Instance(const Instance&)>& function)
-  : dataset_(dataset)
+  : dataset_(std::move(dataset))
   , callback_(function)
 {}
 
-Map::Map(const Dataset& dataset,
+Map::Map(Dataset  dataset,
          const std::function<void (Instance&)>& function)
-  : dataset_(dataset)
+  : dataset_(std::move(dataset))
   , callback_(function)
 {}
 
@@ -21,9 +23,9 @@ Map::operator Dataset() {
     matcha::Dataset dataset_;
     Callback callback_;
 
-    Internal(const matcha::Dataset& ds, const Callback& callback)
-      : dataset_(ds)
-      , callback_(callback)
+    Internal(matcha::Dataset  ds, Callback  callback)
+      : dataset_(std::move(ds))
+      , callback_(std::move(callback))
     {}
 
     Instance get() override {
