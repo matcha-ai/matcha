@@ -67,8 +67,8 @@ Shape::Reshape::Reshape(const Shape& target)
   check();
 }
 
-Shape::Reshape::Reshape(const std::vector<int>& target)
-  : target_{target}
+Shape::Reshape::Reshape(std::vector<int>  target)
+  : target_{std::move(target)}
 {
   check();
 }

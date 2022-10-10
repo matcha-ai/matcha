@@ -28,7 +28,7 @@ public:
   public:
     Reshape(const Shape& target);
     Reshape(std::initializer_list<int> target);
-    Reshape(const std::vector<int>& target);
+    Reshape(std::vector<int>  target);
 
     Shape operator()(const Shape& shape) const;
 
